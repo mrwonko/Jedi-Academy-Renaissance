@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Jedi Academy Renaissance">
+		<Project filename="jarlib/jar-core.cbp" active="1" />
+		<Project filename="02-filesystem/02-filesytem.cbp">
+			<Depends filename="jarlib/jar-core.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

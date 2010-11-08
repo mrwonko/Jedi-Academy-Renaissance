@@ -1,0 +1,29 @@
+Class names start with a capital letter.
+class Logger;
+
+Public class members start with a capital letter, private ones are prefixed "m".
+Logger::mDefaultLogger;
+Event::Type;
+
+Normal variables, parameters etc. start with lowercase.
+int elapsedTime;
+
+Headers end with .hpp, filenames start with a capital letter, in general filename = class name
+Logger.hpp
+
+Example:
+class Test
+{
+	public:
+		Test(int number);
+		int Amount;
+	private:
+		int mSecret;
+};
+
+Make Deinit() return success since components may have to be restarted.
+
+Output references are prefixed out_, unless it's obvious by their name.
+void GetNames(std::string& out_name1, std::string& out_name2);
+
+Hide underlying libraries, if reasonable. Ideally the user only needs to link jar-xxx.

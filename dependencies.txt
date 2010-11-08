@@ -1,0 +1,8 @@
+Jedi Academy: Renaissance uses the following libraries:
+
+SFML 1.6 (www.sfml-dev.org)
+PhysicsFS (http://icculus.org/physfs/)
+zlib (http://zlib.net/)
+minizip (shipped with zlib in contrib/minizip/)
+Lua (http://www.lua.org)
+luabind (http://www.rasterbar.com/products/luabind.html)
