@@ -43,13 +43,13 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add directory="include" />
-			<Add directory="..\..\jarlib\include" />
+			<Add directory="..\jarlib\include" />
 		</Compiler>
 		<Linker>
 			<Add library="zdll" />
 			<Add library="physfs" />
 			<Add library="lua" />
-			<Add directory="..\..\jarlib\lib" />
+			<Add directory="..\jarlib\lib" />
 		</Linker>
 		<Unit filename="include\jar\core\Lua.hpp" />
 		<Unit filename="include\jar\core\PhysFSFile.hpp" />
