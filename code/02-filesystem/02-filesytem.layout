@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="Debug" />
+	<ActiveTarget name="Release" />
 	<File name="include\jar\core\PhysFSFile.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="1031" topLine="12" />
+		<Cursor position="3381" topLine="47" />
 	</File>
 	<File name="src\jar\core\PhysFSFile.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1069" topLine="0" />
+		<Cursor position="3996" topLine="118" />
+	</File>
+	<File name="src\jar\luabind\Core.cpp" open="1" top="1" tabpos="1">
+		<Cursor position="1432" topLine="9" />
 	</File>
 	<File name="src\jar\luabind\FileSystem.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1878" topLine="42" />
+		<Cursor position="3037" topLine="68" />
+	</File>
+	<File name="src\jar\luabind\STL.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="1406" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

@@ -24,6 +24,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/core/Logger.hpp"
 #include "jar/core/PhysFSFile.hpp"
+#include "jar/core/CLArguments.hpp"
+#include "jar/Globals.hpp"
 
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
@@ -55,7 +57,7 @@ static int GetCurrentUnzFileContent(unzFile filehandle, std::string& output)
 
 static unzFile MyUnzOpen(const std::string& filename)
 {
-    return unzOpen((jar::MODDIR + filename).c_str());;
+    return unzOpen((jar::CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + filename).c_str());
 }
 
 void BindFileSystem(lua_State* L)
@@ -70,17 +72,26 @@ void BindFileSystem(lua_State* L)
             .def("GetCurrentFileContent", &GetCurrentUnzFileContent),
         luabind::def("Open", &MyUnzOpen)
     ];
-    typedef const int (*Mount1Signature)(const std::string&, const bool);
-    typedef const int (*Mount2Signature)(const std::string&, const std::string&, const bool);
-    typedef std::string (*ReadString1Signature)(PHYSFS_File*);
-    typedef std::string (*ReadString2Signature)(PHYSFS_File*, unsigned int);
+    luabind::globals(L)["unz"]["OK"] = UNZ_OK;
+    luabind::globals(L)["unz"]["END_OF_LIST_OF_FILE"] = UNZ_END_OF_LIST_OF_FILE;
+    luabind::globals(L)["unz"]["ERRNO"] = UNZ_ERRNO;
+    luabind::globals(L)["unz"]["EOF"] = UNZ_EOF;
+    luabind::globals(L)["unz"]["PARAMERROR"] = UNZ_PARAMERROR;
+    luabind::globals(L)["unz"]["BADZIPFILE"] = UNZ_BADZIPFILE;
+    luabind::globals(L)["unz"]["INTERNALERROR"] = UNZ_INTERNALERROR;
+    luabind::globals(L)["unz"]["CRCERROR"] = UNZ_CRCERROR;
+
+    typedef const bool (*Mount1Signature)(const std::string&, const bool);
+    typedef const bool (*Mount2Signature)(const std::string&, const std::string&, const bool);
+    typedef const bool (*ReadString1Signature)(PHYSFS_File*, std::string&);
+    typedef const bool (*ReadString2Signature)(PHYSFS_File*, unsigned int, std::string&);
     //physfs
     luabind::module(L, "physFS")
     [
         luabind::def("GetLastError", &PHYSFS_getLastError),
-        luabind::def("Mount", (Mount1Signature) &PhysFSMount), //TODO: document different syntax!
+        luabind::def("Mount", (Mount1Signature) &PhysFSMount),
         luabind::def("Mount", (Mount2Signature) &PhysFSMount),
-        luabind::def("Unmount", &PHYSFS_removeFromSearchPath),
+        luabind::def("Unmount", &PhysFSUnmount),
         luabind::def("OpenRead", &PHYSFS_openRead),
         luabind::def("OpenWrite", &PHYSFS_openWrite),
         luabind::class_<PHYSFS_File>("File")
@@ -88,16 +99,17 @@ void BindFileSystem(lua_State* L)
             //2nd parameter is a pure out reference -> used as return value
             //i.e. you do "local success, content = file:GetContent()"
             .def("GetContent", &PhysFSGetCurrentFileContent, luabind::pure_out_value(_2))
-            .def("ReadChar", &PhysFSReadChar)
-            .def("ReadString", (ReadString1Signature) &PhysFSReadString)
-            .def("ReadString", (ReadString2Signature) &PhysFSReadString)
-            .def("ReadFloat", &PhysFSReadFloat)
-            .def("ReadInt", &PhysFSReadInt)
-            .def("ReadUnsignedInt", &PhysFSReadUnsignedInt)
+            .def("ReadChar", &PhysFSReadChar, luabind::pure_out_value(_2))
+            .def("ReadString", (ReadString1Signature) &PhysFSReadString, luabind::pure_out_value(_2))
+            .def("ReadString", (ReadString2Signature) &PhysFSReadString, luabind::pure_out_value(_3))
+            .def("ReadFloat", &PhysFSReadFloat, luabind::pure_out_value(_2))
+            .def("ReadInt", &PhysFSReadInt, luabind::pure_out_value(_2))
+            .def("ReadUnsignedInt", &PhysFSReadUnsignedInt, luabind::pure_out_value(_2))
             .def("EOF", &PhysFSEOF)
-            .def("Seek", &PHYSFS_seek)
+            .def("Seek", &PhysFSSeek)
             .def("Tell", &PHYSFS_tell)
             .def("WriteString", &PhysFSWriteString)
+            //TODO: WriteInt etc.
     ];
 }
 

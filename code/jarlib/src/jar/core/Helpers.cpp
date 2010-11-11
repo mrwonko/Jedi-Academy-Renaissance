@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/core/Helpers.hpp"
+#include "jar/Globals.hpp"
+#include "jar/core/CLArguments.hpp"
 #include "jar/core/Logger.hpp"
 #include <string>
 #include <sstream>
@@ -182,7 +184,7 @@ namespace jar
     {
         if(!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) return false;
         std::string name = std::string(ffd.cFileName);
-        if(name == "." or name == "..") return false;
+        if(name.length() == 0 or name[0] == '.') return false;
         return true;
     }
 
@@ -222,26 +224,28 @@ namespace jar
     }
 #endif
 
-    std::vector<std::string> Helpers::GetFilesInDirectory(const std::string& directoryPath)
+    std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
     {
+        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + directoryPath;
         std::vector<std::string> filenames;
 #if defined(_WIN32)
         filenames = GetStuffInDirectory(directoryPath, &IsFile);
 #else
-        Logger::GetDefaultLogger().Warning("Helpers::GetFilesInDirectory() not implemented for current platform!")
-#warning Helpers::GetFilesInDirectory() not implemented
+        Logger::GetDefaultLogger().Error("Helpers::GetFilesInDirectory() not implemented for current platform!")
+#warning Helpers::GetFilesInDirectory() not implemented for this platform
 #endif
         return filenames;
     }
 
-    std::vector<std::string> Helpers::GetDirectoriesInDirectory(const std::string& directoryPath)
+    std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
     {
+        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + directoryPath;
         std::vector<std::string> filenames;
 #if defined(_WIN32)
         filenames = GetStuffInDirectory(directoryPath, &IsDirectory);
 #else
-        Logger::GetDefaultLogger().Warning("Helpers::GetDirectoriesInDirectory() not implemented for current platform!")
-#warning Helpers::GetFilesInDirectory() not implemented
+        Logger::GetDefaultLogger().Error("Helpers::GetDirectoriesInDirectory() not implemented for current platform!")
+#warning Helpers::GetFilesInDirectory() not implemented for this platform
 #endif
         return filenames;
     }

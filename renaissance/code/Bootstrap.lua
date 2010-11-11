@@ -16,6 +16,7 @@ local function lowLoadFile(filename)
 	file:Close()
 	return loadstring(content, "@" .. filename)
 end
+loadfile = lowLoadFile
 
 function dofile(filename)
 	local f, err = lowLoadFile(filename)
@@ -23,10 +24,6 @@ function dofile(filename)
 		error(err, 2)
 	end
 	f()
-end
-
-function loadfile(filename)
-	return lowLoadFile(filename)
 end
 
 --module loader for require

@@ -20,16 +20,20 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#ifndef JAR_LUABIND_ALL_HPP
-#define JAR_LUABIND_ALL_HPP
+#ifndef JAR_GLOBALS_HPP
+#define JAR_GLOBALS_HPP
 
-struct lua_State;
+#include <string>
 
 namespace jar
 {
 
-void BindAll(lua_State* L);
+struct Globals
+{
+/** \brief The root directory, i.e. where data files and everything is, relative to binary. Stuff is done relative to this path! <b>Set this to the correct path!</b> **/
+    static std::string rootDir;
+};
 
 }
 
-#endif //JAR_LUABIND_ALL_HPP
+#endif //JAR_GLOBALS_HPP

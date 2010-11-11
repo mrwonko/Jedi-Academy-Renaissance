@@ -638,9 +638,11 @@ end
 
 local output = ConvertIbiToLua(ibiname)
 
-print("\n" .. output .. "\n")
-local file = physFS.OpenWrite(luaname)
-if not file:WriteString(output) then
-	print("Error: Could not write file: " .. physFS.GetLastError())
+if output then
+	print("\n" .. output .. "\n")
+	local file = physFS.OpenWrite(luaname)
+	if not file:WriteString(output) then
+		print("Error: Could not write file: " .. physFS.GetLastError())
+	end
+	file:Close()
 end
-file:Close()

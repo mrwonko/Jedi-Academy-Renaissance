@@ -47,7 +47,9 @@ void BindCore(lua_State* L)
             .def("DecreaseLoggingLevel", &Logger::DecreaseLoggingLevel)
             .def("GetLoggingLevel", &Logger::GetLoggingLevel)
             .def("SetLoggingLevel", &Logger::SetLoggingLevel),
-        luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory)
+
+        luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory),
+        luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory)
     ];
 }
 

@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/core/PhysFSFile.hpp"
+#include "jar/Globals.hpp"
 #include "jar/core/CLArguments.hpp"
 #include "jar/core/Logger.hpp"
 #include <physfs.h>
@@ -57,63 +58,47 @@ const bool PhysFSGetCurrentFileContent(PHYSFS_File* file, std::string& output)
     return true;
 }
 
-const int PhysFSMount(const std::string& filename, const bool append)
+const bool PhysFSMount(const std::string& filename, const bool append)
 {
-    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + MODDIR + filename).c_str(), NULL, append);
+    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + filename).c_str(), NULL, append);
 }
 
-const int PhysFSMount(const std::string& filename, const std::string& mountpoint, const bool append)
+const bool PhysFSMount(const std::string& filename, const std::string& mountpoint, const bool append)
 {
-    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + MODDIR + filename).c_str(), mountpoint.c_str(), append);
+    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + filename).c_str(), mountpoint.c_str(), append);
 }
 
-const int PhysFSReadInt(PHYSFS_File* file)
+const bool PhysFSUnmount(const std::string& filename)
 {
-    int num;
-    if(PHYSFS_readSLE32(file, &num) == 0)
-    {
-        Logger::GetDefaultLogger().Error(std::string(PHYSFS_getLastError()));
-    }
-    return num;
+    return PHYSFS_removeFromSearchPath((CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + filename).c_str());
 }
 
-const unsigned int PhysFSReadUnsignedInt(PHYSFS_File* file)
+const bool PhysFSReadInt(PHYSFS_File* file, int& out_num)
 {
-    unsigned int num;
-    if(PHYSFS_readULE32(file, &num) == 0)
-    {
-        Logger::GetDefaultLogger().Error(std::string(PHYSFS_getLastError()));
-    }
-    return num;
+    return PHYSFS_readSLE32(file, &out_num);
 }
 
-const float PhysFSReadFloat(PHYSFS_File* file)
+const bool PhysFSReadUnsignedInt(PHYSFS_File* file, unsigned int& out_num)
 {
-    float num;
-    if(PHYSFS_readSLE32(file, (PHYSFS_sint32*)&num) == 0) //TODO: check this works.
-    {
-        Logger::GetDefaultLogger().Error(std::string(PHYSFS_getLastError()));
-    }
-    return num;
+    return PHYSFS_readULE32(file, &out_num);
 }
 
-const char PhysFSReadChar(PHYSFS_File* file)
+const bool PhysFSReadFloat(PHYSFS_File* file, float& out_num)
 {
-    char c;
-    if(PHYSFS_read(file, &c, 1, 1) != 1)
-    {
-        Logger::GetDefaultLogger().Error(std::string(PHYSFS_getLastError()));
-    }
-    return c;
+    return PHYSFS_readSLE32(file, (PHYSFS_sint32*)&out_num); //TODO: check this works.
 }
 
-std::string PhysFSReadString(PHYSFS_File* file)
+const bool PhysFSReadChar(PHYSFS_File* file, char& output)
 {
-    std::string str;
+    return (PHYSFS_read(file, &output, 1, 1) == 1);
+}
+
+const bool PhysFSReadString(PHYSFS_File* file, std::string& output)
+{
     if(PHYSFS_eof(file))
     {
         Logger::GetDefaultLogger().Warning("PhysFS.File.ReadString(): already at eof!");
-        return str;
+        return true;
     }
     while(true)
     {
@@ -125,25 +110,24 @@ std::string PhysFSReadString(PHYSFS_File* file)
                 //eof? that's ok.
                 break;
             }
-            Logger::GetDefaultLogger().Error(std::string(PHYSFS_getLastError()));
-            return str;
+            //not eof? then something went wrong.
+            return false;
         }
-        str += c;
+        output += c;
         if(c == '\0')
         {
             break;
         }
     }
-    return str;
+    return true;
 }
 
-std::string PhysFSReadString(PHYSFS_File* file, unsigned int len)
+const bool PhysFSReadString(PHYSFS_File* file, unsigned int len, std::string& output)
 {
-    std::string str;
     if(PHYSFS_eof(file))
     {
         Logger::GetDefaultLogger().Warning("PhysFS.File.ReadString(): already at eof!");
-        return str;
+        return true;
     }
     for(unsigned int i = 0; i < len; ++i)
     {
@@ -155,12 +139,12 @@ std::string PhysFSReadString(PHYSFS_File* file, unsigned int len)
                 //eof? that's ok.
                 break;
             }
-            Logger::GetDefaultLogger().Error(std::string(PHYSFS_getLastError()));
-            return str;
+            //not eof? then something went wrong.
+            return false;
         }
-        str += c;
+        output += c;
     }
-    return str;
+    return true;
 }
 
 const bool PhysFSEOF(PHYSFS_File* file)
@@ -171,6 +155,11 @@ const bool PhysFSEOF(PHYSFS_File* file)
 const bool PhysFSWriteString(PHYSFS_File* file, const std::string& str)
 {
     return(PHYSFS_write(file, str.c_str(), 1, str.length()) == str.length());
+}
+
+const bool PhysFSSeek(PHYSFS_File* file, const int64_t position) //TODO: test whether luabind treats int64_t as number
+{
+    return PHYSFS_seek(file, position);
 }
 
 }

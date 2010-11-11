@@ -142,15 +142,15 @@ namespace jar
 		 **/
 		static int Round(float f);
 
-		/** \brief Returns all files in a given directory
+		/** \brief Returns all files in a given directory, relative to the g_rootDir
             \return vector of filenames (without path)
 		 **/
-		 static std::vector<std::string> GetFilesInDirectory(const std::string& directoryPath);
+		 static std::vector<std::string> GetFilesInDirectory(std::string directoryPath);
 
-		/** \brief Returns all directories in a given directory
+		/** \brief Returns all directories in a given directory except those starting with ., relative to the g_rootDir
             \return vector of filenames (without path)
 		 **/
-		 static std::vector<std::string> GetDirectoriesInDirectory(const std::string& directoryPath);
+		 static std::vector<std::string> GetDirectoriesInDirectory(std::string directoryPath);
 	};
 }
 

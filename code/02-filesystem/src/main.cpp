@@ -25,12 +25,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string>
 
 //jar
-#include <jar/core/PhysFSFile.hpp> //TODO: delete once I've got the constant(s) elsewhere
 #include <jar/core/CLArguments.hpp>
 #include <jar/core/CoutLogger.hpp>
 #include <jar/core/FileSystem.hpp>
 #include <jar/core/Helpers.hpp>
 #include <jar/core/Lua.hpp>
+#include <jar/Globals.hpp> //for g_rootDir etc.
 #include <jar/luabind/All.hpp>
 
 #include <luabind/luabind.hpp> //TODO: delete once I no longer set a lua constant (DEBUG_ibiname) in main()
@@ -60,6 +60,9 @@ int main(int argc, char** argv)
     {
         //init Command Line Arguments
         jar::CLArguments args(argc, argv);
+
+        //set top level directory
+        jar::Globals::rootDir = "../";
         //init Logger
         jar::CoutLogger logger;
         //TODO: delete / -v ?
@@ -78,16 +81,8 @@ int main(int argc, char** argv)
             logger.Error("Could not open Lua libraries: "+lua.GetLastError());
             return 0;
         }
-        jar::BindFileSystem(lua.GetState());
-        jar::BindCore(lua.GetState());
+        jar::BindAll(lua.GetState());
         logger.Info("Initialized Lua", 1);
-
-        //For now: ask user for desired ibi filename
-        std::string filename;
-        std::cout<<"What ibi file shall be converted? "<<std::flush;
-        std::cin>>filename;
-        std::cin.clear();
-        luabind::globals(lua.GetState())["DEBUG_ibiname"] = filename;
 
         //init physicsFS
         assert(argc > 0);
@@ -96,10 +91,10 @@ int main(int argc, char** argv)
             logger.Error(std::string(PHYSFS_getLastError()));
             return 0;
         }
-        PHYSFS_setWriteDir((args.GetWorkingDirectory() + jar::MODDIR).c_str());
+        PHYSFS_setWriteDir((args.GetWorkingDirectory() + jar::Globals::rootDir).c_str());
         logger.Info("Initialized PhysicsFS", 1);
 
-        if(!PHYSFS_mount((args.GetWorkingDirectory() + jar::MODDIR + "bootstrap.pk3").c_str(), NULL, 0))
+        if(!PHYSFS_mount((args.GetWorkingDirectory() + jar::Globals::rootDir + "bootstrap.pk3").c_str(), NULL, 0))
         {
             logger.Error("Could not mount bootstrap.pk3: " + std::string(PHYSFS_getLastError()));
             PHYSFS_deinit();
@@ -156,10 +151,6 @@ int main(int argc, char** argv)
     {
         std::cout<<"Exception: "<<e.what()<<std::endl;
     }
-
-    std::cout<<"Done. Enter text and press enter to exit."<<std::endl;
-    char dummy;
-    std::cin>>dummy;
 
     return 0;
 }
