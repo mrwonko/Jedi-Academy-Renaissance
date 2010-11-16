@@ -59,6 +59,7 @@
 		<Unit filename="include\jar\luabind\STL.hpp" />
 		<Unit filename="src\jar\core\Lua.cpp" />
 		<Unit filename="src\jar\core\PhysFSFile.cpp" />
+		<Unit filename="src\jar\luabind\All.cpp" />
 		<Unit filename="src\jar\luabind\Core.cpp" />
 		<Unit filename="src\jar\luabind\FileSystem.cpp" />
 		<Unit filename="src\jar\luabind\STL.cpp" />

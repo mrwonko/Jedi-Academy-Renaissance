@@ -55,6 +55,7 @@
 		<Unit filename="include\jar\core\Singleton.hpp" />
 		<Unit filename="include\jar\core\VoidLogger.hpp" />
 		<Unit filename="include\jar\jar.hpp" />
+		<Unit filename="src\jar\Globals.cpp" />
 		<Unit filename="src\jar\core\CLArguments.cpp" />
 		<Unit filename="src\jar\core\CoutLogger.cpp" />
 		<Unit filename="src\jar\core\Helpers.cpp" />

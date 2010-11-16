@@ -19,7 +19,7 @@ function ModManager:New()
 end
 
 function ModManager:Init()
-	jar.Logger.GetDefaultLogger():Log("TODO: ModManager:Init() (or do I?)")
+	jar.Logger.GetDefaultLogger():Log("TODO: ModManager:Init() (necessary?)")
 	return true
 end
 

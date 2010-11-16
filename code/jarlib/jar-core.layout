@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
+	<File name="include\jar\Globals.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1358" topLine="0" />
+	</File>
+	<File name="include\jar\core\Helpers.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="4343" topLine="112" />
+	</File>
+	<File name="include\jar\core\Logger.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="2368" topLine="74" />
+	</File>
+	<File name="include\jar\jar.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="320" topLine="0" />
+	</File>
+	<File name="src\jar\Globals.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="99" topLine="0" />
+	</File>
+	<File name="src\jar\core\Helpers.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="6444" topLine="163" />
+	</File>
 </CodeBlocks_layout_file>
