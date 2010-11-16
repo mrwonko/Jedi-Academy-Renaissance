@@ -231,7 +231,7 @@ namespace jar
 #if defined(_WIN32)
         filenames = GetStuffInDirectory(directoryPath, &IsFile);
 #else
-        Logger::GetDefaultLogger().Error("Helpers::GetFilesInDirectory() not implemented for current platform!")
+        Logger::GetDefaultLogger().Error("Helpers::GetFilesInDirectory() not implemented for current platform!");
 #warning Helpers::GetFilesInDirectory() not implemented for this platform
 #endif
         return filenames;
@@ -244,7 +244,7 @@ namespace jar
 #if defined(_WIN32)
         filenames = GetStuffInDirectory(directoryPath, &IsDirectory);
 #else
-        Logger::GetDefaultLogger().Error("Helpers::GetDirectoriesInDirectory() not implemented for current platform!")
+        Logger::GetDefaultLogger().Error("Helpers::GetDirectoriesInDirectory() not implemented for current platform!");
 #warning Helpers::GetFilesInDirectory() not implemented for this platform
 #endif
         return filenames;
