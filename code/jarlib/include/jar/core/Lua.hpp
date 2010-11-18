@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define JAR_CORE_LUA_HPP
 
 #include <string>
-#include <jar/Library.hpp>
+#include <jar/core/API.hpp>
 
 //forward declarations
 struct lua_State;
@@ -33,7 +33,7 @@ namespace jar
 {
 
 /** \brief Wrapper class for commonly used Lua functions **/
-class JARAPI Lua
+class JARCOREAPI Lua
 {
     public:
         Lua();

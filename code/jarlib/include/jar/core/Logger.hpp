@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define JAR_CORE_LOGGER_HPP
 
 #include <string>
-#include <jar/Library.hpp>
+#include <jar/core/API.hpp>
 
 namespace jar
 {
@@ -32,7 +32,7 @@ namespace jar
     /** \brief Interface for a Logger that logs stuff.
         \headerfile <jar/core/Logger.hpp>
     **/
-    class JARAPI Logger
+    class JARCOREAPI Logger
     {
         public:
             /**

@@ -35,7 +35,6 @@ int main(int argc, char** argv)
 {
     //create Logger
     jar::CoutLogger logger;
-    logger.IncreaseLoggingLevel(); //TODO: delete this or it make optional using -v?
     logger.Info("Initialized Logger", 1);
 
     //create + init core system (Filesystem, Lua, ...)

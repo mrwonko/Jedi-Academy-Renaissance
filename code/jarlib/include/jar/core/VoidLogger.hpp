@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define JAR_CORE_VOIDLOGGER_HPP
 
 #include "Logger.hpp"
-#include <jar/Library.hpp>
+#include <jar/core/API.hpp>
 
 namespace jar
 {
@@ -33,7 +33,7 @@ namespace jar
         \note Used as the default Logger if none exists.
         \headerfile <jar/core/VoidLogger.hpp>
     **/
-    class JARAPI VoidLogger : public Logger
+    class JARCOREAPI VoidLogger : public Logger
     {
         public:
             VoidLogger() {}

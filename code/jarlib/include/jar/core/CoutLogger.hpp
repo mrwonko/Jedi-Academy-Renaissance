@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_CORE_COUTLOGGER_H
 #define JAR_CORE_COUTLOGGER_H
 
-#include <jar/Library.hpp>
+#include <jar/core/API.hpp>
 
 #include "Logger.hpp"
 
@@ -35,7 +35,7 @@ namespace jar
         On windows, warnings will be yellow and errors red.
         \headerfile <jar/core/CoutLogger.hpp>
     **/
-    class JARAPI CoutLogger : public Logger
+    class JARCOREAPI CoutLogger : public Logger
     {
         public:
             CoutLogger();

@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define JAR_FILESYSTEM_HPP
 
 #include <string>
-#include <jar/Library.hpp>
+#include <jar/core/API.hpp>
 
 //This file contains some wrapper functions for PhysFS function so the user doesn't need to have the PhysFS libraries to use jarlib.
 //It also changes the functionality of some functions to add prefixes etc. so they work as expected.
@@ -37,84 +37,84 @@ namespace jar
 namespace fs
 {
 /** \brief Initializes the file system. Call this first. **/
-JARAPI const bool Init(char* argv0);
+JARCOREAPI const bool Init(char* argv0);
 
 /** \brief If this returns false, something is probably badly screwed up. **/
-JARAPI const bool Deinit();
+JARCOREAPI const bool Deinit();
 
-JARAPI const bool SetWriteDir(const std::string& writedir);
+JARCOREAPI const bool SetWriteDir(const std::string& writedir);
 
-JARAPI const std::string GetLastError();
+JARCOREAPI const std::string GetLastError();
 
 /** \brief Opens and reads a given file into the output parameter, then closes it.
     \return success **/
-JARAPI const bool ReadFile(const std::string& filename, std::string& output);
+JARCOREAPI const bool ReadFile(const std::string& filename, std::string& output);
 
 /** \brief Closes a given file. **/
-JARAPI const bool Close(PHYSFS_File* file);
+JARCOREAPI const bool Close(PHYSFS_File* file);
 
 /** \brief Opens a given file for reading. Returns NULL on error. **/
-JARAPI PHYSFS_File* OpenRead(const std::string& filename);
+JARCOREAPI PHYSFS_File* OpenRead(const std::string& filename);
 
 /** \brief Opens a given file for writing, which is always done in the writepath. Returns NULL on error. **/
-JARAPI PHYSFS_File* OpenWrite(const std::string& filename);
+JARCOREAPI PHYSFS_File* OpenWrite(const std::string& filename);
 
 /** \brief Completely reads the given file into the output string.
 
     \return Success. Check error via GetLastError() on failure.
 **/
-JARAPI const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output);
+JARCOREAPI const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output);
 
 /** \brief Mounts a given file/directory to /
     \note Needs CLArguments
     \param append true = try later (last appended = last resort)
     \return success **/
-JARAPI const bool Mount(const std::string& filename, const bool append);
+JARCOREAPI const bool Mount(const std::string& filename, const bool append);
 
 /** \brief Mounts a given file/directory to a given mountpoint
     \note Needs CLArguments
     \param append true = try later (last appended = last resort)
     \return success **/
-JARAPI const bool Mount(const std::string& filename, const std::string& mountpoint, const bool append);
+JARCOREAPI const bool Mount(const std::string& filename, const std::string& mountpoint, const bool append);
 
 /** \brief Unmounts a given file/directory (that's been mounted first)
     \return success **/
-JARAPI const bool Unmount(const std::string& filename);
+JARCOREAPI const bool Unmount(const std::string& filename);
 
 /** \brief Reads an int from a given file.
     \note Little endian **/
-JARAPI const bool ReadInt(PHYSFS_File* file, int& out_num);
+JARCOREAPI const bool ReadInt(PHYSFS_File* file, int& out_num);
 
 /** \brief Reads an unsigned int from a given file.
     \note Little endian **/
-JARAPI const bool ReadUnsignedInt(PHYSFS_File* file, unsigned int& out_num);
+JARCOREAPI const bool ReadUnsignedInt(PHYSFS_File* file, unsigned int& out_num);
 
 /** \brief Reads a char from a given file. **/
-JARAPI const bool ReadChar(PHYSFS_File* file, char& output);
+JARCOREAPI const bool ReadChar(PHYSFS_File* file, char& output);
 
 /** \brief Reads a float from a given file.**/
-JARAPI const bool ReadFloat(PHYSFS_File* file, float& out_num);
+JARCOREAPI const bool ReadFloat(PHYSFS_File* file, float& out_num);
 
 /** \brief Reads a null-terminated string from a given file, or until eof. **/
-JARAPI const bool ReadString(PHYSFS_File* file, std::string& output);
+JARCOREAPI const bool ReadString(PHYSFS_File* file, std::string& output);
 
 /** \brief Reads a string of a given length from a file, stopping at eof. **/
-JARAPI const bool ReadString(PHYSFS_File* file, unsigned int len, std::string& output);
+JARCOREAPI const bool ReadString(PHYSFS_File* file, unsigned int len, std::string& output);
 
 /** \brief Returns whether a file's eof has been reached yet.
     \note I can't use PHYSFS_eof since it returns an int, and to Lua 0 = true. **/
-JARAPI const bool EndOfFile(PHYSFS_File* file);
+JARCOREAPI const bool EndOfFile(PHYSFS_File* file);
 
 /** \brief Writes a string to a file
     \note File needs to be opened via physfs.OpenWrite() **/
-JARAPI const bool WriteString(PHYSFS_File* file, const std::string& str);
+JARCOREAPI const bool WriteString(PHYSFS_File* file, const std::string& str);
 
 /** \brief Moves cursor to a given position in the file.
     \return success **/
-JARAPI const bool Seek(PHYSFS_File* file, const int64_t position);
+JARCOREAPI const bool Seek(PHYSFS_File* file, const int64_t position);
 
 /** \brief returns the current position of the cursor. **/
-JARAPI const int64_t Tell(PHYSFS_File* file);
+JARCOREAPI const int64_t Tell(PHYSFS_File* file);
 
 }
 }

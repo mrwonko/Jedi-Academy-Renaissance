@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <string>
 #include "core/Singleton.hpp"
-#include <jar/Library.hpp>
+#include <jar/core/API.hpp>
 
 namespace jar {
 //forward declarations
@@ -33,7 +33,7 @@ class CoreImpl;
 class Lua;
 
 /** \brief Main Framework class for core systems. You, the user, just need to create & initialize this (only once!), plus any other systems you need. **/
-class JARAPI Core : public Singleton<Core>
+class JARCOREAPI Core : public Singleton<Core>
 {
     public:
         Core();

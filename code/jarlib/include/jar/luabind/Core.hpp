@@ -24,14 +24,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define JAR_LUABIND_CORE_HPP
 
 struct lua_State;
-#include <jar/Library.hpp>
+#include <jar/core/API.hpp>
 
 namespace jar
 {
 
 /** \brief Binds core classes to Lua via luabind, like the Log.
 **/
-void JARAPI BindCore(lua_State* L);
+void JARCOREAPI BindCore(lua_State* L);
 }
 
 #endif

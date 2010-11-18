@@ -43,7 +43,7 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-DJAR_LIBRARY_BUILD" />
+			<Add option="-DJAR_CORE_LIBRARY_BUILD" />
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
@@ -58,7 +58,7 @@
 		<Unit filename="include\jar\Core.hpp" />
 		<Unit filename="include\jar\CoreImpl.hpp" />
 		<Unit filename="include\jar\Jar.hpp" />
-		<Unit filename="include\jar\Library.hpp" />
+		<Unit filename="include\jar\core\API.hpp" />
 		<Unit filename="include\jar\core\CLArguments.hpp" />
 		<Unit filename="include\jar\core\CoutLogger.hpp" />
 		<Unit filename="include\jar\core\FileSystem.hpp" />
@@ -78,7 +78,6 @@
 		<Unit filename="src\jar\core\Helpers.cpp" />
 		<Unit filename="src\jar\core\Logger.cpp" />
 		<Unit filename="src\jar\core\Lua.cpp" />
-		<Unit filename="src\jar\luabind\All.cpp" />
 		<Unit filename="src\jar\luabind\Core.cpp" />
 		<Unit filename="src\jar\luabind\FileSystem.cpp" />
 		<Unit filename="src\jar\luabind\STL.cpp" />
