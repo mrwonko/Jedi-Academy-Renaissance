@@ -1,3 +1,5 @@
+require("ModVersionInfo.lua")
+
 --[[! The Mod class contains information about a mod (i.e. pk3 or directory in g_addonDir (/addons/) ), usually taken from its modinfo.lua
 --]]
 
@@ -26,7 +28,10 @@ function Mod:New(filename)
 		description = "@MODINFO_NO_MODINFO_LUA",
 		version = 1,
 		dependencies = {},
-		incompatibilities = {}
+		incompatibilities = {},
+		hasIncompatibilities = false, --whether any of the incompatibilities actually occured
+		hasUnsatisfiedDependencies = false, --whether any of the dependencies are not satisfied
+		
 	}
 	local logger = jar.Logger.GetDefaultLogger()
 	
@@ -224,7 +229,7 @@ function Mod:GetVersionInfo(modinfo, whatToGet)
 			-- it's a table, continue.
 			
 			-- the valid, relevant info from the current dependency/incompatibility info
-			local item = {}
+			local item = ModVersionInfo:New()
 			
 			--get the name first so it can be included in errors
 			if type(curInfo.name) ~= "string" then
@@ -288,6 +293,42 @@ function Mod:GetVersionInfo(modinfo, whatToGet)
 	-- none loaded?
 	if #self[whatToGet] == 0 then
 		self[whatToGet] = nil
+	end
+	return true
+end
+
+-- whether this mod is incompatible to any of the other mods
+function Mod:IsIncompatible(otherMods)
+	for _, info in ipairs(self.incompatibilities) do
+		for _, otherMod in pairs(otherMods) do
+			if otherMod.name == info.name then
+				if info:Applies(otherMod) then
+					self.hasIncompatibilities = true
+					return true
+				end
+			end
+		end
+	end
+	return false
+end
+
+-- whether the available satisfy all dependencies
+function Mod:DependenciesSatisfied(availableMods)
+	for _, info in ipairs(self.dependencies) do
+		local foundit = false
+		for _, mod in pairs(availableMods) do
+			if mod.name == info.name then
+				-- modnames should be unique (won't get loaded otherwise), so I can be sure no other mod will satisfy this either.
+				if not info:Applies(mod) then
+					self.hasUnsatisfiedDependencies = true
+					return false
+				end
+				foundit = true
+			end
+		end
+		if not foundit then
+			return false
+		end
 	end
 	return true
 end

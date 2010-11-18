@@ -22,12 +22,6 @@ if not g_modManager:Init() then
 	return
 end
 
---Get mods
-g_modManager:AddAvailableMods()
-
---Activate mods
-jar.Logger.GetDefaultLogger():Log("TODO: Activate mods")
-
 --remount config/, so it's after the mods in the path.
 jar.fs.Unmount("config/")
 jar.fs.Mount("config/", "/config/", false) --append = false -> look here first!

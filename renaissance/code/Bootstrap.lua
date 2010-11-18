@@ -2,8 +2,8 @@
 
 -- replace file functions
 
---low level load file function, used by loadfile and dofile and require
-local function lowLoadFile(filename)
+--loadfile, used by dofile
+function loadfile(filename)
 	local file = jar.fs.OpenRead(filename)
 	if not file then
 		return nil, "Could not open " .. filename .. "!"
@@ -16,10 +16,9 @@ local function lowLoadFile(filename)
 	file:Close()
 	return loadstring(content, "@" .. filename)
 end
-loadfile = lowLoadFile
 
 function dofile(filename)
-	local f, err = lowLoadFile(filename)
+	local f, err = loadfile(filename)
 	if not f then
 		error(err, 2)
 	end

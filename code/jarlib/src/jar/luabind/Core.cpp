@@ -34,6 +34,11 @@ namespace jar
 
 void BindCore(lua_State* L)
 {
+    //Didz suggested these functions may be used for evil and should be omitted in C++, instead of just overwritten in Lua.
+    luabind::globals(L)["dofile"] = 0;
+    luabind::globals(L)["loadfile"] = 0;
+    luabind::globals(L)["package"]["loaders"] = 0;
+
     luabind::module(L, "jar")
     [
         luabind::class_<Logger>("Logger")
