@@ -25,13 +25,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <string>
 #include <vector>
+#include <jar/Library.hpp>
 
 namespace jar
 {
     /** \brief A class containing a couple of (static) helper methods.
         \headerfile <jar/core/Helpers.hpp>
     **/
-	class Helpers
+	class JARAPI Helpers
 	{
     private:
 		/**

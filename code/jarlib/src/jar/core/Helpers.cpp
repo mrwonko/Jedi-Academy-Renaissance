@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/core/Helpers.hpp"
-#include "jar/Globals.hpp"
+#include "jar/Core.hpp"
 #include "jar/core/CLArguments.hpp"
 #include "jar/core/Logger.hpp"
 #include <string>
@@ -226,7 +226,7 @@ namespace jar
 
     std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
     {
-        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + directoryPath;
+        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
         std::vector<std::string> filenames;
 #if defined(_WIN32)
         filenames = GetStuffInDirectory(directoryPath, &IsFile);
@@ -239,7 +239,7 @@ namespace jar
 
     std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
     {
-        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Globals::rootDir + directoryPath;
+        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
         std::vector<std::string> filenames;
 #if defined(_WIN32)
         filenames = GetStuffInDirectory(directoryPath, &IsDirectory);

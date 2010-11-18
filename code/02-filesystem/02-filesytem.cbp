@@ -17,9 +17,7 @@
 					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="minizip-d" />
 					<Add library="jar-core-d" />
-					<Add library="luabind-s-d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -33,9 +31,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="minizip" />
 					<Add library="jar-core" />
-					<Add library="luabind-s" />
 				</Linker>
 			</Target>
 		</Build>
@@ -46,23 +42,8 @@
 			<Add directory="..\jarlib\include" />
 		</Compiler>
 		<Linker>
-			<Add library="zdll" />
-			<Add library="physfs" />
-			<Add library="lua" />
 			<Add directory="..\jarlib\lib" />
 		</Linker>
-		<Unit filename="include\jar\core\Lua.hpp" />
-		<Unit filename="include\jar\core\PhysFSFile.hpp" />
-		<Unit filename="include\jar\luabind\All.hpp" />
-		<Unit filename="include\jar\luabind\Core.hpp" />
-		<Unit filename="include\jar\luabind\FileSystem.hpp" />
-		<Unit filename="include\jar\luabind\STL.hpp" />
-		<Unit filename="src\jar\core\Lua.cpp" />
-		<Unit filename="src\jar\core\PhysFSFile.cpp" />
-		<Unit filename="src\jar\luabind\All.cpp" />
-		<Unit filename="src\jar\luabind\Core.cpp" />
-		<Unit filename="src\jar\luabind\FileSystem.cpp" />
-		<Unit filename="src\jar\luabind\STL.cpp" />
 		<Unit filename="src\main.cpp" />
 		<Extensions>
 			<code_completion />

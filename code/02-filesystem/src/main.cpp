@@ -25,132 +25,50 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string>
 
 //jar
-#include <jar/core/CLArguments.hpp>
+#include <jar/Core.hpp>
 #include <jar/core/CoutLogger.hpp>
 #include <jar/core/FileSystem.hpp>
-#include <jar/core/Helpers.hpp>
 #include <jar/core/Lua.hpp>
-#include <jar/Globals.hpp> //for g_rootDir etc.
-#include <jar/luabind/All.hpp>
 
-#include <luabind/luabind.hpp> //TODO: delete once I no longer set a lua constant (DEBUG_ibiname) in main()
-
-//physfs
-#include <physfs.h>
-
-/*
-//minizip
-#include <unzip.h>
-int GetFileContent(unzFile filehandle, std::string& output)
-{
-    char buf[64];
-    int status;
-    while((status = unzReadCurrentFile(filehandle, buf, sizeof(buf))) > 0)
-    {
-        //status returns number of bytes read
-        output += std::string(buf, status);
-    }
-    return status;
-}
-*/
 
 int main(int argc, char** argv)
 {
-    try
+    //create Logger
+    jar::CoutLogger logger;
+    logger.IncreaseLoggingLevel(); //TODO: delete this or it make optional using -v?
+    logger.Info("Initialized Logger", 1);
+
+    //create + init core system (Filesystem, Lua, ...)
+    jar::Core core;
+    if(not core.Init(argc, argv, "../"))
     {
-        //init Command Line Arguments
-        jar::CLArguments args(argc, argv);
-
-        //set top level directory
-        jar::Globals::rootDir = "../";
-        //init Logger
-        jar::CoutLogger logger;
-        //TODO: delete / -v ?
-        logger.IncreaseLoggingLevel();
-        logger.Info("Initialized Logger", 1);
-        //init Lua
-        jar::Lua lua;
-        if(!lua.Init())
-        {
-            logger.Error("Could not init Lua: "+lua.GetLastError());
-            return 0;
-        }
-        if(!lua.OpenBaseLibrary() || !lua.OpenMathLibrary() || !lua.OpenStringLibrary() || !lua.OpenTableLibrary() || !lua.OpenPackageLibrary())
-        if(!lua.Init())
-        {
-            logger.Error("Could not open Lua libraries: "+lua.GetLastError());
-            return 0;
-        }
-        jar::BindAll(lua.GetState());
-        logger.Info("Initialized Lua", 1);
-
-        //init physicsFS
-        assert(argc > 0);
-        if(!PHYSFS_init(argv[0]))
-        {
-            logger.Error(std::string(PHYSFS_getLastError()));
-            return 0;
-        }
-        PHYSFS_setWriteDir((args.GetWorkingDirectory() + jar::Globals::rootDir).c_str());
-        logger.Info("Initialized PhysicsFS", 1);
-
-        if(!PHYSFS_mount((args.GetWorkingDirectory() + jar::Globals::rootDir + "bootstrap.pk3").c_str(), NULL, 0))
-        {
-            logger.Error("Could not mount bootstrap.pk3: " + std::string(PHYSFS_getLastError()));
-            PHYSFS_deinit();
-            lua.Deinit();
-            return 0;
-        }
-        logger.Info("Mounted bootstrap.pk3", 1);
-
-        PHYSFS_File* file = PHYSFS_openRead("code/Bootstrap.lua");
-        if(file == NULL)
-        {
-            logger.Error("Could not load code/Bootstrap.lua: " + std::string(PHYSFS_getLastError()));
-            PHYSFS_deinit();
-            lua.Deinit();
-            return 0;
-        }
-
-        //main loop etc. is in Lua.
-        std::string luaMainCode;
-        //own scope so buf & status get deleted before main loop
-        {
-            char buf[1024];
-            int status;
-            while((status = PHYSFS_read(file, buf, sizeof(char), sizeof(buf))) > 0)
-            {
-                luaMainCode += std::string(buf, status);
-            }
-            PHYSFS_close(file);
-            if(status == -1)
-            {
-                logger.Error(std::string(PHYSFS_getLastError()));
-                PHYSFS_deinit();
-                lua.Deinit();
-                return 0;
-            }
-        }
-        logger.Info("Loaded code/Bootstrap.lua, executing...", 1);
-        if(!lua.ExecuteString(luaMainCode, "@code/Bootstrap.lua"))
-        {
-            logger.Error(lua.GetLastError());
-        }
-        logger.Info("Done, core systems down.", 1);
-
-        //deinit PhysicsFS
-        if(!PHYSFS_deinit())
-        {
-            //now PhysicsFS is "probably badly screwed up".
-            logger.Error(std::string(PHYSFS_getLastError()));
-            return 0;
-        }
-        lua.Deinit();
-    }
-    catch(std::exception& e)
-    {
-        std::cout<<"Exception: "<<e.what()<<std::endl;
+        return EXIT_SUCCESS;
     }
 
-    return 0;
+    if(not jar::fs::Mount("bootstrap.pk3", false))
+    {
+        logger.Error("Could not mount bootstrap.pk3: " + jar::fs::GetLastError());
+        core.Deinit();
+        return EXIT_SUCCESS;
+    }
+    logger.Info("Mounted bootstrap.pk3", 1);
+
+    //main loop etc. is in Lua.
+    std::string luaMainCode;
+    if(not jar::fs::ReadFile("code/Bootstrap.lua", luaMainCode))
+    {
+        logger.Error("Could not read bootstrap.pk3/code/Bootstrap.lua:" + jar::fs::GetLastError());
+        core.Deinit();
+        return EXIT_SUCCESS;
+    }
+    logger.Info("Loaded code/Bootstrap.lua, now executing...", 1);
+
+    if(!core.GetLua().ExecuteString(luaMainCode, "@code/Bootstrap.lua"))
+    {
+        logger.Error(core.GetLua().GetLastError());
+    }
+    logger.Info("Done!", 1);
+
+    core.Deinit();
+    return EXIT_SUCCESS;
 }

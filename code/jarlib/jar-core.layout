@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="include\jar\Globals.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="1358" topLine="0" />
+	<File name="include\jar\Core.hpp" open="1" top="0" tabpos="2">
+		<Cursor position="342" topLine="0" />
+	</File>
+	<File name="include\jar\CoreImpl.hpp" open="1" top="0" tabpos="4">
+		<Cursor position="674" topLine="0" />
+	</File>
+	<File name="include\jar\core\CLArguments.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="1633" topLine="24" />
+	</File>
+	<File name="include\jar\core\FileSystem.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="185" topLine="0" />
 	</File>
 	<File name="include\jar\core\Helpers.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="4343" topLine="112" />
@@ -10,13 +19,37 @@
 	<File name="include\jar\core\Logger.hpp" open="0" top="0" tabpos="0">
 		<Cursor position="2368" topLine="74" />
 	</File>
-	<File name="include\jar\jar.hpp" open="0" top="0" tabpos="0">
-		<Cursor position="320" topLine="0" />
+	<File name="include\jar\core\Lua.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="2925" topLine="65" />
 	</File>
-	<File name="src\jar\Globals.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="99" topLine="0" />
+	<File name="include\jar\core\Singleton.hpp" open="0" top="0" tabpos="0">
+		<Cursor position="2946" topLine="66" />
 	</File>
-	<File name="src\jar\core\Helpers.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="6444" topLine="163" />
+	<File name="src\jar\Core.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="107" topLine="0" />
+	</File>
+	<File name="src\jar\CoreImpl.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="2268" topLine="66" />
+	</File>
+	<File name="src\jar\core\CLArguments.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1267" topLine="15" />
+	</File>
+	<File name="src\jar\core\FileSystem" open="0" top="0" tabpos="0">
+		<Cursor position="1035" topLine="0" />
+	</File>
+	<File name="src\jar\core\FileSystem.cpp" open="1" top="0" tabpos="8">
+		<Cursor position="1240" topLine="0" />
+	</File>
+	<File name="src\jar\core\Helpers.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="8201" topLine="206" />
+	</File>
+	<File name="src\jar\core\Lua.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="4449" topLine="160" />
+	</File>
+	<File name="src\jar\luabind\All.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="205" topLine="0" />
+	</File>
+	<File name="src\jar\luabind\FileSystem.cpp" open="1" top="0" tabpos="9">
+		<Cursor position="4432" topLine="73" />
 	</File>
 </CodeBlocks_layout_file>

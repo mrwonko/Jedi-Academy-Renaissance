@@ -580,9 +580,9 @@ do --so I can hide everything up to the test code at the bottom
 		function ConvertIbiToLua(filename)
 			failed = false
 			--try to open the file
-			local file = physFS.OpenRead(ibiname)
+			local file = jar.fs.OpenRead(ibiname)
 			if not file then
-				error("Could not open "..ibiname..": "..physFS.GetLastError())
+				error("Could not open "..ibiname..": "..jar.fs.GetLastError())
 			end
 
 			local ident = file:ReadString(string.len(icarusInfo.ident))
@@ -640,9 +640,9 @@ local output = ConvertIbiToLua(ibiname)
 
 if output then
 	print("\n" .. output .. "\n")
-	local file = physFS.OpenWrite(luaname)
+	local file = jar.fs.OpenWrite(luaname)
 	if not file:WriteString(output) then
-		print("Error: Could not write file: " .. physFS.GetLastError())
+		print("Error: Could not write file: " .. jar.fs.GetLastError())
 	end
 	file:Close()
 end

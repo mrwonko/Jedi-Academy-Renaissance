@@ -4,7 +4,7 @@
 
 --low level load file function, used by loadfile and dofile and require
 local function lowLoadFile(filename)
-	local file = physFS.OpenRead(filename)
+	local file = jar.fs.OpenRead(filename)
 	if not file then
 		return nil, "Could not open " .. filename .. "!"
 	end
@@ -28,18 +28,18 @@ end
 
 --module loader for require
 local function mrwloadmodule(filename)
-	local file = physFS.OpenRead(filename)
+	local file = jar.fs.OpenRead(filename)
 	local name = filename
 	if not file then
-		file = physFS.OpenRead(filename .. ".lua")
+		file = jar.fs.OpenRead(filename .. ".lua")
 		name = filename .. ".lua"
 	end
 	if not file then
-		file = physFS.OpenRead("code/" .. filename)
+		file = jar.fs.OpenRead("code/" .. filename)
 		name = "code/" .. filename
 	end
 	if not file then
-		file = physFS.OpenRead("code/" .. filename .. ".lua")
+		file = jar.fs.OpenRead("code/" .. filename .. ".lua")
 		name = "code/" .. filename .. ".lua"
 	end
 	if not file then
@@ -61,6 +61,6 @@ end
 package.loaders = { [1] = mrwloadmodule }
 
 --TODO: replace with assets1.pk3 loading, put this there
-physFS.Mount("./", true) -- append, i.e. last resort (TODO: DOCUMENT!)
---physFS.Mount("assets1.pk3", false) --prepend, i.e. search first
+jar.fs.Mount("./", true) -- append, i.e. last resort (TODO: DOCUMENT!)
+--jar.fs.Mount("assets1.pk3", false) --prepend, i.e. search first
 require("code/Init.lua")

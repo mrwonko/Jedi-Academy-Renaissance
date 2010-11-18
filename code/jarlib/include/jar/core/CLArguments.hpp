@@ -31,6 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string>
 #include <vector>
 #include "Singleton.hpp"
+#include <jar/Library.hpp>
 
 namespace jar
 {
@@ -40,7 +41,7 @@ namespace jar
      *  Also parses the first argument to get the path to the program
      *  \headerfile <jar/core/CLArguments.hpp>
      **/
-    class CLArguments : public Singleton<CLArguments>
+    class JARAPI CLArguments : public Singleton<CLArguments>
     {
         public:
             /**

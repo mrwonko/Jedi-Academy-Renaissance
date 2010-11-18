@@ -14,11 +14,13 @@
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="-Wall" />
-					<Add option="-DBUILD_DLL" />
 					<Add option="-g" />
+					<Add option="-DBUILD_DLL" />
 				</Compiler>
 				<Linker>
 					<Add library="user32" />
+					<Add library="luabind-s-d" />
+					<Add library="minizip-d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -28,38 +30,58 @@
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-O2" />
 					<Add option="-Wall" />
 					<Add option="-DBUILD_DLL" />
-					<Add option="-O2" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 					<Add library="user32" />
+					<Add library="luabind-s" />
+					<Add library="minizip" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-DJAR_LIBRARY_BUILD" />
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
 			<Add library="user32" />
+			<Add library="zdll" />
+			<Add library="physfs" />
+			<Add library="lua" />
 		</Linker>
 		<ExtraCommands>
 			<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
 		</ExtraCommands>
-		<Unit filename="include\jar\Globals.hpp" />
+		<Unit filename="include\jar\Core.hpp" />
+		<Unit filename="include\jar\CoreImpl.hpp" />
+		<Unit filename="include\jar\Jar.hpp" />
+		<Unit filename="include\jar\Library.hpp" />
 		<Unit filename="include\jar\core\CLArguments.hpp" />
 		<Unit filename="include\jar\core\CoutLogger.hpp" />
+		<Unit filename="include\jar\core\FileSystem.hpp" />
 		<Unit filename="include\jar\core\Helpers.hpp" />
 		<Unit filename="include\jar\core\Logger.hpp" />
+		<Unit filename="include\jar\core\Lua.hpp" />
 		<Unit filename="include\jar\core\Singleton.hpp" />
 		<Unit filename="include\jar\core\VoidLogger.hpp" />
-		<Unit filename="include\jar\jar.hpp" />
-		<Unit filename="src\jar\Globals.cpp" />
+		<Unit filename="include\jar\luabind\Core.hpp" />
+		<Unit filename="include\jar\luabind\FileSystem.hpp" />
+		<Unit filename="include\jar\luabind\STL.hpp" />
+		<Unit filename="src\jar\Core.cpp" />
+		<Unit filename="src\jar\CoreImpl.cpp" />
 		<Unit filename="src\jar\core\CLArguments.cpp" />
 		<Unit filename="src\jar\core\CoutLogger.cpp" />
+		<Unit filename="src\jar\core\FileSystem.cpp" />
 		<Unit filename="src\jar\core\Helpers.cpp" />
 		<Unit filename="src\jar\core\Logger.cpp" />
+		<Unit filename="src\jar\core\Lua.cpp" />
+		<Unit filename="src\jar\luabind\All.cpp" />
+		<Unit filename="src\jar\luabind\Core.cpp" />
+		<Unit filename="src\jar\luabind\FileSystem.cpp" />
+		<Unit filename="src\jar\luabind\STL.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

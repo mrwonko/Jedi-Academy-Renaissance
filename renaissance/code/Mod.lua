@@ -180,9 +180,9 @@ GetCodeFromZip = function (filename)
 end
 
 GetCodeFromDirectory = function (dirname)
-	local file = physFS.OpenRead(g_addonDir .. dirname .. "modinfo.lua")
+	local file = jar.fs.OpenRead(g_addonDir .. dirname .. "modinfo.lua")
 	if not file then
-		--we've got to assume the file doesn't exist since we should make no assumption about the contents of physFS.GetLastError()
+		--we've got to assume the file doesn't exist since we should make no assumption about the contents of jar.fs.GetLastError()
 		return 0
 	end
 	
@@ -191,7 +191,7 @@ GetCodeFromDirectory = function (dirname)
 	file:Close()
 	
 	if not status then
-		return -1, physFS.GetLastError()
+		return -1, jar.fs.GetLastError()
 	end
 	return content
 end
