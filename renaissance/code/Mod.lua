@@ -85,7 +85,7 @@ function Mod:New(filename)
 	--]]
 	local function sanitize(unsafe, desiredType, name, defaultValue)
 		if unsafe == nil then
-			logger:Info(filename .. "'s modinfo.lua doesn't contain " .. name .. ", using default value ("..tostring(defaultValue)..").", 2)
+			logger:Info(filename .. "'s modinfo.lua doesn't contain " .. name .. ", using default value ("..tostring(defaultValue)..").", 3)
 			return defaultValue
 		end
 		if type(unsafe) == desiredType then
@@ -146,9 +146,10 @@ function Mod:DebugPrint()
 	if self.incompatibilities then
 		log("incompatibilities:")
 		for _, inc in ipairs(self.incompatibilities) do
-			log("	" .. inc.name .. makeVersionString(inc))
+			log("	" .. inc.name .. " - " .. makeVersionString(inc))
 		end
 	end
+	log("")
 end
 
 GetCodeFromZip = function (filename)
@@ -208,7 +209,7 @@ function Mod:GetVersionInfo(modinfo, whatToGet)
 	-- is there information?
 	if not info then
 		-- modders may want to debug their modinfo.lua so I output some debug information if the loglevel is set high enough.
-		logger:Info("No modinfo.lua in " .. self.filename .. "'s modinfo.lua." , 2)
+		logger:Info("No " .. whatToGet .. " in " .. self.filename .. "'s modinfo.lua." , 3)
 		return true
 	end
 	-- is it a table?
@@ -218,7 +219,7 @@ function Mod:GetVersionInfo(modinfo, whatToGet)
 	end
 	self[whatToGet] = {}
 	local function add(item)
-		logger:Info("Adding " .. item.name .. " to " .. self.filename .. "'s ".. whatToGet, 2)
+		logger:Info("Adding " .. item.name .. " (version " ..(item:GetDisplayVersion() or "[any]")..") to " .. self.filename .. "'s ".. whatToGet, 3)
 		table.insert(self[whatToGet], item)
 	end
 	-- okay, let's iterate through it.
@@ -277,6 +278,14 @@ function Mod:GetVersionInfo(modinfo, whatToGet)
 						else
 							item.isCorrectVersion = value
 						end
+						
+					elseif key == "displayVersion" then
+						if type(value) ~= "string" then
+							logger:Warning("Error in " .. item.name .. " from the " .. whatToGet .. " of " .. self.filename .. "'s modinfo.lua: \"displayVersion\" is no string!")
+							ok = false
+						else
+							item.displayVersion = value
+						end
 					
 					else --unknown key
 						logger:Warning("Warning: Unknown key" .. ( ( type(key) == "string") and " "..key or "" ) .. " in " .. item.name.." from the "..whatToGet.." of "..self.filename.."!")
@@ -321,6 +330,7 @@ function Mod:DependenciesSatisfied(availableMods)
 				-- modnames should be unique (won't get loaded otherwise), so I can be sure no other mod will satisfy this either.
 				if not info:Applies(mod) then
 					self.hasUnsatisfiedDependencies = true
+					jar.Logger.GetDefaultLogger():Warning("\"" .. self.name .. "\"'s dependency \"".. info.name .."\" doesn't have the right version ("..(info:GetDisplayVersion() or "[no displayVersion defined]")..").")
 					return false
 				end
 				foundit = true

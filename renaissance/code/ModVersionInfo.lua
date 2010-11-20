@@ -15,7 +15,7 @@ function ModVersionInfo:Applies(mod)
 	if mod.name ~= self.name then return false end
 	if self.isCorrectVersion then
 		assert(type(self.isCorrectVersion) == "function")
-		return isCorrectVersion(mod.version)
+		return self.isCorrectVersion(mod.version)
 	end
 	if self.version then
 		return mod.version == self.version
@@ -31,4 +31,21 @@ function ModVersionInfo:Applies(mod)
 	end
 	-- no version supplied -> any version
 	return true
+end
+
+function ModVersionInfo:GetDisplayVersion()
+	if self.displayName then return self.displayName end
+	if self.isCorrectVersion then return end
+	if self.version then return tostring(self.version) end
+	if self.minVersion and self.maxVersion then return "minimum: " .. self.minVersion .. ", maximum: " .. self.maxVersion end
+	if self.minVersion then return "minimum: "..self.minVersion end
+	if self.maxVersion then return "maximum: "..self.maxVersion end
+	return "any"
+end
+
+function ModVersionInfo:AppliesToAnyVersion()
+	if self.minVersion or self.maxVersion or self.version or self.isCorrectVersion then
+		return true
+	end
+	return false
 end

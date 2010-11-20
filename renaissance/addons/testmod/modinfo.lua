@@ -10,7 +10,7 @@ dependencies =
 	-- I need stuff from my effect library
 	{
 		name = "Wonko's new effects",
-		minVersion = 5
+		minVersion = 5,
 	}
 }
 incompatibilities =

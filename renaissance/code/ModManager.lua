@@ -38,6 +38,8 @@ local function AddAvailableMods(self)
 				end
 				self.mods[mod.name] = mod
 			end
+		else
+			jar.Logger.GetDefaultLogger():Warning("Warning: addons/" .. filename .. " has an invalid extension (neither .zip nor .pk3 nor folder)!")
 		end
 	end
 	
