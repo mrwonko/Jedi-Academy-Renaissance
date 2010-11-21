@@ -6,9 +6,9 @@ require("Mod.lua")
 
 ModManager =
 {
-	mods = {}, -- string -> Mod dictionary for easy checks whether a mod is available
-	activeMods = {}, -- array so it can be sorted by load order
-	inactiveMods = {},
+	mods = {}, -- all available mods. array since names may be duplicate and using the filename doesn't really help me
+	activeMods = {}, -- those mods that have been activated. array so it can be sorted by load order
+	inactiveMods = {}, -- the inactive mods. array.
 }
 
 function ModManager:New()
@@ -18,6 +18,7 @@ function ModManager:New()
 	return obj
 end
 
+-- scans /addons/ for mods.
 -- basically a private method of ModManager
 local function AddAvailableMods(self)
 	--mods are in ./addons/, either directories or .pk3 or .zip (some people can't/won't rename)
@@ -33,10 +34,7 @@ local function AddAvailableMods(self)
 			if not mod then
 				jar.Logger.GetDefaultLogger():Warning(err)
 			else
-				if self.mods[mod.name] then
-					jar.Logger.GetDefaultLogger():Warning("Multiple mods named \"" .. mod.name .."\" exist, only one will be loaded!")
-				end
-				self.mods[mod.name] = mod
+				table.insert(self.mods, mod)
 			end
 		else
 			jar.Logger.GetDefaultLogger():Warning("Warning: addons/" .. filename .. " has an invalid extension (neither .zip nor .pk3 nor folder)!")
@@ -51,23 +49,18 @@ local function AddAvailableMods(self)
 		if not mod then
 			jar.Logger.GetDefaultLogger():Warning(err)
 		else
-			if self.mods[mod.name] then
-				jar.Logger.GetDefaultLogger():Warning("Multiple mods named \"" .. mod.name .."\" exist, only one will be loaded!")
-			end
-			self.mods[mod.name] = mod
+			table.insert(self.mods, mod)
 		end
 	end
 	return true
 end
 
--- reads mods that are to be inactive from config/InactiveMods.lua
+-- checks which mods have been disabled by the user
 -- basically a private method of ModManager
-local function LoadAndApplyConfigFile(self)
+local function LoadAndApplyConfig(self)
 	
 	-- get inactive mods
-
 	local file, err = loadfile("config/InactiveMods.lua")
-	
 	-- if I can't open that file I assume it doesn't exist (which is ok) although it could contain an error
 	if not file then
 		jar.Logger.GetDefaultLogger():Info("Could not load config/InactiveMods.lua: "..err, 2)
@@ -91,15 +84,19 @@ local function LoadAndApplyConfigFile(self)
 		-- dito
 		return true
 	end
-	for _, modname in ipairs(fileEnv.inactiveMods) do
-		if type(modname) ~= "string" then
+	for _, filename in ipairs(fileEnv.inactiveMods) do
+		if type(filename) ~= "string" then
 			jar.Logger.GetDefaultLogger():Warning("Invalid entry in config/InactiveMods.lua: No string!")
 		else
-			if self.mods[modname] then
-				jar.Logger.GetDefaultLogger():Info("Disabling mod \"" .. modname .. "\" as specified in config/InactiveMods.lua.", 2)
-				self.inactiveMods[modname] = self.mods[modname]
-			else
-				jar.Logger.GetDefaultLogger():Info("\"Forgetting\" disabled mod \"" .. modname .. "\" since it no longer exists.", 2)
+			local found = false
+			for _, mod in ipairs(self.mods) do
+				if mod.filename == filename then
+					table.insert(self.inactiveMods, mod)
+					found = true
+				end
+			end
+			if not found then
+				jar.Logger.GetDefaultLogger():Info("\"Forgetting\" disabled mod \"" .. filename .. "\" since it no longer exists.", 2)
 			end
 		end
 	end
@@ -107,13 +104,14 @@ local function LoadAndApplyConfigFile(self)
 	return true
 end
 
+-- activates (i.e. mounts) the non-disabled mods unless they're 
 -- basically a private method of ModManager
 local function ActivateMods(self)
 
-	-- copy self.mods for the algorithm since we want to keep it the way it is
+	-- copy self.mods for the algorithm since we want to keep the original it the way it is
 	local mods = {}
-	for key, val in pairs(self.mods) do
-		mods[key] = val
+	for _, mod in ipairs(self.mods) do
+		table.insert(mods, mod)
 	end
 	
 	-- as long as another mod can be added I need to run this again.
@@ -121,23 +119,31 @@ local function ActivateMods(self)
 	while continue do
 		continue = false
 		-- try adding a mod, starting from the beginning
-		for modname, mod in pairs(mods) do
+		for index, mod in ipairs(mods) do
 			-- may have been put on inactive list by config
-			if self.inactiveMods[modname] then
-				mods[modname] = nil
+			local isInactive = false
+			for _, inactive in ipairs(self.inactiveMods) do
+				if mod == inactive then
+					isInactive = true
+					jar.Logger.GetDefaultLogger():Info(mod.filename .. " is disabled.", 3)
+					break
+				end
+			end
+			if isInactive then
+				table.remove(mods, index)
 				-- I don't think iterators still work (correctly) then the table is changed so let's start again
 				continue = true
 				break
 			-- if there is an incompatibility, this mod cannot be added. ever.
 			elseif mod:IsIncompatible(self.activeMods) then
-				mods[modname] = nil
-				self.inactiveMods[modname] = mod
+				table.remove(mods, index)
+				table.insert(self.inactiveMods, mod)
 				-- I don't think iterators still work (correctly) then the table is changed so let's start again
 				continue = true
 				break
 			elseif mod:DependenciesSatisfied(self.activeMods) then
-				-- this mod can be loaded. I'm not doing it here though since the order of pairs() is undefined and there should be at least *some* order.
-				mods[modname] = nil
+				-- this mod should be loaded. not yet though since I still need to order them.
+				table.remove(mods, index)
 				-- array since it can be sorted
 				table.insert(self.activeMods, mod)
 				-- we need to run again since mods tested earlier may now have their dependencies satisfied.
@@ -149,9 +155,9 @@ local function ActivateMods(self)
 		end
 	end
 	-- anything still left doesn't have its dependencies satisfied. Put them into inactive list and report them.
-	for name, mod in pairs(mods) do
-		self.inactiveMods[name] = mod
-		jar.Logger.GetDefaultLogger():Warning("The mod \"" .. name .. "\" has unsatisfied dependencies!")
+	for _, mod in ipairs(mods) do
+		table.insert(self.inactiveMods, mod)
+		jar.Logger.GetDefaultLogger():Warning("The mod \"" .. mod.name .. "\" (" .. mod.filename .. ") has unsatisfied dependencies!")
 	end
 	
 	-- sort the to-be-active mods by filename (for now) - I <3 anonymous functions
@@ -169,6 +175,8 @@ local function ActivateMods(self)
 			-- note: this should actually not happen since the file was already successfully opened durin modinfo.lua reading.
 			jar.Logger.GetDefaultLogger():Error("Error mounting " .. g_addonDir .. mod.filename .. ": " .. jar.fs.GetLastError())
 			return false
+		else
+			jar.Logger.GetDefaultLogger():Info("Mounted "..g_addonDir..mod.filename, 0)
 		end
 	end
 	
@@ -180,7 +188,7 @@ function ModManager:Init()
 	if not AddAvailableMods(self) then return false end
 	
 	--Deactivate those deactivated by the user
-	if not LoadAndApplyConfigFile(self) then return false end
+	if not LoadAndApplyConfig(self) then return false end
 
 	--Activate mods
 	if not ActivateMods(self) then return false end
@@ -191,15 +199,15 @@ function ModManager:Init()
 	return true
 end
 
--- saves currently inactive mods to config/InactiveMods.lua
+-- saves currently inactive mods
 function ModManager:SaveConfig()
 	local file = jar.fs.OpenWrite("config/InactiveMods.lua")
 	if not file then
 		return false
 	end
 	assert(file:WriteString("inactiveMods =\n{\n"))
-	for modname, _ in pairs(self.inactiveMods) do
-		assert(file:WriteString("	\""..modname.."\",\n"))
+	for _, mod in ipairs(self.inactiveMods) do
+		assert(file:WriteString("	\""..mod.filename.."\",\n"))
 	end
 	assert(file:WriteString("}"))
 	assert(file:Close())

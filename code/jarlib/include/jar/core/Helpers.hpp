@@ -143,12 +143,12 @@ namespace jar
 		 **/
 		static int Round(float f);
 
-		/** \brief Returns all files in a given directory, relative to the g_rootDir
+		/** \brief Returns all files in a given directory, relative to the g_rootDir, in alphabetical order
             \return vector of filenames (without path)
 		 **/
 		 static std::vector<std::string> GetFilesInDirectory(std::string directoryPath);
 
-		/** \brief Returns all directories in a given directory except those starting with ., relative to the g_rootDir
+		/** \brief Returns all directories in a given directory except those starting with ".", relative to the g_rootDir, in alphabetical order
             \return vector of filenames (without path)
 		 **/
 		 static std::vector<std::string> GetDirectoriesInDirectory(std::string directoryPath);

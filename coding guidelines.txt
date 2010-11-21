@@ -27,3 +27,24 @@ Output references are prefixed out_, unless it's obvious by their name.
 void GetNames(std::string& out_name1, std::string& out_name2);
 
 Hide underlying libraries, if reasonable. Ideally the user only needs to link jar-xxx.
+
+==Lua==
+
+functions defined after class i.e. not
+class =
+{
+	func = function(self) ... end
+}
+but 
+class = {}
+function class:func() ... end
+
+enums all capitals, their name too:
+DAY =
+{
+	MONDAY = 0,
+	TUESDAY = 1,
+	...
+}
+
+opening braces in next line when possible and table not empty

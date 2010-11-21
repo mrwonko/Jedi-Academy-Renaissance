@@ -42,7 +42,6 @@ function Mod:New(filename)
 	
 	--get content of modinfo.lua
 	local code, err
-	print(string.sub(filename, -4))
 	if string.sub(filename, -4) == ".pk3" or string.sub(filename, -4) == ".zip" then
 		code, err = GetCodeFromZip(filename)
 	elseif string.sub(filename, -1) == "/" then

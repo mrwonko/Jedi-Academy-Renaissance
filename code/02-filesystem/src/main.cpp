@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 {
     //create Logger
     jar::CoutLogger logger;
-    logger.Info("Initialized Logger", 1);
+    logger.Info("Initialized Logger", 0);
 
     //create + init core system (Filesystem, Lua, ...)
     jar::Core core;
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
         core.Deinit();
         return EXIT_SUCCESS;
     }
-    logger.Info("Mounted bootstrap.pk3", 1);
+    logger.Info("Mounted bootstrap.pk3", 0);
 
     //main loop etc. is in Lua.
     std::string luaMainCode;
@@ -60,13 +60,14 @@ int main(int argc, char** argv)
         core.Deinit();
         return EXIT_SUCCESS;
     }
-    logger.Info("Loaded code/Bootstrap.lua, now executing...", 1);
+    logger.Info("Loaded code/Bootstrap.lua, now executing...\n", 0);
 
     if(!core.GetLua().ExecuteString(luaMainCode, "@code/Bootstrap.lua"))
     {
         logger.Error(core.GetLua().GetLastError());
     }
-    logger.Info("Done!", 1);
+    logger.Info("", 1);
+    logger.Info("Bye!", 1);
 
     core.Deinit();
     return EXIT_SUCCESS;

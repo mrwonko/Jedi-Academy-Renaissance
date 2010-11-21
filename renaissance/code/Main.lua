@@ -1,13 +1,14 @@
 print("Main. Yay.")
 
-print("====")
-print("Debug: found mods:")
-for _, mod in pairs(g_modManager.mods) do
-	mod:DebugPrint()
+g_CVarManager.CVars["log_level"]:Print()
+
+print ""
+
+local str, array = g_CVarManager:AutoComplete("te")
+print("/te")
+print("/" .. str)
+for _, item in ipairs(array) do
+	print("  " .. item)
 end
-print("====")
-print("Debug: active mods:")
-for _, mod in pairs(g_modManager.activeMods) do
-	print(" - " .. mod.name)
-end
-print("====")
+
+--g_CVarManager:SaveCVars()

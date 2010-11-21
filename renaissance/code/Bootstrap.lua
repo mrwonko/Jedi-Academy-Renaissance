@@ -8,7 +8,7 @@ function loadfile(filename)
 	if not file then
 		return nil, "Could not open " .. filename .. "!"
 	end
-	local success, content = file:GetContent(content)
+	local success, content = file:GetContent()
 	if not success then
 		file:Close()
 		return nil, "Could not read " .. filename .. "!"
