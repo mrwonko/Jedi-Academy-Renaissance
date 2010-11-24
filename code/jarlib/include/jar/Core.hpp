@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string>
 #include "core/Singleton.hpp"
 #include <jar/core/API.hpp>
+#include <jar/core/Time.hpp>
 
 namespace jar {
 //forward declarations
@@ -47,9 +48,13 @@ class JARCOREAPI Core : public Singleton<Core>
         const bool Init(int argc, char** argv, const std::string& rootPath);
         const bool Deinit();
 
+        void Update(const TimeType deltaT);
+
         const std::string& GetRootPath();
 
         Lua& GetLua();
+
+        CoreImpl& GetImpl();
 
     private:
         /** \brief Pointer to implementation of this class, so user doesn't need to include all the files. **/

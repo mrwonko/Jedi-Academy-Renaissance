@@ -119,6 +119,12 @@ namespace jar
 		    assert(mSingleton);
 			return mSingleton;
 		}
+
+		/** \brief Returns whether an instance of this class exists. **/
+		static const bool HasSingleton(void)
+		{
+		    return mSingleton;
+		}
     private:
         static T* mSingleton;
     };

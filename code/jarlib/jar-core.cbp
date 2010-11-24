@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
+			<Target title="Debug Win32">
 				<Option output="lib\jar-core-d" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug\" />
 				<Option type="3" />
@@ -21,9 +21,10 @@
 					<Add library="user32" />
 					<Add library="luabind-s-d" />
 					<Add library="minizip-d" />
+					<Add library="sfml-system-d" />
 				</Linker>
 			</Target>
-			<Target title="Release">
+			<Target title="Release Win32">
 				<Option output="lib\jar-core" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Release\" />
 				<Option type="3" />
@@ -39,6 +40,7 @@
 					<Add library="user32" />
 					<Add library="luabind-s" />
 					<Add library="minizip" />
+					<Add library="sfml-system" />
 				</Linker>
 			</Target>
 		</Build>
@@ -56,28 +58,32 @@
 			<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
 		</ExtraCommands>
 		<Unit filename="include\jar\Core.hpp" />
-		<Unit filename="include\jar\CoreImpl.hpp" />
 		<Unit filename="include\jar\Jar.hpp" />
 		<Unit filename="include\jar\core\API.hpp" />
 		<Unit filename="include\jar\core\CLArguments.hpp" />
+		<Unit filename="include\jar\core\Component.hpp" />
+		<Unit filename="include\jar\core\CoreImpl.hpp" />
 		<Unit filename="include\jar\core\CoutLogger.hpp" />
 		<Unit filename="include\jar\core\FileSystem.hpp" />
 		<Unit filename="include\jar\core\Helpers.hpp" />
 		<Unit filename="include\jar\core\Logger.hpp" />
 		<Unit filename="include\jar\core\Lua.hpp" />
 		<Unit filename="include\jar\core\Singleton.hpp" />
+		<Unit filename="include\jar\core\Time.hpp" />
 		<Unit filename="include\jar\core\VoidLogger.hpp" />
 		<Unit filename="include\jar\luabind\Core.hpp" />
 		<Unit filename="include\jar\luabind\FileSystem.hpp" />
 		<Unit filename="include\jar\luabind\STL.hpp" />
 		<Unit filename="src\jar\Core.cpp" />
-		<Unit filename="src\jar\CoreImpl.cpp" />
 		<Unit filename="src\jar\core\CLArguments.cpp" />
+		<Unit filename="src\jar\core\Component.cpp" />
+		<Unit filename="src\jar\core\CoreImpl.cpp" />
 		<Unit filename="src\jar\core\CoutLogger.cpp" />
 		<Unit filename="src\jar\core\FileSystem.cpp" />
 		<Unit filename="src\jar\core\Helpers.cpp" />
 		<Unit filename="src\jar\core\Logger.cpp" />
 		<Unit filename="src\jar\core\Lua.cpp" />
+		<Unit filename="src\jar\core\Time.cpp" />
 		<Unit filename="src\jar\luabind\Core.cpp" />
 		<Unit filename="src\jar\luabind\FileSystem.cpp" />
 		<Unit filename="src\jar\luabind\STL.cpp" />

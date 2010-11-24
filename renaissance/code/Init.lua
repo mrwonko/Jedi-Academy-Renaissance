@@ -88,4 +88,4 @@ jar.fs.Mount("config/", "/config/", false) --append = false -> look here first!
 jar.fs.Mount = nil
 jar.fs.Unmount = nil
 
-dofile("Main.lua")
+dofile("code/Main.lua")

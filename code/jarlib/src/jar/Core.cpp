@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/Core.hpp"
-#include "jar/CoreImpl.hpp"
+#include "jar/core/CoreImpl.hpp"
 
 namespace jar {
 
@@ -56,6 +56,17 @@ const std::string& Core::GetRootPath()
 Lua& Core::GetLua()
 {
     return mImpl->GetLua();
+}
+
+CoreImpl& Core::GetImpl()
+{
+    assert(mImpl);
+    return *mImpl;
+}
+
+void Core::Update(const TimeType deltaT)
+{
+    mImpl->Update(deltaT);
 }
 
 } // namespace jar
