@@ -62,4 +62,4 @@ package.loaders = { [1] = mrwloadmodule }
 --TODO: replace with assets1.pk3 loading, put this there
 jar.fs.Mount("./", true) -- append, i.e. last resort (TODO: DOCUMENT!)
 --jar.fs.Mount("assets1.pk3", false) --prepend, i.e. search first
-require("code/Init.lua")
+dofile("code/Init.lua")

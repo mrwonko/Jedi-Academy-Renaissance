@@ -1,4 +1,5 @@
 require("CVar.lua")
+require("AutoComplete.lua")
 
 CVarManager =
 {
@@ -102,10 +103,18 @@ function CVarManager:SaveCVars()
 		jar.Logger.GetDefaultLogger():Error("Could not write file " .. self.configfile .."! " .. jar.fs.GetLastError())
 		return false
 	end
+	file:WriteString("-- automatically generated CVar list. Changes to the layout and comments will be discarded on next save.\n")
+	
+	--ordering by name
+	local saveme = {}
 	for _, cvar in pairs(self.CVars) do
 		if cvar.flags.save and cvar.value ~= cvar.defaultValue then
-			file:WriteString(cvar.name .. " = " .. cvar:ToLua() .. "\n")
+			table.insert(saveme, {name = cvar.name, code = cvar.name .. " = " .. cvar:ToLua() .. "\n" })
 		end
+	end
+	table.sort(saveme, function(first, second) return first.name < second.name end)
+	for _, info in ipairs(saveme) do
+		file:WriteString(info.code)
 	end
 	file:Close()
 	return true
@@ -135,7 +144,6 @@ function CVarManager:LoadCVars()
 	return true
 end
 
-require("Helpers.lua")
 
 -- looks for cvars that start with cvarname. returns cvarname_long, possibilities where possibilities is the list of all cvarnames that start with cvarname and cvarname_long is the longest possible string that would return the same possibilities, or the original string if there are none.
 function CVarManager:AutoComplete(cvarname)
