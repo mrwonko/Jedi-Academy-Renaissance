@@ -32,7 +32,7 @@ struct DIControlObjectSharedInfo
     bool Failed;
 };
 
-static __stdcall BOOL ForEachControlObject(LPCDIDEVICEOBJECTINSTANCE obj, LPVOID voidptr)
+static __stdcall BOOL ForEachAbsAxis(LPCDIDEVICEOBJECTINSTANCE obj, LPVOID voidptr)
 {
     DIControlObjectSharedInfo* info = static_cast<DIControlObjectSharedInfo*>(voidptr);
 
@@ -164,7 +164,7 @@ const bool WinJoystickDirectInput::Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEI
     info.Device = mDevice;
     info.Ranges = mRangeInfo;
 
-    if((result = mDevice->EnumObjects(ForEachControlObject, static_cast<LPVOID>(&info), DIDFT_ABSAXIS)) != DI_OK)
+    if((result = mDevice->EnumObjects(ForEachAbsAxis, static_cast<LPVOID>(&info), DIDFT_ABSAXIS)) != DI_OK)
     {
         Logger::GetDefaultLogger().Error("Could not get info about axes of Input Device \"" + mName + "\"!");
         Deinit();

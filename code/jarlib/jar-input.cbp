@@ -24,6 +24,8 @@
 					<Add library="xinput" />
 					<Add library="dinput8" />
 					<Add library="dxguid" />
+					<Add library="ole32" />
+					<Add library="Oleaut32" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -45,6 +47,8 @@
 					<Add library="xinput" />
 					<Add library="dinput8" />
 					<Add library="dxguid" />
+					<Add library="ole32" />
+					<Add library="Oleaut32" />
 				</Linker>
 			</Target>
 		</Build>

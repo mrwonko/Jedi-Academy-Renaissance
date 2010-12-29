@@ -91,7 +91,7 @@ void InputDeviceManager::Update(TimeType deltaT)
     }
 }
 
-InputDevice* InputDeviceManager::GetJoystick(const unsigned int index) const
+InputDeviceJoystick* InputDeviceManager::GetJoystick(const unsigned int index) const
 {
     for(std::set<InputDevice*>::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
     {

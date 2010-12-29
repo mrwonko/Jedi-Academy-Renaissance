@@ -9,11 +9,10 @@ function loadfile(filename)
 		return nil, "Could not open " .. filename .. "!"
 	end
 	local success, content = file:GetContent()
+	file:Close()
 	if not success then
-		file:Close()
 		return nil, "Could not read " .. filename .. "!"
 	end
-	file:Close()
 	return loadstring(content, "@" .. filename)
 end
 

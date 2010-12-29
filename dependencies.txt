@@ -6,3 +6,7 @@ zlib (http://zlib.net/)
 minizip (shipped with zlib in contrib/minizip/)
 Lua (http://www.lua.org)
 luabind (http://www.rasterbar.com/products/luabind.html)
+
+on Windows:
+Microsoft DirectX SDK (DirectInput)
+mingw-w64 (Additional windows headers for mingw)

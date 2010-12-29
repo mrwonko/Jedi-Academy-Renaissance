@@ -1,0 +1,7 @@
+basic things I'll probably need in just about every project:
+CVars
+Console
+Console commands
+Menus
+Profiles
+Better mod support - init scripts etc.

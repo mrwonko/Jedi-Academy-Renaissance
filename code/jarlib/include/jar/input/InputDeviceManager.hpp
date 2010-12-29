@@ -32,6 +32,7 @@ namespace jar
 {
 
 class InputDevice;
+class InputDeviceJoystick;
 class JARINPUTAPI InputDeviceManager : public EventQueue
 {
     public:
@@ -81,7 +82,7 @@ class JARINPUTAPI InputDeviceManager : public EventQueue
 
         /** \brief Retrieve a joystick of a given index
             \return The joystick, or NULL if no such joystick exists. **/
-        InputDevice* GetJoystick(const unsigned int index) const;
+        InputDeviceJoystick* GetJoystick(const unsigned int index) const;
 
     private:
         std::set<InputDevice*> mDevices;

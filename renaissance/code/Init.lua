@@ -55,7 +55,7 @@ if not onlyArchives and not noBaseMods then
 end
 -- then mount the pk3 archives in base. I don't apply my mod code to them because I'm lazy and because the filenames wouldn't be GUIDs anymore.
 for filename in StringVectorIterator( jar.GetFilesInDirectory("../base/") ) do
-	if string.sub(filename, -4) == ".pk3" then
+	if string.lower(string.sub(filename, -4)) == ".pk3" then
 		if not noBaseMods or string.match(string.lower(filename), "assets%d%.pk3") then
 			if jar.fs.Mount("../Base/" .. filename, false) then
 				jar.Logger.GetDefaultLogger():Info("Mounted Base/" .. filename, 0	)
@@ -88,4 +88,20 @@ jar.fs.Mount("config/", "/config/", false) --append = false -> look here first!
 jar.fs.Mount = nil
 jar.fs.Unmount = nil
 
+--execute init code, i.e. all .lua files in code/init/
+jar.Logger.GetDefaultLogger():Info("", 1)
+jar.Logger.GetDefaultLogger():Info("== Doing initializations ==", 1)
+
+for filename in StringVectorIterator(jar.fs.GetFilesInDirectory("code/init")) do
+	if string.lower(string.sub(filename, -4)) == ".lua" then
+		jar.Logger.GetDefaultLogger():Info("Executing code/init/" .. filename, 2)
+		local success, err = pcall(dofile, "code/init/" .. filename)
+		if not success then
+			jar.Logger.GetDefaultLogger():Warning(err)
+		end
+	end
+end
+
+jar.Logger.GetDefaultLogger():Info("", 1)
+jar.Logger.GetDefaultLogger():Info("== Executing main.lua ==", 1)
 dofile("code/Main.lua")

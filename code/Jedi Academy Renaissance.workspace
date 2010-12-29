@@ -8,5 +8,13 @@
 		<Project filename="02-filesystem/02-filesytem.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
+		<Project filename="03-testsnshit/03-testsnshit.cbp">
+			<Depends filename="jarlib/jar-core.cbp" />
+			<Depends filename="jarlib/jar-input.cbp" />
+		</Project>
+		<Project filename="04-inputtest/04-inputtest.cbp">
+			<Depends filename="jarlib/jar-core.cbp" />
+			<Depends filename="jarlib/jar-input.cbp" />
+		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

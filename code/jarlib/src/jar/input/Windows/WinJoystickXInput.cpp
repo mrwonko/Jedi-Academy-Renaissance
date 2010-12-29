@@ -125,7 +125,15 @@ void WinJoystickXInput::CheckAxis(int oldValue, int newValue, int multiplicator,
 {
     if(oldValue != newValue)
     {
-        JoyAxisMoved(axis, ((float)newValue)/multiplicator);
+        //the vertical axes are inverted from DirectInput, let's undo that.
+        if(axis == 1 || axis == 3)
+        {
+            JoyAxisMoved(axis, -((float)newValue)/multiplicator);
+        }
+        else
+        {
+            JoyAxisMoved(axis, ((float)newValue)/multiplicator);
+        }
     }
 }
 
