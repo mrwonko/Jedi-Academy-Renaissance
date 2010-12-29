@@ -22,6 +22,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/input/InputDeviceManager.hpp"
 #include "jar/input/InputDevice.hpp"
+#include "jar/input/InputDeviceJoystick.hpp"
+#include "jar/core/Logger.hpp"
+#include "jar/core/Helpers.hpp"
 
 namespace jar
 {
@@ -86,6 +89,19 @@ void InputDeviceManager::Update(TimeType deltaT)
     {
         (*it)->Update(deltaT);
     }
+}
+
+InputDevice* InputDeviceManager::GetJoystick(const unsigned int index) const
+{
+    for(std::set<InputDevice*>::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
+    {
+        if((*it)->GetDeviceType() != InputDevice::DT_Joystick) continue;
+        //this device is a joystick. But is it the right one?
+        InputDeviceJoystick& joy = *dynamic_cast<InputDeviceJoystick*>(*it);
+        if(joy.Index == index) return &joy;
+    }
+    Logger::GetDefaultLogger().Warning("Input Device Manager: Request for invalid joystick #" + Helpers::IntToString(index));
+    return NULL;
 }
 
 } // namespace jar

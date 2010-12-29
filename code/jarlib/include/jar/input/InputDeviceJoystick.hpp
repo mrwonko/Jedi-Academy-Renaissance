@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/InputDevice.hpp"
 #include "jar/input/API.hpp"
 
+#include <vector>
+
 namespace jar {
 
 class JARINPUTAPI InputDeviceJoystick : public InputDevice
@@ -34,11 +36,34 @@ class JARINPUTAPI InputDeviceJoystick : public InputDevice
         /** \brief Destructor **/
         virtual ~InputDeviceJoystick();
 
-        virtual const DeviceType GetDeviceType() { return DT_Joystick; }
+        virtual const DeviceType GetDeviceType() const { return DT_Joystick; }
 
         unsigned int Index;
 
+        const unsigned int GetNumRumblers() const;
+
+        /** \param value in range [0, 1]
+        **/
+        void SetRumbleStrength(unsigned int index, float value);
+        /** \param value in range [0, 1]
+        **/
+        void IncreaseRumbleStrength(unsigned int index, float value);
+        /** \param value in range [0, 1]
+        **/
+        void DecreaseRumbleStrength(unsigned int index, float value);
+
     protected:
+
+        /** \brief makes sure we don't get errors due to accessing invalid stuff **/
+        void CheckRumbleStrengths();
+
+        /** Joysticks should check this value during their Update() and use it.
+            \note values may exceed 1.0f, keep that in mind! **/
+        std::vector<float> mRumbleStrengths;
+
+        /// Amount of rumble motors in this gamepad - should be set during Init() or somewhere else, or defaults to 0.
+        unsigned int mNumRumblers;
+
         /** \brief Constructor **/
         InputDeviceJoystick();
 
@@ -52,7 +77,6 @@ class JARINPUTAPI InputDeviceJoystick : public InputDevice
 
         /** \brief Sends a JoyAxisMoved Event. **/
         void JoyAxisMoved(unsigned int axis, float position);
-
 };
 
 } // namespace jar

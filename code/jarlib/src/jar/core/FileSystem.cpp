@@ -24,7 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/Core.hpp"
 #include "jar/core/CLArguments.hpp"
 #include "jar/core/Logger.hpp"
+#include "jar/core/Helpers.hpp"
 #include <physfs.h>
+#include <set>
 
 namespace jar
 {
@@ -100,12 +102,13 @@ const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
         return false;
     }
     //if no error was set, the reason for status == 0 should be EOF
-    if(!PHYSFS_eof(file))
+    //there seems to be a bug regarding 0-length files.
+    if(!PHYSFS_eof(file) && PHYSFS_fileLength(file) != 0)
     {
 #ifdef _DEBUG
-        Logger::GetDefaultLogger().Warning("PHYSFS_read(): Nothing read, but eof not reached and error not set, either.");
+        Logger::GetDefaultLogger().Warning(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+PHYSFS_getLastError());
 #else
-        Logger::GetDefaultLogger().Info("PHYSFS_read(): Nothing read, but eof not reached and error not set, either.", 1);
+        Logger::GetDefaultLogger().Info(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+PHYSFS_getLastError(), 1);
 #endif
     }
     return true;
@@ -218,6 +221,72 @@ const bool Seek(PHYSFS_File* file, const int64_t position) //TODO: test whether 
 const int64_t Tell(PHYSFS_File* file)
 {
     return PHYSFS_tell(file);
+}
+
+struct StringSetComparator //Case insensitive
+{
+    bool operator()(const std::string& lhs, const std::string& rhs) const
+    {
+        return Helpers::CaseInsensitiveStringLessThan(lhs, rhs);
+    }
+};
+
+typedef std::set<std::string, StringSetComparator> caseInsStringSet;
+
+//callback for file/directory enumeration
+//onlyFiles = true -> we want only files
+//onlyFiles = false -> we want only directories!
+static void AddToSet(caseInsStringSet& set, std::string dir, std::string filename, const bool onlyFiles)
+{
+    //append a / to the directory if it isn't already
+    if(dir.length() && dir[dir.length()-1] != '/')
+    {
+        dir += '/';
+    }
+
+    //is this a file/directory and do we want that?
+    if(PHYSFS_isDirectory((dir+filename).c_str()) == onlyFiles)
+    {
+        //it's a file and we want directories or vice versa - abort
+        return;
+    }
+    set.insert(filename);
+}
+
+//callback function for directory enumeration
+static void AddDirToSet(void* setPtrVoid, const char* dir, const char* file)
+{
+    AddToSet(*static_cast<caseInsStringSet* >(setPtrVoid), dir, file, false);
+}
+
+//callback function for file enumeration
+static void AddFileToSet(void* vecPtrVoid, const char* dir, const char* file)
+{
+    AddToSet(*static_cast<caseInsStringSet* >(vecPtrVoid), dir, file, true);
+}
+
+const std::vector<std::string> GetFilesInDirectory(const std::string& dir)
+{
+    caseInsStringSet set;
+    PHYSFS_enumerateFilesCallback(dir.c_str(), AddFileToSet, static_cast<void*>(&set));
+    std::vector<std::string> result;
+    for(caseInsStringSet::iterator it = set.begin(); it != set.end(); ++it)
+    {
+        result.push_back(*it);
+    }
+    return result;
+}
+
+const std::vector<std::string> GetDirectoriesInDirectory(const std::string& dir)
+{
+    caseInsStringSet set;
+    PHYSFS_enumerateFilesCallback(dir.c_str(), AddDirToSet, static_cast<void*>(&set));
+    std::vector<std::string> result;
+    for(caseInsStringSet::iterator it = set.begin(); it != set.end(); ++it)
+    {
+        result.push_back(*it);
+    }
+    return result;
 }
 
 }

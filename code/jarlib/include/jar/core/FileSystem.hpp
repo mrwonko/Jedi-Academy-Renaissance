@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define JAR_FILESYSTEM_HPP
 
 #include <string>
+#include <vector>
 #include <jar/core/API.hpp>
 
 //This file contains some wrapper functions for PhysFS function so the user doesn't need to have the PhysFS libraries to use jarlib.
@@ -115,6 +116,13 @@ JARCOREAPI const bool Seek(PHYSFS_File* file, const int64_t position);
 
 /** \brief returns the current position of the cursor. **/
 JARCOREAPI const int64_t Tell(PHYSFS_File* file);
+
+
+/** \brief returns all the files within a given directory, ordered by filename (case sensitive?). **/
+JARCOREAPI const std::vector<std::string> GetFilesInDirectory(const std::string& dir);
+
+/** \brief returns all the directories within a given directory, ordered by filename (case sensitive?). **/
+JARCOREAPI const std::vector<std::string> GetDirectoriesInDirectory(const std::string& dir);
 
 }
 }

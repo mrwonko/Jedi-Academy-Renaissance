@@ -29,11 +29,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 namespace jar {
 
 class InputImpl;
+class InputDeviceManager;
+
 class JARINPUTAPI Input : public Singleton<Input>
 {
     public:
         Input();
         virtual ~Input();
+
+        InputDeviceManager& GetInputDeviceManager();
 
     private:
         InputImpl* mImpl;

@@ -152,6 +152,8 @@ namespace jar
             \return vector of filenames (without path)
 		 **/
 		 static std::vector<std::string> GetDirectoriesInDirectory(std::string directoryPath);
+
+		 static const bool CaseInsensitiveStringLessThan(const std::string& str1, const std::string& str2);
 	};
 }
 

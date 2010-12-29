@@ -36,7 +36,7 @@ class JARINPUTAPI InputDeviceKeyboard : public InputDevice
         /** destructor **/
         virtual ~InputDeviceKeyboard();
 
-        virtual const DeviceType GetDeviceType() { return DT_Keyboard; }
+        virtual const DeviceType GetDeviceType() const { return DT_Keyboard; }
 
     protected:
         /** constructor **/

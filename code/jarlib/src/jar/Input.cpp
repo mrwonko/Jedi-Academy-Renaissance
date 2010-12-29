@@ -38,4 +38,9 @@ Input::~Input()
     delete mImpl;
 }
 
+InputDeviceManager& Input::GetInputDeviceManager()
+{
+    return mImpl->GetInputDeviceManager();
+}
+
 } // namespace jar

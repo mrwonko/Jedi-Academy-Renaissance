@@ -16,6 +16,7 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-DBUILD_DLL" />
+					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
 					<Add library="user32" />

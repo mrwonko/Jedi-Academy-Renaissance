@@ -21,6 +21,9 @@
 					<Add library="jar-core-d" />
 					<Add library="luabind-s-d" />
 					<Add library="sfml-system-d" />
+					<Add library="xinput" />
+					<Add library="dinput8" />
+					<Add library="dxguid" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -39,6 +42,9 @@
 					<Add library="jar-core" />
 					<Add library="luabind-s" />
 					<Add library="sfml-system" />
+					<Add library="xinput" />
+					<Add library="dinput8" />
+					<Add library="dxguid" />
 				</Linker>
 			</Target>
 		</Build>
@@ -66,6 +72,8 @@
 		<Unit filename="include\jar\input\InputDeviceMouse.hpp" />
 		<Unit filename="include\jar\input\InputImpl.hpp" />
 		<Unit filename="include\jar\input\KeyCodes.hpp" />
+		<Unit filename="include\jar\input\Windows\WinJoystickDirectInput.hpp" />
+		<Unit filename="include\jar\input\Windows\WinJoystickXInput.hpp" />
 		<Unit filename="include\jar\input\Windows\WinKeyboard.hpp" />
 		<Unit filename="src\jar\Input.cpp" />
 		<Unit filename="src\jar\input\EventQueue.cpp" />
@@ -75,8 +83,14 @@
 		<Unit filename="src\jar\input\InputDeviceKeyboard.cpp" />
 		<Unit filename="src\jar\input\InputDeviceManager.cpp" />
 		<Unit filename="src\jar\input\InputDeviceMouse.cpp" />
-		<Unit filename="src\jar\input\InputImpl.cpp" />
-		<Unit filename="src\jar\input\Windows\WinKeyboard.cpp" />
+		<Unit filename="src\jar\input\InputImpl.cpp">
+			<Option weight="49" />
+		</Unit>
+		<Unit filename="src\jar\input\Windows\WinJoystickDirectInput.cpp" />
+		<Unit filename="src\jar\input\Windows\WinJoystickXInput.cpp" />
+		<Unit filename="src\jar\input\Windows\WinKeyboard.cpp">
+			<Option weight="49" />
+		</Unit>
 		<Unit filename="src\jar\input\luabind\Event.cpp" />
 		<Extensions>
 			<code_completion />

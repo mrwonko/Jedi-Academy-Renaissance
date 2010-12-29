@@ -79,6 +79,10 @@ class JARINPUTAPI InputDeviceManager : public EventQueue
         **/
         const bool DeleteInputDevice(InputDevice* device);
 
+        /** \brief Retrieve a joystick of a given index
+            \return The joystick, or NULL if no such joystick exists. **/
+        InputDevice* GetJoystick(const unsigned int index) const;
+
     private:
         std::set<InputDevice*> mDevices;
         bool mInitialized;

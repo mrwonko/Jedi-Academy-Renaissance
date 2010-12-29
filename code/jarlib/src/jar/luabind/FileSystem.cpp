@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <physfs.h> //for PHYSFS_File
 #include <unzip.h>
-#include <string>
+#include <string>L
 
 namespace jar
 {
@@ -95,6 +95,8 @@ void BindFileSystem(lua_State* L)
         luabind::def("Unmount", &fs::Unmount),
         luabind::def("OpenRead", &fs::OpenRead),
         luabind::def("OpenWrite", &fs::OpenWrite),
+        luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory),
+        luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory),
         luabind::class_<PHYSFS_File>("File")
             .def("Close", &fs::Close)
             //2nd parameter is a pure out reference -> used as return value

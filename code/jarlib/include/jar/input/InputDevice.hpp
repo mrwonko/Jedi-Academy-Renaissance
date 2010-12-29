@@ -41,13 +41,6 @@ class JARINPUTAPI InputDevice : public EventSender
     public:
         virtual ~InputDevice();
 
-        /** \brief Initializes the Device
-
-            Overwrite this when inheriting, if necessary, usually returns true.
-            \return success
-        **/
-        virtual const bool Init();
-
         /** \brief Deinitializes the device
 
             Overwrite this when inheriting, if necessary.
@@ -77,7 +70,7 @@ class JARINPUTAPI InputDevice : public EventSender
         /** \brief Gives this device's type
             \return The DeviceType
         **/
-        virtual const DeviceType GetDeviceType() = 0;
+        virtual const DeviceType GetDeviceType() const = 0;
 
     protected:
         InputDevice();

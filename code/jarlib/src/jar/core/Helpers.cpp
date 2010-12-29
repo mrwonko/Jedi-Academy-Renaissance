@@ -28,6 +28,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <sstream>
 #include <cctype>
 
+//TODO: delete
+#include <iostream>
+
 #if defined(_WIN32)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
@@ -248,6 +251,11 @@ namespace jar
 #warning Helpers::GetFilesInDirectory() not implemented for this platform
 #endif
         return filenames;
+    }
+
+    const bool Helpers::CaseInsensitiveStringLessThan(const std::string& str1, const std::string& str2)
+    {
+        return(Helpers::ToLower(str1) < Helpers::ToLower(str2));
     }
 }
 

@@ -35,7 +35,7 @@ class JARINPUTAPI InputDeviceMouse : public InputDevice
         /** destructor **/
         virtual ~InputDeviceMouse();
 
-        virtual const DeviceType GetDeviceType() { return DT_Mouse; }
+        virtual const DeviceType GetDeviceType() const { return DT_Mouse; }
 
     protected:
         /** constructor **/
