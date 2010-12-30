@@ -22,7 +22,7 @@ namespace Windows {
 
     \note The buttons 0-15 are reserved for DPad up (0/4/8/12), down (1/5/9/13), left (2/6/10/14), right (3/7/11/15).
 **/
-class WinJoystickDirectInput : public jar::InputDeviceJoystick
+class WinJoystickDirectInput : public jar::InputDeviceJoystick, public Updatable
 {
     public:
         WinJoystickDirectInput();

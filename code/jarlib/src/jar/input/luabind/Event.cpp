@@ -140,8 +140,9 @@ void Event::Luabind(lua_State* L)
                 luabind::value("F13", jar::Key::F13),
                 luabind::value("F14", jar::Key::F14),
                 luabind::value("F15", jar::Key::F15),
-                luabind::value("Pause", jar::Key::Pause),
+                luabind::value("Pause", jar::Key::Pause)
 
+/* commented out for now, since I'm using SFML Events internally and they don't have these.
                 luabind::value("CapsLock", jar::Key::CapsLock),
                 luabind::value("NumLock", jar::Key::NumLock),
                 luabind::value("ScrollLock", jar::Key::ScrollLock),
@@ -149,6 +150,7 @@ void Event::Luabind(lua_State* L)
 
                 luabind::value("Plus", jar::Key::Plus),
                 luabind::value("GER_LT", jar::Key::GER_LT)
+*/
             ],
 
         luabind::class_<Event>("Event")

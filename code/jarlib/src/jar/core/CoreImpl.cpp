@@ -152,7 +152,7 @@ const bool CoreImpl::Deinit()
 
 void CoreImpl::Update(const TimeType deltaT)
 {
-    for(std::set<Component*>::iterator it = mComponents.begin(); it != mComponents.end(); ++it)
+    for(std::set<Updatable*>::iterator it = mUpdatables.begin(); it != mUpdatables.end(); ++it)
     {
         (*it)->Update(deltaT);
     }
@@ -166,6 +166,16 @@ void CoreImpl::RegisterComponent(Component* c)
 void CoreImpl::UnregisterComponent(Component* c)
 {
     mComponents.erase(c);
+}
+
+void CoreImpl::RegisterUpdatable(Updatable* u)
+{
+    mUpdatables.insert(u);
+}
+
+void CoreImpl::UnregisterUpdatable(Updatable* u)
+{
+    mUpdatables.erase(u);
 }
 
 } // namespace jar

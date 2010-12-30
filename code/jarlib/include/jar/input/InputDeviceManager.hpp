@@ -23,7 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_INPUT_INPUTDEVICEMANAGER_HPP
 #define JAR_INPUT_INPUTDEVICEMANAGER_HPP
 
-#include "jar/input/EventQueue.hpp"
+#include "jar/input/EventSender.hpp"
+#include "jar/input/EventListener.hpp"
 #include "jar/core/Time.hpp"
 #include "jar/input/API.hpp"
 #include <set>
@@ -33,7 +34,7 @@ namespace jar
 
 class InputDevice;
 class InputDeviceJoystick;
-class JARINPUTAPI InputDeviceManager : public EventQueue
+class JARINPUTAPI InputDeviceManager : public EventListener
 {
     public:
         /** \brief Constructor **/
@@ -50,14 +51,6 @@ class JARINPUTAPI InputDeviceManager : public EventQueue
         /** \brief Deinitializes the device manager. If you don't call it, it's called in the destructor.
         **/
         const bool Deinit();
-
-        /** \brief Updates the manager and its managed devices.
-
-            Should be called every frame.
-
-            \param deltaT time since last frame.
-        **/
-        void Update(TimeType deltaT);
 
         /** \brief Adds an input device to the manager.
 
@@ -84,6 +77,7 @@ class JARINPUTAPI InputDeviceManager : public EventQueue
             \return The joystick, or NULL if no such joystick exists. **/
         InputDeviceJoystick* GetJoystick(const unsigned int index) const;
 
+        virtual void ReceiveEvent(const Event& event);
     private:
         std::set<InputDevice*> mDevices;
         bool mInitialized;

@@ -41,6 +41,7 @@ EventSender::~EventSender()
 void EventSender::RegisterListener(EventListener* listener)
 {
     assert(listener);
+    assert((void*)listener != (void*)this && "endless loop, tried to make EventSender send events to itself!");
     mListeners.insert(listener);
 }
 
@@ -57,7 +58,7 @@ const bool EventSender::UnregisterListener(EventListener* listener)
     return false;
 }
 
-void EventSender::SendEvent(Event& event) const
+void EventSender::SendEvent(const Event& event) const
 {
     for(std::set<EventListener*>::const_iterator it = mListeners.begin(); it != mListeners.end(); ++it)
     {

@@ -43,6 +43,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 namespace jar {
 
 class InputDeviceManager;
+class EventManager;
 
 #ifdef _WIN32
 namespace Windows
@@ -58,32 +59,28 @@ namespace Windows
     \bug On Windows input will only work for one window - there's no telling which.
 **/
 
-class InputImpl : public Component
+class InputImpl : public Component, public Updatable
 {
     public:
         InputImpl();
         virtual ~InputImpl();
 
         virtual const bool Init();
-        const bool InitKeyboard();
-        const bool InitMouse();
         const bool InitJoysticks();
 
         virtual const bool Deinit();
-        const bool DeinitKeyboard();
-        const bool DeinitMouse();
         const bool DeinitJoysticks();
 
         virtual void Update(TimeType deltaT);
 
         InputDeviceManager& GetInputDeviceManager() { assert(mInputDeviceManager); return *mInputDeviceManager; }
+        EventManager& GetEventManager() { assert(mEventManager); return *mEventManager; }
 
     private:
         InputDeviceManager* mInputDeviceManager;
+        EventManager* mEventManager;
 #ifdef _WIN32
         //XInput
-        Windows::WinKeyboard* mKeyboard;
-        Windows::WinMouse* mMouse;
         std::vector<Windows::WinJoystickXInput*> mXInputJoysticks;
         //DirectInput
         LPDIRECTINPUT8 mDirectInput;

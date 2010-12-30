@@ -56,7 +56,7 @@ class JARINPUTAPI EventSender
 
         /** \brief Sends an event to all registered listeners.
             \param event the Event to send **/
-        void SendEvent(Event& event) const;
+        void SendEvent(const Event& event) const;
 
     private:
         std::set<EventListener*> mListeners; ///< the registered listeners

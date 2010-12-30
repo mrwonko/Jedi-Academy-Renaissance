@@ -36,9 +36,4 @@ InputDevice::~InputDevice()
     //dtor
 }
 
-void InputDevice::Update(TimeType deltaT)
-{
-    //nothing done here, usually
-}
-
 } // namespace jar

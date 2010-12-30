@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Time.hpp"
 #include "jar/input/EventSender.hpp"
 #include "jar/input/API.hpp"
+#include "jar/core/Updatable.hpp"
 
 #include <string>
 
@@ -46,13 +47,6 @@ class JARINPUTAPI InputDevice : public EventSender
             Overwrite this when inheriting, if necessary.
         **/
         virtual const bool Deinit() {return true;}
-
-        /** \brief Called every frame with the time since the last frame
-
-            Overwrite this when inheriting, if you need anything done each frame.
-            \param deltaT time since last frame
-        **/
-        virtual void Update(TimeType deltaT);
 
         /** \brief Returns the name of this device
             \return device name

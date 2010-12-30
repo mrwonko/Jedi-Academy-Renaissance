@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#ifndef JAR_INPUT_INPUT_HPP
-#define JAR_INPUT_INPUT_HPP
+#ifndef JAR_INPUT_HPP
+#define JAR_INPUT_HPP
 
 #include "jar/core/Singleton.hpp"
 #include "jar/input/API.hpp"
@@ -30,6 +30,7 @@ namespace jar {
 
 class InputImpl;
 class InputDeviceManager;
+class EventManager;
 
 class JARINPUTAPI Input : public Singleton<Input>
 {
@@ -38,10 +39,13 @@ class JARINPUTAPI Input : public Singleton<Input>
         virtual ~Input();
 
         InputDeviceManager& GetInputDeviceManager();
+        EventManager& GetEventManager();
 
     private:
         InputImpl* mImpl;
 };
+
+template<> JARINPUTAPI Input* Singleton<Input>::mSingleton;
 
 } // namespace jar
 

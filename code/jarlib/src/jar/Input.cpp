@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace jar {
 
-template<> Input* Singleton<Input>::mSingleton = 0;
+template<> Input* Singleton<Input>::mSingleton = NULL;
 
 Input::Input() :
     mImpl(new InputImpl)
@@ -41,6 +41,11 @@ Input::~Input()
 InputDeviceManager& Input::GetInputDeviceManager()
 {
     return mImpl->GetInputDeviceManager();
+}
+
+EventManager& Input::GetEventManager()
+{
+    return mImpl->GetEventManager();
 }
 
 } // namespace jar

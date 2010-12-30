@@ -26,6 +26,7 @@
 					<Add library="dxguid" />
 					<Add library="ole32" />
 					<Add library="Oleaut32" />
+					<Add library="sfml-window-d" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -49,6 +50,7 @@
 					<Add library="dxguid" />
 					<Add library="ole32" />
 					<Add library="Oleaut32" />
+					<Add library="sfml-window-d" />
 				</Linker>
 			</Target>
 		</Build>
@@ -67,36 +69,31 @@
 		<Unit filename="include\jar\input\API.hpp" />
 		<Unit filename="include\jar\input\Event.hpp" />
 		<Unit filename="include\jar\input\EventListener.hpp" />
+		<Unit filename="include\jar\input\EventManager.hpp" />
 		<Unit filename="include\jar\input\EventQueue.hpp" />
+		<Unit filename="include\jar\input\EventRelay.hpp" />
 		<Unit filename="include\jar\input\EventSender.hpp" />
 		<Unit filename="include\jar\input\InputDevice.hpp" />
 		<Unit filename="include\jar\input\InputDeviceJoystick.hpp" />
-		<Unit filename="include\jar\input\InputDeviceKeyboard.hpp" />
 		<Unit filename="include\jar\input\InputDeviceManager.hpp" />
-		<Unit filename="include\jar\input\InputDeviceMouse.hpp" />
 		<Unit filename="include\jar\input\InputImpl.hpp" />
 		<Unit filename="include\jar\input\KeyCodes.hpp" />
 		<Unit filename="include\jar\input\Windows\WinJoystickDirectInput.hpp" />
 		<Unit filename="include\jar\input\Windows\WinJoystickXInput.hpp" />
-		<Unit filename="include\jar\input\Windows\WinKeyboard.hpp" />
-		<Unit filename="include\jar\input\Windows\WinMouse.hpp" />
 		<Unit filename="src\jar\Input.cpp" />
+		<Unit filename="src\jar\input\Event.cpp" />
+		<Unit filename="src\jar\input\EventManager.cpp" />
 		<Unit filename="src\jar\input\EventQueue.cpp" />
+		<Unit filename="src\jar\input\EventRelay.cpp" />
 		<Unit filename="src\jar\input\EventSender.cpp" />
 		<Unit filename="src\jar\input\InputDevice.cpp" />
 		<Unit filename="src\jar\input\InputDeviceJoystick.cpp" />
-		<Unit filename="src\jar\input\InputDeviceKeyboard.cpp" />
 		<Unit filename="src\jar\input\InputDeviceManager.cpp" />
-		<Unit filename="src\jar\input\InputDeviceMouse.cpp" />
 		<Unit filename="src\jar\input\InputImpl.cpp">
 			<Option weight="49" />
 		</Unit>
 		<Unit filename="src\jar\input\Windows\WinJoystickDirectInput.cpp" />
 		<Unit filename="src\jar\input\Windows\WinJoystickXInput.cpp" />
-		<Unit filename="src\jar\input\Windows\WinKeyboard.cpp">
-			<Option weight="49" />
-		</Unit>
-		<Unit filename="src\jar\input\Windows\WinMouse.cpp" />
 		<Unit filename="src\jar\input\luabind\Event.cpp" />
 		<Extensions>
 			<code_completion />

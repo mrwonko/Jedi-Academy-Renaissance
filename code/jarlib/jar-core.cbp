@@ -71,6 +71,7 @@
 		<Unit filename="include\jar\core\Lua.hpp" />
 		<Unit filename="include\jar\core\Singleton.hpp" />
 		<Unit filename="include\jar\core\Time.hpp" />
+		<Unit filename="include\jar\core\Updatable.hpp" />
 		<Unit filename="include\jar\core\VoidLogger.hpp" />
 		<Unit filename="include\jar\luabind\Core.hpp" />
 		<Unit filename="include\jar\luabind\FileSystem.hpp" />
@@ -85,6 +86,7 @@
 		<Unit filename="src\jar\core\Logger.cpp" />
 		<Unit filename="src\jar\core\Lua.cpp" />
 		<Unit filename="src\jar\core\Time.cpp" />
+		<Unit filename="src\jar\core\Updatable.cpp" />
 		<Unit filename="src\jar\luabind\Core.cpp" />
 		<Unit filename="src\jar\luabind\FileSystem.cpp" />
 		<Unit filename="src\jar\luabind\STL.cpp" />

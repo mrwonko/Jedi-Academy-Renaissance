@@ -1,12 +1,17 @@
 #include <jar/Core.hpp>
 #include <jar/Input.hpp>
+#include <jar/Graphics.hpp>
 #include <jar/input/Event.hpp>
-#include <jar/input/InputDeviceManager.hpp>
+#include <jar/input/EventManager.hpp>
 #include <jar/input/InputDeviceJoystick.hpp>
+#include <jar/input/InputDeviceManager.hpp>
 #include <jar/Core/CoutLogger.hpp>
 #include <jar/Core/Helpers.hpp>
 
-#include <SFML/Graphics.hpp>
+#include <jar/graphics/RenderWindow.hpp>
+#include <SFML/Graphics/String.hpp>
+#include <SFML/Graphics/Shape.hpp>
+#include <SFML/System/Sleep.hpp>
 
 #include <iostream>
 
@@ -21,16 +26,21 @@ int main(int argc, char** argv)
 
     //initialize core & other components
     jar::Core core;
+    logger.Log("Created core.");
     jar::Input input; // just create this once (after core), no need to do anything else (except init core).
+    logger.Log("Created input.");
+    jar::Graphics graphics; // just create this once (after core), no need to do anything else (except init core).
+    logger.Log("Created graphics.");
 
     if(!core.Init(argc, argv, "../"))
     {
         return 0;
     }
 
+    jar::EventManager& em = input.GetEventManager();
     jar::InputDeviceManager& idm = input.GetInputDeviceManager();
 
-    sf::RenderWindow App(sf::VideoMode(800, 600), "Input Test(s)");
+    jar::RenderWindow App(800, 600, "Input Test(s)", true);
 
 
     sf::Shape gp0_l_stick = sf::Shape::Circle(0, 0, 16, sf::Color::White);
@@ -94,19 +104,16 @@ int main(int argc, char** argv)
 
     while(App.IsOpened())
     {
-        sf::Event sfE;
-        while(App.GetEvent(sfE)) //If sf events are not polled, jar events don't work. Problem? I could inherit from RenderWindow with a class that registers itself to Input, so that its events get polled on Input::Update(), that way I could also copy relevant events. (Closed etc.)
-        {
-            if(sfE.Type == sf::Event::Closed)
-            {
-                App.Close();
-            }
-        }
         jar::Event e;
-        while(idm.GetEvent(e))
+        while(em.GetEvent(e))
         {
             switch(e.Type)
             {
+                case jar::Event::Closed:
+                {
+                    App.Close();
+                    break;
+                }
                 case jar::Event::JoyButtonPressed:
                 {
                     std::cout<<"Joystick "<<e.JoyButton.JoyIndex<<" (" << idm.GetJoystick(e.JoyButton.JoyIndex)->GetName() << ") Button "<<e.JoyButton.Button<<" pressed."<<std::endl;

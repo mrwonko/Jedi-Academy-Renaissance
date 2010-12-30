@@ -61,6 +61,8 @@ class JARCOREAPI Core : public Singleton<Core>
         CoreImpl* mImpl;
 };
 
+template<> JARCOREAPI Core* Singleton<Core>::mSingleton;
+
 } // namespace jar
 
 #endif // JAR_JAR_HPP

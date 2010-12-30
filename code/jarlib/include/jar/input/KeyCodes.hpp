@@ -132,6 +132,7 @@ struct Key
         F15,
         Pause,
 
+/* since I'm using SFML Events for now, these are no longer supported.
         CapsLock, //mrw: why was this missing?
         NumLock,
         ScrollLock,
@@ -139,7 +140,7 @@ struct Key
         Plus, ///< + (not on Numpad (that's Add))
 
         GER_LT, ///< \< on german keyboards
-
+*/
         Count // Keep last -- total number of keyboard keys
     };
 

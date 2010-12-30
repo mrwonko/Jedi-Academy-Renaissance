@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/InputDeviceManager.hpp"
 #include "jar/input/InputDevice.hpp"
 #include "jar/input/InputDeviceJoystick.hpp"
+#include "jar/input/EventManager.hpp"
+#include "jar/Input.hpp"
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
 
@@ -83,14 +85,6 @@ const bool InputDeviceManager::DeleteInputDevice(InputDevice* device)
     return ret;
 }
 
-void InputDeviceManager::Update(TimeType deltaT)
-{
-    for(std::set<InputDevice*>::iterator it = mDevices.begin(); it != mDevices.end(); ++it)
-    {
-        (*it)->Update(deltaT);
-    }
-}
-
 InputDeviceJoystick* InputDeviceManager::GetJoystick(const unsigned int index) const
 {
     for(std::set<InputDevice*>::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
@@ -102,6 +96,13 @@ InputDeviceJoystick* InputDeviceManager::GetJoystick(const unsigned int index) c
     }
     Logger::GetDefaultLogger().Warning("Input Device Manager: Request for invalid joystick #" + Helpers::IntToString(index));
     return NULL;
+}
+
+void InputDeviceManager::ReceiveEvent(const Event& event)
+{
+    //the EventManager takes care of events
+    assert(EventManager::HasSingleton());
+    EventManager::GetSingleton().ReceiveEvent(event);
 }
 
 } // namespace jar

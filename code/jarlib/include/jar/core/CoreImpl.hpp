@@ -33,6 +33,7 @@ namespace jar {
 class CLArguments;
 class Lua;
 class Component;
+class Updatable;
 
 /** \brief Implementation of the Jar class **/
 class CoreImpl
@@ -53,6 +54,9 @@ class CoreImpl
         void RegisterComponent(Component* c);
         void UnregisterComponent(Component* c);
 
+        void RegisterUpdatable(Updatable* u);
+        void UnregisterUpdatable(Updatable* u);
+
     private:
         CLArguments* mCLArguments;
         /** \brief Relative path from binaries to root folder **/
@@ -61,6 +65,7 @@ class CoreImpl
         bool mPhysFSInitialized;
 
         std::set<Component*> mComponents;
+        std::set<Updatable*> mUpdatables;
 };
 
 } // namespace jar

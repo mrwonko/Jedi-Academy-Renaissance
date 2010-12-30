@@ -19,9 +19,4 @@ Component::~Component()
     }
 }
 
-void Component::Update(const TimeType deltaT)
-{
-    // implemented by inheritants
-}
-
 } // namespace jar

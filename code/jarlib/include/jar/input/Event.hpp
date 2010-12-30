@@ -29,6 +29,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 class lua_State;
 
+namespace sf
+{
+    class Event;
+}
+
 namespace jar
 {
 
@@ -39,6 +44,11 @@ namespace jar
 **/
 struct JARINPUTAPI Event
 {
+    /** \brief Create an event based on an SFML Event
+        \return success
+    **/
+    const bool FromSFML(const sf::Event& e);
+
     /// Different types of events
     enum EventType
     {

@@ -22,12 +22,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/input/InputImpl.hpp"
 #include "jar/input/InputDeviceManager.hpp"
+#include "jar/input/EventManager.hpp"
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
 
 #ifdef _WIN32
-#include "jar/input/Windows/WinKeyboard.hpp"
-#include "jar/input/Windows/WinMouse.hpp"
 #include "jar/input/Windows/WinJoystickXInput.hpp"
 #include "jar/input/Windows/WinJoystickDirectInput.hpp"
 
@@ -60,8 +59,7 @@ namespace jar {
 InputImpl::InputImpl()
 #ifdef _WIN32
     :
-    mKeyboard(NULL),
-    mMouse(NULL),
+    mEventManager(NULL),
     mDirectInput(NULL)
 #endif
 {
@@ -75,20 +73,14 @@ InputImpl::~InputImpl()
 
 const bool InputImpl::Init()
 {
+    mEventManager = new EventManager();
+    if(!mEventManager)
+    {
+        Logger::GetDefaultLogger().Error("Could not allocate Event Manager!");
+        return false;
+    }
     mInputDeviceManager = new InputDeviceManager();
     if(!mInputDeviceManager || !mInputDeviceManager->Init())
-    {
-        //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
-        return false;
-    }
-
-    if(!InitKeyboard())
-    {
-        //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
-        return false;
-    }
-
-    if(!InitMouse())
     {
         //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
         return false;
@@ -101,35 +93,6 @@ const bool InputImpl::Init()
     }
 
     return true;
-}
-
-const bool InputImpl::InitKeyboard()
-{
-    #ifdef _WIN32
-    mKeyboard = new Windows::WinKeyboard();
-    if(!mKeyboard || !mKeyboard->Init())
-    {
-        return false;
-    }
-    mInputDeviceManager->AddInputDevice(mKeyboard);
-    #endif
-    Logger::GetDefaultLogger().Info("Keyboard initialized!");
-    return true;
-}
-
-const bool InputImpl::InitMouse()
-{
-    #ifdef _WIN32
-    mMouse = new Windows::WinMouse();
-    if(!mMouse || !mMouse->Init())
-    {
-        //cleanup done in Deinit();
-        return false;
-    }
-    mInputDeviceManager->AddInputDevice(mMouse);
-    #endif
-    Logger::GetDefaultLogger().Info("Mouse initialized!");
-    return true; //for now
 }
 
 #ifdef _WIN32
@@ -413,55 +376,14 @@ const bool InputImpl::Deinit()
         failed = true;
     }
 
-    if(!DeinitMouse())
-    {
-        failed = true;
-    }
-
-    if(!DeinitKeyboard())
-    {
-        failed = true;
-    }
-
     if(mInputDeviceManager && !mInputDeviceManager->Deinit())
     {
         failed = true;
     }
     delete mInputDeviceManager;
+    delete mEventManager;
 
     return !failed;
-}
-
-const bool InputImpl::DeinitKeyboard()
-{
-    bool failed = false;
-    #ifdef WIN32
-    mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(mKeyboard); //failure means it hasn't been added yet - that's ok.
-    if(mKeyboard && !mKeyboard->Deinit())
-    {
-        failed = true;
-    }
-    delete mKeyboard;
-    #endif
-    return !failed;
-}
-
-const bool InputImpl::DeinitMouse()
-{
-    #ifdef _WIN32
-    if(mMouse)
-    {
-        bool failed = false;
-        mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(mMouse); //failure means it hasn't been added yet - that's ok.
-        if(!mMouse->Deinit())
-        {
-            failed = true;
-        }
-        delete mMouse;
-        return !failed;
-    }
-    #endif
-    return true;
 }
 
 const bool InputImpl::DeinitJoysticks()
@@ -510,10 +432,6 @@ const bool InputImpl::DeinitJoysticks()
 
 void InputImpl::Update(TimeType deltaT)
 {
-    if(mInputDeviceManager)
-    {
-        mInputDeviceManager->Update(deltaT);
-    }
 }
 
 } // namespace jar

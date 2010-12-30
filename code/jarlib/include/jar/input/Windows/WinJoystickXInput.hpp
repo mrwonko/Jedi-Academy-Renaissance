@@ -31,7 +31,7 @@ namespace Windows {
 
     \todo Test this!
 **/
-class WinJoystickXInput : public InputDeviceJoystick
+class WinJoystickXInput : public InputDeviceJoystick, public Updatable
 {
     public:
         WinJoystickXInput();

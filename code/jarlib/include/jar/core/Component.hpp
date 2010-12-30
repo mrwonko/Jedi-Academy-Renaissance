@@ -3,6 +3,7 @@
 
 #include "jar/core/API.hpp"
 #include "jar/core/Time.hpp"
+#include "jar/core/Updatable.hpp"
 
 namespace jar {
 
@@ -16,7 +17,6 @@ class JARCOREAPI Component
         virtual const bool Init() = 0;
         /** \brief Deinitializes the component, if it has been initialized yet. Does nothing otherwise. **/
         virtual const bool Deinit() = 0;
-        virtual void Update(const TimeType deltaT);
 
     protected:
     private:
