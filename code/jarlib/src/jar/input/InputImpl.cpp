@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef _WIN32
 #include "jar/input/Windows/WinKeyboard.hpp"
+#include "jar/input/Windows/WinMouse.hpp"
 #include "jar/input/Windows/WinJoystickXInput.hpp"
 #include "jar/input/Windows/WinJoystickDirectInput.hpp"
 
@@ -60,6 +61,7 @@ InputImpl::InputImpl()
 #ifdef _WIN32
     :
     mKeyboard(NULL),
+    mMouse(NULL),
     mDirectInput(NULL)
 #endif
 {
@@ -76,25 +78,25 @@ const bool InputImpl::Init()
     mInputDeviceManager = new InputDeviceManager();
     if(!mInputDeviceManager || !mInputDeviceManager->Init())
     {
-        Deinit();
+        //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
         return false;
     }
 
     if(!InitKeyboard())
     {
-        Deinit();
+        //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
         return false;
     }
 
     if(!InitMouse())
     {
-        Deinit();
+        //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
         return false;
     }
 
     if(!InitJoysticks())
     {
-        Deinit();
+        //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
         return false;
     }
 
@@ -104,10 +106,9 @@ const bool InputImpl::Init()
 const bool InputImpl::InitKeyboard()
 {
     #ifdef _WIN32
-    mKeyboard = new Windows::WinKeyboard;
+    mKeyboard = new Windows::WinKeyboard();
     if(!mKeyboard || !mKeyboard->Init())
     {
-        Deinit();
         return false;
     }
     mInputDeviceManager->AddInputDevice(mKeyboard);
@@ -118,7 +119,16 @@ const bool InputImpl::InitKeyboard()
 
 const bool InputImpl::InitMouse()
 {
-    Logger::GetDefaultLogger().Info("Mouse (not yet) initialized!");
+    #ifdef _WIN32
+    mMouse = new Windows::WinMouse();
+    if(!mMouse || !mMouse->Init())
+    {
+        //cleanup done in Deinit();
+        return false;
+    }
+    mInputDeviceManager->AddInputDevice(mMouse);
+    #endif
+    Logger::GetDefaultLogger().Info("Mouse initialized!");
     return true; //for now
 }
 
@@ -168,7 +178,7 @@ BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput )
     theWbemLocatorUUID.Data4[6] = 46;
     theWbemLocatorUUID.Data4[7] = 36;
     GUID theIWbemLocatorUUID;
-    theIWbemLocatorUUID.Data1 = 3692209799;
+    theIWbemLocatorUUID.Data1 = 3692209799UL;
     theIWbemLocatorUUID.Data2 = 29567;
     theIWbemLocatorUUID.Data3 = 4559;
     theIWbemLocatorUUID.Data4[0] = 136;
@@ -426,6 +436,7 @@ const bool InputImpl::DeinitKeyboard()
 {
     bool failed = false;
     #ifdef WIN32
+    mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(mKeyboard); //failure means it hasn't been added yet - that's ok.
     if(mKeyboard && !mKeyboard->Deinit())
     {
         failed = true;
@@ -437,7 +448,20 @@ const bool InputImpl::DeinitKeyboard()
 
 const bool InputImpl::DeinitMouse()
 {
-    return true; // for now...
+    #ifdef _WIN32
+    if(mMouse)
+    {
+        bool failed = false;
+        mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(mMouse); //failure means it hasn't been added yet - that's ok.
+        if(!mMouse->Deinit())
+        {
+            failed = true;
+        }
+        delete mMouse;
+        return !failed;
+    }
+    #endif
+    return true;
 }
 
 const bool InputImpl::DeinitJoysticks()
@@ -451,6 +475,7 @@ const bool InputImpl::DeinitJoysticks()
     XInputEnable(FALSE);
     for(std::vector<Windows::WinJoystickXInput*>::iterator it = mXInputJoysticks.begin(); it != mXInputJoysticks.end(); ++it)
     {
+        mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(*it); //failure means it hasn't been added yet - that's ok.
         if(!(*it)->Deinit())
         {
             failed = true;
@@ -464,6 +489,7 @@ const bool InputImpl::DeinitJoysticks()
     //release joysticks
     for(std::vector<Windows::WinJoystickDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
     {
+        mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(*it); //failure means it hasn't been added yet - that's ok.
         if(!(*it)->Deinit())
         {
             failed = true;

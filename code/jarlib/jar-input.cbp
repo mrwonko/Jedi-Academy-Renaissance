@@ -79,6 +79,7 @@
 		<Unit filename="include\jar\input\Windows\WinJoystickDirectInput.hpp" />
 		<Unit filename="include\jar\input\Windows\WinJoystickXInput.hpp" />
 		<Unit filename="include\jar\input\Windows\WinKeyboard.hpp" />
+		<Unit filename="include\jar\input\Windows\WinMouse.hpp" />
 		<Unit filename="src\jar\Input.cpp" />
 		<Unit filename="src\jar\input\EventQueue.cpp" />
 		<Unit filename="src\jar\input\EventSender.cpp" />
@@ -95,6 +96,7 @@
 		<Unit filename="src\jar\input\Windows\WinKeyboard.cpp">
 			<Option weight="49" />
 		</Unit>
+		<Unit filename="src\jar\input\Windows\WinMouse.cpp" />
 		<Unit filename="src\jar\input\luabind\Event.cpp" />
 		<Extensions>
 			<code_completion />

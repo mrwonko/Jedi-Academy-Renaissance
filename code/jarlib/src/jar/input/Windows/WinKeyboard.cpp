@@ -22,7 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/input/Windows/WinKeyboard.hpp"
 #include "jar/input/KeyCodes.hpp"
-#include <iostream>
+#include "jar/core/Logger.hpp"
+#include "jar/core/Helpers.hpp"
 
 namespace jar
 {
@@ -33,12 +34,17 @@ static WinKeyboard* Teh_Keyboardz = NULL;
 
 static LRESULT CALLBACK InputHookProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-    if (Teh_Keyboardz) Teh_Keyboardz->InputHook(nCode, wParam, lParam);
-    //allow other hooks to process this as well
-    return CallNextHookEx(Teh_Keyboardz->mInputHook, nCode, wParam, lParam);
+    if (Teh_Keyboardz)
+    {
+        Teh_Keyboardz->InputHook(nCode, wParam, lParam);
+        //allow other hooks to process this as well
+        return CallNextHookEx(Teh_Keyboardz->mInputHook, nCode, wParam, lParam);
+    }
+    return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
-WinKeyboard::WinKeyboard()
+WinKeyboard::WinKeyboard() :
+    mInputHook(NULL)
 {
     //ctor
     Teh_Keyboardz = this;
@@ -107,7 +113,7 @@ const bool WinKeyboard::Init()
     mInputHook = SetWindowsHookEx(WH_KEYBOARD, &InputHookProc, NULL, GetCurrentThreadId());
     if(!mInputHook)
     {
-        std::cout<< "SingleKeyboardDevice: Couldn't register hook, Error "<<GetLastError()<<std::endl;
+        Logger::GetDefaultLogger().Error("SingleKeyboardDevice: Couldn't register hook, Error " + Helpers::ToString(GetLastError()));
         return false;
     }
     return true;
@@ -118,7 +124,11 @@ const bool WinKeyboard::Deinit()
     if(mInputHook)
     {
         //keep in mind this may fail!
-        UnhookWindowsHookEx(mInputHook);
+        if(!UnhookWindowsHookEx(mInputHook))
+        {
+            Logger::GetDefaultLogger().Error("SingleKeyboardDevice: Couldn't unregister Hook, Error " + Helpers::ToString(GetLastError()));
+            return false;
+        }
     }
     return true;
 }
@@ -154,7 +164,6 @@ void WinKeyboard::InputHook(int nCode, WPARAM wParam, LPARAM lParam)
     }
     if(wParam >= '0' && wParam <= '9')
     {
-        std::cout<<char(wParam)<<std::endl;
         KeyEvent(released, Key::Code(wParam));
         return;
     }
@@ -205,7 +214,7 @@ void WinKeyboard::InputHook(int nCode, WPARAM wParam, LPARAM lParam)
         KeyEvent(released, it->second);
         return;
     }
-    std::cout<<"Unhandled Key Event "<<wParam<<std::endl;
+    Logger::GetDefaultLogger().Info("Unhandled Key Event " + Helpers::ToString(wParam), 3);
 }
 
 } // namespace Windows

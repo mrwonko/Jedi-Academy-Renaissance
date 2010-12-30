@@ -48,6 +48,7 @@ class InputDeviceManager;
 namespace Windows
 {
     class WinKeyboard;
+    class WinMouse;
     class WinJoystickXInput;
     class WinJoystickDirectInput;
 }
@@ -82,6 +83,7 @@ class InputImpl : public Component
 #ifdef _WIN32
         //XInput
         Windows::WinKeyboard* mKeyboard;
+        Windows::WinMouse* mMouse;
         std::vector<Windows::WinJoystickXInput*> mXInputJoysticks;
         //DirectInput
         LPDIRECTINPUT8 mDirectInput;

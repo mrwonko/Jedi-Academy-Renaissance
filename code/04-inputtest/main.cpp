@@ -14,7 +14,7 @@
 
 int main(int argc, char** argv)
 {
-    static const float DEADZONE = 0.25f;
+    //static const float DEADZONE = 0.25f;
     jar::CoutLogger logger;
     logger.Info("Initialized Logger", 0);
     logger.SetLoggingLevel(5);
@@ -89,12 +89,13 @@ int main(int argc, char** argv)
     gp2_r_stick_val_x.SetSize(12);
     gp2_r_stick_val_y.SetSize(12);
 
-    //TODO: Show string with current X/Y Values!
+    //whether the user wants to be informed about mouse moves - toggled with m
+    bool moveinfo = false;
 
     while(App.IsOpened())
     {
         sf::Event sfE;
-        while(App.GetEvent(sfE)) //If sf events are not polled, jar events don't work. Problem?
+        while(App.GetEvent(sfE)) //If sf events are not polled, jar events don't work. Problem? I could inherit from RenderWindow with a class that registers itself to Input, so that its events get polled on Input::Update(), that way I could also copy relevant events. (Closed etc.)
         {
             if(sfE.Type == sf::Event::Closed)
             {
@@ -211,6 +212,33 @@ int main(int argc, char** argv)
                     {
                         App.Close();
                     }
+                    else if(e.Key.Code == jar::Key::M)
+                    {
+                        moveinfo = !moveinfo;
+                    }
+                    break;
+                }
+                case jar::Event::MouseButtonPressed:
+                {
+                    std::cout<<"Mouse button "<<e.MouseButton.Button<<" pressed."<<std::endl;
+                    break;
+                }
+                case jar::Event::MouseButtonReleased:
+                {
+                    std::cout<<"Mouse button "<<e.MouseButton.Button<<" released."<<std::endl;
+                    break;
+                }
+                case jar::Event::MouseMoved:
+                {
+                    if(moveinfo)
+                    {
+                        std::cout<<"Mouse moved: X = " << e.MouseMove.X << "\tY = " << e.MouseMove.Y << std::endl;
+                    }
+                    break;
+                }
+                case jar::Event::MouseWheelMoved:
+                {
+                    std::cout<<"Mouse wheel moved by " << e.MouseWheel.Delta << std::endl;
                     break;
                 }
                 default:

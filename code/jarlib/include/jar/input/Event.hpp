@@ -116,9 +116,6 @@ struct JARINPUTAPI Event
         JoyAxisEvent JoyAxis;
     };
 
-    /// Time when this event occured
-    TimeType Timestamp;
-
     /** \brief Binds Events to Lua via luabind **/
     static void Luabind(lua_State* L);
 };

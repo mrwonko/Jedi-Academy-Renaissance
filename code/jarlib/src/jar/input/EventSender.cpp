@@ -57,10 +57,9 @@ const bool EventSender::UnregisterListener(EventListener* listener)
     return false;
 }
 
-void EventSender::SendEvent(Event& event)
+void EventSender::SendEvent(Event& event) const
 {
-    event.Timestamp = GetTime();
-    for(std::set<EventListener*>::iterator it = mListeners.begin(); it != mListeners.end(); ++it)
+    for(std::set<EventListener*>::const_iterator it = mListeners.begin(); it != mListeners.end(); ++it)
     {
         (*it)->ReceiveEvent(event);
     }

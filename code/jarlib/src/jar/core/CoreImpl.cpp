@@ -105,11 +105,7 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
     {
         if(!(*it)->Init())
         {
-            // init failed, so let's deinitialize everything (that's been initialized so far)
-            for(it = mComponents.begin(); it != mComponents.end(); ++it)
-            {
-                (*it)->Deinit();
-            }
+            // init failed, so let's deinitialize everything
             Deinit();
             return false;
         }

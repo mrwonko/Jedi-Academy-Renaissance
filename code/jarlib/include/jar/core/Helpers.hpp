@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define JAR_CORE_HELPERS_HPP
 
 #include <string>
+#include <sstream>
 #include <vector>
 #include <jar/core/API.hpp>
 
@@ -66,6 +67,23 @@ namespace jar
 		 *
 		 **/
 		static std::string IntToString(int integer);
+
+		/**
+		 *
+		 *  \brief  converts most things to a string
+		 *
+		 *  \see IntToString
+		 *  \see FloatToString
+		 *  \see StringToInt
+		 *  \see StringToFloat
+		 *
+		 **/
+		template<typename T> static std::string ToString(const T& t)
+		{
+		    std::stringstream ss;
+		    ss << t;
+		    return ss.str();
+		}
 
 		/**
 		 *

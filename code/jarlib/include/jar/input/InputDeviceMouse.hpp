@@ -43,14 +43,17 @@ class JARINPUTAPI InputDeviceMouse : public InputDevice
 
         /** \brief Sends a MouseButtonPressed Event.
             \param button index of the pressed button **/
-        void MouseButtonPressed(unsigned int button);
+        void MouseButtonPressed(unsigned int button) const;
 
         /** \brief Sends a MouseButtonReleased Event.
             \param button index of the released button **/
-        void MouseButtonReleased(unsigned int button);
+        void MouseButtonReleased(unsigned int button) const;
 
         /** \brief Sends a MouseMoved Event. **/
-        void MouseMoved(int x, int y);
+        void MouseMoved(int x, int y) const;
+
+        /** \brief Sends a MouseWheelMoved Event. **/
+        void MouseWheelMoved(const int delta) const;
 };
 
 } // namespace jar

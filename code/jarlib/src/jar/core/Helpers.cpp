@@ -25,7 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/CLArguments.hpp"
 #include "jar/core/Logger.hpp"
 #include <string>
-#include <sstream>
 #include <cctype>
 
 //TODO: delete

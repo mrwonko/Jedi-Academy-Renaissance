@@ -37,7 +37,7 @@ InputDeviceMouse::~InputDeviceMouse()
     //dtor
 }
 
-void InputDeviceMouse::MouseButtonPressed(unsigned int button)
+void InputDeviceMouse::MouseButtonPressed(unsigned int button) const
 {
     Event e;
     e.Type = Event::MouseButtonPressed;
@@ -45,7 +45,7 @@ void InputDeviceMouse::MouseButtonPressed(unsigned int button)
     SendEvent(e);
 }
 
-void InputDeviceMouse::MouseButtonReleased(unsigned int button)
+void InputDeviceMouse::MouseButtonReleased(unsigned int button) const
 {
     Event e;
     e.Type = Event::MouseButtonReleased;
@@ -53,12 +53,20 @@ void InputDeviceMouse::MouseButtonReleased(unsigned int button)
     SendEvent(e);
 }
 
-void InputDeviceMouse::MouseMoved(int x, int y)
+void InputDeviceMouse::MouseMoved(int x, int y) const
 {
     Event e;
     e.Type = Event::MouseMoved;
     e.MouseMove.X = x;
     e.MouseMove.Y = y;
+    SendEvent(e);
+}
+
+void InputDeviceMouse::MouseWheelMoved(const int delta) const
+{
+    Event e;
+    e.Type = Event::MouseWheelMoved;
+    e.MouseWheel.Delta = delta;
     SendEvent(e);
 }
 

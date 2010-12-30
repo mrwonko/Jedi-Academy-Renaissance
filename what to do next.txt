@@ -4,4 +4,3 @@ Console
 Console commands
 Menus
 Profiles
-Better mod support - init scripts etc.

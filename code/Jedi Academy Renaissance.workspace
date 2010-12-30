@@ -2,7 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="Jedi Academy Renaissance">
 		<Project filename="jarlib/jar-core.cbp" />
-		<Project filename="jarlib/jar-input.cbp" active="1">
+		<Project filename="jarlib/jar-input.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
 		<Project filename="02-filesystem/02-filesytem.cbp">
@@ -12,7 +12,7 @@
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 		</Project>
-		<Project filename="04-inputtest/04-inputtest.cbp">
+		<Project filename="04-inputtest/04-inputtest.cbp" active="1">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 		</Project>
