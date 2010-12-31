@@ -24,6 +24,7 @@
 					<Add library="sfml-graphics-d" />
 					<Add library="sfml-window-d" />
 					<Add library="sfml-system-d" />
+					<Add library="luabind-s-d" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -44,6 +45,7 @@
 					<Add library="sfml-graphics" />
 					<Add library="sfml-window" />
 					<Add library="sfml-system" />
+					<Add library="luabind-s" />
 				</Linker>
 			</Target>
 		</Build>
@@ -52,6 +54,7 @@
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
+			<Add library="lua" />
 			<Add directory="lib" />
 		</Linker>
 		<ExtraCommands>
@@ -61,9 +64,12 @@
 		<Unit filename="include\jar\graphics\API.hpp" />
 		<Unit filename="include\jar\graphics\GraphicsImpl.hpp" />
 		<Unit filename="include\jar\graphics\RenderWindow.hpp" />
+		<Unit filename="include\jar\luabind\SFMLGraphics.hpp" />
 		<Unit filename="src\jar\Graphics.cpp" />
 		<Unit filename="src\jar\graphics\GraphicsImpl.cpp" />
 		<Unit filename="src\jar\graphics\RenderWindow.cpp" />
+		<Unit filename="src\jar\graphics\luabind\RenderWindow.cpp" />
+		<Unit filename="src\jar\luabind\SFMLGraphics.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -1,3 +1,25 @@
+/*
+===========================================================================
+Copyright (C) 2010 Willi Schinmeyer
+
+This file is part of the Jedi Academy: Renaissance source code.
+
+Jedi Academy: Renaissance source code is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2 of the License,
+or (at your option) any later version.
+
+Jedi Academy: Renaissance source code is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Jedi Academy: Renaissance source code; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+===========================================================================
+*/
+
 #include "jar/input/Event.hpp"
 #include "SFML/Window/Event.hpp"
 #include <map>
@@ -149,6 +171,30 @@ const bool Event::FromSFML(const sf::Event& e)
             MouseWheel.Delta = e.MouseWheel.Delta;
             return true;
         }
+        #ifndef _WIN32 //joysticks for win32 handled separately via DirectInput & XInput
+        case sf::Event::JoyButtonPressed:
+        {
+            Type = Event::JoyButtonPressed;
+            JoyButton.Button = e.JoyButton.Button;
+            JoyButton.JoyIndex = e.JoyButton.JoystickId;
+            return true;
+        }
+        case sf::Event::JoyButtonReleased:
+        {
+            Type = Event::JoyButtonReleased;
+            JoyButton.Button = e.JoyButton.Button;
+            JoyButton.JoyIndex = e.JoyButton.JoystickId;
+            return true;
+        }
+        case sf::Event::JoyMoved:
+        {
+            Type = Event::JoyAxisMoved;
+            JoyAxis.Axis = e.JoyMove.Axis;
+            JoyAxis.JoyIndex = e.JoyMove.JoystickId;
+            JoyAxis.Position = e.JoyMove.Position;
+            return true;
+        }
+        #endif
         default:
         {
             return false;

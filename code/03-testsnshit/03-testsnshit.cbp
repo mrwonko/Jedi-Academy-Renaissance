@@ -19,6 +19,7 @@
 				<Linker>
 					<Add library="jar-core-d" />
 					<Add library="jar-input-d" />
+					<Add library="jar-graphics-d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -34,6 +35,7 @@
 					<Add option="-s" />
 					<Add library="jar-core" />
 					<Add library="jar-input" />
+					<Add library="jar-graphics" />
 				</Linker>
 			</Target>
 		</Build>
