@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/luabind/STL.hpp"
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
+#include "jar/Core.hpp"
 
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
@@ -56,7 +57,14 @@ void BindCore(lua_State* L)
             .def("SetLoggingLevel", &Logger::SetLoggingLevel),
 
         luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory),
-        luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory)
+        luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory),
+
+        luabind::class_<Core>("Core")
+            .def("Update", &Core::Update)
+            .scope
+            [
+                luabind::def("GetSingleton", &Core::GetSingleton)
+            ]
     ];
 
     BindFileSystem(L);

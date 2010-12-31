@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/Core.hpp"
 #include "jar/core/Lua.hpp"
+#include "jar/core/Logger.hpp"
 #include "jar/graphics/GraphicsImpl.hpp"
 #include "jar/graphics/RenderWindow.hpp"
 #include "jar/luabind/SFMLGraphics.hpp"
@@ -40,8 +41,9 @@ GraphicsImpl::~GraphicsImpl()
 
 const bool GraphicsImpl::Init()
 {
-    BindSFMLGraphics(Core::GetSingleton().GetLua().GetState());
+    //BindSFMLGraphics(Core::GetSingleton().GetLua().GetState());
     RenderWindow::Luabind(Core::GetSingleton().GetLua().GetState());
+    Logger::GetDefaultLogger().Info("Exposed Graphics System to Lua", 1);
     return true;
 }
 

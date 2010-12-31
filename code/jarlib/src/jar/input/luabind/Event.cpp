@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/input/Event.hpp"
+#include "jar/input/EventManager.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 
@@ -142,15 +143,15 @@ void Event::Luabind(lua_State* L)
                 luabind::value("F15", jar::Key::F15),
                 luabind::value("Pause", jar::Key::Pause)
 
-/* commented out for now, since I'm using SFML Events internally and they don't have these.
-                luabind::value("CapsLock", jar::Key::CapsLock),
-                luabind::value("NumLock", jar::Key::NumLock),
-                luabind::value("ScrollLock", jar::Key::ScrollLock),
-                luabind::value("Print", jar::Key::Print),
+// commented out for now, since I'm using SFML Events internally and they don't have these.
+//                luabind::value("CapsLock", jar::Key::CapsLock),
+//                luabind::value("NumLock", jar::Key::NumLock),
+//                luabind::value("ScrollLock", jar::Key::ScrollLock),
+//                luabind::value("Print", jar::Key::Print),
 
-                luabind::value("Plus", jar::Key::Plus),
-                luabind::value("GER_LT", jar::Key::GER_LT)
-*/
+//                luabind::value("Plus", jar::Key::Plus),
+//                luabind::value("GER_LT", jar::Key::GER_LT)
+
             ],
 
         luabind::class_<Event>("Event")
@@ -199,7 +200,16 @@ void Event::Luabind(lua_State* L)
                 luabind::value("JoyAxisMoved", Event::JoyAxisMoved),
                 luabind::value("JoyButtonPressed", Event::JoyButtonPressed),
                 luabind::value("JoyButtonReleased", Event::JoyButtonReleased)
+            ],
+
+        //doesn't really belong here, but I don't feel so little code justified a new file or even function
+        luabind::class_<EventManager>("EventManager")
+            .scope
+            [
+                luabind::def("GetSingleton", &EventManager::GetSingleton)
             ]
+            .def("GetEvent", &EventManager::GetEvent)
+
     ];
 }
 

@@ -78,8 +78,9 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
         Deinit();
         return false;
     }
-    jar::BindCore(mLua->GetState());
     Logger::GetDefaultLogger().Info("Initialized Lua", 1);
+    jar::BindCore(mLua->GetState());
+    Logger::GetDefaultLogger().Info("Exposed Core System to Lua", 1);
 
     //init physicsFS
 

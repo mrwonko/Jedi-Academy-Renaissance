@@ -5,13 +5,13 @@
 --loadfile, used by dofile
 function loadfile(filename)
 	local file = jar.fs.OpenRead(filename)
-	if not file then
-		return nil, "Could not open " .. filename .. "!"
+	if file == 0 or file == nil or not file then
+		return nil, "Could not open " .. filename .. "! " .. jar.fs.GetLastError()
 	end
 	local success, content = file:GetContent()
 	file:Close()
 	if not success then
-		return nil, "Could not read " .. filename .. "!"
+		return nil, "Could not read " .. filename .. "! " .. jar.fs.GetLastError()
 	end
 	return loadstring(content, "@" .. filename)
 end
@@ -59,6 +59,10 @@ end
 package.loaders = { [1] = mrwloadmodule }
 
 --TODO: replace with assets1.pk3 loading, put this there
-jar.fs.Mount("./", true) -- append, i.e. last resort (TODO: DOCUMENT!)
---jar.fs.Mount("assets1.pk3", false) --prepend, i.e. search first
+if not RELEASE then
+assert(jar.fs.Mount("./", true)) -- append, i.e. last resort
+else
+assert(jar.fs.Mount("assets1.pk3", false)) --prepend, i.e. search first
+end
+
 dofile("code/Init.lua")

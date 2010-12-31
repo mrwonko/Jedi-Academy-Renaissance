@@ -23,8 +23,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/InputImpl.hpp"
 #include "jar/input/InputDeviceManager.hpp"
 #include "jar/input/EventManager.hpp"
+#include "jar/input/Event.hpp"
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
+#include "jar/core/Lua.hpp"
+#include "jar/Core.hpp"
 
 #ifdef _WIN32
 #include "jar/input/Windows/WinJoystickXInput.hpp"
@@ -91,6 +94,9 @@ const bool InputImpl::Init()
         //no need to call Deinit(), that's done automatically if a component doesn't initialize correctly.
         return false;
     }
+
+    Event::Luabind(Core::GetSingleton().GetLua().GetState());
+    Logger::GetDefaultLogger().Info("Exposed Event System to Lua", 1);
 
     return true;
 }
@@ -282,7 +288,7 @@ static __stdcall BOOL ForEachDirectInputDevice(LPCDIDEVICEINSTANCE device, LPVOI
     if( IsXInputDevice(&device->guidProduct) )
     {
         //continue enumeration
-        Logger::GetDefaultLogger().Info("Input Device \""+std::string(device->tszProductName)+"\" is also an XInput device, disgarding as DirectInput!", 5);
+        Logger::GetDefaultLogger().Info("Input Device \""+std::string(device->tszProductName)+"\" is also an XInput device, discarding as DirectInput!", 5);
         return DIENUM_CONTINUE;
     }
 
@@ -358,12 +364,10 @@ const bool InputImpl::InitJoysticks()
         Logger::GetDefaultLogger().Warning("InputImpl::InitJoysticks(): Could not enumerate devices! No DirectInput support available.");
         return true;
     }
-
-    #else
-    #warning No Joystick/Gamepad support for this OS yet, sorry!
     #endif
+    //gamepad support for other OSes is supported using SFML Events. (see Event::FromSFML)
 
-    Logger::GetDefaultLogger().Info(Helpers::IntToString(numJoysticks) + " Joystick(s)/Gamepad(s) initialized!");
+    Logger::GetDefaultLogger().Info(Helpers::IntToString(numJoysticks) + " Joystick(s)/Gamepad(s) initialized!", 1);
     return true;
 }
 
