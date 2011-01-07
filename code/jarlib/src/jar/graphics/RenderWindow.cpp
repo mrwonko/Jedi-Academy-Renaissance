@@ -32,6 +32,7 @@ RenderWindow::RenderWindow(const unsigned int width, const unsigned int height, 
     sf::RenderWindow(sf::VideoMode(width, height, 32), title, (fullscreen ? sf::Style::Fullscreen : (border ? sf::Style::Close : 0) ) )
 {
     //ctor
+    Input::GetSingleton().OnWindowCreated();
 }
 
 RenderWindow::~RenderWindow()

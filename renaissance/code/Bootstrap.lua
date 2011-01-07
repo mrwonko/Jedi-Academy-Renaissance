@@ -1,10 +1,31 @@
+local test = tests.GetLuabindTest()
+tests.LuabindInfo("Test")
+tests.LuabindInfo(13)
+tests.LuabindInfo(test)
+test:Print()
+print("Num: " .. test:GetNum())
+test:SetNum(1337)
+print("Num: " .. test:GetNum())
+print(test:GetClass())
+
 --  Replace Lua functions so they work as expected
 
 -- replace file functions
 
 --loadfile, used by dofile
 function loadfile(filename)
+
+	--TODO: delete testcode
+	print()
+	print("filename: " .. filename)
+	print("pre:  " .. jar.fs.GetLastError())
+	
 	local file = jar.fs.OpenRead(filename)
+	
+	--TODO: delete testcode
+	print("post: " .. jar.fs.GetLastError())
+	print("type: " .. type(file))
+	
 	if file == 0 or file == nil or not file then
 		return nil, "Could not open " .. filename .. "! " .. jar.fs.GetLastError()
 	end

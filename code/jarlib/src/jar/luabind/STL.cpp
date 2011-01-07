@@ -34,7 +34,7 @@ namespace jar
 /** luabind doesn't recognize the return value of std::vector<std::string>::at as a string, thus I need this helper function.
     That's all right since I need to change it to return nil on invalid indices anyway. **/
 //note: I get an error if the return type is an std string* complaining about unregistered types. bullshit. anyway, using const char* instead works.
-const char * StringVectorAt(std::vector<std::string>& vec, unsigned int index)
+static const char * StringVectorAt(std::vector<std::string>& vec, unsigned int index)
 {
     if(index >= vec.size()) return NULL;
     return vec[index].c_str();
@@ -47,6 +47,7 @@ void BindSTL(lua_State* L)
         luabind::class_<std::vector<std::string> >("stringvector")
             .def("at", &StringVectorAt)
             .def("__len", &std::vector<std::string>::size)
+            .def("size", &std::vector<std::string>::size)
     ];
 }
 

@@ -48,4 +48,9 @@ EventManager& Input::GetEventManager()
     return mImpl->GetEventManager();
 }
 
+void Input::OnWindowCreated()
+{
+    mImpl->OnWindowCreated();
+}
+
 } // namespace jar

@@ -41,7 +41,7 @@ GraphicsImpl::~GraphicsImpl()
 
 const bool GraphicsImpl::Init()
 {
-    //BindSFMLGraphics(Core::GetSingleton().GetLua().GetState());
+    BindSFMLGraphics(Core::GetSingleton().GetLua().GetState());
     RenderWindow::Luabind(Core::GetSingleton().GetLua().GetState());
     Logger::GetDefaultLogger().Info("Exposed Graphics System to Lua", 1);
     return true;

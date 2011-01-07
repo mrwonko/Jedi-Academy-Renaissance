@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Logger.hpp"
 #include <string>
 #include <cctype>
+#include <algorithm>
+#include <cctype>
 
 //TODO: delete
 #include <iostream>
@@ -133,16 +135,16 @@ namespace jar
         return textWithoutComments;
     }
 
-    std::string Helpers::ToLower(const std::string& text)
+    std::string& Helpers::ToLower(std::string& text)
     {
-        std::string result;
-        for(unsigned int i = 0; i < text.size(); ++i)
-        {
-            const char lower = tolower(text.at(i));
-            //append lower once
-            result.append(1, lower);
-        }
-        return result;
+        std::transform(text.begin(), text.end(), text.begin(), (int (*)(int))std::tolower);
+        return text;
+    }
+
+    std::string& Helpers::ToUpper(std::string& text)
+    {
+        std::transform(text.begin(), text.end(), text.begin(), (int (*)(int))std::toupper);
+        return text;
     }
 
     std::string Helpers::Replace(const std::string& text, const std::string& pattern, const std::string& replace)
@@ -252,7 +254,7 @@ namespace jar
         return filenames;
     }
 
-    const bool Helpers::CaseInsensitiveStringLessThan(const std::string& str1, const std::string& str2)
+    const bool Helpers::CaseInsensitiveStringLessThan(std::string str1, std::string str2)
     {
         return(Helpers::ToLower(str1) < Helpers::ToLower(str2));
     }

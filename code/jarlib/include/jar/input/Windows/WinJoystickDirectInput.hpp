@@ -56,6 +56,8 @@ class WinJoystickDirectInput : public jar::InputDeviceJoystick, public Updatable
 
         virtual void Update(TimeType deltaT);
 
+        void OnFirstWindowCreated(HWND hwnd);
+
         struct AxisRangeInfo
         {
             int min;
@@ -123,6 +125,16 @@ class WinJoystickDirectInput : public jar::InputDeviceJoystick, public Updatable
         const bool POVIsRight(int angle) { return angle != -1 && abs(angle - 9000) <= 4500; }
         const bool POVIsDown(int angle) { return angle != -1 && abs(angle - 18000) <= 4500; }
         const bool POVIsLeft(int angle) { return angle != -1 && abs(angle - 27000) <= 4500; }
+
+        void UpdateRumblers();
+        std::vector<float> mLastRumbleStrengths;
+        GUID mRumbleEffectGUID;
+        std::vector<LPDIRECTINPUTEFFECT> mRumbleEffects;
+
+        std::vector<DWORD> mFFAxes;
+
+        //whether this is acquired in exclusive mode yet
+        bool mIsExclusive;
 };
 
 } // namespace Windows

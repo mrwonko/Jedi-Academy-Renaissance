@@ -50,7 +50,8 @@ const bool SetWriteDir(const std::string& writedir)
 
 const std::string GetLastError()
 {
-    return PHYSFS_getLastError();
+    const char* err = PHYSFS_getLastError();
+    return err == NULL ? "" : err;
 }
 
 PHYSFS_File* OpenRead(const std::string& filename)
@@ -86,24 +87,25 @@ const bool ReadFile(const std::string& filename, std::string& output)
 
 const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
 {
+    if(PHYSFS_fileLength(file) == 0) return true;
+
     char buf[1024];
     int status;
     //PHYSFS_read returns the read characters.
-    while((status = PHYSFS_read(file, &buf, sizeof(char), sizeof(buf))) > 0)
+    while(true)
     {
+        status = PHYSFS_read(file, &buf, sizeof(char), sizeof(buf));
         output += std::string(buf, status);
+        if(status < (int)sizeof(buf)) break; //eof reached
     }
     //-1 on error
     if(status == -1)
     {
-#ifdef _DEBUG
-        Logger::GetDefaultLogger().Warning(PHYSFS_getLastError());
-#endif
+        //it's up to the user to get the error, if we do it here, the user will not be able to do it himself.
         return false;
     }
     //if no error was set, the reason for status == 0 should be EOF
-    //there seems to be a bug regarding 0-length files.
-    if(!PHYSFS_eof(file) && PHYSFS_fileLength(file) != 0)
+    if(!PHYSFS_eof(file))
     {
 #ifdef _DEBUG
         Logger::GetDefaultLogger().Warning(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+PHYSFS_getLastError());

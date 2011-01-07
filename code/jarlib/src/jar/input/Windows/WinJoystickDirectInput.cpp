@@ -26,11 +26,14 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
 
+#include <sstream>
+
 namespace jar {
 namespace Windows {
 
 WinJoystickDirectInput::WinJoystickDirectInput() :
-    mDevice(NULL)
+    mDevice(NULL),
+    mIsExclusive(false)
 {
     //ctor
     for(int i = 0; i <32; ++i)
@@ -45,121 +48,200 @@ WinJoystickDirectInput::~WinJoystickDirectInput()
     //dtor
 }
 
-struct DIControlObjectSharedInfo
+namespace
 {
-    DIControlObjectSharedInfo(const std::string& name) : Name(name), Failed(false) {}
-    const std::string& Name;
-    LPDIRECTINPUTDEVICE8 Device;
-    WinJoystickDirectInput::AxisRangeInfo* Ranges;
-    bool Failed;
-};
+    struct DIControlObjectSharedInfo
+    {
+        DIControlObjectSharedInfo(const std::string& name, std::vector<DWORD>& ffAxes) : Name(name), Failed(false), FFAxes(ffAxes) {}
+        const std::string& Name;
+        LPDIRECTINPUTDEVICE8 Device;
+        WinJoystickDirectInput::AxisRangeInfo* Ranges;
+        bool Failed;
+        std::vector<DWORD>& FFAxes;
+    };
 
-static __stdcall BOOL ForEachAbsAxis(LPCDIDEVICEOBJECTINSTANCE obj, LPVOID voidptr)
-{
-    DIControlObjectSharedInfo* info = static_cast<DIControlObjectSharedInfo*>(voidptr);
+    static __stdcall BOOL ForEachAbsAxis(LPCDIDEVICEOBJECTINSTANCE obj, LPVOID voidptr)
+    {
+        DIControlObjectSharedInfo* info = static_cast<DIControlObjectSharedInfo*>(voidptr);
 
-    int axis = -1;
-    if(obj->guidType == GUID_XAxis) axis = WinJoystickDirectInput::AxisX;
-    if(obj->guidType == GUID_YAxis) axis = WinJoystickDirectInput::AxisY;
-    if(obj->guidType == GUID_ZAxis) axis = WinJoystickDirectInput::AxisZ;
-    if(obj->guidType == GUID_RxAxis) axis = WinJoystickDirectInput::AxisRX;
-    if(obj->guidType == GUID_RyAxis) axis = WinJoystickDirectInput::AxisRY;
-    if(obj->guidType == GUID_RzAxis) axis = WinJoystickDirectInput::AxisRZ;
-    if(obj->guidType == GUID_Slider) axis = WinJoystickDirectInput::AxisSlider0;
+        int axis = -1;
+        if(obj->guidType == GUID_XAxis) axis = WinJoystickDirectInput::AxisX;
+        if(obj->guidType == GUID_YAxis) axis = WinJoystickDirectInput::AxisY;
+        if(obj->guidType == GUID_ZAxis) axis = WinJoystickDirectInput::AxisZ;
+        if(obj->guidType == GUID_RxAxis) axis = WinJoystickDirectInput::AxisRX;
+        if(obj->guidType == GUID_RyAxis) axis = WinJoystickDirectInput::AxisRY;
+        if(obj->guidType == GUID_RzAxis) axis = WinJoystickDirectInput::AxisRZ;
+        if(obj->guidType == GUID_Slider) axis = WinJoystickDirectInput::AxisSlider0;
 
-    //ignore unknown axes
-    if(axis == -1) return DIENUM_CONTINUE;
+        //ignore unknown axes
+        if(axis == -1) return DIENUM_CONTINUE;
 
-    //axis range - thanks http://efreedom.com/Question/1-1053702/DirectInput-Analogue-Joystick-Range
-    DIPROPRANGE range;
-    range.diph.dwSize = sizeof(DIPROPRANGE);
-    range.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-    range.diph.dwHow = DIPH_BYID;
-    range.diph.dwObj = obj->dwType;
-    if(info->Device->GetProperty(DIPROP_RANGE, &range.diph) != DI_OK)
-    {
-        Logger::GetDefaultLogger().Error("Error while getting object info for Input Device \""+info->Name+"\"!");
-        info->Failed = true;
-        return DIENUM_STOP;
+        //force feedback
+        if(obj->dwFlags & DIDOI_FFACTUATOR)
+        {
+            switch(axis)
+            {
+                case WinJoystickDirectInput::AxisX:
+                {
+                    info->FFAxes.push_back(DIJOFS_X);
+                    break;
+                }
+                case WinJoystickDirectInput::AxisY:
+                {
+                    info->FFAxes.push_back(DIJOFS_Y);
+                    break;
+                }
+                case WinJoystickDirectInput::AxisZ:
+                {
+                    info->FFAxes.push_back(DIJOFS_Z);
+                    break;
+                }
+                case WinJoystickDirectInput::AxisRX:
+                {
+                    info->FFAxes.push_back(DIJOFS_RX);
+                    break;
+                }
+                case WinJoystickDirectInput::AxisRY:
+                {
+                    info->FFAxes.push_back(DIJOFS_RY);
+                    break;
+                }
+                case WinJoystickDirectInput::AxisRZ:
+                {
+                    info->FFAxes.push_back(DIJOFS_RZ);
+                    break;
+                }
+                case WinJoystickDirectInput::AxisSlider0:
+                {
+                    info->FFAxes.push_back(DIJOFS_SLIDER(0));
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+
+        //axis range - thanks http://efreedom.com/Question/1-1053702/DirectInput-Analogue-Joystick-Range
+        DIPROPRANGE range;
+        range.diph.dwSize = sizeof(DIPROPRANGE);
+        range.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+        range.diph.dwHow = DIPH_BYID;
+        range.diph.dwObj = obj->dwType;
+        if(info->Device->GetProperty(DIPROP_RANGE, &range.diph) != DI_OK)
+        {
+            Logger::GetDefaultLogger().Error("Error while getting object info for Input Device \""+info->Name+"\"!");
+            info->Failed = true;
+            return DIENUM_STOP;
+        }
+
+        Logger::GetDefaultLogger().Info(info->Name + " Axis " + Helpers::IntToString(axis) + ": " + Helpers::IntToString(range.lMin) + " - " + Helpers::IntToString(range.lMax), 5);
+
+        info->Ranges[axis].min = range.lMin;
+        info->Ranges[axis].max = range.lMax;
+        //since most axes don't have a range defined I'm going to assume similar axes have similar ranges. Problem? Probably. Or is there?
+        if(axis == WinJoystickDirectInput::AxisSlider0)
+        {
+            info->Ranges[WinJoystickDirectInput::AxisSlider1].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisSlider1].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisVSlider0].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVSlider0].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisVSlider1].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVSlider1].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisASlider0].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisASlider0].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisASlider1].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisASlider1].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFSlider0].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFSlider0].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFSlider1].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFSlider1].max = range.lMax;
+        }
+        else if(axis == WinJoystickDirectInput::AxisX)
+        {
+            info->Ranges[WinJoystickDirectInput::AxisVX].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVX].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisAX].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisAX].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFX].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFX].max = range.lMax;
+        }
+        else if(axis == WinJoystickDirectInput::AxisY)
+        {
+            info->Ranges[WinJoystickDirectInput::AxisVY].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVY].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisAY].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisAY].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFY].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFY].max = range.lMax;
+        }
+        else if(axis == WinJoystickDirectInput::AxisZ)
+        {
+            info->Ranges[WinJoystickDirectInput::AxisVZ].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVZ].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisAZ].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisAZ].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFZ].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFZ].max = range.lMax;
+        }
+        else if(axis == WinJoystickDirectInput::AxisRX)
+        {
+            info->Ranges[WinJoystickDirectInput::AxisVRX].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVRX].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisARX].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisARX].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFRX].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFRX].max = range.lMax;
+        }
+        else if(axis == WinJoystickDirectInput::AxisRY)
+        {
+            info->Ranges[WinJoystickDirectInput::AxisVRY].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVRY].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisARY].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisARY].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFRY].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFRY].max = range.lMax;
+        }
+        else if(axis == WinJoystickDirectInput::AxisRZ)
+        {
+            info->Ranges[WinJoystickDirectInput::AxisVRZ].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisVRZ].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisARZ].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisARZ].max = range.lMax;
+            info->Ranges[WinJoystickDirectInput::AxisFRZ].min = range.lMin;
+            info->Ranges[WinJoystickDirectInput::AxisFRZ].max = range.lMax;
+        }
+        return DIENUM_CONTINUE;
     }
 
-    Logger::GetDefaultLogger().Info(info->Name + " Axis " + Helpers::IntToString(axis) + ": " + Helpers::IntToString(range.lMin) + " - " + Helpers::IntToString(range.lMax), 5);
+    struct DIEffectsSharedInfo
+    {
+        DIEffectsSharedInfo(const std::string& name) :
+            Name(name),
+            Capable(false)
+        {}
 
-    info->Ranges[axis].min = range.lMin;
-    info->Ranges[axis].max = range.lMax;
-    //since most axes don't have a range defined I'm going to assume similar axes have similar ranges. Problem? Probably. Or is there?
-    if(axis == WinJoystickDirectInput::AxisSlider0)
+        const std::string& Name;
+        bool Capable;
+        GUID Guid;
+    };
+
+    //according to MSDN it'S DIEffectInfo, but according to the mingw-w64 headers it'S DIEFFECTINFO. Since I want my code to compile, I use the latter.
+    static __stdcall BOOL DIEnumEffectsCallback(const DIEFFECTINFO* info, void* pvRef)
     {
-        info->Ranges[WinJoystickDirectInput::AxisSlider1].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisSlider1].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisVSlider0].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVSlider0].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisVSlider1].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVSlider1].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisASlider0].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisASlider0].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisASlider1].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisASlider1].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFSlider0].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFSlider0].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFSlider1].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFSlider1].max = range.lMax;
+        DIEffectsSharedInfo* sharedInfo = static_cast<DIEffectsSharedInfo*>(pvRef);
+
+        if(DIDFT_GETTYPE(info->dwEffType) == DIEFT_CONSTANTFORCE)
+        {
+            Logger::GetDefaultLogger().Info("Input Device \"" + sharedInfo->Name + "\" has a constant force rumble effect called \"" + info->tszName + "\", enabling rumbling.", 3);
+            sharedInfo->Capable = true;
+            sharedInfo->Guid = info->guid;
+            return DIENUM_STOP;
+        }
+        return DIENUM_CONTINUE;
     }
-    else if(axis == WinJoystickDirectInput::AxisX)
-    {
-        info->Ranges[WinJoystickDirectInput::AxisVX].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVX].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisAX].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisAX].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFX].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFX].max = range.lMax;
-    }
-    else if(axis == WinJoystickDirectInput::AxisY)
-    {
-        info->Ranges[WinJoystickDirectInput::AxisVY].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVY].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisAY].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisAY].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFY].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFY].max = range.lMax;
-    }
-    else if(axis == WinJoystickDirectInput::AxisZ)
-    {
-        info->Ranges[WinJoystickDirectInput::AxisVZ].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVZ].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisAZ].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisAZ].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFZ].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFZ].max = range.lMax;
-    }
-    else if(axis == WinJoystickDirectInput::AxisRX)
-    {
-        info->Ranges[WinJoystickDirectInput::AxisVRX].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVRX].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisARX].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisARX].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFRX].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFRX].max = range.lMax;
-    }
-    else if(axis == WinJoystickDirectInput::AxisRY)
-    {
-        info->Ranges[WinJoystickDirectInput::AxisVRY].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVRY].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisARY].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisARY].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFRY].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFRY].max = range.lMax;
-    }
-    else if(axis == WinJoystickDirectInput::AxisRZ)
-    {
-        info->Ranges[WinJoystickDirectInput::AxisVRZ].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisVRZ].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisARZ].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisARZ].max = range.lMax;
-        info->Ranges[WinJoystickDirectInput::AxisFRZ].min = range.lMin;
-        info->Ranges[WinJoystickDirectInput::AxisFRZ].max = range.lMax;
-    }
-    return DIENUM_CONTINUE;
+
 }
 
 const bool WinJoystickDirectInput::Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEINSTANCE deviceInfo)
@@ -182,17 +264,17 @@ const bool WinJoystickDirectInput::Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEI
 
     //check each axis for range
 
-    DIControlObjectSharedInfo info(mName);
-    info.Device = mDevice;
-    info.Ranges = mRangeInfo;
+    DIControlObjectSharedInfo coinfo(mName, mFFAxes);
+    coinfo.Device = mDevice;
+    coinfo.Ranges = mRangeInfo;
 
-    if((result = mDevice->EnumObjects(ForEachAbsAxis, static_cast<LPVOID>(&info), DIDFT_ABSAXIS)) != DI_OK)
+    if((result = mDevice->EnumObjects(ForEachAbsAxis, static_cast<LPVOID>(&coinfo), DIDFT_ABSAXIS)) != DI_OK)
     {
         Logger::GetDefaultLogger().Error("Could not get info about axes of Input Device \"" + mName + "\"!");
         Deinit();
         return false;
     }
-    if(info.Failed)
+    if(coinfo.Failed)
     {
         Deinit();
         return false;
@@ -243,6 +325,24 @@ const bool WinJoystickDirectInput::Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEI
         return false;
     }
 
+    DIEffectsSharedInfo einfo(mName);
+
+    if((result = mDevice->EnumEffects(DIEnumEffectsCallback, static_cast<LPVOID>(&einfo), DIEFT_CONSTANTFORCE)) != DI_OK)
+    {
+        Logger::GetDefaultLogger().Warning("Could not enumerate Force Feedback effects of Input Device \"" + mName + "\"!");
+    }
+
+    if(einfo.Capable)
+    {
+        mNumRumblers = mFFAxes.size();
+        for(unsigned int i = 0; i < mNumRumblers; ++i)
+        {
+            mLastRumbleStrengths.push_back(0.0f);
+        }
+        CheckRumbleStrengths();
+        mRumbleEffectGUID = einfo.Guid;
+    }
+
     if((result = mDevice->GetDeviceState(sizeof(mLastState), &mLastState)) != DI_OK)
     {
         Logger::GetDefaultLogger().Error("Could not do test query on Input Device \"" + mName + "\"!");
@@ -250,11 +350,21 @@ const bool WinJoystickDirectInput::Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEI
         return false;
     }
 
+
     return true;
 }
 
 const bool WinJoystickDirectInput::Deinit()
 {
+    if(mRumbleEffects.size())
+    {
+        for(unsigned int i = 0; i < mRumbleEffects.size(); ++i)
+        {
+            mRumbleEffects[i]->Stop();
+            mRumbleEffects[i]->Release();
+        }
+        mRumbleEffects.clear();
+    }
     if(mDevice)
     {
         mDevice->Unacquire(); //does nothing if not acquired
@@ -330,11 +440,7 @@ void WinJoystickDirectInput::Update(TimeType deltaT)
 
     //  force feedback
 
-    if(mNumRumblers > 0)
-    {
-        assert(mNumRumblers == 1);
-        //TODO: DirectInput rumbling
-    }
+    UpdateRumblers();
 }
 
 void WinJoystickDirectInput::CheckButtonChange(unsigned int buttonIndex, BYTE oldState, BYTE newState)
@@ -385,6 +491,194 @@ void WinJoystickDirectInput::CheckPOVChange(unsigned int povIndex, DWORD oldStat
         if(POVIsLeft(newState) != POVIsLeft(oldState)) POVIsLeft(newState) ? JoyButtonPressed(povIndex*4+2) : JoyButtonReleased(povIndex*4+2);
         if(POVIsRight(newState) != POVIsRight(oldState)) POVIsRight(newState) ? JoyButtonPressed(povIndex*4+3) : JoyButtonReleased(povIndex*4+3);
     }
+}
+
+void WinJoystickDirectInput::UpdateRumblers()
+{
+    //for rumbling we need to be in exclusive mode.
+    if(!mIsExclusive) return;
+
+    assert(mFFAxes.size() >= mNumRumblers);
+    for(unsigned int i = 0; i < mNumRumblers; ++i)
+    {
+        //only update if something changed (significantly).
+        if(fabs(mRumbleStrengths[i] - mLastRumbleStrengths[i]) < 0.0001) return;
+        mLastRumbleStrengths[i] = mRumbleStrengths[i];
+
+        DIEFFECT effectInfo;
+        ZeroMemory(&effectInfo, sizeof(effectInfo));
+        effectInfo.dwSize = sizeof(DIEFFECT);
+
+        effectInfo.dwStartDelay = 0;
+        effectInfo.dwDuration = INFINITE;
+        effectInfo.dwSamplePeriod = 0;
+        effectInfo.dwGain = DI_FFNOMINALMAX; //no scaling
+        effectInfo.dwTriggerButton = DIEB_NOTRIGGER; //not a button response
+        effectInfo.dwTriggerRepeatInterval = 0; //not applicable
+        effectInfo.cAxes = 1;
+        //DWORD axis = mFFAxes[i];
+        effectInfo.rgdwAxes = &mFFAxes[i];
+        effectInfo.dwFlags = DIEFF_CARTESIAN | DIEFF_OBJECTOFFSETS;
+        effectInfo.lpEnvelope = 0;
+        //long dir = 18000;
+        long dir = 0;//DI_FFNOMINALMAX;
+        effectInfo.rglDirection = &dir;
+
+        DICONSTANTFORCE forceInfo;
+        forceInfo.lMagnitude = Helpers::Round(mRumbleStrengths[i] * DI_FFNOMINALMAX);
+        effectInfo.cbTypeSpecificParams = sizeof(DICONSTANTFORCE);
+        effectInfo.lpvTypeSpecificParams = &forceInfo;
+
+        HRESULT result;
+        //is there already a rumble effect?
+        if(mRumbleEffects.size() <= i)
+        {
+            mRumbleEffects.push_back(NULL);
+            //create
+            if((result = mDevice->CreateEffect(/*mRumbleEffectGUID*/ GUID_ConstantForce, &effectInfo, &mRumbleEffects[i], NULL)) != DI_OK)
+            {
+                std::string err = "Could not create rumble effect for input device \""+mName+"\"! ";
+                switch(result)
+                {
+                    case DIERR_NOTINITIALIZED:
+                    {
+                        err += "Not initialized.";
+                        break;
+                    }
+                    case DIERR_INVALIDPARAM:
+                    {
+                        err += "Invalid parameter!";
+                        break;
+                    }
+                    case DIERR_DEVICENOTREG:
+                    {
+                        err += "Device not registered!";
+                        break;
+                    }
+                    case DIERR_DEVICEFULL:
+                    {
+                        err += "Device full!";
+                        break;
+                    }
+                    default:
+                    {
+                        err += "Unhandled error.";
+                        break;
+                    }
+                }
+                err += " Not rumbling anymore.";
+                Logger::GetDefaultLogger().Warning(err);
+                mNumRumblers = 0;
+                return;
+            }
+        }
+        //update
+        result = mRumbleEffects[i]->SetParameters(&effectInfo, DIEP_TYPESPECIFICPARAMS | DIEP_START);
+        if(result != DI_OK && result != DI_EFFECTRESTARTED)
+        {
+            std::string err = "Could not properly update rumble effect for input device \""+mName+"\"! ";
+            switch(result)
+            {
+                case DI_TRUNCATED:
+                case DI_TRUNCATEDANDRESTARTED:
+                {
+                    err += "Not supported by device.";
+                    break;
+                }
+                case DIERR_NOTINITIALIZED:
+                {
+                    err += "Not initialized.";
+                    break;
+                }
+                case DIERR_INCOMPLETEEFFECT:
+                {
+                    err += "Incomplete effect!";
+                    break;
+                }
+                case DIERR_INPUTLOST:
+                {
+                    err += "Input lost!";
+                    break;
+                }
+                case DIERR_INVALIDPARAM:
+                {
+                    err += "Invalid parameter!";
+                    break;
+                }
+                case DIERR_EFFECTPLAYING:
+                {
+                    err += "Effect playing!";
+                    break;
+                }
+                case DI_DOWNLOADSKIPPED:
+                {
+                    err += "Download skipped!";
+                    break;
+                }
+                default:
+                {
+                    err += "Unhandled error.";
+                    break;
+                }
+            }
+            err += " Not rumbling anymore.";
+            Logger::GetDefaultLogger().Warning(err);
+            mRumbleEffects[i]->Stop();
+            mNumRumblers = 0;
+            return;
+        }
+
+    }
+}
+
+void WinJoystickDirectInput::OnFirstWindowCreated(HWND hwnd)
+{
+    //since we only get this for the first window, this shouldn't be the case.
+    assert(!mIsExclusive);
+
+    //there shouldn't be any uninitialized objects, thus this should be set.
+    assert(mDevice);
+
+    //DISCL_FOREGROUND means we don't receive messages when the window is in the background. I think that's desirable?
+    assert(mDevice->Unacquire() == DI_OK);
+    HRESULT result = mDevice->SetCooperativeLevel(hwnd, DISCL_EXCLUSIVE | DISCL_BACKGROUND);
+    if(result != DI_OK)
+    {
+        std::string err = "Could not get exclusive access to Input Device \""+mName+"\". ";
+        switch(result)
+        {
+            case DIERR_INVALIDPARAM:
+            {
+                err += "Invalid Parameter!";
+                break;
+            }
+            case DIERR_NOTINITIALIZED:
+            {
+                err += "Not initialized!";
+                break;
+            }
+            case E_HANDLE:
+            {
+                err += "E_HANDLE!";
+                break;
+            }
+            default:
+            {
+                //I should rather write a Helpers::LongToString method.
+                std::stringstream ss;
+                ss<<"Unhandled Error "<<result<<"!";
+                err += ss.str();
+                break;
+            }
+        }
+        err += " Force feedback will be unavailable.";
+        Logger::GetDefaultLogger().Warning(err);
+    }
+    else
+    {
+        mIsExclusive = true;
+    }
+    assert(mDevice->Acquire() == DI_OK);
 }
 
 } // namespace Windows

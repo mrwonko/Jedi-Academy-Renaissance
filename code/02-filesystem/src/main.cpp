@@ -30,7 +30,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <jar/core/FileSystem.hpp>
 #include <jar/core/Lua.hpp>
 
-
 int main(int argc, char** argv)
 {
     //create Logger

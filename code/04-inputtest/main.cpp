@@ -83,7 +83,7 @@ int main(int argc, char** argv)
     gp0_r_stick_val_x.SetSize(12);
     gp0_r_stick_val_y.SetSize(12);
 
-
+/*
     sf::Shape gp1_l_stick = sf::Shape::Circle(0, 0, 16, sf::Color::White);
     gp1_l_stick.SetPosition(100, 300);
     sf::String gp1_l_stick_val_x("X: 0");
@@ -121,8 +121,13 @@ int main(int argc, char** argv)
     gp2_r_stick_val_x.SetSize(12);
     gp2_r_stick_val_y.SetSize(12);
 
+*/
+
     //whether the user wants to be informed about mouse moves - toggled with m
     bool moveinfo = false;
+
+    float amount = 0;
+    bool more = true;
 
     while(App.IsOpened())
     {
@@ -155,6 +160,7 @@ int main(int argc, char** argv)
                     //std::cout<<"Joystick "<<e.JoyAxis.JoyIndex<<" (" << idm.GetJoystick(e.JoyAxis.JoyIndex)->GetName() << ") Axis "<<e.JoyAxis.Axis<<" moved to position "<<(e.JoyAxis.Position + addme) / (1 - DEADZONE) <<"."<<std::endl;
                     //std::cout<<"Joystick "<<e.JoyAxis.JoyIndex<<" (" << idm.GetJoystick(e.JoyAxis.JoyIndex)->GetName() << ") Axis "<<e.JoyAxis.Axis<<" moved to position "<< -e.JoyAxis.Position <<"."<<std::endl;
 
+#if 0
                     //upper left - XInput
                     if(e.JoyAxis.JoyIndex == 0)
                     {
@@ -183,6 +189,33 @@ int main(int argc, char** argv)
                             idm.GetJoystick(e.JoyAxis.JoyIndex)->SetRumbleStrength(e.JoyAxis.Axis-4, e.JoyAxis.Position);
                         }
                     }
+#else
+                    //upper left - DirectInput /w Vibration
+                    if(e.JoyAxis.JoyIndex == 0)
+                    {
+                        if(e.JoyAxis.Axis == 0)
+                        {
+                            gp0_l_stick.SetPosition(100+50*e.JoyAxis.Position, gp0_l_stick.GetPosition().y);
+                            gp0_l_stick_val_x.SetText("X: " + jar::Helpers::FloatToString(e.JoyAxis.Position));
+                        }
+                        else if(e.JoyAxis.Axis == 1)
+                        {
+                            gp0_l_stick.SetPosition(gp0_l_stick.GetPosition().x, 100+50*e.JoyAxis.Position);
+                            gp0_l_stick_val_y.SetText("Y: " + jar::Helpers::FloatToString(e.JoyAxis.Position));
+                        }
+                        if(e.JoyAxis.Axis == 4)
+                        {
+                            gp0_r_stick.SetPosition(300+50*e.JoyAxis.Position, gp0_r_stick.GetPosition().y);
+                            gp0_r_stick_val_x.SetText("X: " + jar::Helpers::FloatToString(e.JoyAxis.Position));
+                        }
+                        else if(e.JoyAxis.Axis == 5)
+                        {
+                            gp0_r_stick.SetPosition(gp0_r_stick.GetPosition().x, 100+50*e.JoyAxis.Position);
+                            gp0_r_stick_val_y.SetText("Y: " + jar::Helpers::FloatToString(e.JoyAxis.Position));
+                        }
+                    }
+#endif
+                    /*
                     //lower left - DI Gamepad
                     if(e.JoyAxis.JoyIndex == 1)
                     {
@@ -232,6 +265,7 @@ int main(int argc, char** argv)
                         }
 
                     }
+                    */
                     break;
                 }
                 case jar::Event::KeyPressed:
@@ -284,6 +318,7 @@ int main(int argc, char** argv)
         App.Draw(gp0_r_stick_val_x);
         App.Draw(gp0_r_stick_val_y);
 
+/*
         App.Draw(gp1_l_stick);
         App.Draw(gp1_l_stick_val_x);
         App.Draw(gp1_l_stick_val_y);
@@ -298,11 +333,29 @@ int main(int argc, char** argv)
         //App.Draw(gp2_r_stick);
         //App.Draw(gp2_r_stick_val_x);
         //App.Draw(gp2_r_stick_val_y);
+*/
 
         App.Display();
 
         sf::Sleep(0.01f);
         core.Update(10);
+
+        idm.GetJoystick(0)->SetRumbleStrength(0, amount);
+        idm.GetJoystick(0)->SetRumbleStrength(1, amount);
+        if(more) amount += 0.01f;
+        else amount -= 0.01f;
+        if(amount < 0.0f)
+        {
+            amount = 0.0f;
+            more = true;
+            logger.Log("More!");
+        }
+        if(amount > 1.0f)
+        {
+            amount = 1.0f;
+            more = false;
+            logger.Log("Less!");
+        }
     }
 
     core.Deinit();

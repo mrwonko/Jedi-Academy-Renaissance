@@ -54,7 +54,7 @@ if not onlyArchives and not noBaseMods then
 	end
 end
 -- then mount the pk3 archives in base. I don't apply my mod code to them because I'm lazy and because the filenames wouldn't be GUIDs anymore.
-for filename in StringVectorIterator( jar.GetFilesInDirectory("../base/") ) do
+for filename in jar.GetFilesInDirectory("../base/") do
 	if string.lower(string.sub(filename, -4)) == ".pk3" then
 		if not noBaseMods or string.match(string.lower(filename), "assets%d%.pk3") then
 			if jar.fs.Mount("../Base/" .. filename, false) then
@@ -92,7 +92,7 @@ jar.fs.Unmount = nil
 jar.Logger.GetDefaultLogger():Info("", 1)
 jar.Logger.GetDefaultLogger():Info("== Doing initializations ==", 1)
 
-for filename in StringVectorIterator(jar.fs.GetFilesInDirectory("code/init")) do
+for filename in jar.fs.GetFilesInDirectory("code/init") do
 	if string.lower(string.sub(filename, -4)) == ".lua" then
 		jar.Logger.GetDefaultLogger():Info("Executing code/init/" .. filename, 2)
 		local success, err = pcall(dofile, "code/init/" .. filename)

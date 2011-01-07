@@ -15,6 +15,7 @@
 		<Project filename="03-testsnshit/03-testsnshit.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
+			<Depends filename="jarlib/jar-graphics.cbp" />
 		</Project>
 		<Project filename="04-inputtest/04-inputtest.cbp" active="1">
 			<Depends filename="jarlib/jar-core.cbp" />

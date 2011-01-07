@@ -1,8 +1,6 @@
 --[[! console variables.
 --]]
 
-require("STLHelpers.lua")
-
 CVar =
 {
 	-- the values 

@@ -30,10 +30,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/out_value_policy.hpp>
+#include <luabind/iterator_policy.hpp>
 
 #include <physfs.h> //for PHYSFS_File
 #include <unzip.h>
-#include <string>L
+#include <string>
 
 namespace jar
 {
@@ -60,6 +61,7 @@ static unzFile MyUnzOpen(const std::string& filename)
     return unzOpen((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str());
 }
 
+//currently not used, subject to deletion
 void BindFileSystem(lua_State* L)
 {
     //minizip
@@ -92,22 +94,29 @@ void BindFileSystem(lua_State* L)
         luabind::def("GetLastError", &fs::GetLastError),
         luabind::def("Mount", (Mount1Signature) &fs::Mount),
         luabind::def("Mount", (Mount2Signature) &fs::Mount),
-        luabind::def("Unmount", &fs::Unmount),
         luabind::def("OpenRead", &fs::OpenRead),
         luabind::def("OpenWrite", &fs::OpenWrite),
-        luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory),
-        luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory),
+        luabind::def("Unmount", &fs::Unmount),
+        luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory, luabind::return_stl_iterator),
+        luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory, luabind::return_stl_iterator)
+    ]
+    ];
+
+    luabind::module(L, "jar")
+    [
+    luabind::namespace_("fs")
+    [
         luabind::class_<PHYSFS_File>("File")
             .def("Close", &fs::Close)
-            //2nd parameter is a pure out reference -> used as return value
-            //i.e. you do "local success, content = file:GetContent()"
-            .def("GetContent", &fs::GetCurrentFileContent, luabind::pure_out_value(_2))
             .def("ReadChar", &fs::ReadChar, luabind::pure_out_value(_2))
             .def("ReadString", (ReadString1Signature) &fs::ReadString, luabind::pure_out_value(_2))
             .def("ReadString", (ReadString2Signature) &fs::ReadString, luabind::pure_out_value(_3))
             .def("ReadFloat", &fs::ReadFloat, luabind::pure_out_value(_2))
             .def("ReadInt", &fs::ReadInt, luabind::pure_out_value(_2))
             .def("ReadUnsignedInt", &fs::ReadUnsignedInt, luabind::pure_out_value(_2))
+            //2nd parameter is a pure out reference -> used as return value
+            //i.e. you do "local success, content = file:GetContent()"
+            .def("GetContent", &fs::GetCurrentFileContent, luabind::pure_out_value(_2))
             .def("EOF", &fs::EndOfFile)
             .def("Seek", &fs::Seek)
             .def("Tell", &fs::Tell)

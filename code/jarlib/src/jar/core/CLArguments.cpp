@@ -112,15 +112,16 @@ namespace jar
     {
         // the position of the argument, stays -1 if nothing is found
         int position = -1;
-        std::string pattern = caseSensitive ? requestedArgument : Helpers::ToLower(requestedArgument);
+        std::string pattern = requestedArgument;
+        if(!caseSensitive) Helpers::ToLower(pattern);
         //loop through the arguments, looking for the specified argument
         for(unsigned int i = 0; i < mArguments.size(); ++i)
         {
+            std::string copy(mArguments.at(i));
             //if this argument is the one which was requested
-            if(
-                (caseSensitive && mArguments.at(i) == pattern ) ||
-                (!caseSensitive && Helpers::ToLower(mArguments.at(i)) == pattern )
-              )
+            if( (caseSensitive && copy == pattern ) ||
+                (!caseSensitive && Helpers::ToLower(copy) == pattern)
+               )
             {
                 //save its position and exit the loop
                 position = i;

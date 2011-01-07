@@ -122,5 +122,7 @@ namespace jar
             bool mWindows;
     };
 
+    template<> JARCOREAPI CLArguments* Singleton<CLArguments>::mSingleton;
+
 }
 #endif // JAR_CORE_CLARGUMENTS_HPP

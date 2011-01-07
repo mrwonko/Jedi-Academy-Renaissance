@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/core/Time.hpp"
+#include "jar/core/Helpers.hpp"
 #include "jar/graphics/RenderWindow.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
@@ -33,7 +34,7 @@ namespace jar
 
 static TimeType GetFrameTime(const jar::RenderWindow& window)
 {
-    return window.GetFrameTime() * TimeTypesPerSecond;
+    return jar::Helpers::Round(window.GetFrameTime() * TimeTypesPerSecond);
 }
 
 void RenderWindow::Luabind(lua_State* L)

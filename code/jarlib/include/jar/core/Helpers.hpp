@@ -143,8 +143,10 @@ namespace jar
 		 **/
 		static std::string RemoveCStyleComments(const std::string& textWithComments);
 
-		/// \brief Converts a string to lower case
-		static std::string ToLower(const std::string& text);
+		/// \brief Converts a string to lower case. Changes the supplied string!
+		static std::string& ToLower(std::string& text);
+		/// \brief Converts a string to upper case. Changes the supplied string!
+		static std::string& ToUpper(std::string& text);
 
 		/**
 		 *  \brief replaces something in a string with something else.
@@ -171,7 +173,7 @@ namespace jar
 		 **/
 		 static std::vector<std::string> GetDirectoriesInDirectory(std::string directoryPath);
 
-		 static const bool CaseInsensitiveStringLessThan(const std::string& str1, const std::string& str2);
+		 static const bool CaseInsensitiveStringLessThan(std::string str1, std::string str2);
 	};
 }
 

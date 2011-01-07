@@ -31,6 +31,7 @@ namespace jar {
 class InputImpl;
 class InputDeviceManager;
 class EventManager;
+class RenderWindow;
 
 class JARINPUTAPI Input : public Singleton<Input>
 {
@@ -43,6 +44,9 @@ class JARINPUTAPI Input : public Singleton<Input>
 
     private:
         InputImpl* mImpl;
+
+        friend class RenderWindow;
+        void OnWindowCreated();
 };
 
 template<> JARINPUTAPI Input* Singleton<Input>::mSingleton;

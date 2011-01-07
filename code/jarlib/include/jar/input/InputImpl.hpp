@@ -59,7 +59,7 @@ namespace Windows
     \bug On Windows input will only work for one window - there's no telling which.
 **/
 
-class InputImpl : public Component, public Updatable
+class InputImpl : public Component
 {
     public:
         InputImpl();
@@ -71,10 +71,10 @@ class InputImpl : public Component, public Updatable
         virtual const bool Deinit();
         const bool DeinitJoysticks();
 
-        virtual void Update(TimeType deltaT);
-
         InputDeviceManager& GetInputDeviceManager() { assert(mInputDeviceManager); return *mInputDeviceManager; }
         EventManager& GetEventManager() { assert(mEventManager); return *mEventManager; }
+
+        void OnWindowCreated();
 
     private:
         InputDeviceManager* mInputDeviceManager;
@@ -85,6 +85,8 @@ class InputImpl : public Component, public Updatable
         //DirectInput
         LPDIRECTINPUT8 mDirectInput;
         std::vector<Windows::WinJoystickDirectInput*> mDirectInputJoysticks;
+
+        bool mNoWindowExists;
 #else
 #warning input not yet supported on this OS!
 #endif

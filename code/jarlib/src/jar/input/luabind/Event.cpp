@@ -154,7 +154,7 @@ void Event::Luabind(lua_State* L)
 
             ],
 
-        luabind::class_<Event>("Event")
+        luabind::class_<jar::Event>("Event")
             .def(luabind::constructor<>())
             .def_readonly("Type", &Event::Type)
             //the event union - depends on Type.
