@@ -77,6 +77,8 @@ InputImpl::~InputImpl()
 
 const bool InputImpl::Init()
 {
+    Logger::GetDefaultLogger().Info("- Initializing Input component...", 1);
+
     mEventManager = new EventManager();
     if(!mEventManager)
     {
@@ -97,7 +99,9 @@ const bool InputImpl::Init()
     }
 
     Event::Luabind(Core::GetSingleton().GetLua().GetState());
-    Logger::GetDefaultLogger().Info("Exposed Event System to Lua", 1);
+    Logger::GetDefaultLogger().Info("Exposed Event System to Lua", 2);
+
+    Logger::GetDefaultLogger().Info("- Input component initialized...", 1);
 
     return true;
 }

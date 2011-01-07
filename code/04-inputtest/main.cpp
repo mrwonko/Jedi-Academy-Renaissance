@@ -48,11 +48,11 @@ int main(int argc, char** argv)
 
     //initialize core & other components
     jar::Core core;
-    logger.Log("Created core.");
+    logger.Log("Created core component.");
     jar::Input input; // just create this once (after core), no need to do anything else (except init core).
-    logger.Log("Created input.");
+    logger.Log("Created input component.");
     jar::Graphics graphics; // just create this once (after core), no need to do anything else (except init core).
-    logger.Log("Created graphics.");
+    logger.Log("Created graphics component.");
 
     if(!core.Init(argc, argv, "../"))
     {

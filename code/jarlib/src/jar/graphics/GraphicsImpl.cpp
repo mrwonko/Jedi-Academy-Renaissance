@@ -41,9 +41,11 @@ GraphicsImpl::~GraphicsImpl()
 
 const bool GraphicsImpl::Init()
 {
+    Logger::GetDefaultLogger().Info("- Initializing Graphics component...", 1);
     BindSFMLGraphics(Core::GetSingleton().GetLua().GetState());
     RenderWindow::Luabind(Core::GetSingleton().GetLua().GetState());
-    Logger::GetDefaultLogger().Info("Exposed Graphics System to Lua", 1);
+    Logger::GetDefaultLogger().Info("Exposed Graphics System to Lua", 2);
+    Logger::GetDefaultLogger().Info("- Graphics component successfully initialized.", 1);
     return true;
 }
 

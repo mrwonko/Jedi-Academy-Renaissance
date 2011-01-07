@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/CoreImpl.hpp"
 #include "jar/Core.hpp"
 
+
 namespace jar {
 
 Component::Component()
