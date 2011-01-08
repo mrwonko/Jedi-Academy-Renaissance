@@ -71,14 +71,14 @@ struct JARINPUTAPI Event
 
     /** \brief Info for Event of EvenType KeyPressed or KeyReleased
     **/
-    struct KeyEvent
+    struct JARINPUTAPI KeyEvent
     {
         Key::Code Code;
     };
 
     /** \brief Info for Event of EventType MouseMoved
     **/
-    struct MouseMovedEvent
+    struct JARINPUTAPI MouseMovedEvent
     {
         int X; ///< X-Position, from left side
         int Y; ///< Y-Position, from top
@@ -86,21 +86,21 @@ struct JARINPUTAPI Event
 
     /** \brief Info for Event of EventType MouseWheelMoved
     **/
-    struct MouseWheelEvent
+    struct JARINPUTAPI MouseWheelEvent
     {
         int Delta;
     };
 
     /** \brief Info for Event of EventType MouseButtonPressed or MouseButtonReleased
     **/
-    struct MouseButtonEvent
+    struct JARINPUTAPI MouseButtonEvent
     {
         unsigned int Button; ///< The button index, 0 = LMB, 1 = RMB, 2 = MMB etc.
     };
 
     /** \brief Info for Event of EventType JoyButtonPressed or JoyButtonReleased
     **/
-    struct JoyButtonEvent
+    struct JARINPUTAPI JoyButtonEvent
     {
         unsigned int JoyIndex; ///< The joystick index
         unsigned int Button; ///< the button index
@@ -108,7 +108,7 @@ struct JARINPUTAPI Event
 
     /** \brief Info for Event of EventType JoyAxisMoved
     **/
-    struct JoyAxisEvent
+    struct JARINPUTAPI JoyAxisEvent
     {
         unsigned int JoyIndex; ///< The joystick index
         unsigned int Axis; ///< The axis index

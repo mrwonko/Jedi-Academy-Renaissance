@@ -155,14 +155,9 @@ void Event::Luabind(lua_State* L)
 
             ],
 
-        luabind::class_<jar::Event::JoyAxisEvent>("JoyAxisEvent")
-            /*.def_readonly("JoyIndex", &jar::Event::JoyAxisEvent::JoyIndex)
-            .def_readonly("Axis", &jar::Event::JoyAxisEvent::Axis)
-            .def_readonly("Position", &jar::Event::JoyAxisEvent::Position)*/,
-
         luabind::class_<jar::Event>("Event")
             .def(luabind::constructor<>())
-            .def_readonly("Type", &Event::Type) /*
+            .def_readonly("Type", &Event::Type)
             //the event union - depends on Type.
             .def_readonly("JoyButton", &Event::JoyButton)
             .def_readonly("JoyAxis", &Event::JoyAxis)
@@ -173,27 +168,33 @@ void Event::Luabind(lua_State* L)
             .scope
             [
                 luabind::class_<Event::JoyAxisEvent>("JoyAxisEvent")
+                    .def(luabind::constructor<>())
                     .def_readonly("JoyIndex", &Event::JoyAxisEvent::JoyIndex)
                     .def_readonly("Axis", &Event::JoyAxisEvent::Axis)
                     .def_readonly("Position", &Event::JoyAxisEvent::Position),
 
                 luabind::class_<Event::JoyButtonEvent>("JoyButtonEvent")
+                    .def(luabind::constructor<>())
                     .def_readonly("JoyIndex", &Event::JoyButtonEvent::JoyIndex)
                     .def_readonly("Button", &Event::JoyButtonEvent::Button),
 
                 luabind::class_<Event::KeyEvent>("KeyEvent")
+                    .def(luabind::constructor<>())
                     .def_readonly("Code", &Event::KeyEvent::Code),
 
                 luabind::class_<Event::MouseButtonEvent>("MouseButtonEvent")
+                    .def(luabind::constructor<>())
                     .def_readonly("Button", &Event::MouseButtonEvent::Button),
 
                 luabind::class_<Event::MouseMovedEvent>("MouseMovedEvent")
+                    .def(luabind::constructor<>())
                     .def_readonly("X", &Event::MouseMovedEvent::X)
                     .def_readonly("X", &Event::MouseMovedEvent::Y),
 
                 luabind::class_<Event::MouseWheelEvent>("MouseWheelEvent")
+                    .def(luabind::constructor<>())
                     .def_readonly("Delta", &Event::MouseWheelEvent::Delta)
-            ]*/
+            ]
             .enum_("EventType")
             [
                 luabind::value("Closed", Event::Closed),
