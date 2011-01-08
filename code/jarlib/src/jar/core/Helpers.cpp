@@ -228,30 +228,35 @@ namespace jar
     }
 #endif
 
-    std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
+    namespace
+    {
+        std::vector<std::string> g_tempVec;
+    }
+
+    std::vector<std::string>& Helpers::GetFilesInDirectory(std::string directoryPath)
     {
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
-        std::vector<std::string> filenames;
+        g_tempVec.clear();
 #if defined(_WIN32)
-        filenames = GetStuffInDirectory(directoryPath, &IsFile);
+        g_tempVec = GetStuffInDirectory(directoryPath, &IsFile);
 #else
         Logger::GetDefaultLogger().Error("Helpers::GetFilesInDirectory() not implemented for current platform!");
 #warning Helpers::GetFilesInDirectory() not implemented for this platform
 #endif
-        return filenames;
+        return g_tempVec;
     }
 
-    std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
+    std::vector<std::string>& Helpers::GetDirectoriesInDirectory(std::string directoryPath)
     {
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
-        std::vector<std::string> filenames;
+        g_tempVec.clear();
 #if defined(_WIN32)
-        filenames = GetStuffInDirectory(directoryPath, &IsDirectory);
+        g_tempVec = GetStuffInDirectory(directoryPath, &IsDirectory);
 #else
         Logger::GetDefaultLogger().Error("Helpers::GetDirectoriesInDirectory() not implemented for current platform!");
 #warning Helpers::GetFilesInDirectory() not implemented for this platform
 #endif
-        return filenames;
+        return g_tempVec;
     }
 
     const bool Helpers::CaseInsensitiveStringLessThan(std::string str1, std::string str2)

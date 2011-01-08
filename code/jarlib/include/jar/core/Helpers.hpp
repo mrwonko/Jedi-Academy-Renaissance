@@ -166,12 +166,12 @@ namespace jar
 		/** \brief Returns all files in a given directory, relative to the g_rootDir, in alphabetical order
             \return vector of filenames (without path)
 		 **/
-		 static std::vector<std::string> GetFilesInDirectory(std::string directoryPath);
+		 static std::vector<std::string>& GetFilesInDirectory(std::string directoryPath);
 
 		/** \brief Returns all directories in a given directory except those starting with ".", relative to the g_rootDir, in alphabetical order
             \return vector of filenames (without path)
 		 **/
-		 static std::vector<std::string> GetDirectoriesInDirectory(std::string directoryPath);
+		 static std::vector<std::string>& GetDirectoriesInDirectory(std::string directoryPath);
 
 		 static const bool CaseInsensitiveStringLessThan(std::string str1, std::string str2);
 	};

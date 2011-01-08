@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/EventManager.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
+#include <luabind/out_value_policy.hpp>
 
 //there's a damn #define N somewhere in boost! wth?
 #ifdef N
@@ -154,9 +155,14 @@ void Event::Luabind(lua_State* L)
 
             ],
 
+        luabind::class_<jar::Event::JoyAxisEvent>("JoyAxisEvent")
+            /*.def_readonly("JoyIndex", &jar::Event::JoyAxisEvent::JoyIndex)
+            .def_readonly("Axis", &jar::Event::JoyAxisEvent::Axis)
+            .def_readonly("Position", &jar::Event::JoyAxisEvent::Position)*/,
+
         luabind::class_<jar::Event>("Event")
             .def(luabind::constructor<>())
-            .def_readonly("Type", &Event::Type)
+            .def_readonly("Type", &Event::Type) /*
             //the event union - depends on Type.
             .def_readonly("JoyButton", &Event::JoyButton)
             .def_readonly("JoyAxis", &Event::JoyAxis)
@@ -187,7 +193,7 @@ void Event::Luabind(lua_State* L)
 
                 luabind::class_<Event::MouseWheelEvent>("MouseWheelEvent")
                     .def_readonly("Delta", &Event::MouseWheelEvent::Delta)
-            ]
+            ]*/
             .enum_("EventType")
             [
                 luabind::value("Closed", Event::Closed),
@@ -208,7 +214,7 @@ void Event::Luabind(lua_State* L)
             [
                 luabind::def("GetSingleton", &EventManager::GetSingleton)
             ]
-            .def("GetEvent", &EventManager::GetEvent)
+            .def("GetEvent", &EventManager::GetEvent, luabind::pure_out_value(_2))
 
     ];
 }

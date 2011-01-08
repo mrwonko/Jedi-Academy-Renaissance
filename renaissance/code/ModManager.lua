@@ -20,11 +20,12 @@ end
 -- scans /addons/ for mods.
 -- basically a private method of ModManager
 local function AddAvailableMods(self)
+	jar.Logger.GetDefaultLogger():Info("Checking for available mods", 3)
 	--mods are in ./addons/, either directories or .pk3 or .zip (some people can't/won't rename)
 	
 	--get files in ./addons/
 	for filename in jar.GetFilesInDirectory(g_addonDir) do
-		assert(filename ~= nil)
+		assert(filename ~= nil and filename ~= "")
 		--only zip/pk3 files are interesting
 		if string.sub(filename, -4) == ".zip" or string.sub(filename, -4) == ".pk3" then
 			--get their info & insert them
@@ -41,6 +42,7 @@ local function AddAvailableMods(self)
 	
 	--get directories in ./addons/
 	for filename in jar.GetDirectoriesInDirectory(g_addonDir) do
+		assert(filename ~= nil and filename ~= "")
 		--get their info & insert them
 		local mod, err = Mod:New(filename .. "/")
 		if not mod then
@@ -55,6 +57,7 @@ end
 -- checks which mods have been disabled by the user
 -- basically a private method of ModManager
 local function LoadAndApplyConfig(self)
+	jar.Logger.GetDefaultLogger():Info("loading disabled mod config", 3)
 	
 	-- get inactive mods
 	local file, err = loadfile("config/InactiveMods.lua")

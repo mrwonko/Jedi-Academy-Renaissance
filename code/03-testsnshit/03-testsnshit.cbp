@@ -17,9 +17,10 @@
 					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="jar-core-d" />
-					<Add library="jar-input-d" />
 					<Add library="jar-graphics-d" />
+					<Add library="jar-input-d" />
+					<Add library="jar-core-d" />
+					<Add library="sfml-system-d" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -33,9 +34,10 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="jar-core" />
-					<Add library="jar-input" />
 					<Add library="jar-graphics" />
+					<Add library="jar-input" />
+					<Add library="jar-core" />
+					<Add library="sfml-system" />
 				</Linker>
 			</Target>
 		</Build>
@@ -46,8 +48,6 @@
 			<Add directory="..\jarlib\include" />
 		</Compiler>
 		<Linker>
-			<Add library="luabind-s" />
-			<Add library="lua" />
 			<Add directory="..\jarlib\lib" />
 		</Linker>
 		<Unit filename="src\main.cpp" />

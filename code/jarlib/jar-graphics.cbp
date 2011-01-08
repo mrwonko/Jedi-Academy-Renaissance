@@ -23,7 +23,7 @@
 					<Add library="sfml-graphics-d" />
 					<Add library="sfml-window-d" />
 					<Add library="sfml-system-d" />
-					<Add library="luabind-s-d" />
+					<Add library="luabind-d" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -43,12 +43,13 @@
 					<Add library="sfml-graphics" />
 					<Add library="sfml-window" />
 					<Add library="sfml-system" />
-					<Add library="luabind-s" />
+					<Add library="luabind" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-DJAR_GRAPHICS_LIBRARY_BUILD" />
+			<Add option="-DLUABIND_DYNAMIC_LINK" />
 			<Add directory="include" />
 		</Compiler>
 		<Linker>

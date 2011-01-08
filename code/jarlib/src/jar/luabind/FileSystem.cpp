@@ -98,14 +98,7 @@ void BindFileSystem(lua_State* L)
         luabind::def("OpenWrite", &fs::OpenWrite),
         luabind::def("Unmount", &fs::Unmount),
         luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory, luabind::return_stl_iterator),
-        luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory, luabind::return_stl_iterator)
-    ]
-    ];
-
-    luabind::module(L, "jar")
-    [
-    luabind::namespace_("fs")
-    [
+        luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory, luabind::return_stl_iterator),
         luabind::class_<PHYSFS_File>("File")
             .def("Close", &fs::Close)
             .def("ReadChar", &fs::ReadChar, luabind::pure_out_value(_2))

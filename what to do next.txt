@@ -4,3 +4,5 @@ Console
 Console commands
 Menus
 Profiles
+
+Dummy non-Windows joystick class (for InputDeviceManager::GetJoystick())

@@ -19,7 +19,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="user32" />
-					<Add library="luabind-s-d" />
+					<Add library="luabind-d" />
 					<Add library="minizip-d" />
 					<Add library="sfml-system-d" />
 				</Linker>
@@ -37,7 +37,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="user32" />
-					<Add library="luabind-s" />
+					<Add library="luabind" />
 					<Add library="minizip" />
 					<Add library="sfml-system" />
 				</Linker>
@@ -45,6 +45,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-DJAR_CORE_LIBRARY_BUILD" />
+			<Add option="-DLUABIND_DYNAMIC_LINK" />
 			<Add directory="include" />
 		</Compiler>
 		<Linker>

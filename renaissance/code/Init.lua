@@ -2,6 +2,7 @@
 jar.fs.Mount("config/", "/config/", false) --append = false -> look here first!
 
 --Initialize CVars (needs to be done first so log_level is set correctly)
+jar.Logger.GetDefaultLogger():Info("Initializing CVar system", 3)
 require("CVarManager.lua")
 g_CVarManager = CVarManager:New()
 
@@ -48,11 +49,13 @@ local onlyArchives = g_CVarManager:GetCVar("fs_baseOnlyArchives")
 -- first mount unzipped stuff in base, if enabled
 if not onlyArchives and not noBaseMods then
 	if jar.fs.Mount("../Base/", false) then
-		jar.Logger.GetDefaultLogger():Info("Mounted Base/", 0	)
+		jar.Logger.GetDefaultLogger():Info("Mounted Base/", 0)
 	else
 		jar.Logger.GetDefaultLogger():Error("Error mounting Base/: " .. jar.fs.GetLastError())
 	end
 end
+
+jar.Logger.GetDefaultLogger():Info("Mounting base assets", 3)
 -- then mount the pk3 archives in base. I don't apply my mod code to them because I'm lazy and because the filenames wouldn't be GUIDs anymore.
 for filename in jar.GetFilesInDirectory("../base/") do
 	if string.lower(string.sub(filename, -4)) == ".pk3" then
@@ -70,6 +73,7 @@ end
 -- ==Mods==
 
 -- init Mod Manager
+jar.Logger.GetDefaultLogger():Info("Initializing mod manager", 3)
 require("ModManager.lua")
 
 g_modManager = ModManager:New()
@@ -90,7 +94,7 @@ jar.fs.Unmount = nil
 
 --execute init code, i.e. all .lua files in code/init/
 jar.Logger.GetDefaultLogger():Info("", 1)
-jar.Logger.GetDefaultLogger():Info("== Doing initializations ==", 1)
+jar.Logger.GetDefaultLogger():Info("== Executing lua files in code/init/ ==", 1)
 
 for filename in jar.fs.GetFilesInDirectory("code/init") do
 	if string.lower(string.sub(filename, -4)) == ".lua" then
@@ -103,5 +107,5 @@ for filename in jar.fs.GetFilesInDirectory("code/init") do
 end
 
 jar.Logger.GetDefaultLogger():Info("", 1)
-jar.Logger.GetDefaultLogger():Info("== Executing main.lua ==", 1)
+jar.Logger.GetDefaultLogger():Info("== Executing code/main.lua ==", 1)
 dofile("code/Main.lua")

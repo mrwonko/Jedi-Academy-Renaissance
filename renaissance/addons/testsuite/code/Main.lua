@@ -4,8 +4,8 @@ g_CVarManager.CVars["log_level"]:Print()
 
 print ""
 
-local str, array = g_CVarManager:AutoComplete("te")
-print("/te")
+local str, array = g_CVarManager:AutoComplete("f")
+print("/f")
 print("/" .. str)
 for _, item in ipairs(array) do
 	print("  " .. item)
@@ -14,12 +14,17 @@ end
 local running = true
 while running do
 	local e = jar.Event
-	while jar.EventManager.GetSingleton():GetEvent(e) do
-		if e.Type == jar.Event.Closed then
+	while true do
+		local success, event = jar.EventManager.GetSingleton():GetEvent()
+		if not success then
+			break
+		end
+		
+		if event.Type == jar.Event.Closed then
 			running = false
 		end
 	end
-	Core.GetSingleton():Update(g_Window:GetFrameTime())
+	jar.Core.GetSingleton():Update(10) --g_Window:GetFrameTime())
 end
 
 --g_CVarManager:SaveCVars()

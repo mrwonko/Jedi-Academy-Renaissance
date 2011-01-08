@@ -225,70 +225,77 @@ const int64_t Tell(PHYSFS_File* file)
     return PHYSFS_tell(file);
 }
 
-struct StringSetComparator //Case insensitive
+namespace
 {
-    bool operator()(const std::string& lhs, const std::string& rhs) const
+    struct StringSetComparator //Case insensitive
     {
-        return Helpers::CaseInsensitiveStringLessThan(lhs, rhs);
-    }
-};
+        bool operator()(const std::string& lhs, const std::string& rhs) const
+        {
+            return Helpers::CaseInsensitiveStringLessThan(lhs, rhs);
+        }
+    };
 
-typedef std::set<std::string, StringSetComparator> caseInsStringSet;
+    typedef std::set<std::string, StringSetComparator> caseInsStringSet;
 
-//callback for file/directory enumeration
-//onlyFiles = true -> we want only files
-//onlyFiles = false -> we want only directories!
-static void AddToSet(caseInsStringSet& set, std::string dir, std::string filename, const bool onlyFiles)
-{
-    //append a / to the directory if it isn't already
-    if(dir.length() && dir[dir.length()-1] != '/')
+    //callback for file/directory enumeration
+    //onlyFiles = true -> we want only files
+    //onlyFiles = false -> we want only directories!
+    static void AddToSet(caseInsStringSet& set, std::string dir, std::string filename, const bool onlyFiles)
     {
-        dir += '/';
+        //append a / to the directory if it isn't already
+        if(dir.length() && dir[dir.length()-1] != '/')
+        {
+            dir += '/';
+        }
+
+        //is this a file/directory and do we want that?
+        if(PHYSFS_isDirectory((dir+filename).c_str()) == onlyFiles)
+        {
+            //it's a file and we want directories or vice versa - abort
+            return;
+        }
+        set.insert(filename);
     }
 
-    //is this a file/directory and do we want that?
-    if(PHYSFS_isDirectory((dir+filename).c_str()) == onlyFiles)
+    //callback function for directory enumeration
+    static void AddDirToSet(void* setPtrVoid, const char* dir, const char* file)
     {
-        //it's a file and we want directories or vice versa - abort
-        return;
+        AddToSet(*static_cast<caseInsStringSet* >(setPtrVoid), dir, file, false);
     }
-    set.insert(filename);
+
+    //callback function for file enumeration
+    static void AddFileToSet(void* vecPtrVoid, const char* dir, const char* file)
+    {
+        AddToSet(*static_cast<caseInsStringSet* >(vecPtrVoid), dir, file, true);
+    }
+
+    //luabind only gets the iterators of return_stl_iterators functions, i.e. the vector itself is not saved, thus the iterators don't work anymore unless I've got a vector that still exists
+    static std::vector<std::string> g_stringVec;
 }
 
-//callback function for directory enumeration
-static void AddDirToSet(void* setPtrVoid, const char* dir, const char* file)
-{
-    AddToSet(*static_cast<caseInsStringSet* >(setPtrVoid), dir, file, false);
-}
-
-//callback function for file enumeration
-static void AddFileToSet(void* vecPtrVoid, const char* dir, const char* file)
-{
-    AddToSet(*static_cast<caseInsStringSet* >(vecPtrVoid), dir, file, true);
-}
-
-const std::vector<std::string> GetFilesInDirectory(const std::string& dir)
+const std::vector<std::string>& GetFilesInDirectory(const std::string& dir)
 {
     caseInsStringSet set;
     PHYSFS_enumerateFilesCallback(dir.c_str(), AddFileToSet, static_cast<void*>(&set));
-    std::vector<std::string> result;
+    g_stringVec.clear();
     for(caseInsStringSet::iterator it = set.begin(); it != set.end(); ++it)
     {
-        result.push_back(*it);
+        g_stringVec.push_back(*it);
     }
-    return result;
+    return g_stringVec;
 }
 
-const std::vector<std::string> GetDirectoriesInDirectory(const std::string& dir)
+const std::vector<std::string>& GetDirectoriesInDirectory(const std::string& dir)
 {
     caseInsStringSet set;
     PHYSFS_enumerateFilesCallback(dir.c_str(), AddDirToSet, static_cast<void*>(&set));
-    std::vector<std::string> result;
+    g_stringVec.clear();
     for(caseInsStringSet::iterator it = set.begin(); it != set.end(); ++it)
     {
-        result.push_back(*it);
+        g_stringVec.push_back(*it);
+        //Logger::GetDefaultLogger().Log(*it);
     }
-    return result;
+    return g_stringVec;
 }
 
 }

@@ -98,6 +98,7 @@ const bool InputImpl::Init()
         return false;
     }
 
+    Logger::GetDefaultLogger().Info("Exposing Event System to Lua...", 2);
     Event::Luabind(Core::GetSingleton().GetLua().GetState());
     Logger::GetDefaultLogger().Info("Exposed Event System to Lua", 2);
 
