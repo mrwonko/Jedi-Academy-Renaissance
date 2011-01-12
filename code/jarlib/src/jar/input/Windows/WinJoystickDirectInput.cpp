@@ -495,8 +495,8 @@ void WinJoystickDirectInput::CheckPOVChange(unsigned int povIndex, DWORD oldStat
 
 void WinJoystickDirectInput::UpdateRumblers()
 {
-    //for rumbling we need to be in exclusive mode.
-    if(!mIsExclusive) return;
+    //for rumbling we need to be in exclusive mode. Also make sure it's enabled.
+    if(not(mIsExclusive and mRumbleEnabled)) return;
 
     assert(mFFAxes.size() >= mNumRumblers);
     for(unsigned int i = 0; i < mNumRumblers; ++i)

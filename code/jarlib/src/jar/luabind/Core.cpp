@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Logger.hpp"
 #include "jar/core/FileSystem.hpp"
 #include "jar/core/Logger.hpp"
+#include "jar/core/LuaLogger.hpp"
 #include "jar/core/Helpers.hpp"
 #include "jar/Core.hpp"
 #include "jar/core/CLArguments.hpp"
@@ -114,19 +115,21 @@ void BindCore(lua_State* L)
 
         luabind::namespace_("jar")
         [
-            luabind::class_<Logger>("Logger")
-                .scope
-                [
-                    luabind::def("GetDefaultLogger", &Logger::GetDefaultLogger)
-                ]
-                .def("Log", &Logger::Log)
-                .def("Warning", &Logger::Warning)
-                .def("Error", &Logger::Error)
+            luabind::class_<Logger, LuaLogger>("Logger")
+                .def(luabind::constructor<>())
+                .def("Log", &Logger::Log, &LuaLogger::WrapLog)
+                .def("Warning", &Logger::Warning, &LuaLogger::WrapWarning)
+                .def("Error", &Logger::Error, &LuaLogger::WrapError)
                 .def("Info", &Logger::Info)
                 .def("IncreaseLoggingLevel", &Logger::IncreaseLoggingLevel)
                 .def("DecreaseLoggingLevel", &Logger::DecreaseLoggingLevel)
                 .def("GetLoggingLevel", &Logger::GetLoggingLevel)
-                .def("SetLoggingLevel", &Logger::SetLoggingLevel),
+                .def("SetLoggingLevel", &Logger::SetLoggingLevel)
+                .scope
+                [
+                    luabind::def("GetDefaultLogger", &Logger::GetDefaultLogger),
+                    luabind::def("SetDefaultLogger", &Logger::SetDefaultLogger)
+                ],
 
             luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory, luabind::return_stl_iterator),
             luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory, luabind::return_stl_iterator),

@@ -24,7 +24,7 @@ while running do
 			running = false
 		end
 	end
-	jar.Core.GetSingleton():Update(10) --g_Window:GetFrameTime())
+	jar.Core.GetSingleton():Update(g_testWindow:GetFrameTime())
 end
 
 --g_CVarManager:SaveCVars()

@@ -28,6 +28,7 @@ namespace jar {
 
 InputDeviceJoystick::InputDeviceJoystick() :
     Index(0),
+    mRumbleEnabled(true),
     mNumRumblers(0)
 {
     //ctor

@@ -132,6 +132,7 @@ void WinJoystickXInput::Update(TimeType deltaT)
     mLastState = state;
 
     //  set rumbling
+    if(!mRumbleEnabled) return;
 
     //clamp rumble amount to [0, 1]
     float left = std::max(0.0f, std::min(1.0f, mRumbleStrengths[0]));

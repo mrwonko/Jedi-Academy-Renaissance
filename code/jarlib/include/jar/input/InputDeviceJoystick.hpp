@@ -52,7 +52,13 @@ class JARINPUTAPI InputDeviceJoystick : public InputDevice
         **/
         void DecreaseRumbleStrength(unsigned int index, float value);
 
+        /** \brief Enable or disable rumbling **/
+        void EnableRumble(const bool enable) { mRumbleEnabled = enable; }
+
     protected:
+
+        /** \brief Whether rumbling is enabled (default: true) **/
+        bool mRumbleEnabled;
 
         /** \brief makes sure we don't get errors due to accessing invalid stuff **/
         void CheckRumbleStrengths();

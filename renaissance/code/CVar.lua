@@ -56,7 +56,9 @@ function CVar:New(info)
 	
 	-- info has to be sanitized.
 	obj.name = info.name -- this is always a string, unless the user bypasses the CVarManager, which he shouldn't do..
-	assert(type(info.name) == "string")
+	if type(info.name) ~= "string" then
+		error("CVar name is not a string! Please use the CVarManager to create CVars!", 2)
+	end
 	
 	local function sanitize(key, desiredType)
 		if info[key] then

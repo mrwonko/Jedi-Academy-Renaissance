@@ -48,19 +48,19 @@ namespace jar
             /**
                 \brief Logs a text.
             **/
-            virtual void Log(const std::string& message)=0;
+            virtual void Log(const std::string& message) {}
             /**
                 \brief Logs a warning.
 
                 That may be different from normal logging due to special prefixes, highlighting etc.
             **/
-            virtual void Warning(const std::string& message)=0;
+            virtual void Warning(const std::string& message) {}
             /**
                 \brief Logs an Error.
 
                 That may be different from normal logging due to special prefixes, highlighting etc.
             **/
-            virtual void Error(const std::string& message)=0;
+            virtual void Error(const std::string& message) {}
 
             //functions that are the same for all loggers
 
