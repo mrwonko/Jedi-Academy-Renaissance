@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_INPUT_WINDOWS_WINJOYSTICKDIRECTINPUT_H
 #define JAR_INPUT_WINDOWS_WINJOYSTICKDIRECTINPUT_H
 
-#define WINVER 0x0500 //I need some functions only available from windows 0x0500 onwards
+//I need some functions only available from windows 0x0500 onwards, thus WINVER is set to 0x0500 in the build options (not here, got warning about redifinition)
 #ifndef  WIN32_LEAN_AND_MEAN      // This cleans out rarely used stuff
 #define  WIN32_LEAN_AND_MEAN
 #endif

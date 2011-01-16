@@ -25,8 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #ifdef _WIN32
 
-#define WINVER 0x0500 //I need some functions only available from windows 0x0500 onwards
-#ifndef  WIN32_LEAN_AND_MEAN      // This cleans out rarely used stuff
+//I need some functions only available from windows 0x0500 onwards, thus WINVER is set to 0x0500 in the build options (not here, got warning about redifinition)
+#ifndef  WIN32_LEAN_AND_MEAN  // This cleans out rarely used stuff
 #define  WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
@@ -39,6 +39,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/core/Component.hpp"
 #include <vector>
+#include <cassert>
 
 namespace jar {
 

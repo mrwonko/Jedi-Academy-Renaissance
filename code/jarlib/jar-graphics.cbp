@@ -23,7 +23,7 @@
 					<Add library="sfml-graphics-d" />
 					<Add library="sfml-window-d" />
 					<Add library="sfml-system-d" />
-					<Add library="luabind-d" />
+					<Add library="luabindd" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -53,6 +53,7 @@
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
+			<Add option="-enable-auto-import" />
 			<Add library="lua" />
 			<Add directory="lib" />
 		</Linker>

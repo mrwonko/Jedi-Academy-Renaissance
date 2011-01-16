@@ -19,7 +19,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="user32" />
-					<Add library="luabind-d" />
+					<Add library="luabindd" />
 					<Add library="minizip-d" />
 					<Add library="sfml-system-d" />
 				</Linker>
@@ -49,7 +49,7 @@
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
-			<Add library="user32" />
+			<Add option="-enable-auto-import" />
 			<Add library="zdll" />
 			<Add library="physfs" />
 			<Add library="lua" />

@@ -16,12 +16,18 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-D_DEBUG" />
+					<Add option="-DWINVER=0x0500" />
 				</Compiler>
 				<Linker>
 					<Add library="jar-core-d" />
-					<Add library="luabind-d" />
+					<Add library="luabindd" />
 					<Add library="sfml-window-d" />
 					<Add library="sfml-system-d" />
+					<Add library="xinput" />
+					<Add library="dinput8" />
+					<Add library="dxguid" />
+					<Add library="ole32" />
+					<Add library="Oleaut32" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -33,6 +39,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-Wall" />
+					<Add option="-DWINVER=0x0500" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -40,6 +47,11 @@
 					<Add library="luabind" />
 					<Add library="sfml-window" />
 					<Add library="sfml-system" />
+					<Add library="xinput" />
+					<Add library="dinput8" />
+					<Add library="dxguid" />
+					<Add library="ole32" />
+					<Add library="Oleaut32" />
 				</Linker>
 			</Target>
 		</Build>
@@ -49,12 +61,8 @@
 			<Add directory="include" />
 		</Compiler>
 		<Linker>
+			<Add option="-enable-auto-import" />
 			<Add library="lua" />
-			<Add library="xinput" />
-			<Add library="dinput8" />
-			<Add library="dxguid" />
-			<Add library="ole32" />
-			<Add library="Oleaut32" />
 			<Add directory="lib" />
 		</Linker>
 		<ExtraCommands>

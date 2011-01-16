@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_FILESYSTEM_HPP
 #define JAR_FILESYSTEM_HPP
 
+#include <stdint.h> //int64_t
 #include <string>
 #include <vector>
 #include <jar/core/API.hpp>

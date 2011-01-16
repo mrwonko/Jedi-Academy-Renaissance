@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Jedi Academy Renaissance">
-		<Project filename="jarlib/jar-core.cbp" active="1" />
+		<Project filename="jarlib/jar-core.cbp" />
 		<Project filename="jarlib/jar-input.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
-		<Project filename="jarlib/jar-graphics.cbp">
+		<Project filename="jarlib/jar-graphics.cbp" active="1">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 		</Project>
