@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 int main(int argc, char** argv)
 {
+    std::cout<<"Go go go!"<<std::endl;
     try
     {
         static const bool RELEASE = false;

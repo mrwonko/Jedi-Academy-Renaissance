@@ -1,4 +1,10 @@
+require("CCommandManager.lua")
+
 jar.Logger.GetDefaultLogger():Log("Initializing Test Suite 1")
+
+g_CCommandManager = CCommandManager:New()
+
+g_CCommandManager:LoadCommands()
 
 g_testWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
 

@@ -30,7 +30,7 @@ CVar =
 	--type enum
 	TYPES =
 	{
-		ANY = -1, -- will I ever use this?
+		ANY = -1,
 		STRING = 0,
 		INT = 1,
 		FLOAT = 2,
@@ -46,7 +46,22 @@ CVar =
 	},
 }
 
---[[ Creates a new CVar. You'll usually not call this directly but use CVarManager:RegisterCVar(). info can contain an OnChange(newVal) function that is called whenever a cvar has been changed, as well as an IsValid(newVal) function do verify validity of a new value.
+--[[!	\brief Creates a new CVar. You'll usually not call this directly but use CVarManager:RegisterCVar().
+		\param info Table with information. example:
+		info =
+		{
+			name = "string", -- required! the name
+			description = "string", -- optional, but you better have one
+			type = CVar.TYPES.ANY, -- optional, can be ANY, STRING, INT, FLOAT or BOOLEAN. Defaults to ANY.
+			defaultValue = "derp", -- must be of the specified type.
+			value = "herp", -- optional, current value of this. Must be of the specified type. Defaults to defaultValue. If not set to defaultValue, it will trigger OnChange().
+			OnChange = function (newVal) end, -- optional, called whenever the value is changed
+			IsValid = function (value) end, -- optional, called whenever the value is to be changed
+			flags = -- optional, additional flags
+			{
+				-- see CVar definition for list of available flags.
+			}
+		}
 --]]
 function CVar:New(info)
 	local obj = {}
@@ -60,22 +75,24 @@ function CVar:New(info)
 		error("CVar name is not a string! Please use the CVarManager to create CVars!", 2)
 	end
 	
-	local function sanitize(key, desiredType)
+	local function sanitize(key, desiredType, defaultValue)
 		if info[key] then
 			if type(info[key]) == desiredType then
 				obj[key] = info[key]
 			else
 				jar.Logger.GetDefaultLogger():Warning("CVar:New(): CVar " .. info.name ..": info."..key.." has invalid type " .. type(info[key]) .. " (desired: " .. desiredType .. "), ignoring!")
+				obj[key] = defaultValue --the latter may be nil
 			end
 		end
 	end
-	sanitize("type", "number")
+	sanitize("type", "number", self.TYPES.ANY)
+	
 	if obj.type == self.TYPES.ANY and info.defaultValue ~= nil then
 		obj.defaultValue = info.defaultValue
 	else
 		sanitize("defaultValue", self.typeLookup[obj.type])
 	end
-	sanitize("description", "string")
+	sanitize("description", "string") -- keep in mind this may be nil, for example if it was usercreated or simply not set
 	sanitize("OnChange", "function")
 	sanitize("IsValid", "function")
 	
@@ -198,7 +215,7 @@ end
 function CVar:ToLua()
 	local t = type(self.value)
 	if t == "string" then
-		-- TODO: Escape " and \n etc. in self.value!
+		-- TODO: Escape " and \ etc. in self.value!
 		jar.Logger.GetDefaultLogger():Warning("CVar:ToLua(): Unprotected against code injection / errors!")
 		return "\"" .. self.value .. "\""
 	elseif t == "number" then

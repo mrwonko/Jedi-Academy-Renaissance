@@ -20,10 +20,10 @@
 				<Linker>
 					<Add library="jar-core-d" />
 					<Add library="jar-input-d" />
-					<Add library="sfml-graphics-d" />
-					<Add library="sfml-window-d" />
-					<Add library="sfml-system-d" />
 					<Add library="luabindd" />
+					<Add library="sfml-graphics-s" />
+					<Add library="sfml-window-s" />
+					<Add library="sfml-system-s" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -40,10 +40,10 @@
 					<Add option="-s" />
 					<Add library="jar-core" />
 					<Add library="jar-input" />
+					<Add library="luabind" />
 					<Add library="sfml-graphics" />
 					<Add library="sfml-window" />
 					<Add library="sfml-system" />
-					<Add library="luabind" />
 				</Linker>
 			</Target>
 		</Build>

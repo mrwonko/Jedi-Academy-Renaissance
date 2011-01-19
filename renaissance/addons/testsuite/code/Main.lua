@@ -13,7 +13,6 @@ end
 
 local running = true
 while running do
-	local e = jar.Event
 	while true do
 		local success, event = jar.EventManager.GetSingleton():GetEvent()
 		if not success then

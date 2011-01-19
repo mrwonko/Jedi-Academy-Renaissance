@@ -23,7 +23,7 @@ function CCommand:New(info)
 	-- info has to be sanitized.
 	obj.name = info.name -- this is always a string, unless the user bypasses the CCommandManager, which he shouldn't do..
 	if type(info.name) ~= "string" then
-		error("CCommand name is not a string! Please use the CVarManager to create CVars!", 2)
+		error("CCommand name is not a string! Please use the CCommandManager to create CVars!", 2)
 	end
 	local function sanitize(key, desiredType, default)
 		if info[key] then

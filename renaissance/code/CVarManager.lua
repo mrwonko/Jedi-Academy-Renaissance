@@ -15,7 +15,8 @@ function CVarManager:New()
 	return obj
 end
 
---[[! \brief Registers a new CVar, i.e. creates one unless it already exists (and is not usercreated)
+--[[!	\brief Registers a new CVar, i.e. creates one unless it already exists (and is not usercreated)
+		\param info see CVar:New()
 --]]
 function CVarManager:RegisterCVar(info)
 	if type(info) ~= "table" then
@@ -29,7 +30,10 @@ function CVarManager:RegisterCVar(info)
 	local nameLwr = string.lower(info.name)
 	-- does such a cvar already exist?
 	if self.CVars[nameLwr] then
-		if self.CVars[nameLwr].flags.userCreated then
+		if not self.CVars[nameLwr].flags.userCreated then --not user created, i.e. created using RegisterCVar()
+			jar.Logger.GetDefaultLogger():Warning("CVarManager:RegisterCVar(): duplicate registration of CVar " .. info.name .."! Ignoring second.")
+			return false
+		else
 			-- CVar already exists, but it's user created, i.e. entered in console or in config.
 			-- we can keep the value in that case, though we need to adjust the type. Keep in mind we may be using the default type though.
 			local newVal = self.CVars[nameLwr]:ToType(info.type or CVar.type)
@@ -39,9 +43,6 @@ function CVarManager:RegisterCVar(info)
 			else
 				jar.Logger.GetDefaultLogger():Info("CVarManager:RegisterCvar(): Discarding old value of " .. info.name .. " since it can't be converted to the registered type.")
 			end
-		else
-			jar.Logger.GetDefaultLogger():Warning("CVarManager:RegisterCVar(): duplicate registration of CVar " .. info.anme .."! Ignoring second.")
-			return false
 		end
 	end
 	-- cvar does not exist yet or should be overwritten. so let's create it.
