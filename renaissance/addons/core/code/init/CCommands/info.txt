@@ -1,0 +1,2 @@
+Any file in this directory will be executed when the CCommandManager is being initialized. They *should* add CCommands using RegisterCommand() (which works like CCommandManager:RegisterCommand()).
+The CCommandManager calling this should be theCommandManager.

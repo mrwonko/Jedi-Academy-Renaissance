@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/core/Time.hpp"
 #include <SFML/System/Clock.hpp>
+#include <SFML/System/Sleep.hpp>
 
 namespace jar
 {
@@ -31,6 +32,11 @@ static sf::Clock g_clock;
 TimeType GetTime()
 {
     return TimeType(g_clock.GetElapsedTime() * TimeTypesPerSecond + 0.5f);
+}
+
+void Sleep(TimeType duration)
+{
+    sf::Sleep(duration * SecondsPerTimeType);
 }
 
 } //namespace jar

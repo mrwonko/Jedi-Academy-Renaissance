@@ -4,6 +4,7 @@ jar.fs.Mount("config/", "/config/", false) --append = false -> look here first!
 --Initialize CVars (needs to be done first so log_level is set correctly)
 jar.Logger.GetDefaultLogger():Info("Initializing CVar system", 3)
 require("CVarManager.lua")
+-- please don't rename this variable, it's used (or will be used) in a lot of places.
 g_CVarManager = CVarManager:New()
 
 g_CVarManager:LoadCVars() -- no problem if this fails, means there's no config (or it's invalid)

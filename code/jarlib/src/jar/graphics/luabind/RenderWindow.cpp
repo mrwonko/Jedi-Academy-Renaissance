@@ -34,7 +34,18 @@ namespace jar
 
 static TimeType GetFrameTime(const jar::RenderWindow& window)
 {
-    return jar::Helpers::Round(window.GetFrameTime() * TimeTypesPerSecond);
+    //on high fps rounding may always result in 0, so I need to keep track of the time lost through rounding.
+    static float dif = 0;
+
+    float time = window.GetFrameTime() * TimeTypesPerSecond;
+
+    time += dif;
+
+    TimeType roundedTime = jar::Helpers::Round(time);
+
+    dif = time - roundedTime;
+
+    return roundedTime;
 }
 
 void RenderWindow::Luabind(lua_State* L)

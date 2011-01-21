@@ -38,6 +38,8 @@ typedef long int TimeType; //when you change this, check GetTime() for validity!
 
 JARCOREAPI TimeType GetTime();
 
+JARCOREAPI void Sleep(TimeType duration);
+
 } //namespace jar
 
 #endif //JAR_CORE_TIME_HPP

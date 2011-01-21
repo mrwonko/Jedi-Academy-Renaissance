@@ -27,6 +27,10 @@ function CVarManager:RegisterCVar(info)
 		jar.Logger.GetDefaultLogger():Warning("CVarManager:RegisterCVar(): no valid CVar name supplied!")
 		return false
 	end
+	if string.sub(info.name, 1, 1) == "+" or string.sub(info.name, 1, 1) == "-"  then
+		jar.Logger.GetDefaultLogger():Warning("CVarManager:RegisterCVar() called with a CVar name starting with + or -! That's invalid.")
+		return false
+	end
 	local nameLwr = string.lower(info.name)
 	-- does such a cvar already exist?
 	if self.CVars[nameLwr] then
@@ -63,6 +67,10 @@ function CVarManager:SetCVar(cvarname, value)
 		-- no. create one, flag it usercreated.
 		if type(cvarname) ~= "string" then
 			jar.Logger.GetDefaultLogger():Warning("CVarManager:SetCVar() called with invalid cvarname!")
+			return false
+		end
+		if string.sub(cvarname, 1, 1) == "+" or string.sub(cvarname, 1, 1) == "-"  then
+			jar.Logger.GetDefaultLogger():Warning("CVarManager:SetCVar() called with a cvarname starting with + or -! That's invalid.")
 			return false
 		end
 		-- guess type from value's type

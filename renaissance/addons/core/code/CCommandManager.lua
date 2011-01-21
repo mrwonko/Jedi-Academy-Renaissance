@@ -41,12 +41,27 @@ function CCommandManager:RegisterCommand(info)
 	return true
 end
 
---[[! \brief Loads all commands from dir or Code/CCommand/
+--[[! \brief Loads all commands from dir or Code/init/CCommands/
 --]]
 function CCommandManager:LoadCommands(dir)
-	dir = dir or "Code/CCommand"
+	dir = dir or "Code/init/CCommands"
+	
+	-- in case something of this name exists
+	local oldCommandManager = theCommandManager
+	local oldRegisterCommand = RegisterCommand
+	RegisterCommand = function(info) return self:RegisterCommand(info) end
+	theCommandManager = self
+	
 	for filename in jar.fs.GetFilesInDirectory(dir) do
-		print("todo: init file " .. dir .. "/" .. filename)
+		if string.sub(filename, -4) == ".lua" then
+			jar.Logger.GetDefaultLogger():Info("CCommandManager:LoadCommands(): loading \"" .. dir .. "/" .. filename .. "\"", 3)
+			local success, err = pcall(dofile, dir .. "/" .. filename)
+			if not success then
+				jar.Logger.GetDefaultLogger():Warning(err)
+			end
+		end
 	end
+	theCommandManager = oldCommandManager
+	RegisterCommand = oldRegisterCommand
 	return true
 end

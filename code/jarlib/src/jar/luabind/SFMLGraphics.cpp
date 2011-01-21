@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/luabind/SFMLGraphics.hpp"
 
+#include "SFML/Graphics/Shape.hpp"
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/View.hpp"
@@ -59,6 +60,7 @@ void BindSFMLGraphics(lua_State* L)
         luabind::class_<sf::Color>("Color")
             .def(luabind::constructor<>())
             .def(luabind::constructor<sf::Uint8, sf::Uint8, sf::Uint8>())
+            .def(luabind::constructor<sf::Uint8, sf::Uint8, sf::Uint8, sf::Uint8>())
             .def_readwrite("r", &sf::Color::r)
             .def_readwrite("g", &sf::Color::g)
             .def_readwrite("b", &sf::Color::b)
@@ -142,8 +144,28 @@ void BindSFMLGraphics(lua_State* L)
             .def("Scale", (void(sf::Drawable::*)(const sf::Vector2f&))&sf::Drawable::Scale)
             .def("Rotate", &sf::Drawable::Rotate)
             .def("TransformToLocal", &sf::Drawable::TransformToLocal)
-            .def("TransformToGlobal", &sf::Drawable::TransformToGlobal)
+            .def("TransformToGlobal", &sf::Drawable::TransformToGlobal),
+
+        luabind::class_<sf::Shape, sf::Drawable>("Shape")
+            .scope
+            [
+                luabind::def("Rectangle", (sf::Shape(*)(float, float, float, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Rectangle),
+                luabind::def("Rectangle", (sf::Shape(*)(const sf::Vector2f&, const sf::Vector2f&, const sf::Color&, float, const sf::Color&)) &sf::Shape::Rectangle),
+                luabind::def("Line", (sf::Shape(*)(float, float, float, float, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Line),
+                luabind::def("Line", (sf::Shape(*)(const sf::Vector2f&, const sf::Vector2f&, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Line),
+                luabind::def("Circle", (sf::Shape(*)(float, float, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Circle),
+                luabind::def("Circle", (sf::Shape(*)(const sf::Vector2f&,float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Circle)
+            ]
     ];
+
+    luabind::globals(L)["jar"]["Color"]["Black"] = sf::Color::Black;
+    luabind::globals(L)["jar"]["Color"]["Blue"] = sf::Color::Blue;
+    luabind::globals(L)["jar"]["Color"]["Cyan"] = sf::Color::Cyan;
+    luabind::globals(L)["jar"]["Color"]["Green"] = sf::Color::Green;
+    luabind::globals(L)["jar"]["Color"]["Magenta"] = sf::Color::Magenta;
+    luabind::globals(L)["jar"]["Color"]["Red"] = sf::Color::Red;
+    luabind::globals(L)["jar"]["Color"]["White"] = sf::Color::White;
+    luabind::globals(L)["jar"]["Color"]["Yellow"] = sf::Color::Yellow;
 }
 
 }

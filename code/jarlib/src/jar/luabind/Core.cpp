@@ -131,6 +131,8 @@ void BindCore(lua_State* L)
                     luabind::def("SetDefaultLogger", &Logger::SetDefaultLogger)
                 ],
 
+            luabind::def("Sleep", &Sleep),
+
             luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory, luabind::return_stl_iterator),
             luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory, luabind::return_stl_iterator),
 
