@@ -27,8 +27,11 @@ local moar = true
 local x = 400
 aLittleCircle:SetX(x)
 
+-- coroutine testing
+dofile("Code/coroutine_tests.lua")
+
 local running = true
-while running do
+while running do --TODO: delete and false
 	while true do
 		local success, event = jar.EventManager.GetSingleton():GetEvent()
 		if not success then
