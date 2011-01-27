@@ -26,6 +26,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Logger.hpp"
 #include "jar/core/LuaLogger.hpp"
 #include "jar/core/Helpers.hpp"
+#include "jar/core/Updatable.hpp"
+#include "jar/core/LuaUpdatable.hpp"
 #include "jar/Core.hpp"
 #include "jar/core/CLArguments.hpp"
 #include <physfs.h> //for PHYSFS_File

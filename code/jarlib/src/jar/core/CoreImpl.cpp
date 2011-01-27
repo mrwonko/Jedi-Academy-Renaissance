@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/Core/FileSystem.hpp"
 #include "jar/Core/Component.hpp"
 #include <jar/luabind/Core.hpp>
+#include <luabind/luabind.hpp>
 
 namespace jar {
 
@@ -78,6 +79,15 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
         Deinit();
         return false;
     }
+#ifdef _DEBUG
+    if(!mLua->OpenDebugLibrary())
+    {
+        Logger::GetDefaultLogger().Error("Could not open Lua debug library: "+mLua->GetLastError());
+        Deinit();
+        return false;
+    }
+    luabind::globals(mLua->GetState())["DEBUG"] = true;
+#endif
     Logger::GetDefaultLogger().Info("Initialized Lua", 1);
 
     jar::BindCore(mLua->GetState());

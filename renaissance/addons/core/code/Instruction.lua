@@ -7,53 +7,49 @@ require("CCommandManager.lua")
 --[[!	\brief Instruction: either a Console Command or a CVar related instruction (set, print)
 --]]
 
-Instruction = 
-{
-	instruction = "",
-	parameters = {},
-}
+Instruction = {}
+
+Instruction.instruction = nil
+Instruction.parameters = {}
+Instruction.cvarManager = false
+Instruction.ccommandManager = false
 
 function Instruction:New(info)
-	if info.instruction == "" then
-		--should not happen, but who knows
-		error("Instruction:New() called with empty instruction!", 2)
-	end
-	
-	if not info.CVarManager then
-		error("Instruction:New() called without CVarManager info!", 2)
-	end
-	
-	if not info.CCommandManager then
-		error("Instruction:New() called without CCommandManager info!", 2)
-	end
-	
-	local obj = info or {}
-	
-	if type(obj.parameters) ~= "table" then
-		if obj.parameters ~= nil then
-			jar.Logger.Warning("Instruction:New(): info.parameters is no table!")
-		end
-		obj.parameters = {}
-	end
-	
+	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
+	
+	local function get(key)
+		if info[key] then
+			obj[key] = info[key]
+		elseif not self[key] then
+			error("Instruction:New() called without "..key.."!", 3)
+		end
+	end
+	
+	get("instruction")
+	get("parameters")
+	get("cvarManager")
+	get("ccommandManager")
 	
 	return obj
 end
 
 function Instruction:AutoComplete(instruction)
 	local available = {} -- list of available commands and cvars
-	for name, _ in pairs(self.CVarManager.CVars) do
+	for name, _ in pairs(self.cvarManager.CVars) do
 		table.insert(available, name)
 	end
-	for name, _ in pairs(self.CCommandManager.CCommands) do
+	for name, _ in pairs(self.ccommandManager.CCommands) do
 		table.insert(available, name)
 	end
 	
 	return AutoComplete(instruction, available)
 end
 
+--[[!	\brief Executes a single instruction - usually called by Interpret()
+		\return Whether the execution was successful (returns false if there were multiple possibilities, displays them if not silent)
+--]]
 function Instruction:Execute(silent)
 	local silent = silent or false
 	
@@ -111,18 +107,18 @@ function Instruction:Execute(silent)
 	end
 	
 	--there was an unambiguous match
-	if self.CCommandManager.CCommands[instruction] then
+	if self.ccommandManager.CCommands[instruction] then
 		--it's a command, call it with the right parameters
 		if isMinusCommand then
-			self.CCommandManager.CCommands[instruction]:OnStop(unpack(self.parameters))
+			self.ccommandManager.CCommands[instruction]:OnStop(unpack(self.parameters))
 		else
-			self.CCommandManager.CCommands[instruction]:OnStart(unpack(self.parameters))
+			self.ccommandManager.CCommands[instruction]:OnStart(unpack(self.parameters))
 		end
 		--done
 		return true
 	end
-	if self.CVarManager.CVars[instruction] then
-		local cvar = self.CVarManager.CVars[instruction]
+	if self.cvarManager.CVars[instruction] then
+		local cvar = self.cvarManager.CVars[instruction]
 		if isMinusCommand then
 			jar.Logger.GetDefaultLogger:Warning("There's a CVar whose name starts with a +. That's bad. Shouldn't happen.")
 			return false

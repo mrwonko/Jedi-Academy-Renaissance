@@ -1,49 +1,48 @@
 --[[! console variables.
 --]]
 
-CVar =
+CVar = {}
+
+-- the values 
+CVar.name = ""
+
+CVar.type = 0
+-- type depends on type (d'oh!)
+CVar.value = ""
+CVar.defaultValue = ""
+
+CVar.description = ""
+	
+-- flags and their default values
+CVar.flags =
 {
-	-- the values 
-	name = "",
+	-- Whether this was entered by a user in the console/config, but not (yet?) registered in code.
+	-- Biggest differenceis that no flags are set that way and that it lacks a description.
+	userCreated = false,
+	-- whether this should be saved to the config
+	save = true,
+	-- whether this cannot be changed via console (but still via code!)
+	readonly = false,
+}
 	
-	type = 0,
-	-- type depends on type (d'oh!)
-	value = "",
-	defaultValue = "",
+-- changing the below in your info doesn't make sense.
 	
-	description = "",
+--type enum
+CVar.TYPES =
+{
+	ANY = -1,
+	STRING = 0,
+	INT = 1,
+	FLOAT = 2,
+	BOOLEAN = 3,
+}
 	
-	-- flags and their default values
-	flags =
-	{
-		-- Whether this was entered by a user in the console/config, but not (yet?) registered in code.
-		-- Biggest differenceis that no flags are set that way and that it lacks a description.
-		userCreated = false,
-		-- whether this should be saved to the config
-		save = true,
-		-- whether this cannot be changed via console (but still via code!)
-		readonly = false,
-	},
-	
-	-- changing the below in your info doesn't make sense.
-	
-	--type enum
-	TYPES =
-	{
-		ANY = -1,
-		STRING = 0,
-		INT = 1,
-		FLOAT = 2,
-		BOOLEAN = 3,
-	},
-	
-	typeLookup =
-	{
-		[0] = "string",
-		[1] = "number",
-		[2] = "number",
-		[3] = "boolean",
-	},
+CVar.typeLookup =
+{
+	[0] = "string",
+	[1] = "number",
+	[2] = "number",
+	[3] = "boolean",
 }
 
 --[[!	\brief Creates a new CVar. You'll usually not call this directly but use CVarManager:RegisterCVar().
@@ -65,15 +64,15 @@ CVar =
 --]]
 function CVar:New(info)
 	local obj = {}
-	
 	setmetatable(obj, self)
 	self.__index = self
 	
 	-- info has to be sanitized.
-	obj.name = info.name -- this is always a string, unless the user bypasses the CVarManager, which he shouldn't do..
+	-- this is always a string, unless the user bypasses the CVarManager, which he shouldn't do..
 	if type(info.name) ~= "string" then
 		error("CVar name is not a string! Please use the CVarManager to create CVars!", 2)
 	end
+	obj.name = info.name
 	
 	local function sanitize(key, desiredType, defaultValue)
 		if info[key] then
@@ -81,8 +80,10 @@ function CVar:New(info)
 				obj[key] = info[key]
 			else
 				jar.Logger.GetDefaultLogger():Warning("CVar:New(): CVar " .. info.name ..": info."..key.." has invalid type " .. type(info[key]) .. " (desired: " .. desiredType .. "), ignoring!")
-				obj[key] = defaultValue --the latter may be nil
+				obj[key] = defaultValue --defaultValue may be nil
 			end
+		else
+			obj[key] = defaultValue
 		end
 	end
 	sanitize("type", "number", self.TYPES.ANY)
@@ -118,7 +119,6 @@ function CVar:New(info)
 			obj.value = info.value
 		end
 	end
-	
 	return obj
 end
 

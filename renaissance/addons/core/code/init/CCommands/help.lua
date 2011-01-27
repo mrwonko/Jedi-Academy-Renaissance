@@ -12,6 +12,12 @@ RegisterCommand
 			return
 		end
 		
+		-- handle wait explicitly since it's no ordinary command, it's hardcoded
+		if name == "wait" then
+			print("Pauses the execution for a given amount of miliseconds, for example: say \"hello\"; wait 1000; say \"world\"")
+			return
+		end
+		
 		if self.manager.CCommands[name] then
 			print(self.manager.CCommands[name].description or "[no description available]")
 		elseif g_CVarManager then
@@ -21,7 +27,7 @@ RegisterCommand
 				print("No console command or cvar called \"" .. name .. "\" exists.")
 			end
 		else
-			jar.Logger.GetDefaultLogger.Warning("CVar Manager not found, could not check whether a CVar called \"" .. name .. "\" exists!")
+			jar.Logger.GetDefaultLogger():Warning("CVar Manager not found, could not check whether a CVar called \"" .. name .. "\" exists!")
 		end
 	end,
 }

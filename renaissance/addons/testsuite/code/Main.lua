@@ -1,24 +1,21 @@
 require("InstructionInterpreter.lua")
 require("CCommandManager.lua")
 
-print("==== Test Suite Init ====")
+print("==== Test Suite Start ====")
 print("")
+print("==== InstructionInterpreter tests ====")
+
 local oldLogLevel = g_CVarManager:GetCVar("log_level")
 g_InstructionInterpreter:Interpret("log_level; echo a    little test; echo \"a little   fucking test\"; log_level = 42; log_level; log_level = " .. oldLogLevel .. "; log_level;")
 g_InstructionInterpreter:Interpret("help log_level")
 g_InstructionInterpreter:Interpret("help stupidNonexistantShit")
+g_InstructionInterpreter:Interpret("stupidNonexistantShit")
 
-print("==== Test Suite Start ====")
+g_InstructionInterpreter:Interpret("echo \"pre-wait\"; wait 12; echo \"post-wait\"; wait 8; echo lol")
+g_InstructionInterpreter:Update(10)
+g_InstructionInterpreter:Update(10)
 
 print ""
---[[
-local str, array = g_CVarManager:AutoComplete("f")
-print("/f")
-print("/" .. str)
-for _, item in ipairs(array) do
-	print("  " .. item)
-end
---]]
 
 local aLittleCircle = jar.Shape.Circle(0, 0, 32, jar.Color(0, 0, 0, 0), 1, jar.Color.Red)
 aLittleCircle:SetY(300)
@@ -27,11 +24,8 @@ local moar = true
 local x = 400
 aLittleCircle:SetX(x)
 
--- coroutine testing
-dofile("Code/coroutine_tests.lua")
-
 local running = true
-while running do --TODO: delete and false
+while running and false do --TODO: delete and false
 	while true do
 		local success, event = jar.EventManager.GetSingleton():GetEvent()
 		if not success then

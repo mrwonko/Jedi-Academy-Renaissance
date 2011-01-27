@@ -24,8 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/Core.hpp"
 #include "jar/core/CoreImpl.hpp"
 
-#warning Export Updatable to Lua (inheritable), ought to be quite useful!
-
 namespace jar {
 
 Updatable::Updatable()

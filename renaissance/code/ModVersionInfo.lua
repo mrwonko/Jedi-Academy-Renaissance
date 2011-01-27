@@ -3,7 +3,7 @@
 ModVersionInfo = {}
 
 function ModVersionInfo:New()
-	local obj = { name = "" }
+	local obj = {name = ""}
 	setmetatable(obj, self)
 	self.__index = self
 	return obj

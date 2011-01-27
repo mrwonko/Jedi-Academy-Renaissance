@@ -6,112 +6,114 @@ require("ModVersionInfo.lua")
 if not g_addonDir then
 	error("No addonDir defined!")
 end
+
 Mod = {}
+Mod.GetDependencies = 0
+Mod.GetIncompatibilities = 0
 
 
 --forward declarations
-local GetCodeFromZip = 0
 local GetCodeFromDirectory = 0
-Mod.GetDependencies = 0
-Mod.GetIncompatibilities = 0
+local GetCodeFromZip = 0
 
 --[[!	\brief Creates a new Mod for the given pk3 file
 		\param filename name of a pk3/zip-file or a directory within addons/ (ending with "/")
 		\return returns the Mod object or nil, errorMessage on failure.
 --]]
 function Mod:New(filename)
-	local obj =
-	{
-		--filename is a GUID, used to save inactive mods.
-		filename = filename,
-		name = filename,
-		description = "@MODINFO_NO_MODINFO_LUA",
-		version = 1,
-		dependencies = {},
-		incompatibilities = {},
-		hasIncompatibilities = false, --whether any of the incompatibilities actually occured
-		hasUnsatisfiedDependencies = false, --whether any of the dependencies are not satisfied
-		
-	}
-	local logger = jar.Logger.GetDefaultLogger()
-	
+	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
+	
+	--filename is a GUID, used to save inactive mods.
+	obj.filename = filename
+	obj.name = filename
+	obj.description = "@MODINFO_NO_MODINFO_LUA"
+	obj.version = 1
+	obj.dependencies = {}
+	obj.incompatibilities = {}
+	obj.hasIncompatibilities = false --whether any of the incompatibilities actually occured
+	obj.hasUnsatisfiedDependencies = false --whether any of the dependencies are not satisfied
+	
+	local logger = jar.Logger.GetDefaultLogger()
 	
 	-- what name to use when this mod is used like a directory, as in "modname.pk3/modinfo.lua has a bug"
 	
 	--get content of modinfo.lua
 	local code, err
-	if string.sub(filename, -4) == ".pk3" or string.sub(filename, -4) == ".zip" then
+	if filename:sub(-4) == ".pk3" or filename:sub(-4) == ".zip" then
 		code, err = GetCodeFromZip(filename)
-	elseif string.sub(filename, -1) == "/" then
+	elseif filename:sub(-1) == "/" then
 		code, err = GetCodeFromDirectory(filename)
 	else
-		return nil, "ModInfo.New(): filename has invalid extension!"
+		error("ModInfo:New(): filename has invalid extension!", 2)
 	end
 	
 	--if modinfo.lua doesn't exist, 0 is returned
 	if code == 0 then
 		--in which case we're done here
-		return obj
-	--in case of an error -1, error is returned
+		return
+	--in case of an error -1, something went wrong
 	elseif code == -1 then
-		return nil, err
+		error(err, 2)
 	end
 	
 	--there is a modinfo.lua and we have its content. try compiling it.
 	
 	code, err = loadstring(code)
 	if not code then --code haz bugz? modinfo.lua may be vital, so don't continue.
-		return nil, filename .." not loaded due to an error in its modinfo.lua: " .. err
+		error(filename .." not loaded due to an error in its modinfo.lua: " .. err, 2)
 	end
 	
 	--execute modinfo.lua in a safe environment
 	
 	--save environment for modinfo.lua - no functions available, doesn't modify global namespace.
-	local modinfo = {}
-	setfenv(code, modinfo)
+	local modinfoFEnv = {}
+	setfenv(code, modinfoFEnv)
+	
+	--for some reason pcall started crashing at some point when the function environment is empty.
+	--modinfoFEnv.blamThisPieceOfCrap = "assigning some value in the function environment seems to fix a crash."
 	
 	--execute modinfo.lua and catch any errors. Since modinfo may be vital, don't load a mod with a broken modinfo.lua
-	status, err = pcall(code)
+	local status, err = pcall(code)
 	if not status then --errors
-		return nil, filename .." not loaded due to an error in its modinfo.lua: " .. err
+		--error(filename .." not loaded due to an error in its modinfo.lua: " .. err, 2)
 	end
 	
 	--[[! \brief safety function to prevent code injection, crashes etc.
 		
 		Returns unsafe if its type is desiredType, otherwise defaultValue. name is for logging purposes.
 	--]]
-	local function sanitize(unsafe, desiredType, name, defaultValue)
-		if unsafe == nil then
+	local function sanitize(name, desiredType, defaultValue)
+		if modinfoFEnv[name] == nil then
 			logger:Info(filename .. "'s modinfo.lua doesn't contain " .. name .. ", using default value ("..tostring(defaultValue)..").", 3)
-			return defaultValue
+			obj[name] = defaultValue
+			return
 		end
-		if type(unsafe) == desiredType then
-			return unsafe
-		else
-			logger:Warning("In " .. filename .. "'s modinfo.lua: " .. name .. " is no "..desiredType.."!")
-			return defaultValue
+		if type(modinfoFEnv[name]) == desiredType then
+			obj[name] = modinfoFEnv[name]
+			return
 		end
+		logger:Warning("In " .. filename .. "'s modinfo.lua: " .. name .. " is no "..desiredType..", using default value!")
+		obj[name] = defaultValue
 	end
 	
-	obj.name = sanitize(modinfo.name, "string", "name", filename)
-	obj.description = sanitize(modinfo.description, "string", "description", "@MODINFO_NO_DESC")
-	obj.version = sanitize(modinfo.version, "number", "version", 1)
-	obj.displayVersion = sanitize(modinfo.displayVersion, "string", "displayVersion", "-")
-	obj.author = sanitize(modinfo.author, "string", "author", nil)
-	obj.email = sanitize(modinfo.email, "string", "email", nil)
-	obj.website = sanitize(modinfo.website, "string", "website", nil)
-	obj.serverside = sanitize(modinfo.serverside, "boolean", "serverside", false)
-	obj.clientside = sanitize(modinfo.clientside, "boolean", "clientside", false)
+	sanitize("name", "string", filename)
+	sanitize("description", "string", "@MODINFO_NO_DESC")
+	sanitize("version", "number", 1)
+	sanitize("displayVersion", "string", "-")
+	sanitize("author", "string", nil)
+	sanitize("email", "string", nil)
+	sanitize("website", "string", nil)
+	sanitize("serverside", "boolean", false)
+	sanitize("clientside", "boolean", false)
 	-- dependencies and incompatibilities are pretty essential, thus the mod is not loaded when they are incorrect.
-	if not obj:GetVersionInfo(modinfo, "dependencies") then
-		return nil, "Error in the dependencies information of " .. filename .. "'s modinfo.lua."
+	if not obj:GetVersionInfo(modinfoFEnv, "dependencies") then
+		error("Error in the dependencies information of " .. filename .. "'s modinfo.lua.", 2)
 	end
-	if not obj:GetVersionInfo(modinfo, "incompatibilities") then
-		return nil, "Error in the incompatibilities information of " .. filename .. "'s modinfo.lua."
+	if not obj:GetVersionInfo(modinfoFEnv, "incompatibilities") then
+		error("Error in the incompatibilities information of " .. filename .. "'s modinfo.lua.", 2)
 	end
-	
 	return obj
 end
 
@@ -302,6 +304,7 @@ function Mod:GetVersionInfo(modinfo, whatToGet)
 	if #self[whatToGet] == 0 then
 		self[whatToGet] = nil
 	end
+	jar.Logger.GetDefaultLogger():Info(self.filename.."'s " .. whatToGet .. " have been read.", 3)
 	return true
 end
 

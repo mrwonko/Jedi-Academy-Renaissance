@@ -200,7 +200,7 @@ namespace jar
         std::vector<std::string> filenames;
         if(directoryPath.length() + 3 > MAX_PATH)
         {
-            Logger::GetDefaultLogger().Error("Helpers::Get****InDirectory(): directoryPath to long!");
+            Logger::GetDefaultLogger().Error("Helpers::GetStuffInDirectory(): directoryPath to long!");
             return filenames;
         }
         std::string path = directoryPath + "\\*";
@@ -208,7 +208,7 @@ namespace jar
         HANDLE hFind = FindFirstFile(path.c_str(), &ffd);
         if(hFind == INVALID_HANDLE_VALUE)
         {
-            Logger::GetDefaultLogger().Warning("Helpers::Get****InDirectory(): invalid directory!");
+            Logger::GetDefaultLogger().Warning("Helpers::GetStuffInDirectory(): invalid directory!");
             return filenames;
         }
         do
@@ -221,7 +221,7 @@ namespace jar
         while(FindNextFile(hFind, &ffd) != 0);
         if(GetLastError() != ERROR_NO_MORE_FILES)
         {
-            Logger::GetDefaultLogger().Warning("Helpers::Get****InDirectory(): Could not list all files, error code " + Helpers::IntToString(GetLastError()));
+            Logger::GetDefaultLogger().Warning("Helpers::GetStuffInDirectory(): Could not list all files, error code " + Helpers::IntToString(GetLastError()));
         }
         FindClose(hFind);
         return filenames;

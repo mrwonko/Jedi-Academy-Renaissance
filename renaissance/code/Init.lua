@@ -9,6 +9,7 @@ g_CVarManager = CVarManager:New()
 
 g_CVarManager:LoadCVars() -- no problem if this fails, means there's no config (or it's invalid)
 
+jar.Logger.GetDefaultLogger():Info("Registering log_level, fs_baseOnlyArchives and fs_baseNoMods", 3)
 -- register log cvars
 g_CVarManager:RegisterCVar{
 	name = "log_level",
@@ -20,9 +21,6 @@ g_CVarManager:RegisterCVar{
 	end,
 }
 
--- TODO CLArguments -> CVars
-jar.Logger.GetDefaultLogger():Log("TODO: parse arguments for CVars")
-
 
 -- ==FileSystem==
 
@@ -32,7 +30,7 @@ g_CVarManager:RegisterCVar{
 	defaultValue = true,
 	description = "Whether only archives in base (i.e. .pk3 files) should be loaded, or also the non-zipped files in base.",
 	OnChange = function(oldVal, newVal)
-		jar.Logger.Info("Restart the game for changes to fs_baseOnlyArchives to take effect.", 0)
+		jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_baseOnlyArchives to take effect.", 0)
 	end,
 }
 g_CVarManager:RegisterCVar{
@@ -41,9 +39,15 @@ g_CVarManager:RegisterCVar{
 	defaultValue = false,
 	description = "Whether only the assetsX.pk3 files should be loaded from ../Base/. If true then fs_baseOnlyArchives is ignored since non-archive files in base are mods, too.",
 	OnChange = function(oldVal, newVal)
-		jar.Logger.Info("Restart the game for changes to fs_baseNoMods to take effect.", 0)
+		jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_baseNoMods to take effect.", 0)
 	end,
 }
+
+-- TODO CLArguments -> CVars
+jar.Logger.GetDefaultLogger():Log("TODO: parse arguments for CVars")
+
+
+jar.Logger.GetDefaultLogger():Info("Mounting base", 3)
 
 local noBaseMods = g_CVarManager:GetCVar("fs_baseNoMods")
 local onlyArchives = g_CVarManager:GetCVar("fs_baseOnlyArchives")

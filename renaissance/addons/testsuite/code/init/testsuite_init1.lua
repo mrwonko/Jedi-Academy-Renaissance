@@ -20,23 +20,41 @@ function LuaLogger:__init()
 end
 
 function LuaLogger:Log(message)
+	if not message then
+		if DEBUG then
+			print("LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+		end
+		return
+	end
 	print("Log: " .. message)
 end
 
 function LuaLogger:Warning(message)
+	if not message then
+		if DEBUG then
+			print("LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+		end
+		return
+	end
 	print("Warning: " .. message)
 end
 
 function LuaLogger:Error(message)
+	if not message then
+		if DEBUG then
+			print("LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+		end
+		return
+	end
 	print("Error: " .. message)
 end
 
-print "creating logger object"
+--[[
+g_originalDefaultLogger = jar.Logger.GetDefaultLogger()
 g_testLogger = LuaLogger()
-print "setting default logger"
 jar.Logger.SetDefaultLogger(g_testLogger)
-print "doing testlog"
 jar.Logger.GetDefaultLogger():Log("Test log")
+--]]
 
 --[[
 RegisterAction{

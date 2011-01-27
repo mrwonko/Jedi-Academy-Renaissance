@@ -4,11 +4,10 @@
 require("CCommand.lua")
 require("AutoComplete.lua")
 
-CCommandManager =
-{
+CCommandManager = {}
+
 	-- name -> command
-	CCommands = {},
-}
+CCommandManager.CCommands = {}
 
 function CCommandManager:New()
 	local obj = {}
@@ -36,6 +35,7 @@ function CCommandManager:RegisterCommand(info)
 		-- o.O
 		return false
 	end
+	cmd.manager = self
 	self.CCommands[info.name] = cmd
 	--yay, worked! Should have, any way...
 	return true
@@ -63,5 +63,6 @@ function CCommandManager:LoadCommands(dir)
 	end
 	theCommandManager = oldCommandManager
 	RegisterCommand = oldRegisterCommand
+	
 	return true
 end

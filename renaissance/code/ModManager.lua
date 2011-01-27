@@ -2,16 +2,13 @@ g_addonDir = "addons/"
 
 require("Mod.lua")
 
-
-ModManager =
-{
-	mods = {}, -- all available mods. array since names may be duplicate and using the filename doesn't really help me
-	activeMods = {}, -- those mods that have been activated. array so it can be sorted by load order
-	inactiveMods = {}, -- the inactive mods. array.
-}
+ModManager = {}
+ModManager.mods = {} -- all available mods. array since names may be duplicate and using the filename doesn't really help me
+ModManager.activeMods = {} -- those mods that have been activated. array so it can be sorted by load order
+ModManager.inactiveMods = {} -- the inactive mods. array.
 
 function ModManager:New()
-	obj = {}
+	local obj = {}
 	setmetatable(obj, self)
 	self.__index = self
 	return obj
@@ -27,13 +24,13 @@ local function AddAvailableMods(self)
 	for filename in jar.GetFilesInDirectory(g_addonDir) do
 		assert(filename ~= nil and filename ~= "")
 		--only zip/pk3 files are interesting
-		if string.sub(filename, -4) == ".zip" or string.sub(filename, -4) == ".pk3" then
+		if filename:sub(-4) == ".zip" or filename:sub(-4) == ".pk3" then
 			--get their info & insert them
-			local mod, err = Mod:New(filename)
-			if not mod then
-				jar.Logger.GetDefaultLogger():Warning(err)
+			local success, ret = pcall(Mod.New, Mod, filename)
+			if not success then
+				jar.Logger.GetDefaultLogger():Warning(ret)
 			else
-				table.insert(self.mods, mod)
+				table.insert(self.mods, ret)
 			end
 		else
 			jar.Logger.GetDefaultLogger():Warning("Warning: addons/" .. filename .. " has an invalid extension (neither .zip nor .pk3 nor folder)!")
@@ -44,13 +41,14 @@ local function AddAvailableMods(self)
 	for filename in jar.GetDirectoriesInDirectory(g_addonDir) do
 		assert(filename ~= nil and filename ~= "")
 		--get their info & insert them
-		local mod, err = Mod:New(filename .. "/")
-		if not mod then
-			jar.Logger.GetDefaultLogger():Warning(err)
+		local success, ret = pcall(Mod.New, Mod, filename .. "/")
+		if not success then
+			jar.Logger.GetDefaultLogger():Warning(ret)
 		else
-			table.insert(self.mods, mod)
+			table.insert(self.mods, ret)
 		end
 	end
+	jar.Logger.GetDefaultLogger():Info(#self.mods .. " mods loaded", 3)
 	return true
 end
 

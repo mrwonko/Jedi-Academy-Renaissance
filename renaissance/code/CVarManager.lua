@@ -1,12 +1,11 @@
 require("CVar.lua")
 require("AutoComplete.lua")
 
-CVarManager =
-{
-	configfile = "config/cvars.lua",
-	-- name -> cvar
-	CVars = {},
-}
+CVarManager = {}
+
+CVarManager.configfile = "config/cvars.lua"
+-- name -> cvar
+CVarManager.CVars = {}
 
 function CVarManager:New()
 	local obj = {}
