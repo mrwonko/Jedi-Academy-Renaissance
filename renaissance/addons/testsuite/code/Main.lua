@@ -20,12 +20,46 @@ print ""
 local aLittleCircle = jar.Shape.Circle(0, 0, 32, jar.Color(0, 0, 0, 0), 1, jar.Color.Red)
 aLittleCircle:SetY(300)
 
+--[[
+local testText = jar.String("Test yes!\nTest yes!")
+testText:SetSize(12)
+testText:SetPosition(1,  1)
+testText:SetColor(jar.Color.White)
+
+local function GetCharWidth(font, charnum)
+	return font:GetGlyph(charnum).Rectangle:GetWidth() / font:GetCharacterSize()
+end
+
+local font = testText:GetFont()
+for i = 0, #testText:GetText() - 1 do
+	print("Char " .. i .. " ("..testText:GetText():sub(i+1, i+1)..") is " .. testText:GetSize() * GetCharWidth(font, testText:GetText():byte(i+1)).." wide")
+end
+
+local function CharPosPrint(str, index)
+	local pos = str:GetCharacterPos(index)
+	print("Character " .. index .. " is at (" .. pos.x .. ", " .. pos.y ..")")
+end
+CharPosPrint(testText, 0)
+CharPosPrint(testText, 1)
+CharPosPrint(testText, 8)
+CharPosPrint(testText, 9)
+CharPosPrint(testText, 10)
+--print("Height: " .. testText:GetRect():GetHeight())
+--local testRect = jar.Shape.Rectangle(1, 1, 64, 12, jar.Color(0, 0, 0, 0), 1, jar.Color.White)
+--]]
+
+local testImage = jar.Image()
+if not testImage:LoadFromFile("textures/tests/me2.jpg") then
+	error("Could not load test image!")
+end
+local testSprite = jar.Sprite(testImage)
+
 local moar = true
 local x = 400
 aLittleCircle:SetX(x)
 
 local running = true
-while running and false do --TODO: delete and false
+while running do
 	while true do
 		local success, event = jar.EventManager.GetSingleton():GetEvent()
 		if not success then
@@ -62,6 +96,9 @@ while running and false do --TODO: delete and false
 	
 	g_testWindow:Clear(jar.Color.Black)
 	g_testWindow:Draw(aLittleCircle)
+	--g_testWindow:Draw(testRect)
+	--g_testWindow:Draw(testText)
+	g_testWindow:Draw(testSprite)
 	g_testWindow:Display()
 end
 

@@ -21,8 +21,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/luabind/SFMLGraphics.hpp"
+#include "jar/core/FileSystem.hpp"
 
 #include "SFML/Graphics/Shape.hpp"
+#include "SFML/Graphics/Sprite.hpp"
+#include "SFML/Graphics/Image.hpp"
+#include "SFML/Graphics/String.hpp"
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/View.hpp"
@@ -38,6 +42,19 @@ namespace jar
 namespace luabind_dummy
 {
 class Blend {};
+}
+
+static const bool ImageLoadFromFile(sf::Image& image, const std::string& filename)
+{
+    std::string content;
+    if(!fs::ReadFile(filename, content)) return false;
+    if(!image.LoadFromMemory(content.c_str(), content.length())) return false;
+    return true;
+}
+
+static std::string GetStringText(const sf::String& str)
+{
+    return str.GetText();
 }
 
 void BindSFMLGraphics(lua_State* L)
@@ -155,6 +172,60 @@ void BindSFMLGraphics(lua_State* L)
                 luabind::def("Line", (sf::Shape(*)(const sf::Vector2f&, const sf::Vector2f&, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Line),
                 luabind::def("Circle", (sf::Shape(*)(float, float, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Circle),
                 luabind::def("Circle", (sf::Shape(*)(const sf::Vector2f&,float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Circle)
+            ],
+
+        luabind::class_<sf::Image>("Image")
+            .def(luabind::constructor<>())
+            .def("LoadFromFile", &ImageLoadFromFile),
+
+        luabind::class_<sf::Sprite, sf::Drawable>("Sprite")
+            .def(luabind::constructor<>())
+            .def(luabind::constructor<const sf::Image&>())
+            .def(luabind::constructor<const sf::Image&, const sf::Vector2f&>())
+            .def("SetImage", &sf::Sprite::SetImage)
+            .def("GetImage", &sf::Sprite::GetImage)
+            .def("FlipX", &sf::Sprite::FlipX)
+            .def("FlipY", &sf::Sprite::FlipY)
+            .def("SetSubRect", &sf::Sprite::SetSubRect)
+            .def("GetSubRect", &sf::Sprite::GetSubRect)
+            .def("Resize", (void(sf::Sprite::*)(const sf::Vector2f&))&sf::Sprite::Resize)
+            .def("Resize", (void(sf::Sprite::*)(float, float))&sf::Sprite::Resize)
+            .def("GetSize", &sf::Sprite::GetSize),
+
+        luabind::class_<sf::Glyph>("Glyph")
+            .def(luabind::constructor<>())
+            .def_readonly("Rectangle", &sf::Glyph::Rectangle),
+
+        luabind::class_<sf::Font>("Font")
+            .def("GetGlyph", &sf::Font::GetGlyph)
+            .def("GetCharacterSize", &sf::Font::GetCharacterSize)
+            //TODO: LoadFromFile - physFS! - possibly inherit from sf::Font to allow physFS constructor?
+            .scope
+            [
+                luabind::def("GetDefaultFont", &sf::Font::GetDefaultFont)
+            ],
+
+        luabind::class_<sf::String, sf::Drawable>("String")
+            .def(luabind::constructor<>())
+            .def(luabind::constructor<const std::string&>())
+            .def(luabind::constructor<const std::string&, const sf::Font&>())
+            .def(luabind::constructor<const std::string&, const sf::Font&, float>())
+            .def("SetSize", &sf::String::SetSize)
+            .def("GetSize", &sf::String::GetSize)
+            .def("SetFont", &sf::String::SetFont)
+            .def("GetFont", &sf::String::GetFont)
+            .def("GetText", &GetStringText)
+            .def("SetText", &sf::String::SetText)
+            .def("GetCharacterPos", &sf::String::GetCharacterPos)
+            .def("GetRect", &sf::String::GetRect)
+            .def("SetStyle", &sf::String::SetStyle)
+            .def("GetStyle", &sf::String::GetStyle)
+            .enum_("Style")
+            [
+                luabind::value("Regular", (unsigned long)sf::String::Regular),
+                luabind::value("Bold", (unsigned long)sf::String::Bold),
+                luabind::value("Italic", (unsigned long)sf::String::Italic),
+                luabind::value("Underlined", (unsigned long)sf::String::Underlined)
             ]
     ];
 
