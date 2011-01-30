@@ -44,7 +44,7 @@ namespace luabind_dummy
 class Blend {};
 }
 
-static const bool ImageLoadFromFile(sf::Image& image, const std::string& filename)
+const bool ImageLoadFromFile(sf::Image& image, const std::string& filename)
 {
     std::string content;
     if(!fs::ReadFile(filename, content)) return false;

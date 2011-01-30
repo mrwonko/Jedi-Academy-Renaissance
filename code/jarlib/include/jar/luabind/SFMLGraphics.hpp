@@ -32,6 +32,10 @@ namespace jar
 /** \brief Binds some SFML/Graphics classes to Lua via luabind, like Drawable and Color.
 **/
 void JARGRAPHICSAPI BindSFMLGraphics(lua_State* L);
+
+/** \brief Loads an image from a file using PhysicsFS
+**/
+const bool JARGRAPHICSAPI ImageLoadFromFile(sf::Image& image, const std::string& filename);
 }
 
 #endif
