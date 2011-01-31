@@ -47,7 +47,11 @@ class Blend {};
 const bool ImageLoadFromFile(sf::Image& image, const std::string& filename)
 {
     std::string content;
-    if(!fs::ReadFile(filename, content)) return false;
+    if(!fs::ReadFile(filename, content) &&
+       !fs::ReadFile(filename + ".tga", content) &&
+       !fs::ReadFile(filename + ".png", content) &&
+       !fs::ReadFile(filename + ".jpg", content)
+       ) return false;
     if(!image.LoadFromMemory(content.c_str(), content.length())) return false;
     return true;
 }

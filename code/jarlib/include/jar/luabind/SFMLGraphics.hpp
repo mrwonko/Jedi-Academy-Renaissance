@@ -25,6 +25,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 struct lua_State;
 #include <jar/graphics/API.hpp>
+#include <string>
+
+namespace sf
+{
+    class Image;
+}
 
 namespace jar
 {

@@ -205,6 +205,11 @@ const bool ReadString(PHYSFS_File* file, unsigned int len, std::string& output)
     return true;
 }
 
+const int Read(PHYSFS_File* file, void* buffer, unsigned int objSize, unsigned int objCount)
+{
+    return PHYSFS_read(file, buffer, objSize, objCount);
+}
+
 const bool EndOfFile(PHYSFS_File* file)
 {
     return PHYSFS_eof(file);

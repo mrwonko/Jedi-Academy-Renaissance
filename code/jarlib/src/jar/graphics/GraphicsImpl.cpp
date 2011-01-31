@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Logger.hpp"
 #include "jar/graphics/GraphicsImpl.hpp"
 #include "jar/graphics/RenderWindow.hpp"
+#include "jar/graphics/Font.hpp"
+#include "jar/graphics/Text.hpp"
 #include "jar/luabind/SFMLGraphics.hpp"
 
 namespace jar {
@@ -42,8 +44,11 @@ GraphicsImpl::~GraphicsImpl()
 const bool GraphicsImpl::Init()
 {
     Logger::GetDefaultLogger().Info("- Initializing Graphics component...", 1);
-    BindSFMLGraphics(Core::GetSingleton().GetLua().GetState());
-    RenderWindow::Luabind(Core::GetSingleton().GetLua().GetState());
+    lua_State* L = Core::GetSingleton().GetLua().GetState();
+    BindSFMLGraphics(L);
+    RenderWindow::Luabind(L);
+    Font::BindToLua(L);
+    Text::BindToLua(L);
     Logger::GetDefaultLogger().Info("Exposed Graphics System to Lua", 2);
     Logger::GetDefaultLogger().Info("- Graphics component successfully initialized.", 1);
     return true;

@@ -17,45 +17,27 @@ g_InstructionInterpreter:Update(10)
 
 print ""
 
-local aLittleCircle = jar.Shape.Circle(0, 0, 32, jar.Color(0, 0, 0, 0), 1, jar.Color.Red)
-aLittleCircle:SetY(300)
-
---[[
-local testText = jar.String("Test yes!\nTest yes!")
-testText:SetSize(12)
-testText:SetPosition(1,  1)
-testText:SetColor(jar.Color.White)
-
-local function GetCharWidth(font, charnum)
-	return font:GetGlyph(charnum).Rectangle:GetWidth() / font:GetCharacterSize()
-end
-
-local font = testText:GetFont()
-for i = 0, #testText:GetText() - 1 do
-	print("Char " .. i .. " ("..testText:GetText():sub(i+1, i+1)..") is " .. testText:GetSize() * GetCharWidth(font, testText:GetText():byte(i+1)).." wide")
-end
-
-local function CharPosPrint(str, index)
-	local pos = str:GetCharacterPos(index)
-	print("Character " .. index .. " is at (" .. pos.x .. ", " .. pos.y ..")")
-end
-CharPosPrint(testText, 0)
-CharPosPrint(testText, 1)
-CharPosPrint(testText, 8)
-CharPosPrint(testText, 9)
-CharPosPrint(testText, 10)
---print("Height: " .. testText:GetRect():GetHeight())
---local testRect = jar.Shape.Rectangle(1, 1, 64, 12, jar.Color(0, 0, 0, 0), 1, jar.Color.White)
---]]
-
 local testImage = jar.Image()
 if not testImage:LoadFromFile("textures/tests/me2.jpg") then
 	error("Could not load test image!")
 end
 local testSprite = jar.Sprite(testImage)
 
+local testFont = jar.Font()
+if not testFont:LoadFromFile("fonts/anewhope") and not testFont:LoadFromFile("fonts/arial") then -- I don't distribute anewhope since it's a jka rip.
+	error("Could not load font!")
+end
+
+local testText = jar.Text(testFont)
+testText:SetText("Ich bin der schöne Testtext!\nUnd ich erstrecke mich über mehrere Zeilen.\n(Sorry for that text being German,\nI wanted to test ö, ß etc.)")
+testText:SetPosition(0, 400)
+print("Original size: " .. testText:GetFontSize() .. "pt")
+testText:SetFontSize(8)
+
 local moar = true
 local x = 400
+local aLittleCircle = jar.Shape.Circle(0, 0, 32, jar.Color(0, 0, 0, 0), 1, jar.Color.Red)
+aLittleCircle:SetY(300)
 aLittleCircle:SetX(x)
 
 local running = true
@@ -99,6 +81,7 @@ while running do
 	--g_testWindow:Draw(testRect)
 	--g_testWindow:Draw(testText)
 	g_testWindow:Draw(testSprite)
+	g_testWindow:Draw(testText)
 	g_testWindow:Display()
 end
 

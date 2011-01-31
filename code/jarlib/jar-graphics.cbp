@@ -21,9 +21,9 @@
 					<Add library="jar-core-d" />
 					<Add library="jar-input-d" />
 					<Add library="luabindd" />
-					<Add library="sfml-graphics-s" />
-					<Add library="sfml-window-s" />
-					<Add library="sfml-system-s" />
+					<Add library="sfml-graphics-d" />
+					<Add library="sfml-window-d" />
+					<Add library="sfml-system-d" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -55,6 +55,7 @@
 		<Linker>
 			<Add option="-enable-auto-import" />
 			<Add library="lua" />
+			<Add library="opengl32" />
 			<Add directory="lib" />
 		</Linker>
 		<ExtraCommands>
@@ -62,13 +63,19 @@
 		</ExtraCommands>
 		<Unit filename="include\jar\Graphics.hpp" />
 		<Unit filename="include\jar\graphics\API.hpp" />
+		<Unit filename="include\jar\graphics\Font.hpp" />
 		<Unit filename="include\jar\graphics\GraphicsImpl.hpp" />
 		<Unit filename="include\jar\graphics\RenderWindow.hpp" />
+		<Unit filename="include\jar\graphics\Text.hpp" />
 		<Unit filename="include\jar\luabind\SFMLGraphics.hpp" />
 		<Unit filename="src\jar\Graphics.cpp" />
+		<Unit filename="src\jar\graphics\Font.cpp" />
 		<Unit filename="src\jar\graphics\GraphicsImpl.cpp" />
 		<Unit filename="src\jar\graphics\RenderWindow.cpp" />
+		<Unit filename="src\jar\graphics\Text.cpp" />
+		<Unit filename="src\jar\graphics\luabind\Font.cpp" />
 		<Unit filename="src\jar\graphics\luabind\RenderWindow.cpp" />
+		<Unit filename="src\jar\graphics\luabind\Text.cpp" />
 		<Unit filename="src\jar\luabind\SFMLGraphics.cpp" />
 		<Extensions>
 			<code_completion />

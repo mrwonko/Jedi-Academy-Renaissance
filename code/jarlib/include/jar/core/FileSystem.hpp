@@ -103,6 +103,14 @@ JARCOREAPI const bool ReadString(PHYSFS_File* file, std::string& output);
 /** \brief Reads a string of a given length from a file, stopping at eof. **/
 JARCOREAPI const bool ReadString(PHYSFS_File* file, unsigned int len, std::string& output);
 
+/** \brief Reads a given number of objectfrom a file
+    file file handle returned from PHYSFS_openRead().
+	buffer buffer to store read data into.
+	objSize size in bytes of objects being read from (file).
+	objCount number of (objSize) objects to read from (file).
+    \return number of objects read. GetLastError() can shed light on the reason this might be < (objCount), as can EndOfFile(). -1 if complete failure. **/
+JARCOREAPI const int Read(PHYSFS_File* file, void* buffer, unsigned int objSize, unsigned int objCount);
+
 /** \brief Returns whether a file's eof has been reached yet.
     \note I can't use PHYSFS_eof since it returns an int, and to Lua 0 = true. **/
 JARCOREAPI const bool EndOfFile(PHYSFS_File* file);

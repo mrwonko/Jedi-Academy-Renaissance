@@ -27,7 +27,8 @@ public:
 
     virtual void Render(sf::RenderTarget& target) const;
 
-    char mRenderMe; //TODO: Delete
+    //usually a char is signed - that doesn't work in this case.
+    unsigned char mRenderMe; //TODO: Delete
 
 private:
     // from the JKA SDK
@@ -106,7 +107,7 @@ void Font::Render(sf::RenderTarget& target) const
 
     //render code goes here
     mImage.Bind();
-    glBlendFunc(GL_ONE, GL_ONE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBegin(GL_QUADS);
 
 /*
@@ -197,9 +198,13 @@ And the image you output is white with alpha, but it should be black'n'white!"<<
                 {
                     f.mRenderMe = (char)e.Key.Code + (e.Key.Shift ? 'A' - 'a' : 0);
                 }
+                else
+                {
+                    f.mRenderMe = 'ö';
+                }
             }
         }
-        App.Clear();
+        App.Clear(sf::Color::Blue);
         App.Draw(f);
         App.Display();
     }
