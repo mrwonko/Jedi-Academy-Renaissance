@@ -5,14 +5,14 @@
 		<Project filename="jarlib/jar-input.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
+		<Project filename="02-filesystem/02-filesytem.cbp">
+			<Depends filename="jarlib/jar-core.cbp" />
+		</Project>
 		<Project filename="jarlib/jar-graphics.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 		</Project>
-		<Project filename="02-filesystem/02-filesytem.cbp">
-			<Depends filename="jarlib/jar-core.cbp" />
-		</Project>
-		<Project filename="03-testsnshit/03-testsnshit.cbp">
+		<Project filename="03-testsnshit/03-testsnshit.cbp" active="1">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 			<Depends filename="jarlib/jar-graphics.cbp" />
@@ -25,6 +25,6 @@
 		<Project filename="05-luabind-tests/05-luabind-tests.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
-		<Project filename="06-jka-fonttest/06-jka-fonttest.cbp" active="1" />
+		<Project filename="06-jka-fonttest/06-jka-fonttest.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

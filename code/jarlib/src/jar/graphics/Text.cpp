@@ -58,6 +58,18 @@ const float Text::GetFontSize()
 
 void Text::Render(sf::RenderTarget& target) const
 {
+    static float color_table[8][4] =
+    {
+        {0.0, 0.0, 0.0, 1.0},
+        {1.0, 0.0, 0.0, 1.0},
+        {0.0, 1.0, 0.0, 1.0},
+        {1.0, 1.0, 0.0, 1.0},
+        {0.0, 0.0, 1.0, 1.0},
+        {0.0, 1.0, 1.0, 1.0},
+        {1.0, 0.0, 1.0, 1.0},
+        {1.0, 1.0, 1.0, 1.0},
+    };
+
     //trivial case
     if(mText == "") return;
 
@@ -76,6 +88,7 @@ void Text::Render(sf::RenderTarget& target) const
 
     float posX = 0;
     float posY = 0;
+    bool nextIsColor = false;
 
     for(std::string::const_iterator it = mText.begin(); it != mText.end(); ++it)
     {
@@ -83,6 +96,23 @@ void Text::Render(sf::RenderTarget& target) const
         {
             posX = 0;
             posY += data.mHeight;
+            continue;
+        }
+        if(*it == '^')
+        {
+            std::string::const_iterator next = it + 1;
+            if(next != mText.end() && *next >= '0' && *next <= '7')
+            {
+                nextIsColor = true;
+                continue;
+            }
+        }
+        if(nextIsColor)
+        {
+            nextIsColor = false;
+            assert(*it >= '0' && *it <= '7');
+            unsigned int col = *it - '0';
+            glColor4f(color_table[col][0], color_table[col][1], color_table[col][2], color_table[col][3]);
             continue;
         }
         const Font::GlyphInfo& info = data.mGlyphs[static_cast<unsigned char>(*it)];

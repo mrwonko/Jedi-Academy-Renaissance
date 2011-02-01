@@ -24,15 +24,24 @@ end
 local testSprite = jar.Sprite(testImage)
 
 local testFont = jar.Font()
-if not testFont:LoadFromFile("fonts/anewhope") and not testFont:LoadFromFile("fonts/arial") then -- I don't distribute anewhope since it's a jka rip.
+if --[[not testFont:LoadFromFile("fonts/anewhope") and]] not testFont:LoadFromFile("fonts/arial") then -- I don't distribute anewhope since it's a jka rip.
 	error("Could not load font!")
 end
 
 local testText = jar.Text(testFont)
-testText:SetText("Ich bin der schöne Testtext!\nUnd ich erstrecke mich über mehrere Zeilen.\n(Sorry for that text being German,\nI wanted to test ö, ß etc.)")
-testText:SetPosition(0, 400)
+testText:SetText([[^1I just added font/text rendering to my engine.
+
+^2I could've just used SFML's font system, ^3but I want to use the same file formats used in ^4Jedi Knight:
+Jedi Academy^3 (including fonts). ^5It's basically just an image and a file containing information about the
+positions of the characters (as well as UV mapping).
+
+^6Now I've got everything I need to add an ingame console: low-level input handling, console commands,
+console variables, font rendering, shape rendering...
+
+^7The console will be a great tool for debugging and developing.]])
+--testText:SetPosition(0, 400)
 print("Original size: " .. testText:GetFontSize() .. "pt")
-testText:SetFontSize(8)
+--testText:SetFontSize(8)
 
 local moar = true
 local x = 400
@@ -77,10 +86,10 @@ while running do
 	end
 	
 	g_testWindow:Clear(jar.Color.Black)
-	g_testWindow:Draw(aLittleCircle)
+	--g_testWindow:Draw(aLittleCircle)
 	--g_testWindow:Draw(testRect)
 	--g_testWindow:Draw(testText)
-	g_testWindow:Draw(testSprite)
+	--g_testWindow:Draw(testSprite)
 	g_testWindow:Draw(testText)
 	g_testWindow:Display()
 end
