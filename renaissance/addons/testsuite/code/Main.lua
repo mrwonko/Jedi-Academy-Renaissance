@@ -15,6 +15,7 @@ g_InstructionInterpreter:Interpret("echo \"pre-wait\"; wait 12; echo \"post-wait
 g_InstructionInterpreter:Update(10)
 g_InstructionInterpreter:Update(10)
 
+print("==== end of InstructionInterpreter tests ====")
 print ""
 
 local testImage = jar.Image()
@@ -42,6 +43,9 @@ console variables, font rendering, shape rendering...
 --testText:SetPosition(0, 400)
 print("Original size: " .. testText:GetFontSize() .. "pt")
 --testText:SetFontSize(8)
+
+local rect = g_testWindow:GetView():GetRect()
+print("View rect from (" .. rect.left .. ", " .. rect.top .. ") to (" .. rect.right..", "..rect.bottom..")")
 
 local moar = true
 local x = 400

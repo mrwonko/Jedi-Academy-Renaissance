@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <jar/Input.hpp>
 #include <jar/Graphics.hpp>
 #include <jar/Core/CoutLogger.hpp>
+#include <jar/Core/CoutAndFileLogger.hpp>
 #include <jar/Core/FileSystem.hpp>
 #include <jar/Core/Lua.hpp>
 
@@ -40,7 +41,7 @@ int main(int argc, char** argv)
         static const bool RELEASE = false;
 
         //create Logger
-        jar::CoutLogger logger;
+        jar::CoutAndFileLogger logger("../log.txt");
         logger.SetLoggingLevel(5);
         logger.Info("Initialized Logger", 0);
 
@@ -63,8 +64,6 @@ int main(int argc, char** argv)
             return EXIT_SUCCESS;
         }
         logger.Info((RELEASE ? "Mounted bootstrap.pk3" : "Mounted ./"), 0);
-
-        logger.Log("Last Error: " + jar::fs::GetLastError());
 
         //main loop etc. is in Lua.
         std::string luaMainCode;

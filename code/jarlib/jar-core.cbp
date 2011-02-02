@@ -63,7 +63,9 @@
 		<Unit filename="include\jar\core\CLArguments.hpp" />
 		<Unit filename="include\jar\core\Component.hpp" />
 		<Unit filename="include\jar\core\CoreImpl.hpp" />
+		<Unit filename="include\jar\core\CoutAndFileLogger.hpp" />
 		<Unit filename="include\jar\core\CoutLogger.hpp" />
+		<Unit filename="include\jar\core\FileLogger.hpp" />
 		<Unit filename="include\jar\core\FileSystem.hpp" />
 		<Unit filename="include\jar\core\Helpers.hpp" />
 		<Unit filename="include\jar\core\Logger.hpp" />
@@ -80,7 +82,9 @@
 		<Unit filename="src\jar\core\CLArguments.cpp" />
 		<Unit filename="src\jar\core\Component.cpp" />
 		<Unit filename="src\jar\core\CoreImpl.cpp" />
+		<Unit filename="src\jar\core\CoutAndFileLogger.cpp" />
 		<Unit filename="src\jar\core\CoutLogger.cpp" />
+		<Unit filename="src\jar\core\FileLogger.cpp" />
 		<Unit filename="src\jar\core\FileSystem.cpp" />
 		<Unit filename="src\jar\core\Helpers.cpp" />
 		<Unit filename="src\jar\core\Logger.cpp" />

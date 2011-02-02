@@ -64,6 +64,11 @@ PHYSFS_File* OpenWrite(const std::string& filename)
     return PHYSFS_openWrite(filename.c_str());
 }
 
+PHYSFS_File* OpenAppend(const std::string& filename)
+{
+    return PHYSFS_openAppend(filename.c_str());
+}
+
 const bool Close(PHYSFS_File* file)
 {
     return PHYSFS_close(file);

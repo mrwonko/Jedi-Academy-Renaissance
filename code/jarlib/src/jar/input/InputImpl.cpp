@@ -33,7 +33,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/Windows/WinJoystickXInput.hpp"
 #include "jar/input/Windows/WinJoystickDirectInput.hpp"
 
-#if 1
 //for IsXInputDevice
 #include <wbemidl.h>
 #include <oleauto.h>
@@ -42,7 +41,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // simpler and less silly.
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
-#endif
 
 //this is only available on msvc, I believe
 #ifndef _MSC_VER

@@ -96,6 +96,7 @@ void BindFileSystem(lua_State* L)
         luabind::def("Mount", (Mount2Signature) &fs::Mount),
         luabind::def("OpenRead", &fs::OpenRead),
         luabind::def("OpenWrite", &fs::OpenWrite),
+        luabind::def("OpenAppend", &fs::OpenAppend),
         luabind::def("Unmount", &fs::Unmount),
         luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory, luabind::return_stl_iterator),
         luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory, luabind::return_stl_iterator),
