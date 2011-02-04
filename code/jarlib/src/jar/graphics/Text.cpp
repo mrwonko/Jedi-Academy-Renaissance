@@ -108,9 +108,11 @@ void Text::Render(sf::RenderTarget& target) const
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBegin(GL_QUADS);
 
-    float posX = 0;
-    float posY = 0;
+    int posX = 0;
+    int posY = -data.mDescender;
     bool nextIsColor = false;
+
+    int tabWidth = data.mGlyphs[' '].mHorizAdvance * mFont->GetTabWidth();
 
     for(std::string::const_iterator it = mText.begin(); it != mText.end(); ++it)
     {
@@ -118,6 +120,11 @@ void Text::Render(sf::RenderTarget& target) const
         {
             posX = 0;
             posY += data.mHeight;
+            continue;
+        }
+        if(*it == '\t')
+        {
+            posX = posX - posX%tabWidth + tabWidth;
             continue;
         }
         if(*it == '^')
@@ -139,8 +146,8 @@ void Text::Render(sf::RenderTarget& target) const
         }
         const Font::GlyphInfo& info = data.mGlyphs[static_cast<unsigned char>(*it)];
 
-        float x = posX + info.mHorizOffset;
-        float y = posY + data.mAscender - info.mBaseline;
+        int x = posX + info.mHorizOffset;
+        int y = posY + data.mHeight - info.mBaseline;
 
         //left, top
         glTexCoord2f(info.mTexCoordX1, info.mTexCoordY2);

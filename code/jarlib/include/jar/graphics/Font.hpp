@@ -47,6 +47,11 @@ class JARGRAPHICSAPI Font
         **/
         const bool LoadFromFile(const std::string& filename);
 
+        /** \brief Returns the width of a given string, in pixels, if it was written using this font.
+        **/
+
+        const unsigned int GetWidth(const std::string& str) const;
+
         static void BindToLua(lua_State* L);
 
         // from the JKA SDK
@@ -81,11 +86,17 @@ class JARGRAPHICSAPI Font
 
         const sf::Image& GetImage() const { return *mImage; }
 
+        /** \brief Sets the width of tabstops (in multiples of the space width), default is 8 **/
+        void SetTabWidth(unsigned int width) {mTabWidth = width;}
+
+        const unsigned int GetTabWidth() const {return mTabWidth;}
+
     protected:
     private:
 
         FontData mFontData;
         sf::Image* mImage; //pointer so I can get away with a forward declaration
+        unsigned int mTabWidth; ///< In multiples of space width, default 8
 };
 
 } // namespace jar

@@ -11,6 +11,8 @@ end
 
 g_InstructionInterpreter = InstructionInterpreter:New(g_CVarManager, g_CCommandManager)
 
+-- g_Console = Console:New(g_InstructionInterpreter)
+
 g_testWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
 
 class "LuaLogger" (jar.Logger)

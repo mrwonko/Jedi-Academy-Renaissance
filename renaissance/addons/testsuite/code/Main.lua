@@ -25,12 +25,13 @@ end
 local testSprite = jar.Sprite(testImage)
 
 local testFont = jar.Font()
-if --[[not testFont:LoadFromFile("fonts/anewhope") and]] not testFont:LoadFromFile("fonts/arial") then -- I don't distribute anewhope since it's a jka rip.
+if --[[not testFont:LoadFromFile("fonts/anewhope") and]] not testFont:LoadFromFile("fonts/times") then -- I don't distribute anewhope since it's a jka rip.
 	error("Could not load font!")
 end
+--testFont:SetTabWidth(4)
 
 local testText = jar.Text(testFont)
-testText:SetText([[^1I just added font/text rendering to my engine.
+testText:SetText([[^1I just added font/text rendering to my engine. (The rectangle is just a height test.)
 
 ^2I could've just used SFML's font system, ^3but I want to use the same file formats used in ^4Jedi Knight:
 Jedi Academy^3 (including fonts). ^5It's basically just an image and a file containing information about the
@@ -39,9 +40,17 @@ positions of the characters (as well as UV mapping).
 ^6Now I've got everything I need to add an ingame console: low-level input handling, console commands,
 console variables, font rendering, shape rendering...
 
-^7The console will be a great tool for debugging and developing.]])
---testText:SetPosition(0, 400)
-print("Original size: " .. testText:GetFontSize() .. "pt")
+^7The console will be a great tool for debugging and developing.
+
+Special characters also work, as far as I can tell: Für Khazad-Dûm! Öhöhö, Spaß! (Ja, äußerst sinnlos dieser Text.)
+
+now		I		also
+added	support	for
+tabstops.]])
+testText:SetPosition(10, 10)
+print("Original size: " .. testFont:GetDefaultSize() .. "pt")
+textBox = jar.Shape.Rectangle(10, 10, g_testWindow:GetWidth()-10, 10+testFont:GetHeight(), jar.Color(0, 0, 0, 0), 1, jar.Color.Yellow)
+
 --testText:SetFontSize(8)
 
 local rect = g_testWindow:GetView():GetRect()
@@ -64,8 +73,14 @@ while running do
 		
 		if event.Type == jar.Event.Closed then
 			running = false
-		elseif event.Type == jar.Event.KeyPressed and event.Key.Code == jar.Key.Escape then
-			running = false
+		elseif event.Type == jar.Event.KeyPressed then
+			if event.Key.Code == jar.Key.Escape then
+				running = false
+			end
+			
+			--if not g_Console:OnKeyDown(event.Key.Code) then
+				--handle other input here
+			--end
 		end
 	end
 	
@@ -94,6 +109,8 @@ while running do
 	--g_testWindow:Draw(testRect)
 	--g_testWindow:Draw(testText)
 	--g_testWindow:Draw(testSprite)
+	--g_Console:RenderTo(g_TestWindow)
+	g_testWindow:Draw(textBox)
 	g_testWindow:Draw(testText)
 	g_testWindow:Display()
 end
