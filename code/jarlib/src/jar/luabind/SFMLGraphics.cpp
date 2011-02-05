@@ -56,10 +56,12 @@ const bool ImageLoadFromFile(sf::Image& image, const std::string& filename)
     return true;
 }
 
+/*
 static std::string GetStringText(const sf::String& str)
 {
     return str.GetText();
 }
+*/
 
 void BindSFMLGraphics(lua_State* L)
 {
@@ -194,8 +196,9 @@ void BindSFMLGraphics(lua_State* L)
             .def("GetSubRect", &sf::Sprite::GetSubRect)
             .def("Resize", (void(sf::Sprite::*)(const sf::Vector2f&))&sf::Sprite::Resize)
             .def("Resize", (void(sf::Sprite::*)(float, float))&sf::Sprite::Resize)
-            .def("GetSize", &sf::Sprite::GetSize),
+            .def("GetSize", &sf::Sprite::GetSize)
 
+        /*
         luabind::class_<sf::Glyph>("Glyph")
             .def(luabind::constructor<>())
             .def_readonly("Rectangle", &sf::Glyph::Rectangle),
@@ -231,6 +234,7 @@ void BindSFMLGraphics(lua_State* L)
                 luabind::value("Italic", (unsigned long)sf::String::Italic),
                 luabind::value("Underlined", (unsigned long)sf::String::Underlined)
             ]
+        */
     ];
 
     luabind::globals(L)["jar"]["Color"]["Black"] = sf::Color::Black;

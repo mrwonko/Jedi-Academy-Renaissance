@@ -180,7 +180,10 @@ void Event::Luabind(lua_State* L)
 
                 luabind::class_<Event::KeyEvent>("KeyEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Code", &Event::KeyEvent::Code),
+                    .def_readonly("Code", &Event::KeyEvent::Code)
+                    .def_readonly("Alt", &Event::KeyEvent::Alt)
+                    .def_readonly("Control", &Event::KeyEvent::Control)
+                    .def_readonly("Shift", &Event::KeyEvent::Shift),
 
                 luabind::class_<Event::MouseButtonEvent>("MouseButtonEvent")
                     .def(luabind::constructor<>())

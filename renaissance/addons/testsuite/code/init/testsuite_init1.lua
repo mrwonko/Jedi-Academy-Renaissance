@@ -1,5 +1,7 @@
 require("InstructionInterpreter.lua")
 require("CCommandManager.lua")
+require("EventListenerStack.lua") --also creates g_EventListenerStack
+require("Console.lua")
 
 jar.Logger.GetDefaultLogger():Log("Initializing Test Suite 1")
 
@@ -11,52 +13,12 @@ end
 
 g_InstructionInterpreter = InstructionInterpreter:New(g_CVarManager, g_CCommandManager)
 
--- g_Console = Console:New(g_InstructionInterpreter)
 
-g_testWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
+g_TestWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
 
-class "LuaLogger" (jar.Logger)
+g_Console = Console:New(g_TestWindow:GetWidth(), g_TestWindow:GetHeight()/2, g_InstructionInterpreter, "[select font here]")
 
-function LuaLogger:__init()
-	jar.Logger.__init(self)
-end
-
-function LuaLogger:Log(message)
-	if not message then
-		if DEBUG then
-			print("LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
-		end
-		return
-	end
-	print("Log: " .. message)
-end
-
-function LuaLogger:Warning(message)
-	if not message then
-		if DEBUG then
-			print("LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
-		end
-		return
-	end
-	print("Warning: " .. message)
-end
-
-function LuaLogger:Error(message)
-	if not message then
-		if DEBUG then
-			print("LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
-		end
-		return
-	end
-	print("Error: " .. message)
-end
-
---[[
-g_originalDefaultLogger = jar.Logger.GetDefaultLogger()
-g_testLogger = LuaLogger()
-jar.Logger.SetDefaultLogger(g_testLogger)
-jar.Logger.GetDefaultLogger():Log("Test log")
---]]
+g_EventListenerStack:PushListener(g_Console)
 
 --[[
 RegisterAction{

@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/Graphics/View.hpp"
+#include "SFML/Graphics/Image.hpp"
 
 namespace jar
 {
@@ -48,6 +49,11 @@ static TimeType GetFrameTime(const jar::RenderWindow& window)
     return roundedTime;
 }
 
+static void RenderWindowSetIcon(jar::RenderWindow& window, const sf::Image& image)
+{
+    window.SetIcon(image.GetWidth(), image.GetHeight(), image.GetPixelsPtr());
+}
+
 void RenderWindow::Luabind(lua_State* L)
 {
     luabind::module(L, "jar")
@@ -62,7 +68,7 @@ void RenderWindow::Luabind(lua_State* L)
             .def("PreserveOpenGLStates", &jar::RenderWindow::PreserveOpenGLStates)
 
 
-            //.def("Capture", &RenderWindow::Capture)
+            .def("Capture", &RenderWindow::Capture)
 
             .def("Close", &jar::RenderWindow::Close)
             .def("Display", &jar::RenderWindow::Display)
@@ -75,7 +81,7 @@ void RenderWindow::Luabind(lua_State* L)
             .def("SetActive", &jar::RenderWindow::SetActive)
             .def("SetCursorPosition", &jar::RenderWindow::SetCursorPosition)
             .def("SetFramerateLimit", &jar::RenderWindow::SetFramerateLimit)
-            .def("SetIcon", &jar::RenderWindow::SetIcon)
+            .def("SetIcon", &RenderWindowSetIcon)
             .def("SetPosition", &jar::RenderWindow::SetPosition)
             .def("SetSize", &jar::RenderWindow::SetSize)
             .def("Show", &jar::RenderWindow::Show)

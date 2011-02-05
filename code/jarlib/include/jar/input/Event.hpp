@@ -74,6 +74,9 @@ struct JARINPUTAPI Event
     struct JARINPUTAPI KeyEvent
     {
         Key::Code Code;
+        bool Alt;
+        bool Control;
+        bool Shift;
     };
 
     /** \brief Info for Event of EventType MouseMoved

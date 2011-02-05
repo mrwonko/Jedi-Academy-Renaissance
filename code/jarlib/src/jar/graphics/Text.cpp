@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/graphics/Text.hpp"
+#include "jar/core/Helpers.hpp"
 #include "jar/graphics/Font.hpp"
 #include <SFML/Graphics/Image.hpp>
 #include <GL/gl.h>
@@ -41,6 +42,12 @@ Text::Text(const Font& font) :
 {
     //ctor
 }
+Text::Text(const Font& font, const unsigned int fontSize) :
+    mFont(&font),
+    mFontSize(fontSize)
+{
+    //ctor
+}
 
 Text::~Text()
 {
@@ -52,7 +59,7 @@ void Text::SetText(const std::string& text)
     mText = text;
 }
 
-const std::string& Text::GetText()
+const std::string& Text::GetText() const
 {
     return mText;
 }
@@ -62,7 +69,7 @@ void Text::SetFont(const Font& font)
     mFont = &font;
 }
 
-const Font& Text::GetFont()
+const Font& Text::GetFont() const
 {
     assert(mFont);
     return *mFont;
@@ -73,7 +80,7 @@ void Text::SetFontSize(const float size)
     mFontSize = size;
 }
 
-const float Text::GetFontSize()
+const float Text::GetFontSize() const
 {
     return mFontSize;
 }
@@ -165,6 +172,11 @@ void Text::Render(sf::RenderTarget& target) const
         posX += info.mHorizAdvance;
     }
     glEnd();
+}
+
+const float Text::GetWidth() const
+{
+    return (float)mFontSize / (float) mFont->GetFontData().mPointSize * (float) mFont->GetWidth(mText);
 }
 
 } // namespace jar

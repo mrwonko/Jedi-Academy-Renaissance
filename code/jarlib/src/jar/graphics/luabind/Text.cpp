@@ -32,14 +32,15 @@ void Text::BindToLua(lua_State* L)
     luabind::module(L, "jar")
     [
         luabind::class_<Text, sf::Drawable>("Text")
-            .def(luabind::constructor<>())
             .def(luabind::constructor<const Font&>())
+            .def(luabind::constructor<const Font&, const unsigned int>())
             .def("SetText", &Text::SetText)
             .def("GetText", &Text::GetText)
             .def("SetFont", &Text::SetFont)
             .def("GetFont", &Text::GetFont)
             .def("SetFontSize", &Text::SetFontSize)
             .def("GetFontSize", &Text::GetFontSize)
+            .def("GetWidth", &Text::GetWidth)
     ];
 }
 }

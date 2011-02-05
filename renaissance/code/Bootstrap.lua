@@ -1,4 +1,4 @@
-jar.Logger.GetDefaultLogger():Info("Hello Lua World :-)", 3)--  Replace Lua functions so they work as expected
+--  Replace Lua functions so they work as expected
 
 -- replace file functions
 

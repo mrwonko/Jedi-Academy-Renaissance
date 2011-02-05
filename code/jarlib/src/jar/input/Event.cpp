@@ -130,6 +130,9 @@ const bool Event::FromSFML(const sf::Event& e)
             {
                 Type = Event::KeyPressed;
                 Key.Code = keyMap[e.Key.Code];
+                Key.Alt = e.Key.Alt;
+                Key.Control = e.Key.Control;
+                Key.Shift = e.Key.Shift;
                 return true;
             }
             //else

@@ -44,7 +44,7 @@ g_CVarManager:RegisterCVar{
 }
 
 -- TODO CLArguments -> CVars
-jar.Logger.GetDefaultLogger():Log("TODO: parse arguments for Instruction")
+jar.Logger.GetDefaultLogger():Log("TODO: (Init.lua): parse arguments for Instructions")
 
 
 jar.Logger.GetDefaultLogger():Info("Mounting base", 3)

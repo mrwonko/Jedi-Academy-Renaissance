@@ -39,25 +39,29 @@ class JARGRAPHICSAPI Text : public sf::Drawable
         /** \note don't use, just here so autopointers work **/
         Text();
         Text(const Font& font);
+        Text(const Font& font, const unsigned int fontSize);
         virtual ~Text();
 
         /** \brief Sets the font, does not change the size **/
         void SetFont(const Font& font);
 
         /** \brief Gets the font **/
-        const Font& GetFont();
+        const Font& GetFont() const;
 
         /** \brief Sets the text **/
         void SetText(const std::string& text);
 
         /** \brief Gets the text **/
-        const std::string& GetText();
+        const std::string& GetText() const;
 
         /** \brief Sets the font size, in points **/
         void SetFontSize(const float size);
 
         /** \brief Gets the font size, in points (default: font's size) **/
-        const float GetFontSize();
+        const float GetFontSize() const;
+
+        /** \brief Gets the width of this text, in pixels - depends on font and fontsize **/
+        const float GetWidth() const;
 
         virtual void Render(sf::RenderTarget& target) const;
 
