@@ -2,7 +2,7 @@ RegisterCommand
 {
 	name = "echo",
 	
-	description = "prints all parameters on the console (separated by spaces)",
+	description = "Prints all parameters on the console (separated by spaces)",
 	
 	OnStart = function(self, ...)
 		if #arg == 0 then

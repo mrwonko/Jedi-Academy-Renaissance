@@ -8,7 +8,7 @@ CVarManager.configfile = "config/cvars.lua"
 CVarManager.CVars = {}
 
 function CVarManager:New()
-	local obj = {}
+	local obj = { CVars = {} }
 	setmetatable(obj, self)
 	self.__index = self
 	return obj

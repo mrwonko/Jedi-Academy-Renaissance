@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Lua.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp> //includes both functions and classes. (function.hpp + class.hpp)
+#include <sstream>
 
 namespace jar
 {
@@ -41,6 +42,26 @@ Lua::~Lua()
     Deinit();
 }
 
+static int add_file_and_line_to_error(lua_State* L)
+{
+   lua_Debug d;
+   lua_getstack(L, 1, &d);
+   lua_getinfo(L, "Sln", &d);
+   std::string err = lua_tostring(L, -1);
+   lua_pop(L, 1);
+   std::stringstream msg;
+   msg << d.short_src << ":" << d.currentline;
+
+   if (d.name != 0)
+   {
+      msg << "(" << d.namewhat << " " << d.name << ")";
+   }
+   msg << " " << err;
+   lua_pushstring(L, msg.str().c_str());
+   return 1;
+}
+
+
 const bool Lua::Init()
 {
     //try to open the lua state
@@ -58,6 +79,7 @@ const bool Lua::Init()
     if(mIsMainThread)
     {
         luabind::open(mState);
+        luabind::set_pcall_callback(&add_file_and_line_to_error);
     }
     return true;
 }

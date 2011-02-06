@@ -10,7 +10,10 @@ CCommandManager = {}
 CCommandManager.CCommands = {}
 
 function CCommandManager:New()
-	local obj = {}
+	local obj =
+	{
+		CCommands = {}
+	}
 	setmetatable(obj, self)
 	self.__index = self
 	return obj
@@ -25,7 +28,7 @@ function CCommandManager:RegisterCommand(info)
 		return false
 	end
 	--check for duplication
-	if self.CCommands[info.name] then
+	if self.CCommands[info.name:lower()] then
 		jar.Logger.GetDefaultLogger():Warning("CCommandManager:RegisterCCommand(): Cannot register multiple CCommands with the same name (\""..info.name.."\")!")
 		return false
 	end
@@ -36,7 +39,7 @@ function CCommandManager:RegisterCommand(info)
 		return false
 	end
 	cmd.manager = self
-	self.CCommands[info.name] = cmd
+	self.CCommands[info.name:lower()] = cmd
 	--yay, worked! Should have, any way...
 	return true
 end
@@ -51,7 +54,6 @@ function CCommandManager:LoadCommands(dir)
 	local oldRegisterCommand = RegisterCommand
 	RegisterCommand = function(info) return self:RegisterCommand(info) end
 	theCommandManager = self
-	
 	for filename in jar.fs.GetFilesInDirectory(dir) do
 		if string.sub(filename, -4) == ".lua" then
 			jar.Logger.GetDefaultLogger():Info("CCommandManager:LoadCommands(): loading \"" .. dir .. "/" .. filename .. "\"", 3)

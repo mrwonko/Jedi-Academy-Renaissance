@@ -4,20 +4,6 @@ require("WordWrap.lua")
 
 print("==== Test Suite Start ====")
 print("")
-print("==== InstructionInterpreter tests ====")
-
-local oldLogLevel = g_CVarManager:GetCVar("log_level")
-g_InstructionInterpreter:Interpret("log_level; echo a    little test; echo \"a little   fucking test\"; log_level = 42; log_level; log_level = " .. oldLogLevel .. "; log_level;")
-g_InstructionInterpreter:Interpret("help log_level")
-g_InstructionInterpreter:Interpret("help stupidNonexistantShit")
-g_InstructionInterpreter:Interpret("stupidNonexistantShit")
-
-g_InstructionInterpreter:Interpret("echo \"pre-wait\"; wait 12; echo \"post-wait\"; wait 8; echo lol")
-g_InstructionInterpreter:Update(10)
-g_InstructionInterpreter:Update(10)
-
-print("==== end of InstructionInterpreter tests ====")
-print ""
 
 local testImage = jar.Image()
 if not testImage:LoadFromFile("textures/tests/me2.jpg") then
@@ -25,10 +11,7 @@ if not testImage:LoadFromFile("textures/tests/me2.jpg") then
 end
 local testSprite = jar.Sprite(testImage)
 
-local testFont = jar.Font()
-if --[[not testFont:LoadFromFile("fonts/anewhope") and]] not testFont:LoadFromFile("fonts/times") then -- I don't distribute anewhope since it's a jka rip.
-	error("Could not load font!")
-end
+local testFont = g_FontManager:GetFont("times", true) -- seconds parameter: throw error on failure
 --testFont:SetTabWidth(4)
 
 local wrappedText = table.concat(WordWrap([[^1I just added font/text rendering to my engine. (The rectangle is a word wrap test visualization. This text should not be right of it.)
@@ -49,14 +32,10 @@ tabstops.]], testFont, nil, g_TestWindow:GetWidth()-20), "\n")
 local testText = jar.Text(testFont)
 testText:SetText(wrappedText)
 testText:SetPosition(10, 10)
-print("Original size: " .. testFont:GetDefaultSize() .. "pt")
 textBox = jar.Shape.Rectangle(10, 10, g_TestWindow:GetWidth()-10, 10+testFont:GetHeight(), jar.Color(0, 0, 0, 0), 1, jar.Color.Yellow)
 textBox = jar.Shape.Rectangle(10, 10, g_TestWindow:GetWidth()-10, g_TestWindow:GetHeight()-10, jar.Color(0, 0, 0, 0), 1, jar.Color.Yellow)
 
 --testText:SetFontSize(8)
-
-local rect = g_TestWindow:GetView():GetRect()
-print("View rect from (" .. rect.left .. ", " .. rect.top .. ") to (" .. rect.right..", "..rect.bottom..")")
 
 local moar = true
 local x = 400
@@ -65,6 +44,15 @@ aLittleCircle:SetY(300)
 aLittleCircle:SetX(x)
 
 local running = true
+g_CCommandManager:RegisterCommand
+{
+	name = "quit",
+	description = "Exits the program",
+	OnStart = function()
+		running = false
+	end,
+}
+
 while running do
 	while true do
 		local success, event = jar.EventManager.GetSingleton():GetEvent()
@@ -87,6 +75,8 @@ while running do
 		jar.Sleep(1)
 		frametime = g_TestWindow:GetFrameTime()
 	end
+	
+	g_InstructionInterpreter:Update(frametime)
 	
 	jar.Core.GetSingleton():Update(frametime)
 	
@@ -117,5 +107,5 @@ while running do
 	g_TestWindow:Display()
 end
 
---g_CVarManager:SaveCVars()
+g_CVarManager:SaveCVars()
 print("==== Test Suite End ====")

@@ -1,3 +1,5 @@
+require("AutoComplete.lua")
+
 RegisterCommand
 {
 	name = "help",
@@ -8,7 +10,32 @@ RegisterCommand
 	
 	OnStart = function(self, name)
 		if not name then
-			print(description)
+			print(self.description)
+			return
+		end
+		
+		assert(g_CVarManager)
+		
+		local function Complete(instruction)
+			local available = {} -- list of available commands and cvars
+			for _, cvar in pairs(g_CVarManager.CVars) do
+				table.insert(available, cvar.name)
+			end
+			for _, ccom in pairs(self.manager.CCommands) do
+				table.insert(available, ccom.name)
+			end
+			
+			return AutoComplete(instruction, available)
+		end
+
+		local name, avail = Complete(name)
+		if #avail == 0 then
+			print("No console command or cvar called \"" .. name .. "\" exists.")
+			return
+		elseif #avail > 1 then
+			for _, name in ipairs(avail) do
+				print(name)
+			end
 			return
 		end
 		
@@ -18,16 +45,13 @@ RegisterCommand
 			return
 		end
 		
-		if self.manager.CCommands[name] then
-			print(self.manager.CCommands[name].description or "[no description available]")
-		elseif g_CVarManager then
-			if g_CVarManager.CVars[name] then
-				g_CVarManager.CVars[name]:Print()
-			else
-				print("No console command or cvar called \"" .. name .. "\" exists.")
-			end
+		if self.manager.CCommands[name:lower()] then
+			print(name)
+			print(self.manager.CCommands[name:lower()].description or "[no description available]")
+		elseif g_CVarManager.CVars[name:lower()] then
+			g_CVarManager.CVars[name:lower()]:Print()
 		else
-			jar.Logger.GetDefaultLogger():Warning("CVar Manager not found, could not check whether a CVar called \"" .. name .. "\" exists!")
+			print("^3Woops, this should not happen.")
 		end
 	end,
 }

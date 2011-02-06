@@ -179,4 +179,9 @@ const float Text::GetWidth() const
     return (float)mFontSize / (float) mFont->GetFontData().mPointSize * (float) mFont->GetWidth(mText);
 }
 
+const float Text::GetLineHeight() const
+{
+    return (float)mFontSize/(float)mFont->GetFontData().mPointSize * mFont->GetFontData().mHeight;
+}
+
 } // namespace jar

@@ -23,7 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <jar/Core.hpp>
 #include <jar/Input.hpp>
 #include <jar/Graphics.hpp>
-#include <jar/Core/CoutLogger.hpp>
 #include <jar/Core/CoutAndFileLogger.hpp>
 #include <jar/Core/FileSystem.hpp>
 #include <jar/Core/Lua.hpp>
@@ -82,8 +81,6 @@ int main(int argc, char** argv)
         }
 
         core.Deinit();
-
-        sf::Sleep(2); //time to read errors etc.
     }
     catch(std::exception& e)
     {

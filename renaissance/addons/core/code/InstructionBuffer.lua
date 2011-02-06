@@ -141,7 +141,6 @@ function InstructionBuffer:Update(deltaT)
 					else
 						self.waittime = self.waittime + tonumber(inst.parameters[1])
 						if self.waittime > 0 then
-							print ("waittime " .. self.waittime .. " > 0")
 							break
 						end
 					end

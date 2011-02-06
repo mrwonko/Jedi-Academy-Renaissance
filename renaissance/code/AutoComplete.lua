@@ -1,4 +1,5 @@
---[[! \brief Completes str by looking at the available strings, optionally caseSensitive (default: not)
+--[[!	\brief Completes str by looking at the available strings, optionally caseSensitive (default: not)
+		\return longest string that all matches have in common, all possible matches
 --]]
 function AutoComplete(str, available, caseSensitive)
 	caseSensitive = caseSensitive or false
@@ -9,6 +10,7 @@ function AutoComplete(str, available, caseSensitive)
 		jar.Logger.GetDefaultLogger():Warning("AutoComplete() called with invalid argument!")
 		return "", {}
 	end
+	local originalStr = str
 	if not caseSensitive then
 		str = string.lower(str)
 	end
@@ -17,11 +19,11 @@ function AutoComplete(str, available, caseSensitive)
 	-- find names that start like this
 	for _, name in ipairs(available) do
 		if (caseSensitive and string.sub(name, 1, len) == str) or (not caseSensitive and string.lower(string.sub(name, 1, len)) == str) then
-			if caseSensitive then
+			--if caseSensitive then
 				table.insert(possibilities, name)
-			else
-				table.insert(possibilities, string.lower(name))
-			end
+			--else
+			--	table.insert(possibilities, string.lower(name))
+			--end
 		end
 	end
 	-- trivial cases: no matches or 1 match
@@ -46,6 +48,10 @@ function AutoComplete(str, available, caseSensitive)
 	local longestPossible = possibilities[1]
 	for i = 2, #possibilities do
 		longestPossible = GetCommon(longestPossible, possibilities[i])
+	end
+	-- keep lower/uppercase in case this is not found.
+	if longestPossible == str then
+		longestPossible = originalStr
 	end
 	return longestPossible, possibilities
 end

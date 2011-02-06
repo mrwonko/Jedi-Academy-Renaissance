@@ -45,7 +45,7 @@ class JARGRAPHICSAPI Font
 
         /** \param filename without extension - a *filename*.png/.tga/.jpg and a *filename*.fontdat should exist.
         **/
-        const bool LoadFromFile(const std::string& filename);
+        const bool LoadFromFile(const std::string& filename, std::string& error);
 
         /** \brief Returns the width of a given string, in pixels, if it was written using this font.
         **/

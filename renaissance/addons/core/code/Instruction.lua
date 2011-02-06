@@ -37,11 +37,11 @@ end
 
 function Instruction:AutoComplete(instruction)
 	local available = {} -- list of available commands and cvars
-	for name, _ in pairs(self.cvarManager.CVars) do
-		table.insert(available, name)
+	for _, cvar in pairs(self.cvarManager.CVars) do
+		table.insert(available, cvar.name)
 	end
-	for name, _ in pairs(self.ccommandManager.CCommands) do
-		table.insert(available, name)
+	for _, ccom in pairs(self.ccommandManager.CCommands) do
+		table.insert(available, ccom.name)
 	end
 	
 	return AutoComplete(instruction, available)
@@ -87,7 +87,7 @@ function Instruction:Execute(silent)
 		-- there may be multiple things starting like this, but it can still be unambigious, e.g. "quit" in case "quit" and "quitFast" exist
 		local unambiguous = false
 		for _, name in ipairs(available) do
-			if instruction == name then
+			if instruction:lower() == name:lower() then
 				unambiguous = true
 				break
 			end
@@ -107,18 +107,18 @@ function Instruction:Execute(silent)
 	end
 	
 	--there was an unambiguous match
-	if self.ccommandManager.CCommands[instruction] then
+	if self.ccommandManager.CCommands[instruction:lower()] then
 		--it's a command, call it with the right parameters
 		if isMinusCommand then
-			self.ccommandManager.CCommands[instruction]:OnStop(unpack(self.parameters))
+			self.ccommandManager.CCommands[instruction:lower()]:OnStop(unpack(self.parameters))
 		else
-			self.ccommandManager.CCommands[instruction]:OnStart(unpack(self.parameters))
+			self.ccommandManager.CCommands[instruction:lower()]:OnStart(unpack(self.parameters))
 		end
 		--done
 		return true
 	end
-	if self.cvarManager.CVars[instruction] then
-		local cvar = self.cvarManager.CVars[instruction]
+	if self.cvarManager.CVars[instruction:lower()] then
+		local cvar = self.cvarManager.CVars[instruction:lower()]
 		if isMinusCommand then
 			jar.Logger.GetDefaultLogger:Warning("There's a CVar whose name starts with a +. That's bad. Shouldn't happen.")
 			return false
@@ -139,11 +139,13 @@ function Instruction:Execute(silent)
 				print("Ignoring additional arguments, if you want to assign a string containing spaces, please use quotes (e.g.: " .. instruction .. " \"contains spaces\")")
 			end
 			
-			if val == "=" and (#self.parameters > 1) then
-				val = self.parameters[2]
-			else
-				print("If you want to assign =, please write \"" .. instruction .. " = =\". Doing nothing.")
-				return false
+			if val == "=" then
+				if (#self.parameters > 1) then
+					val = self.parameters[2]
+				else
+					print("If you want to assign =, please write \"" .. instruction .. " = =\". Doing nothing.")
+					return false
+				end
 			end
 			
 			--verify type
@@ -216,6 +218,6 @@ function Instruction:Execute(silent)
 	end
 	
 	--shouldn't get here
-	jar.Logger.GetDefaultLogger():Warning("InstructionInterpreter:Execute(): Internal logic error, command \"" .. instruction .. "\" not executed")
+	jar.Logger.GetDefaultLogger():Warning("Instruction:Execute(): Internal logic error, command \"" .. instruction .. "\" not executed")
 	return false
 end

@@ -63,6 +63,9 @@ class JARGRAPHICSAPI Text : public sf::Drawable
         /** \brief Gets the width of this text, in pixels - depends on font and fontsize **/
         const float GetWidth() const;
 
+        /** \brief Gets the height of a single line - depends on font and fontsize **/
+        const float GetLineHeight() const;
+
         virtual void Render(sf::RenderTarget& target) const;
 
         static void BindToLua(lua_State* L);

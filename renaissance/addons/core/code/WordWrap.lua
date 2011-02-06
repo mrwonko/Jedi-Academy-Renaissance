@@ -64,6 +64,8 @@ function WordWrap(str, font, fontsize, availableWidth)
 						if len ~= 1 then
 							curline = curline .. spacer .. curWord:sub(1, len-1)
 							curWord = curWord:sub(len)
+						elseif #curline == 0 then --first letter and already too much? the line better not be empty then, or we'd have an infinite loop
+							error("WordWrap(): Not enough width for a single letter!", 2)
 						end
 						break
 					end
