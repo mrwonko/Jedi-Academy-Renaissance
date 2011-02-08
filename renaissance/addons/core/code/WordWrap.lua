@@ -43,7 +43,9 @@ function WordWrap(str, font, fontsize, availableWidth)
 		
 		--newline?
 		if spacer == "\n" then
-			table.insert(lines, curline)
+			--see below on why I don't use table.insert
+			--table.insert(lines, curline)
+			lines[#lines+1] = curline
 			curline = ""
 			spacer = ""
 		end
@@ -75,13 +77,18 @@ function WordWrap(str, font, fontsize, availableWidth)
 			end
 			str = curWord .. nextSpacer .. str
 			nextSpacer = ""
-			table.insert(lines, curline)
+			--see below on why I don't use table.insert
+			--table.insert(lines, curline)
+			lines[#lines+1] = curline
 			curline = ""
 		end
 		spacer = nextSpacer
 	end
 	
-	table.insert(lines, curline)
+	--for some wicked reason this crashes when it's called by Console:Print if that is called by ConsoleLogger:Log() if that is called by Logger:Info()... lolwut?
+	--table.insert(lines, curline)
+	--while this works just fine.
+	lines[#lines+1] = curline
 	
 	return lines
 end

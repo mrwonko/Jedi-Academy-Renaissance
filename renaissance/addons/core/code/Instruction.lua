@@ -22,8 +22,9 @@ function Instruction:New(info)
 	local function get(key)
 		if info[key] then
 			obj[key] = info[key]
-		elseif not self[key] then
-			error("Instruction:New() called without "..key.."!", 3)
+		--not going to complain, since I need this to also work with the BindManager... I don't think this is going to be a problem?
+		--elseif not self[key] then
+		--	error("Instruction:New() called without "..key.."!", 3)
 		end
 	end
 	
@@ -182,6 +183,7 @@ function Instruction:Execute(silent)
 			if cvar.type == CVar.TYPES.INT then
 				if not IsInt(val) then
 					print(instruction .. " only accepts integers (whole numbers)!")
+					return true
 				else
 					cvar:SetValue(tonumber(val))
 					return true
@@ -191,6 +193,7 @@ function Instruction:Execute(silent)
 			if cvar.type == CVar.TYPES.FLOAT then
 				if not IsNumber(val) then
 					print(instruction .. " only accepts numbers!")
+					return true
 				else
 					cvar:SetValue(tonumber(val))
 					return true
@@ -198,8 +201,9 @@ function Instruction:Execute(silent)
 			end
 			
 			if cvar.type == CVar.TYPES.BOOLEAN then
-				if not IsBoolean(val) then
+				if not IsBool(val) then
 					print(instruction .. " only accepts booleans ( true (1) / false (0) )!")
+					return true
 				else
 					if val == "true" or val == "1" then
 						cvar:SetValue(true)
@@ -210,7 +214,7 @@ function Instruction:Execute(silent)
 				end
 			end
 			
-			jar.Logger.GetDefaultLogger:Warning("CVar " .. instruction .. " has an invalid type!")
+			jar.Logger.GetDefaultLogger():Warning("CVar " .. instruction .. " has an invalid type!")
 			return false
 			
 			--done

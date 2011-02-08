@@ -1,5 +1,7 @@
 #include "jar/core/LuaLogger.hpp"
 
+#include <iostream>
+
 namespace jar {
 
 LuaLogger::LuaLogger()
@@ -14,7 +16,10 @@ LuaLogger::~LuaLogger()
 
 void LuaLogger::Log(const std::string& message)
 {
+    std::cout<<"Calling Log! (this crashes)"<<std::endl;
+    //FIXME: this crashes. WTF? (SIGSEGV)
     call<void>("Log", message); //inherited from luabind::wrap_base
+    std::cout<<"Called Log! (didn't crash?!?)"<<std::endl;
 }
 
 void LuaLogger::Warning(const std::string& message)

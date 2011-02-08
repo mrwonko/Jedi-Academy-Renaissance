@@ -173,9 +173,6 @@ function CVar:Print(printFunc)
 end
 
 function CVar:ToString()
-	if self.type == self.TYPES.STRING then
-		return self.value
-	end
 	return tostring(self.value) or ""
 end
 

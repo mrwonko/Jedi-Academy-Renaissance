@@ -11,31 +11,36 @@ end
 function ConsoleLogger:Log(message)
 	if not message then
 		if DEBUG then
-			print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			self.console:Print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			self.oldLogger:Warning("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
 		end
 		return
 	end
-	console:Print(message)
+	print("crash imminent?")
+	self.console:Print(message)
+	self.oldLogger:Log(message)
 end
 
 function ConsoleLogger:Warning(message)
 	if not message then
 		if DEBUG then
-			print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			self.console:Print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			self.oldLogger:Warning("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
 		end
 		return
 	end
-	print("^3Warning: " .. message)
+	self.console:Print("^3Warning: " .. message)
 	self.oldLogger:Warning(message)
 end
 
 function ConsoleLogger:Error(message)
 	if not message then
 		if DEBUG then
-			print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			self.console:Print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			self.oldLogger:Warning("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
 		end
 		return
 	end
-	print("^1Error: " .. message)
+	self.console:Print("^1Error: " .. message)
 	self.oldLogger:Error(message)
-end
+end--]]

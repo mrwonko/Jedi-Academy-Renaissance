@@ -10,7 +10,10 @@ InstructionBuffer.ccommandManager = false
 InstructionBuffer.waittime = 0 --time until the next command will be executed
 
 function InstructionBuffer:New(instructionstring, cvarManager, ccommandManager)
-	local obj = { instructions = {} }
+	local obj =
+	{
+		instructions = {} --don't rename, used e.g. by BindManager
+	}
 	setmetatable(obj, self)
 	self.__index = self
 	

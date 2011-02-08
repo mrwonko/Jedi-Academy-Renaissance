@@ -72,7 +72,7 @@ int main(int argc, char** argv)
             core.Deinit();
             return EXIT_SUCCESS;
         }
-        logger.Log("Last Error: " + jar::fs::GetLastError());
+        //logger.Log("Last Error: " + jar::fs::GetLastError());
         logger.Info("Loaded code/Bootstrap.lua, now executing...\n", 0);
 
         if(!core.GetLua().ExecuteString(luaMainCode, "@code/Bootstrap.lua"))

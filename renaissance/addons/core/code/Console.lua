@@ -235,7 +235,7 @@ end
 -- this is a little complicated since I want print to return to its old functionality once the console gets garbage collected.
 local weakMetatable = { __mode = "k" }
 local weakConsoleStorage = {}
-local oldPrint = nil
+oldPrint = print
 setmetatable(weakConsoleStorage, weakMetatable)
 local function ConsolePrint(...)
 	assert(oldPrint)
@@ -250,15 +250,19 @@ end
 -- makes print() print to this console (as long as it lives)
 function Console:BindPrint()
 	weakConsoleStorage.console = self
+	assert(oldPrint ~= ConsolePrint)
 	oldPrint = print
 	print = ConsolePrint
 end
 
 function Console:Print(...)
+	local argStr = table.concat(arg, " ") .. "^7"
+	local wrapped = WordWrap(argStr, self.mOutputText:GetFont(), self.mOutputText:GetFontSize(), self.mSize.x)
+	
 	--first:concatenate all arguments
 	--next: calculate word wrap (result: array of lines)
 	--last: send result to AddOutputText
-	self:AddOutputLines(WordWrap(table.concat(arg, " ").."^7", self.mOutputText:GetFont(), self.mOutputText:GetFontSize(), self.mSize.x), "\n")
+	self:AddOutputLines(wrapped, "\n")
 end
 
 function Console:AddOutputLines(lines)
