@@ -33,6 +33,11 @@ function InstructionInterpreter:New(cvarManager, ccommandManager)
 end
 
 function InstructionInterpreter:Interpret(instructionstring)
+	if type(instructionstring) ~= "string" then
+		jar.Logger.GetDefaultLogger():Warning("InstructionInterpreter:Interpret(): Invalid parameter: no string!")
+		if DEBUG then jar.Logger.GetDefaultLogger():Warning(debug.traceback()) end
+		return false
+	end
 	if instructionstring == "" then
 		return true
 	end

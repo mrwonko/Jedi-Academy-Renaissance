@@ -54,7 +54,7 @@ int main(int argc, char** argv)
             return 0;
         }
 
-        //TODO: when RELEASE, set RELEASE in Lua, too.
+        //TODO: when RELEASE, set RELEASE in Lua, too. (For proper mounting)
 
         if( (RELEASE && !jar::fs::Mount("bootstrap.pk3", false) ) || (!RELEASE && !jar::fs::Mount("./", false) ) )
         {

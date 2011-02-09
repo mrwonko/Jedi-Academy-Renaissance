@@ -192,7 +192,7 @@ void Event::Luabind(lua_State* L)
                 luabind::class_<Event::MouseMovedEvent>("MouseMovedEvent")
                     .def(luabind::constructor<>())
                     .def_readonly("X", &Event::MouseMovedEvent::X)
-                    .def_readonly("X", &Event::MouseMovedEvent::Y),
+                    .def_readonly("Y", &Event::MouseMovedEvent::Y),
 
                 luabind::class_<Event::MouseWheelEvent>("MouseWheelEvent")
                     .def(luabind::constructor<>())

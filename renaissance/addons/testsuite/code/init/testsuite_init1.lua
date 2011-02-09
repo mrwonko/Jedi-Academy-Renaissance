@@ -27,12 +27,21 @@ g_Console:BindPrint()
 g_ConsoleLogger = ConsoleLogger(g_Console)
 jar.Logger.SetDefaultLogger(g_ConsoleLogger)
 
-print("Info Test...")
--- this crashes. When the virtual function is called in C++.
-g_ConsoleLogger:Info("Test. Crash?", 0)
-print("Info Test passed.")
+g_BindManager = BindManager:New(g_InstructionInterpreter)
+g_BindManager:RegisterBindCommand(g_CCommandManager)
+g_BindManager:Load()
 
+g_EventListenerStack:PushListener(g_BindManager)
+--register console later so it receives commands earlier - before the bind manager in particular.
 g_EventListenerStack:PushListener(g_Console)
+
+g_CCommandManager:RegisterCommand
+{
+	name = "+test",
+	Execute = function(self, value)
+		print("Test(" .. value .. ")")
+	end
+}
 
 --[[
 RegisterAction{

@@ -3,12 +3,13 @@
 
 CCommand = {}
 
--- a name starting with a plus indicates that OnStop should be called when the button is no longer pressed.
+
+-- special case: name starts with +.
+-- this indicates that this can be bound to axes, and the first (and only!) parameter is the amount.
+-- a name starting with a plus indicates that the first parameter should be the amount (1 on KeyPress, 0 on KeyRelease, real number between 0 and 1 on Axis)
 CCommand.name = ""
 CCommand.description = ""
-CCommand.OnStart = function(self) end
---OnStop only gets called for commands starting with a plus
-CCommand.OnStop = function(self) end
+CCommand.Execute = function(self) end
 
 function CCommand:New(info)
 	local obj = {}
@@ -36,8 +37,7 @@ function CCommand:New(info)
 		end
 	end
 	sanitize("description", "string", "[no description]")
-	sanitize("OnStart", "function", function() end)
-	sanitize("OnStop", "function", function() end)
+	sanitize("Execute", "function", function() end)
 	
 	return obj
 end

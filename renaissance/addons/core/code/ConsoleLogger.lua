@@ -13,6 +13,10 @@ function ConsoleLogger:Log(message)
 		if DEBUG then
 			self.console:Print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
 			self.oldLogger:Warning("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			if DEBUG then
+				self.console:Print("^3" .. debug.traceback())
+				self.oldLogger:Warning(debug.traceback())
+			end
 		end
 		return
 	end
@@ -26,6 +30,10 @@ function ConsoleLogger:Warning(message)
 		if DEBUG then
 			self.console:Print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
 			self.oldLogger:Warning("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			if DEBUG then
+				self.console:Print("^3" .. debug.traceback())
+				self.oldLogger:Warning(debug.traceback())
+			end
 		end
 		return
 	end
@@ -38,6 +46,10 @@ function ConsoleLogger:Error(message)
 		if DEBUG then
 			self.console:Print("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
 			self.oldLogger:Warning("^3LuaLogger:Warning() called without a message!" .. "\n"..debug.traceback() .. "\n")
+			if DEBUG then
+				self.console:Print("^3" .. debug.traceback())
+				self.oldLogger:Warning(debug.traceback())
+			end
 		end
 		return
 	end

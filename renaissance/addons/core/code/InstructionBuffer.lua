@@ -31,6 +31,7 @@ function InstructionBuffer:New(instructionstring, cvarManager, ccommandManager)
 	
 	if type(instructionstring) ~= "string" then
 		jar.Logger.GetDefaultLogger():Warning("CommandBuffer:New(): no commandstring supplied!")
+		if DEBUG then jar.Logger.GetDefaultLogger():Warning(debug.traceback()) end
 		return nil
 	else
 		obj:AddInstructions(instructionstring)
@@ -124,6 +125,7 @@ end
 function InstructionBuffer:Update(deltaT)
 	if self:Done() then
 		jar.Logger.GetDefaultLogger():Warning("InstructionBuffer:Update() called on an empty buffer")
+		if DEBUG then jar.Logger.GetDefaultLogger():Warning(debug.traceback()) end
 		return
 	end
 	self.waittime = self.waittime - deltaT

@@ -4,7 +4,7 @@ RegisterCommand
 	
 	description = "Forces Lua garbage collection. This is usually done every so often when few space is left, but if you feel like forcing it, use this.",
 	
-	OnStart = function(self)
+	Execute = function(self)
 		collectgarbage()
 	end,
 }

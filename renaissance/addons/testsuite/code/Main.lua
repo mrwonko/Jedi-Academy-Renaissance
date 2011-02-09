@@ -48,7 +48,7 @@ g_CCommandManager:RegisterCommand
 {
 	name = "quit",
 	description = "Exits the program",
-	OnStart = function()
+	Execute = function(self)
 		running = false
 	end,
 }
@@ -108,4 +108,5 @@ while running do
 end
 
 g_CVarManager:SaveCVars()
+g_BindManager:Save()
 print("==== Test Suite End ====")

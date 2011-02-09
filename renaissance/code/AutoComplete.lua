@@ -5,9 +5,11 @@ function AutoComplete(str, available, caseSensitive)
 	caseSensitive = caseSensitive or false
 	if type(str) ~= "string"  then
 		jar.Logger.GetDefaultLogger():Warning("AutoComplete() called with invalid argument!")
+		if DEBUG then jar.Logger.GetDefaultLogger():Warning(debug.traceback()) end
 		return "", {}
 	elseif type(available) ~= "table" then
 		jar.Logger.GetDefaultLogger():Warning("AutoComplete() called with invalid argument!")
+		if DEBUG then jar.Logger.GetDefaultLogger():Warning(debug.traceback()) end
 		return "", {}
 	end
 	local originalStr = str
@@ -43,7 +45,7 @@ function AutoComplete(str, available, caseSensitive)
 			end
 			i = i + 1
 		end
-		return string.sub(str1, 1, i)
+		return string.sub(str1, 1, i-1)
 	end
 	local longestPossible = possibilities[1]
 	for i = 2, #possibilities do

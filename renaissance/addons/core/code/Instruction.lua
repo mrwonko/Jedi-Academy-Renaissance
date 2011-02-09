@@ -55,18 +55,32 @@ function Instruction:Execute(silent)
 	local silent = silent or false
 	
 	local instruction = self.instruction
+	local parameters = self.parameters
 	
 	-- remove prefixed /
 	if string.sub(instruction, 1, 1) == "/" then
 		instruction = string.sub(instruction, 2)
 	end
 	
-	
-	-- -command cancels +command. since the name is +command, we need to change it. (but remember it's being cancelled)
-	local isMinusCommand = false
-	if string.sub(instruction, 1, 1) == "-" then
-		instruction = "+" .. string.sub(instruction, 2)
-		isMinusCommand = true
+	-- + commands have only one parameter: the amount (optional, assumed to be 1)
+	-- to stop a + command, you can either use "+name 0 [other parameters]" or "-name [other parameters]" - convert the latter to the former!
+	local firstchar = instruction:sub(1, 1)
+	if firstchar == "+" then
+		if #parameters > 1 then
+			jar.Logger.GetDefaultLogger():Warning("Commands starting with a plus may only have one (optional) parameter: the amount, ignoring additional parameters!")
+			parameters = { parameters[1] }
+		end
+		parameters[1] = tonumber(parameters[1] or 1)
+		if not parameters[1] then
+			jar.Logger.GetDefaultLogger():Warning("Commands starting with a plus must have a number (or nothing) as the first parameter: the amount!")
+			return false
+		end
+	elseif firstchar == "-" then
+		instruction = "+" .. instruction:sub(2)
+		if #parameters > 0 then
+			jar.Logger.GetDefaultLogger():Warning("Commands starting with a minus must not have any arguments, ignoring!")
+		end
+		parameters = {0}
 	end
 	
 	--auto complete the instruction
@@ -110,22 +124,18 @@ function Instruction:Execute(silent)
 	--there was an unambiguous match
 	if self.ccommandManager.CCommands[instruction:lower()] then
 		--it's a command, call it with the right parameters
-		if isMinusCommand then
-			self.ccommandManager.CCommands[instruction:lower()]:OnStop(unpack(self.parameters))
-		else
-			self.ccommandManager.CCommands[instruction:lower()]:OnStart(unpack(self.parameters))
-		end
+		self.ccommandManager.CCommands[instruction:lower()]:Execute(unpack(parameters))
 		--done
 		return true
 	end
 	if self.cvarManager.CVars[instruction:lower()] then
-		local cvar = self.cvarManager.CVars[instruction:lower()]
-		if isMinusCommand then
-			jar.Logger.GetDefaultLogger:Warning("There's a CVar whose name starts with a +. That's bad. Shouldn't happen.")
+		if instruction:sub(1, 1) == "+" then
+			jar.Logger.GetDefaultLogger():Warning("CVar names must not start with + or -!")
 			return false
 		end
+		local cvar = self.cvarManager.CVars[instruction:lower()]
 		--it's a cvar, see if there's a parameter
-		if #self.parameters == 0 then
+		if #parameters == 0 then
 			--nope, let's output the value then.
 			print(cvar:ToString())
 			-- or should I do self.CVarManager.CVars[instruction]:Print() ?
@@ -134,15 +144,15 @@ function Instruction:Execute(silent)
 		else
 			--there is - this is an assignment
 			
-			local val = self.parameters[1] -- this should be assigned
+			local val = parameters[1] -- this should be assigned
 			
-			if (val == "=" and (#self.parameters > 2 )) or (val ~= "=" and (#self.parameters > 1) ) then
+			if (val == "=" and (#parameters > 2 )) or (val ~= "=" and (#parameters > 1) ) then
 				print("Ignoring additional arguments, if you want to assign a string containing spaces, please use quotes (e.g.: " .. instruction .. " \"contains spaces\")")
 			end
 			
 			if val == "=" then
-				if (#self.parameters > 1) then
-					val = self.parameters[2]
+				if (#parameters > 1) then
+					val = parameters[2]
 				else
 					print("If you want to assign =, please write \"" .. instruction .. " = =\". Doing nothing.")
 					return false

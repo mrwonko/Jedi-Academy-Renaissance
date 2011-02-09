@@ -4,7 +4,7 @@ RegisterCommand
 	
 	description = "Prints all parameters on the console (separated by spaces)",
 	
-	OnStart = function(self, ...)
+	Execute = function(self, ...)
 		if #arg == 0 then
 			return
 		end

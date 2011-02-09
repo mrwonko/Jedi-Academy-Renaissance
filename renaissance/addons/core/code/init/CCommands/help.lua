@@ -8,7 +8,7 @@ RegisterCommand
 	
 	manager = theCommandManager,
 	
-	OnStart = function(self, name)
+	Execute = function(self, name)
 		if not name then
 			print(self.description)
 			return
