@@ -3,7 +3,8 @@ EventListenerStack = {}
 function EventListenerStack:New()
 	local obj =
 	{
-		eventListeners = {}
+		eventListeners = {},
+		inactive = false,
 	}
 	setmetatable(obj, self)
 	self.__index = self
@@ -20,6 +21,24 @@ function EventListenerStack:OnEvent(event)
 		end
 	end
 	return false
+end
+
+-- Called before event handling each frame
+function EventListenerStack:PreEvent()
+	for _, listener in ipairs(self.eventListeners) do
+		if listener.PreEvent then
+			listener:PreEvent()
+		end
+	end
+end
+
+-- Called after event handling each frame
+function EventListenerStack:PostEvent()
+	for _, listener in ipairs(self.eventListeners) do
+		if listener.PostEvent then
+			listener:PostEvent()
+		end
+	end
 end
 
 --[[!	\brief Pushes a new listener onto the stack if it's not already part of it

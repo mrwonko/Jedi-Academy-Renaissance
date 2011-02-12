@@ -17,6 +17,7 @@ end
 g_InstructionInterpreter = InstructionInterpreter:New(g_CVarManager, g_CCommandManager)
 
 g_TestWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
+g_TestWindow:ShowMouseCursor(false)
 
 g_FontManager = FontManager:New()
 
@@ -27,7 +28,7 @@ g_Console:BindPrint()
 g_ConsoleLogger = ConsoleLogger(g_Console)
 jar.Logger.SetDefaultLogger(g_ConsoleLogger)
 
-g_BindManager = BindManager:New(g_InstructionInterpreter)
+g_BindManager = BindManager:New(g_InstructionInterpreter, g_TestWindow:GetWidth(), g_TestWindow:GetHeight())
 g_BindManager:RegisterBindCommand(g_CCommandManager)
 g_BindManager:Load()
 

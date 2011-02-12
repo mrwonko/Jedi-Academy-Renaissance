@@ -53,7 +53,9 @@ g_CCommandManager:RegisterCommand
 	end,
 }
 
-while running do
+local hasFocus = true
+local function HandleEvents()
+	g_EventListenerStack:PreEvent()
 	while true do
 		local success, event = jar.EventManager.GetSingleton():GetEvent()
 		if not success then
@@ -63,11 +65,25 @@ while running do
 		
 		if event.Type == jar.Event.Closed then
 			running = false
-		--elseif event.Type == jar.Event.KeyPressed and event.Key.Code == jar.Key.Escape then
-		--	running = false
-		else
+		elseif event.Type == jar.Event.GainedFocus then
+			hasFocus = true
+			g_TestWindow:ShowMouseCursor(false)
+		elseif event.Type == jar.Event.LostFocus then
+			hasFocus = false
+			g_TestWindow:ShowMouseCursor(true)
+		elseif hasFocus then
 			g_EventListenerStack:OnEvent(event)
 		end
+	end
+	g_EventListenerStack:PostEvent()
+end
+
+local middleX = g_TestWindow:GetWidth()/2
+local middleY = g_TestWindow:GetHeight()/2
+while running do
+	HandleEvents()
+	if hasFocus then
+		g_TestWindow:SetCursorPosition(middleX, middleY)
 	end
 	
 	local frametime = g_TestWindow:GetFrameTime()
@@ -105,6 +121,10 @@ while running do
 	g_Console:RenderTo(g_TestWindow)
 	
 	g_TestWindow:Display()
+	if not hasFocus then
+		-- sleep 5 ms
+		jar.Sleep(5)
+	end
 end
 
 g_CVarManager:SaveCVars()

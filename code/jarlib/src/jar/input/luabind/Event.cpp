@@ -201,6 +201,8 @@ void Event::Luabind(lua_State* L)
             .enum_("EventType")
             [
                 luabind::value("Closed", Event::Closed),
+                luabind::value("LostFocus", Event::LostFocus),
+                luabind::value("GainedFocus", Event::GainedFocus),
                 luabind::value("KeyPressed", Event::KeyPressed),
                 luabind::value("KeyReleased", Event::KeyReleased),
                 luabind::value("MouseMoved", Event::MouseMoved),

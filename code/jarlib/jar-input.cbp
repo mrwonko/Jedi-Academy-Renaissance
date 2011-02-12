@@ -58,6 +58,7 @@
 		<Compiler>
 			<Add option="-DJAR_INPUT_LIBRARY_BUILD" />
 			<Add option="-DLUABIND_DYNAMIC_LINK" />
+			<Add option="-DSFML_DYNAMIC" />
 			<Add directory="include" />
 		</Compiler>
 		<Linker>

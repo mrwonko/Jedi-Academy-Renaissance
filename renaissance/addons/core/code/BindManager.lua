@@ -143,12 +143,20 @@ BindManager =
 	configfile = "config/binds.lua",
 }
 
-function BindManager:New(interpreter)
+function BindManager:New(interpreter, windowWidth, windowHeight)
 	local obj =
 	{
 		interpreter = interpreter,
 		-- key/...-name -> instructionstring
 		binds = {},
+		-- window's size, for mouse move stuff
+		halfWindowSize = { x = windowWidth/2, y = windowHeight/2 },
+		-- where was the mouse after the last event?
+		lastMousePos = { x = windowWidth/2, y = windowHeight/2 },
+		-- how far has the mouse been moved this frame?
+		mouseMove = { 0, 0 },
+		-- how far has the mosue been moved in the last frame? (only execute -bind on no move once!)
+		lastMouseMove = { 0, 0 },
 	}
 	setmetatable(obj, self)
 	self.__index = self
@@ -188,7 +196,7 @@ local function AddAmount(instructionString, amount)
 				result = result .. ";" .. inst.instruction .. " " .. amount
 			end
 		else
-			jar.Logger.GetDefaultLogger:Warning("There's an axis bind without +: \"" .. instructionString .. "\" It shouldn't be there and is ignored.")
+			jar.Logger.GetDefaultLogger():Warning("There's an axis bind without +: \"" .. instructionString .. "\" It shouldn't be there and is ignored.")
 		end
 	end
 	return result
@@ -205,6 +213,13 @@ function BindManager:OnEvent(event)
 	local function ExecuteAxisBind(key, amount)
 		if self.binds[key] then
 			self.interpreter:Interpret(AddAmount(self.binds[key], math.abs(amount))) --abs since I use axisN+ and axisN- for sign.
+			--make sure to send 0 to both axes if the amount is 0 (Actually only one of them needs this, but I can't tell which one... meh, I don't like this)
+			if amount == 0 then
+				key = key:sub(1, -2) .. "-"
+				if self.binds[key] then
+					self.interpreter:Interpret(AddAmount(self.binds[key], 0)) --abs since I use axisN+ and axisN- for sign.
+				end
+			end
 			return true
 		end
 		return false
@@ -244,22 +259,65 @@ function BindManager:OnEvent(event)
 			return ExecuteBind("mwheeldown")
 		end
 	elseif event.Type == jar.Event.MouseMoved then
-		--todo: *sensitivity
-		--todo: call once with amount = 0 if no moved event in a whole frame - this is totally bugged atm.
-		local ret = false
-		--[[ I'd better not use this for now. It doesn't work properly.
-		if event.MouseMove.X ~= 0 and ExecuteAxisBind(MouseAxisToString("x", event.MouseMove.X), event.MouseMove.X) then
-			ret = true
-		end
-		if event.MouseMove.Y ~= 0 and ExecuteAxisBind(MouseAxisToString("y", event.MouseMove.Y), event.MouseMove.Y) then
-			ret = true
-		end
-		--]]
-		return ret
+		--add movement to this frame's movement
+		self.mouseMove.x = self.mouseMove.x + event.MouseMove.X - self.lastMousePos.x
+		self.mouseMove.y = self.mouseMove.y + event.MouseMove.Y - self.lastMousePos.y
+		self.lastMousePos.x = event.MouseMove.X
+		self.lastMousePos.y = event.MouseMove.Y
+		return true
 	elseif event.Type == jar.Event.JoyAxisMoved then
-		return ExecuteAxisBind(JoyAxisToString(event.JoyAxis.JoyIndex, event.JoyAxis.Axis, event.JoyAxis.Position), event.JoyAxis.Position)
+		--todo: get sensitivity
+		return ExecuteAxisBind(JoyAxisToString(event.JoyAxis.JoyIndex, event.JoyAxis.Axis, event.JoyAxis.Position), event.JoyAxis.Position * sensitivity)
 	end
 	return false
+end
+
+function BindManager:PostEvent()
+	local function ExecuteBind(axis, sign, amount)
+		local key = MouseAxisToString(axis, sign)
+		if self.binds[key] then
+			self.interpreter:Interpret(AddAmount(self.binds[key], math.abs(amount))) --abs since I use axisN+ and axisN- for sign.
+		end
+	end
+	
+	local function Sign(num)
+		if num == nil then error(debug.traceback()) end
+		if num > 0 then
+			return 1
+		elseif num < 0 then
+			return -1
+		else
+			return 0
+		end
+	end
+	
+	local function CheckMouse(axis)
+		-- necessary since axes are split in + and -
+		local sign = Sign(self.mouseMove[axis])
+		local lastSign = Sign(self.lastMouseMove[axis] or 0)
+		-- only send the "no move" event once!
+		if lastSign ~= 0 and sign ~= lastSign then
+			--send "no move" event
+			ExecuteBind(axis, lastSign, 0)
+		else -- mouse moved!
+			-- todo: get sensitivity
+			--todo: keep in mind that mouse speed depends on frame time!
+			local sensitivity = 1
+			-- send move event
+			ExecuteBind(axis, sign, sensitivity * self.mouseMove[axis])
+		end
+		self.lastMouseMove[axis] = self.mouseMove[axis]
+	end
+	CheckMouse("x")
+	CheckMouse("y")
+end
+
+function BindManager:PreEvent()
+	-- make sure to actually do this every frame!
+	self.lastMousePos.x = self.halfWindowSize.x
+	self.lastMousePos.y = self.halfWindowSize.y
+	self.mouseMove.x = 0
+	self.mouseMove.y = 0
 end
 
 function BindManager:RegisterBindCommand(ccommandManager)
