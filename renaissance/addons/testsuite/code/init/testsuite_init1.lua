@@ -3,6 +3,7 @@ require("CCommandManager.lua")
 require("EventListenerStack.lua") --also creates g_EventListenerStack
 require("Console.lua")
 require("FontManager.lua")
+require("ImageManager.lua")
 require("ConsoleLogger.lua")
 require("BindManager.lua")
 
@@ -20,6 +21,7 @@ g_TestWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
 g_TestWindow:ShowMouseCursor(false)
 
 g_FontManager = FontManager:New()
+g_ImageManager = ImageManager:New()
 
 g_Console = Console:New(g_TestWindow:GetWidth(), g_TestWindow:GetHeight()/2, g_InstructionInterpreter, g_FontManager:GetFont("lucida8pt", true))
 -- commented out for now so I can do debug output via print in Console:Print

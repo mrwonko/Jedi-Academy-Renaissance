@@ -5,10 +5,7 @@ require("WordWrap.lua")
 print("==== Test Suite Start ====")
 print("")
 
-local testImage = jar.Image()
-if not testImage:LoadFromFile("textures/tests/me2.jpg") then
-	error("Could not load test image!")
-end
+local testImage = g_ImageManager:GetImage("textures/tests/me2.jpg", true) -- true = throw error on failure, not usually wanted
 local testSprite = jar.Sprite(testImage)
 
 local testFont = g_FontManager:GetFont("times", true) -- seconds parameter: throw error on failure
