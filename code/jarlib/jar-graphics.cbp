@@ -21,9 +21,6 @@
 					<Add library="jar-core-d" />
 					<Add library="jar-input-d" />
 					<Add library="luabindd" />
-					<Add library="sfml-graphics-d" />
-					<Add library="sfml-window-d" />
-					<Add library="sfml-system-d" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -41,9 +38,6 @@
 					<Add library="jar-core" />
 					<Add library="jar-input" />
 					<Add library="luabind" />
-					<Add library="sfml-graphics" />
-					<Add library="sfml-window" />
-					<Add library="sfml-system" />
 				</Linker>
 			</Target>
 		</Build>
@@ -56,7 +50,9 @@
 		<Linker>
 			<Add option="-enable-auto-import" />
 			<Add library="lua" />
-			<Add library="opengl32" />
+			<Add library="sfml-graphics" />
+			<Add library="sfml-window" />
+			<Add library="sfml-system" />
 			<Add directory="lib" />
 		</Linker>
 		<ExtraCommands>

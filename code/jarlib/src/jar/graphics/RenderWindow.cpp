@@ -43,7 +43,7 @@ RenderWindow::~RenderWindow()
 void RenderWindow::Update(const TimeType deltaT)
 {
     sf::Event e;
-    while(sf::RenderWindow::GetEvent(e))
+    while(sf::RenderWindow::PollEvent(e))
     {
         jar::Event sendMe;
         if(sendMe.FromSFML(e))

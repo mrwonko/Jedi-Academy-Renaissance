@@ -61,14 +61,16 @@ void RenderWindow::Luabind(lua_State* L)
         luabind::class_<RenderWindow>("RenderWindow")
             .def(luabind::constructor<const unsigned int, const unsigned int, const std::string&, const bool, const bool>())
             .def("Clear", &jar::RenderWindow::Clear)
-            .def("Draw", &jar::RenderWindow::Draw)
+            .def("Draw", (void(jar::RenderWindow::*)(const sf::Drawable&))&jar::RenderWindow::Draw)
             .def("SetView", &jar::RenderWindow::SetView)
             .def("GetView", &jar::RenderWindow::GetView)
             .def("GetDefaultView", &jar::RenderWindow::GetDefaultView)
-            .def("PreserveOpenGLStates", &jar::RenderWindow::PreserveOpenGLStates)
+            //NOTE: no longer exists in SFML 2.0 - now there are SaveGLStates() and RestoreGLStates() - need to know what they do first.
+            //.def("PreserveOpenGLStates", &jar::RenderWindow::PreserveOpenGLStates)
 
 
-            .def("Capture", &RenderWindow::Capture)
+            //NOTE: this either does not yet exist in 2.0 or I just haven't found it - ok found it, it's Image::CopyFromScreen() or sth
+            //.def("Capture", &RenderWindow::Capture)
 
             .def("Close", &jar::RenderWindow::Close)
             .def("Display", &jar::RenderWindow::Display)
@@ -86,7 +88,8 @@ void RenderWindow::Luabind(lua_State* L)
             .def("SetSize", &jar::RenderWindow::SetSize)
             .def("Show", &jar::RenderWindow::Show)
             .def("ShowMouseCursor", &jar::RenderWindow::ShowMouseCursor)
-            .def("UseVerticalSync", &jar::RenderWindow::UseVerticalSync)
+            //NOTE: this either does not yet exist in 2.0 or I just haven't found it
+            //.def("UseVerticalSync", &jar::RenderWindow::UseVerticalSync)
     ];
 }
 

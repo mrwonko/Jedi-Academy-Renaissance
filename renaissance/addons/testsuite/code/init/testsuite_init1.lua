@@ -17,6 +17,7 @@ end
 
 g_InstructionInterpreter = InstructionInterpreter:New(g_CVarManager, g_CCommandManager)
 
+print("TODO: cvar window size / fullscreen (testsuite_init1.lua)")
 g_TestWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
 g_TestWindow:ShowMouseCursor(false)
 

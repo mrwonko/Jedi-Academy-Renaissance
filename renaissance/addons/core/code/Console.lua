@@ -386,8 +386,10 @@ function Console:RenderTo(target)
 	if not self.isOpened then
 		return
 	end
-	local oldView = target:GetView()
-	target:SetView(jar.View(jar.Vector2f(self.mSize.x/2, self.mSize.y), jar.Vector2f(self.mSize.x/2, self.mSize.y)))
+	local oldView = jar.View(target:GetView())
+	-- NOTE: here I'm assuming the console should take half of the screen's height and all of its width... why am I doing that? o.O
+	-- TODO: "fix" the aforementioned size problem
+	target:SetView(jar.View(jar.Vector2f(self.mSize.x/2, self.mSize.y), jar.Vector2f(self.mSize.x, self.mSize.y*2)))
 	target:Draw(self.mRect)
 	if self.mOutputHasChanged then
 		self:UpdateOutputText()

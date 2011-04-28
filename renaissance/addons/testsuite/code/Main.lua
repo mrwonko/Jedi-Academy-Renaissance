@@ -29,8 +29,7 @@ tabstops.]], testFont, nil, g_TestWindow:GetWidth()-20), "\n")
 local testText = jar.Text(testFont)
 testText:SetText(wrappedText)
 testText:SetPosition(10, 10)
-textBox = jar.Shape.Rectangle(10, 10, g_TestWindow:GetWidth()-10, 10+testFont:GetHeight(), jar.Color(0, 0, 0, 0), 1, jar.Color.Yellow)
-textBox = jar.Shape.Rectangle(10, 10, g_TestWindow:GetWidth()-10, g_TestWindow:GetHeight()-10, jar.Color(0, 0, 0, 0), 1, jar.Color.Yellow)
+textBox = jar.Shape.Rectangle(10, 10, g_TestWindow:GetWidth()-20, g_TestWindow:GetHeight()-20, jar.Color(0, 0, 0, 0), 1, jar.Color.Yellow)
 
 --testText:SetFontSize(8)
 
@@ -107,10 +106,8 @@ while running do
 	
 	g_TestWindow:Clear(jar.Color.Black)
 	
-	--g_TestWindow:Draw(aLittleCircle)
-	--g_TestWindow:Draw(testRect)
-	--g_TestWindow:Draw(testText)
 	--g_TestWindow:Draw(testSprite)
+	g_TestWindow:Draw(aLittleCircle)
 	g_TestWindow:Draw(textBox)
 	g_TestWindow:Draw(testText)
 	

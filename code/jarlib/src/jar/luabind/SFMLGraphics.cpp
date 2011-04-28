@@ -26,7 +26,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "SFML/Graphics/Shape.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Image.hpp"
-#include "SFML/Graphics/String.hpp"
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/View.hpp"
@@ -92,27 +91,21 @@ void BindSFMLGraphics(lua_State* L)
         luabind::class_<sf::FloatRect>("FloatRect")
             .def(luabind::constructor<>())
             .def(luabind::constructor<float, float, float, float>())
-            .def_readwrite("bottom", &sf::FloatRect::Bottom)
+            .def_readwrite("height", &sf::FloatRect::Height)
+            .def_readwrite("width", &sf::FloatRect::Width)
             .def_readwrite("left", &sf::FloatRect::Left)
-            .def_readwrite("right", &sf::FloatRect::Right)
             .def_readwrite("top", &sf::FloatRect::Top)
-            .def("GetWidth", &sf::FloatRect::GetWidth)
-            .def("GetHeight", &sf::FloatRect::GetHeight)
-            .def("Offset", &sf::FloatRect::Offset)
-            .def("Contains", &sf::FloatRect::Contains),
+            .def("Contains", (bool(sf::FloatRect::*)(float, float) const)&sf::FloatRect::Contains),
             //.def("Intersects", &sf::FloatRect::Intersects),
 
         luabind::class_<sf::IntRect>("IntRect")
             .def(luabind::constructor<>())
             .def(luabind::constructor<int, int, int, int>())
-            .def_readwrite("bottom", &sf::IntRect::Bottom)
+            .def_readwrite("height", &sf::IntRect::Height)
+            .def_readwrite("width", &sf::IntRect::Width)
             .def_readwrite("left", &sf::IntRect::Left)
-            .def_readwrite("right", &sf::IntRect::Right)
             .def_readwrite("top", &sf::IntRect::Top)
-            .def("GetWidth", &sf::IntRect::GetWidth)
-            .def("GetHeight", &sf::IntRect::GetHeight)
-            .def("Offset", &sf::IntRect::Offset)
-            .def("Contains", &sf::IntRect::Contains),
+            .def("Contains", (bool(sf::IntRect::*)(int, int) const)&sf::IntRect::Contains),
             //.def("Intersects", &sf::IntRect::Intersects),
 
         luabind::class_<luabind_dummy::Blend>("Blend")
@@ -126,19 +119,18 @@ void BindSFMLGraphics(lua_State* L)
 
         luabind::class_<sf::View>("View")
             .def(luabind::constructor<>())
+            .def(luabind::constructor<const sf::View&>())
             .def(luabind::constructor<const sf::FloatRect&>())
             .def(luabind::constructor<const sf::Vector2f&, const sf::Vector2f&>())
             //overloaded function
             .def("SetCenter", (void(sf::View::*)(const sf::Vector2f&))&sf::View::SetCenter)
             .def("SetCenter", (void(sf::View::*)(float, float))&sf::View::SetCenter)
-            .def("SetHalfSize", (void(sf::View::*)(const sf::Vector2f&))&sf::View::SetHalfSize)
-            .def("SetHalfSize", (void(sf::View::*)(float, float))&sf::View::SetHalfSize)
+            .def("SetSize", (void(sf::View::*)(const sf::Vector2f&))&sf::View::SetSize)
+            .def("SetSize", (void(sf::View::*)(float, float))&sf::View::SetSize)
             .def("Move", (void(sf::View::*)(const sf::Vector2f&))&sf::View::Move)
             .def("Move", (void(sf::View::*)(float, float))&sf::View::Move)
-            .def("SetFromRect", &sf::View::SetFromRect)
             .def("GetCenter", &sf::View::GetCenter)
-            .def("GetHalfSize", &sf::View::GetHalfSize)
-            .def("GetRect", &sf::View::GetRect)
+            .def("GetSize", &sf::View::GetSize)
             .def("Zoom", &sf::View::Zoom),
 
         luabind::class_<sf::Drawable>("Drawable")
@@ -148,8 +140,8 @@ void BindSFMLGraphics(lua_State* L)
             .def("SetY", &sf::Drawable::SetY)
             .def("SetScale", (void(sf::Drawable::*)(float, float))&sf::Drawable::SetScale)
             .def("SetScale", (void(sf::Drawable::*)(const sf::Vector2f&))&sf::Drawable::SetScale)
-            .def("SetCenter", (void(sf::Drawable::*)(float, float))&sf::Drawable::SetCenter)
-            .def("SetCenter", (void(sf::Drawable::*)(const sf::Vector2f&))&sf::Drawable::SetCenter)
+            .def("SetOrigin", (void(sf::Drawable::*)(float, float))&sf::Drawable::SetOrigin)
+            .def("SetOrigin", (void(sf::Drawable::*)(const sf::Vector2f&))&sf::Drawable::SetOrigin)
             .def("SetScaleX", &sf::Drawable::SetScaleX)
             .def("SetScaleY", &sf::Drawable::SetScaleY)
             .def("SetRotation", &sf::Drawable::SetRotation)
@@ -157,7 +149,7 @@ void BindSFMLGraphics(lua_State* L)
             .def("SetBlendMode", &sf::Drawable::SetBlendMode)
             .def("GetPosition", &sf::Drawable::GetPosition)
             .def("GetScale", &sf::Drawable::GetScale)
-            .def("GetCenter", &sf::Drawable::GetCenter)
+            .def("GetOrigin", &sf::Drawable::GetOrigin)
             .def("GetRotation", &sf::Drawable::GetRotation)
             .def("GetColor", &sf::Drawable::GetColor)
             .def("GetBlendMode", &sf::Drawable::GetBlendMode)
@@ -173,7 +165,7 @@ void BindSFMLGraphics(lua_State* L)
             .scope
             [
                 luabind::def("Rectangle", (sf::Shape(*)(float, float, float, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Rectangle),
-                luabind::def("Rectangle", (sf::Shape(*)(const sf::Vector2f&, const sf::Vector2f&, const sf::Color&, float, const sf::Color&)) &sf::Shape::Rectangle),
+                luabind::def("Rectangle", (sf::Shape(*)(const sf::FloatRect&, const sf::Color&, float, const sf::Color&)) &sf::Shape::Rectangle),
                 luabind::def("Line", (sf::Shape(*)(float, float, float, float, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Line),
                 luabind::def("Line", (sf::Shape(*)(const sf::Vector2f&, const sf::Vector2f&, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Line),
                 luabind::def("Circle", (sf::Shape(*)(float, float, float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Circle),
@@ -198,43 +190,6 @@ void BindSFMLGraphics(lua_State* L)
             .def("Resize", (void(sf::Sprite::*)(float, float))&sf::Sprite::Resize)
             .def("GetSize", &sf::Sprite::GetSize)
 
-        /*
-        luabind::class_<sf::Glyph>("Glyph")
-            .def(luabind::constructor<>())
-            .def_readonly("Rectangle", &sf::Glyph::Rectangle),
-
-        luabind::class_<sf::Font>("Font")
-            .def("GetGlyph", &sf::Font::GetGlyph)
-            .def("GetCharacterSize", &sf::Font::GetCharacterSize)
-            //TODO: LoadFromFile - physFS! - possibly inherit from sf::Font to allow physFS constructor?
-            .scope
-            [
-                luabind::def("GetDefaultFont", &sf::Font::GetDefaultFont)
-            ],
-
-        luabind::class_<sf::String, sf::Drawable>("String")
-            .def(luabind::constructor<>())
-            .def(luabind::constructor<const std::string&>())
-            .def(luabind::constructor<const std::string&, const sf::Font&>())
-            .def(luabind::constructor<const std::string&, const sf::Font&, float>())
-            .def("SetSize", &sf::String::SetSize)
-            .def("GetSize", &sf::String::GetSize)
-            .def("SetFont", &sf::String::SetFont)
-            .def("GetFont", &sf::String::GetFont)
-            .def("GetText", &GetStringText)
-            .def("SetText", &sf::String::SetText)
-            .def("GetCharacterPos", &sf::String::GetCharacterPos)
-            .def("GetRect", &sf::String::GetRect)
-            .def("SetStyle", &sf::String::SetStyle)
-            .def("GetStyle", &sf::String::GetStyle)
-            .enum_("Style")
-            [
-                luabind::value("Regular", (unsigned long)sf::String::Regular),
-                luabind::value("Bold", (unsigned long)sf::String::Bold),
-                luabind::value("Italic", (unsigned long)sf::String::Italic),
-                luabind::value("Underlined", (unsigned long)sf::String::Underlined)
-            ]
-        */
     ];
 
     luabind::globals(L)["jar"]["Color"]["Black"] = sf::Color::Black;
