@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <jar/Core.hpp>
 #include <jar/Input.hpp>
 #include <jar/Graphics.hpp>
+#include <jar/Audio.hpp>
 #include <jar/Core/CoutAndFileLogger.hpp>
 #include <jar/Core/FileSystem.hpp>
 #include <jar/Core/Lua.hpp>
@@ -48,6 +49,7 @@ int main(int argc, char** argv)
         jar::Core core;
         jar::Input input; // just create this once (after core), no need to do anything else.
         jar::Graphics graphics; // just create this once (after core), no need to do anything else.
+        jar::Audio audio; // just create this once (after core), no need to do anything else.
 
         if(!core.Init(argc, argv, "../"))
         {

@@ -19,8 +19,8 @@
 				<Linker>
 					<Add library="jar-graphics-d" />
 					<Add library="jar-input-d" />
+					<Add library="jar-audio-d" />
 					<Add library="jar-core-d" />
-					<Add library="sfml-system-d" />
 				</Linker>
 			</Target>
 			<Target title="Release Win32">
@@ -36,8 +36,8 @@
 					<Add option="-s" />
 					<Add library="jar-graphics" />
 					<Add library="jar-input" />
+					<Add library="jar-audio" />
 					<Add library="jar-core" />
-					<Add library="sfml-system" />
 				</Linker>
 			</Target>
 		</Build>
@@ -49,6 +49,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="-enable-auto-import" />
+			<Add library="sfml-system" />
 			<Add directory="..\jarlib\lib" />
 		</Linker>
 		<Unit filename="src\main.cpp" />

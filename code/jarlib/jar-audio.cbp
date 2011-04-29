@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="jar-audio" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option output="lib\jar-audio-d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-D_DEBUG" />
+				</Compiler>
+				<Linker>
+					<Add library="jar-core-d" />
+					<Add library="luabindd" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option output="lib\jar-audio" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="jar-core" />
+					<Add library="luabind" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DJAR_AUDIO_LIBRARY_BUILD" />
+			<Add option="-DLUABIND_DYNAMIC_LINK" />
+			<Add option="-DSFML_DYNAMIC" />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add option="-enable-auto-import" />
+			<Add library="lua" />
+			<Add library="sfml-audio" />
+			<Add library="sfml-system" />
+			<Add directory="lib" />
+		</Linker>
+		<ExtraCommands>
+			<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
+		</ExtraCommands>
+		<Unit filename="include\jar\Audio.hpp" />
+		<Unit filename="include\jar\audio\API.hpp" />
+		<Unit filename="include\jar\audio\AudioImpl.hpp" />
+		<Unit filename="include\jar\audio\luabind\SFMLAudio.hpp" />
+		<Unit filename="src\jar\Audio.cpp" />
+		<Unit filename="src\jar\Audio\AudioImpl.cpp" />
+		<Unit filename="src\jar\Audio\luabind\SFMLAudio.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

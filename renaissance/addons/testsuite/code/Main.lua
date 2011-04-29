@@ -74,6 +74,14 @@ local function HandleEvents()
 	g_EventListenerStack:PostEvent()
 end
 
+local Sound = jar.Sound()
+local SoundBuffer = jar.SoundBuffer()
+if not SoundBuffer:LoadFromFile("sound/beep.wav") then
+	error("Could not laod \"sound/beep.wav\"")
+end
+Sound:SetBuffer(SoundBuffer)
+
+
 local middleX = g_TestWindow:GetWidth()/2
 local middleY = g_TestWindow:GetHeight()/2
 while running do
@@ -101,6 +109,7 @@ while running do
 	end
 	
 	if x <= 50 or x >= 750 then
+		Sound:Play()
 		moar = not moar
 	end
 	
