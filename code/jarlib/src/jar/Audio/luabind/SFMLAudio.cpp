@@ -52,16 +52,24 @@ const bool SoundBufferLoadFromFile(sf::SoundBuffer& buf, const std::string& file
     return buf.LoadFromMemory(content.c_str(), content.length());
 }
 
+/*
+//this requires the memory to remain intact, since it's used for streaming. I'm not doing this.
 const bool MusicOpenFromFile(sf::Music& mus, const std::string& filename)
 {
-    std::string content;
-    if(!fs::ReadFile(filename, content) &&
-       !fs::ReadFile(filename + ".wav", content) &&
-       !fs::ReadFile(filename + ".mp3", content) &&
-       !fs::ReadFile(filename + ".ogg", content)
-       ) return false;
-    return mus.OpenFromMemory(content.c_str(), content.length());
+    std::string* content = new std::string();
+    return
+    (
+        (
+            fs::ReadFile(filename, *content) ||
+            fs::ReadFile(filename + ".wav", *content) ||
+            fs::ReadFile(filename + ".mp3", *content) ||
+            fs::ReadFile(filename + ".ogg", *content)
+        )
+        &&
+        mus.OpenFromMemory(content->c_str(), content->length())
+     );
 }
+*/
 
 void BindSFMLAudio(lua_State* L)
 {
@@ -116,8 +124,9 @@ void BindSFMLAudio(lua_State* L)
             .def("GetLoop", &sf::Sound::GetLoop)
             .def("SetPlayingOffset", &sf::Sound::SetPlayingOffset)
             .def("GetPlayingOffset", &sf::Sound::GetPlayingOffset)
-            .def("GetStatus", &sf::Sound::GetStatus),
-
+            .def("GetStatus", &sf::Sound::GetStatus)
+/*
+        //music requires the memory from where it is read to remain intact, I don't want to deal with that at the moment, would require a manager of sorts or inheriting for PhysFS support.
         luabind::class_<sf::SoundStream, sf::SoundSource>("SoundStream")
             .def("Play", &sf::SoundStream::Play)
             .def("Pause", &sf::SoundStream::Pause)
@@ -132,6 +141,7 @@ void BindSFMLAudio(lua_State* L)
             .def(luabind::constructor<>())
             .def("OpenFromFile", MusicOpenFromFile)
             .def("GetDuration", &sf::Music::GetDuration)
+            */
     ];
 }
 

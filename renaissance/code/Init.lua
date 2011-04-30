@@ -7,9 +7,11 @@ require("CVarManager.lua")
 -- please don't rename this variable, it's used (or will be used) in a lot of places.
 g_CVarManager = CVarManager:New()
 
+
+jar.Logger.GetDefaultLogger():Info("Loading saved cvars.", 3)
 g_CVarManager:LoadCVars() -- no problem if this fails, means there's no config (or it's invalid)
 
-jar.Logger.GetDefaultLogger():Info("Registering log_level, fs_baseOnlyArchives and fs_baseNoMods", 3)
+jar.Logger.GetDefaultLogger():Info("Registering log_level, fs_noBase, fs_baseOnlyArchives and fs_baseNoMods", 3)
 -- register log cvars
 g_CVarManager:RegisterCVar{
 	name = "log_level",
@@ -24,6 +26,15 @@ g_CVarManager:RegisterCVar{
 
 -- ==FileSystem==
 
+g_CVarManager:RegisterCVar{
+	name = "fs_noBase",
+	type = CVar.TYPES.BOOLEAN,
+	defaultValue = false,
+	description = "Whether the base folder should be ignored altogether. (e.g. Standalone game)",
+	OnChange = function(oldVal, newVal)
+		jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_noBase to take effect.", 0)
+	end,
+}
 g_CVarManager:RegisterCVar{
 	name = "fs_baseOnlyArchives",
 	type = CVar.TYPES.BOOLEAN,
@@ -46,30 +57,31 @@ g_CVarManager:RegisterCVar{
 -- TODO CLArguments -> CVars
 jar.Logger.GetDefaultLogger():Log("TODO: (Init.lua): parse arguments for Instructions")
 
+if not g_CVarManager:GetCVar("fs_noBase") then
+	jar.Logger.GetDefaultLogger():Info("Mounting base", 3)
 
-jar.Logger.GetDefaultLogger():Info("Mounting base", 3)
-
-local noBaseMods = g_CVarManager:GetCVar("fs_baseNoMods")
-local onlyArchives = g_CVarManager:GetCVar("fs_baseOnlyArchives")
--- first mount unzipped stuff in base, if enabled
-if not onlyArchives and not noBaseMods then
-	if jar.fs.Mount("../Base/", false) then
-		jar.Logger.GetDefaultLogger():Info("Mounted Base/", 0)
-	else
-		jar.Logger.GetDefaultLogger():Error("Error mounting Base/: " .. jar.fs.GetLastError())
+	local noBaseMods = g_CVarManager:GetCVar("fs_baseNoMods")
+	local onlyArchives = g_CVarManager:GetCVar("fs_baseOnlyArchives")
+	-- first mount unzipped stuff in base, if enabled
+	if not onlyArchives and not noBaseMods then
+		if jar.fs.Mount("../Base/", false) then
+			jar.Logger.GetDefaultLogger():Info("Mounted Base/", 0)
+		else
+			jar.Logger.GetDefaultLogger():Error("Error mounting Base/: " .. jar.fs.GetLastError())
+		end
 	end
-end
 
-jar.Logger.GetDefaultLogger():Info("Mounting base assets", 3)
--- then mount the pk3 archives in base. I don't apply my mod code to them because I'm lazy and because the filenames wouldn't be GUIDs anymore.
-for filename in jar.GetFilesInDirectory("../base/") do
-	if string.lower(string.sub(filename, -4)) == ".pk3" then
-		if not noBaseMods or string.match(string.lower(filename), "assets%d%.pk3") then
-			if jar.fs.Mount("../Base/" .. filename, false) then
-				jar.Logger.GetDefaultLogger():Info("Mounted Base/" .. filename, 0	)
-			else
-				jar.Logger.GetDefaultLogger():Error("Error mounting Base/" .. filename .. ": " .. jar.fs.GetLastError())
-				return
+	jar.Logger.GetDefaultLogger():Info("Mounting base assets", 3)
+	-- then mount the pk3 archives in base. I don't apply my mod code to them because I'm lazy and because the filenames wouldn't be GUIDs anymore.
+	for filename in jar.GetFilesInDirectory("../base/") do
+		if string.lower(string.sub(filename, -4)) == ".pk3" then
+			if not noBaseMods or string.match(string.lower(filename), "assets%d%.pk3") then
+				if jar.fs.Mount("../Base/" .. filename, false) then
+					jar.Logger.GetDefaultLogger():Info("Mounted Base/" .. filename, 0	)
+				else
+					jar.Logger.GetDefaultLogger():Error("Error mounting Base/" .. filename .. ": " .. jar.fs.GetLastError())
+					return
+				end
 			end
 		end
 	end

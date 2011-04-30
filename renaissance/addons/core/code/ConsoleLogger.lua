@@ -20,7 +20,6 @@ function ConsoleLogger:Log(message)
 		end
 		return
 	end
-	print("crash imminent?")
 	self.console:Print(message)
 	self.oldLogger:Log(message)
 end

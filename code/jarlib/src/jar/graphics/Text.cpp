@@ -177,4 +177,14 @@ const float Text::GetLineHeight() const
     return (float)mFontSize/(float)mFont->GetFontData().mPointSize * mFont->GetFontData().mHeight;
 }
 
+const float Text::GetHeight() const
+{
+    int lines = 1;
+    for(std::string::const_iterator it = mText.begin(); it != mText.end(); ++it)
+    {
+        if(*it == '\n') ++lines;
+    }
+    return lines * GetLineHeight();
+}
+
 } // namespace jar

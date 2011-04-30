@@ -174,7 +174,8 @@ void BindSFMLGraphics(lua_State* L)
 
         luabind::class_<sf::Image>("Image")
             .def(luabind::constructor<>())
-            .def("LoadFromFile", &ImageLoadFromFile),
+            .def("LoadFromFile", &ImageLoadFromFile)
+            .def("SetSmooth", &sf::Image::SetSmooth),
 
         luabind::class_<sf::Sprite, sf::Drawable>("Sprite")
             .def(luabind::constructor<>())

@@ -40,7 +40,7 @@ namespace jar
 **/
 void JARAUDIOAPI BindSFMLAudio(lua_State* L);
 const bool JARAUDIOAPI SoundBufferLoadFromFile(sf::SoundBuffer& buf, const std::string& filename);
-const bool JARAUDIOAPI MusicOpenFromFile(sf::Music& mus, const std::string& filename);
+//const bool JARAUDIOAPI MusicOpenFromFile(sf::Music& mus, const std::string& filename);
 }
 
 #endif

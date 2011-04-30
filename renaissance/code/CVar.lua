@@ -75,7 +75,7 @@ function CVar:New(info)
 	obj.name = info.name
 	
 	local function sanitize(key, desiredType, defaultValue)
-		if info[key] then
+		if type(info[key]) ~= "nil" then
 			if type(info[key]) == desiredType then
 				obj[key] = info[key]
 			else
@@ -112,7 +112,7 @@ function CVar:New(info)
 	end
 	
 	-- make sure OnChange gets called, i.e. use SetValue for value. SetValue() takes care of validating the type.
-	if info.value then
+	if type(info.value) ~= "nil" then
 		if info.value ~= obj.defaultValue then
 			obj:SetValue(info.value)
 		else

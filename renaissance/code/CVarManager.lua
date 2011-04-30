@@ -44,12 +44,12 @@ function CVarManager:RegisterCVar(info)
 			if newVal then
 				info.value = newVal
 			else
-				jar.Logger.GetDefaultLogger():Info("CVarManager:RegisterCvar(): Discarding old value of " .. info.name .. " since it can't be converted to the registered type.")
+				jar.Logger.GetDefaultLogger():Info("CVarManager:RegisterCvar(): Discarding old value of " .. info.name .. " as it can't be converted to the registered type.")
 			end
 		end
 	end
 	-- cvar does not exist yet or should be overwritten. so let's create it.
-	if not info.value and info.defaultValue then
+	if type(info.value) == "nil" and type(info.defaultValue) ~= "nil" then
 		info.value = info.defaultValue
 	end
 	self.CVars[nameLwr] = CVar:New(info)
@@ -78,6 +78,8 @@ function CVarManager:SetCVar(cvarname, value)
 			t = CVar.TYPES.STRING
 		elseif type(value) == "number" then
 			t = CVar.TYPES.FLOAT
+		elseif type(value) == "boolean" then
+			t = CVar.TYPES.BOOLEAN
 		else
 			jar.Logger.GetDefaultLogger():Warning("CVarManager:SetCVAR() called with an invalid value!")
 			return false
