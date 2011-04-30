@@ -7,6 +7,7 @@ function GameState:OnEvent(event)
 	if event.Type == jar.Event.KeyPressed then
 		if event.Key.Code == jar.Key.Escape then
 			if paused then
+				GameState:Shutdown()
 				g_currentState = MainMenuState
 				paused = false
 			else
@@ -34,10 +35,15 @@ pauseText:SetText("Pause - Escape to Quit, Return to continue")
 pauseText:SetPosition( (g_Window:GetWidth() - pauseText:GetWidth()) / 2, (g_Window:GetHeight() - pauseText:GetHeight()) / 2)
 local pauseRect = jar.Shape.Rectangle(0, 0, g_Window:GetWidth(), g_Window:GetHeight(), jar.Color(0, 0, 0, 127), 0, jar.Color.Black)
 
+--local testimg = g_ImageManager:GetImage("textures/lores/bg_stars.png", true) -- 2nd parameter: throw error on failure?
+
 function GameState:RenderTo(target)
-	target:Clear(jar.Color.Red)
+	--pause overlay if applicable
 	if paused then
 		target:Draw(pauseRect)
 		target:Draw(pauseText)
 	end
+end
+
+function GameState:Shutdown()
 end

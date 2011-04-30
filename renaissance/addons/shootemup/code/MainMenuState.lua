@@ -1,4 +1,4 @@
-require("GameState.lua")
+require("IntroState.lua")
 
 MainMenuState =
 {
@@ -10,7 +10,7 @@ function MainMenuState:OnEvent(event)
 			g_running = false
 			return true
 		elseif event.Key.Code == jar.Key.Return then
-			g_currentState = GameState
+			g_currentState = IntroState
 			return true
 		end
 	end

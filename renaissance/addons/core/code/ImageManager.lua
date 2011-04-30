@@ -60,7 +60,7 @@ function ImageManager:GetImage(imgname, throwError)
 	end
 	-- leave warning to user, so a more specific location can be added.
 	if throwError then
-		error("Could not load image " .. imgname "!", 2)
+		error("Could not load image " .. imgname .. "!", 2)
 	end
 	return self.errorimage
 end

@@ -35,8 +35,8 @@ local function HandleEvents()
 			if g_currentState.LoseFocus then g_currentState:LoseFocus() end
 			--g_Window:ShowMouseCursor(true)
 		elseif hasFocus then
-			if not g_currentState:OnEvent(event) then
-				g_EventListenerStack:OnEvent(event)
+			if not g_EventListenerStack:OnEvent(event) then
+				g_currentState:OnEvent(event)
 			end
 		end
 	end
