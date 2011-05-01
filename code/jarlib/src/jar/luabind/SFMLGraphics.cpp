@@ -33,6 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
+#include <luabind/out_value_policy.hpp>
 
 namespace jar
 {
@@ -95,8 +96,9 @@ void BindSFMLGraphics(lua_State* L)
             .def_readwrite("width", &sf::FloatRect::Width)
             .def_readwrite("left", &sf::FloatRect::Left)
             .def_readwrite("top", &sf::FloatRect::Top)
-            .def("Contains", (bool(sf::FloatRect::*)(float, float) const)&sf::FloatRect::Contains),
-            //.def("Intersects", &sf::FloatRect::Intersects),
+            .def("Contains", (bool(sf::FloatRect::*)(float, float) const)&sf::FloatRect::Contains)
+            //todo: document!
+            .def("Intersects", (bool(sf::FloatRect::*)(const sf::FloatRect&, sf::FloatRect&) const)&sf::FloatRect::Intersects, luabind::pure_out_value(_3)),
 
         luabind::class_<sf::IntRect>("IntRect")
             .def(luabind::constructor<>())
@@ -105,8 +107,9 @@ void BindSFMLGraphics(lua_State* L)
             .def_readwrite("width", &sf::IntRect::Width)
             .def_readwrite("left", &sf::IntRect::Left)
             .def_readwrite("top", &sf::IntRect::Top)
-            .def("Contains", (bool(sf::IntRect::*)(int, int) const)&sf::IntRect::Contains),
-            //.def("Intersects", &sf::IntRect::Intersects),
+            .def("Contains", (bool(sf::IntRect::*)(int, int) const)&sf::IntRect::Contains)
+            //todo: document!
+            .def("Intersects", (bool(sf::IntRect::*)(const sf::IntRect&, sf::IntRect&) const)&sf::IntRect::Intersects, luabind::pure_out_value(_3)), //_1 = this or sth
 
         luabind::class_<luabind_dummy::Blend>("Blend")
             .enum_("Mode")
@@ -131,7 +134,8 @@ void BindSFMLGraphics(lua_State* L)
             .def("Move", (void(sf::View::*)(float, float))&sf::View::Move)
             .def("GetCenter", &sf::View::GetCenter)
             .def("GetSize", &sf::View::GetSize)
-            .def("Zoom", &sf::View::Zoom),
+            .def("Zoom", &sf::View::Zoom)
+            .def("SetViewport", &sf::View::SetViewport),
 
         luabind::class_<sf::Drawable>("Drawable")
             .def("SetPosition", (void(sf::Drawable::*)(float, float))&sf::Drawable::SetPosition)
@@ -175,6 +179,9 @@ void BindSFMLGraphics(lua_State* L)
         luabind::class_<sf::Image>("Image")
             .def(luabind::constructor<>())
             .def("LoadFromFile", &ImageLoadFromFile)
+            //TODO: document the following
+            .def("GetHeight", &sf::Image::GetHeight)
+            .def("GetWidth", &sf::Image::GetWidth)
             .def("SetSmooth", &sf::Image::SetSmooth),
 
         luabind::class_<sf::Sprite, sf::Drawable>("Sprite")

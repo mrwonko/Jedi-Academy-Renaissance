@@ -36,15 +36,15 @@ function ImageManager:GetImage(imgname, throwError)
 	-- make sure we have no extension, the same image may be loaded multiple times otherwise (once with and once without extension)
 	if imgname:sub(-4) == ".png" then
 		imgname = imgname:sub(1, -5)
-		print("stripped imgname: " .. imgname)
+		--print("stripped imgname: " .. imgname)
 	end
 	if imgname:sub(-4) == ".tga" then
 		imgname = imgname:sub(1, -5)
-		print("stripped imgname: " .. imgname)
+		--print("stripped imgname: " .. imgname)
 	end
 	if imgname:sub(-4) == ".jpg" then
 		imgname = imgname:sub(1, -5)
-		print("stripped imgname: " .. imgname)
+		--print("stripped imgname: " .. imgname)
 	end
 	
 	-- has the image been loaded already?

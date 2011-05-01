@@ -9,7 +9,7 @@ function IntroState:OnEvent(event)
 		if event.Key.Code == jar.Key.Escape or
 		event.Key.Code == jar.Key.Return or
 		event.Key.Code == jar.Key.Space then
-			g_currentState = GameState
+			SetCurrentState(GameState)
 			return true
 		end
 	end

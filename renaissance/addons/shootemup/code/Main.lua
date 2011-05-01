@@ -1,6 +1,7 @@
 require("InstructionInterpreter.lua")
 require("CCommandManager.lua")
 require("MainMenuState.lua")
+require("KeyManager.lua")
 
 g_running = true
 g_CCommandManager:RegisterCommand
@@ -12,7 +13,23 @@ g_CCommandManager:RegisterCommand
 	end,
 }
 
-g_currentState = MainMenuState
+local currentState = false
+function SetCurrentState(state)
+	if not state then
+		return false
+	end
+	if currentState and currentState.OnEnd then
+		currentState:OnEnd()
+	end
+	if state.OnStart then
+		state:OnStart()
+	end
+	currentState = state
+end
+g_Music = jar.Sound()
+g_Music:SetLoop(true)
+
+SetCurrentState(MainMenuState)
 
 local hasFocus = true
 local function HandleEvents()
@@ -28,36 +45,46 @@ local function HandleEvents()
 			g_running = false
 		elseif event.Type == jar.Event.GainedFocus then
 			hasFocus = true
-			if g_currentState.GainFocus then g_currentState:GainFocus() end
+			if currentState.GainFocus then currentState:GainFocus() end
 			--g_Window:ShowMouseCursor(false)
 		elseif event.Type == jar.Event.LostFocus then
 			hasFocus = false
-			if g_currentState.LoseFocus then g_currentState:LoseFocus() end
+			if currentState.LoseFocus then currentState:LoseFocus() end
 			--g_Window:ShowMouseCursor(true)
 		elseif hasFocus then
+			if event.Type == jar.Event.KeyPressed then
+				KeyManager:OnKeyDown(event.Key.Code)
+			elseif event.Type == jar.Event.KeyReleased then
+				KeyManager:OnKeyUp(event.Key.Code)
+			end
 			if not g_EventListenerStack:OnEvent(event) then
-				g_currentState:OnEvent(event)
+				currentState:OnEvent(event)
 			end
 		end
 	end
 	g_EventListenerStack:PostEvent()
 end
 
+local slept = false
 while g_running do
 	HandleEvents()
 	
 	local frametime = g_Window:GetFrameTime()
 	if frametime == 0 then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
 		jar.Sleep(1)
-		frametime = g_Window:GetFrameTime()
+		frametime = 1
+	end
+	if slept then
+		frametime = frametime + 5 -- GetFrameTime seems to return the *actual* frame time, not the time since the last frame.
+		slept = false
 	end
 	
 	g_InstructionInterpreter:Update(frametime)
 	jar.Core.GetSingleton():Update(frametime)
-	g_currentState:Update(frametime)
+	currentState:Update(frametime)
 	
 	g_Window:Clear(jar.Color.Black)
-	g_currentState:RenderTo(g_Window)
+	currentState:RenderTo(g_Window)
 	--console last since it's an overlay
 	g_Console:RenderTo(g_Window)
 	
@@ -65,6 +92,7 @@ while g_running do
 	if not hasFocus then
 		-- sleep 5 ms
 		jar.Sleep(5)
+		slept = true
 	end
 end
 

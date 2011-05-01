@@ -4,6 +4,7 @@ require("EventListenerStack.lua") --also creates g_EventListenerStack
 require("Console.lua")
 require("FontManager.lua")
 require("ImageManager.lua")
+require("SoundManager.lua")
 require("ConsoleLogger.lua")
 
 jar.Logger.GetDefaultLogger():Log("Initializing Shoot'em Up")
@@ -29,7 +30,7 @@ g_CVarManager:RegisterCVar{
 g_CVarManager:RegisterCVar{
 	name = "r_height",
 	type = CVar.TYPES.INT,
-	defaultValue = 800,
+	defaultValue = 600,
 	minValue = 1,
 	description = "The height of the window, in pixels.",
 	OnChange = function(oldVal, newVal)
@@ -54,8 +55,28 @@ g_CVarManager:RegisterCVar{
 		if g_Window then print("Restart the game for the change to take effect.") end
 	end,
 }
+g_CVarManager:RegisterCVar{
+	name = "snd_effectsvolume",
+	type = CVar.TYPES.FLOAT,
+	defaultValue = 100,
+	description = "How loud sound effects should be, from 0 to 1.",
+	minValue = 0,
+	maxValue = 100,
+}
+g_CVarManager:RegisterCVar{
+	name = "snd_musicvolume",
+	type = CVar.TYPES.FLOAT,
+	defaultValue = 100,
+	description = "How loud sound effects should be, from 0 to 1.",
+	min = 0,
+	max = 100,
+	OnChange = function(oldVal, newVal)
+		if g_Music then g_Music:SetVolume(newVal) end
+	end,
+}
 
 g_Window = jar.RenderWindow(g_CVarManager:GetCVar("r_width"), g_CVarManager:GetCVar("r_height"), "Mr. Wonko's Ludum Dare 20 entry - second try", (not g_CVarManager:GetCVar("r_borderless")), g_CVarManager:GetCVar("r_fullscreen"))
+g_Window:EnableKeyRepeat(false) --no automatic key repeat (fast fire would be too easy)
 --g_Window:ShowMouseCursor(false)
 
 g_CCommandManager:RegisterCommand
@@ -73,6 +94,7 @@ g_CCommandManager:RegisterCommand
 
 g_FontManager = FontManager:New()
 g_ImageManager = ImageManager:New()
+g_SoundManager = SoundManager:New()
 
 g_Console = Console:New(g_Window:GetWidth(), g_Window:GetHeight()/2, g_InstructionInterpreter, g_FontManager:GetFont("lucida8pt", true))
 -- commented out for now so I can do debug output via print in Console:Print

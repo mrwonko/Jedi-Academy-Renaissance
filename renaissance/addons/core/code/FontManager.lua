@@ -36,7 +36,7 @@ function FontManager:GetFont(fontname, throwError)
 		return font
 	end
 	if throwError then
-		error("Could not load font " .. fontname "!", 2)
+		error("Could not load font " .. fontname .. "!", 2)
 	end
 	-- return nil (done anyway)
 end

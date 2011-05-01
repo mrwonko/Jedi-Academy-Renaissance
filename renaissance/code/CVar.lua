@@ -93,6 +93,8 @@ function CVar:New(info)
 	else
 		sanitize("defaultValue", self.typeLookup[obj.type])
 	end
+	sanitize("minValue", self.typeLookup[obj.type])
+	sanitize("maxValue", self.typeLookup[obj.type])
 	sanitize("description", "string") -- keep in mind this may be nil, for example if it was usercreated or simply not set
 	sanitize("OnChange", "function")
 	sanitize("IsValid", "function")
