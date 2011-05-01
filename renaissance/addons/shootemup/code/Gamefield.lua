@@ -1,7 +1,13 @@
 require("Player.lua")
 require("Star.lua")
+require("Particle.lua")
 
+--for loading: all enemy types must be compiled!
 require("EnemyKamikaze.lua")
+require("EnemyAsteroid.lua")
+require("EnemyShoot1.lua")
+require("EnemyShoot2.lua")
+require("EnemyBoss.lua")
 
 local function CheckCollision(sprite1, sprite2)
 	local ownsize = sprite1:GetSize()
@@ -38,7 +44,6 @@ function Gamefield:New()
 		curlevel = 1,
 		levels = {},
 		score = 0,
-		managedSounds = {},
 	}
 	setmetatable(obj, self)
 	self.__index = self
@@ -47,13 +52,15 @@ function Gamefield:New()
 	while true do
 		local f, err = loadfile("levels/level".. i ..".lua")
 		if not f then
-			jar.Logger.GetDefaultLogger():Info(err, 1)
+			jar.Logger.GetDefaultLogger():Log(err)
 			break
 		end
 		table.insert(obj.levels, f())
 		i = i + 1
 	end
 	assert(#obj.levels >= 1)
+	
+	ParticleManager.particles = {}
 	
 	return obj
 end
@@ -108,17 +115,18 @@ function Gamefield:RenderGamefield()
 	end
 	
 	self.player:Render()
+	
+	ParticleManager:Render()
 end
 
 function Gamefield:OnKeyDown(key)
-	if key == jar.Key.Back then
-		EnemyKamikaze:New{ position = jar.Vector2f(205, 50) }
-	end
 	return self.player:OnKeyDown(key)
 end
 
 function Gamefield:Update(deltaT)
 	self.leveltime = self.leveltime + deltaT
+	
+	ParticleManager:Update(deltaT)
 	
 	-- level end condition check - all enemies dead, none left in list
 	local leveldone = true
@@ -156,18 +164,6 @@ function Gamefield:Update(deltaT)
 			return
 		end
 		self.curlevel = self.curlevel+1
-	end
-	
-	local i = 1
-	while true do
-		if i > #self.managedSounds then
-			break
-		end
-		if self.managedSounds[i]:GetStatus() == jar.Sound.Stopped then
-			table.remove(self.managedSounds, i)
-		else
-			i = i + 1
-		end
 	end
 	
 	self.nextStarIn = self.nextStarIn - deltaT

@@ -7,6 +7,26 @@ require("ImageManager.lua")
 require("SoundManager.lua")
 require("ConsoleLogger.lua")
 
+-- 8 channels for sounds
+-- circumvents a bug due to too many coexisting sound channels if lua doesn't collect garbage in time (which it doesn't.)
+local sounds = 
+{
+	jar.Sound(),
+	jar.Sound(),
+	jar.Sound(),
+	jar.Sound(),
+	jar.Sound(),
+	jar.Sound(),
+	jar.Sound(),
+}
+local cursound = 1
+
+function GetSound()
+	cursound = cursound + 1
+	if cursound > #sounds then cursound = 1 end
+	return sounds[cursound]
+end
+
 jar.Logger.GetDefaultLogger():Log("Initializing Shoot'em Up")
 
 g_CCommandManager = CCommandManager:New()

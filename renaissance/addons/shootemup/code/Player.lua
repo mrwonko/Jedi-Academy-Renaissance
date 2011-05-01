@@ -110,8 +110,8 @@ local hurtsounds =
 
 function Player:Damage(amount)
 	self.health = self.health - amount
-	local sound = jar.Sound()
+	local sound = GetSound()
 	sound:SetBuffer(hurtsounds[math.random(#hurtsounds)])
+	sound:SetPosition(0, 0, 0)
 	sound:Play()
-	table.insert(g_Gamefield.managedSounds, sound)
 end

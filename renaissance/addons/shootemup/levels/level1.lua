@@ -1,24 +1,29 @@
 return {
-	-- time - enemies to spawn at 0 milliseconds in
-	[0] = {
+	[5000] = {
 		{
-			type = "enemy", --default
-			class = EnemyKamikaze,
-			parameters = { position = jar.Vector2f(205, 50), },
+			class = EnemyAsteroid,
+			parameters = {	position = jar.Vector2f(90, -5),
+							movedir = jar.Vector2f(-0.02, 0.01), },
+		},
+		{
+			class = EnemyAsteroid,
+			parameters = {	position = jar.Vector2f(205, 70),
+							movedir = jar.Vector2f(-0.025, -0.005),
+							size = 12, },
 		},
 	},
-	[1000] = {
+	[6000] = {
 		{
-			class = EnemyKamikaze,
-			position = 50,
-			parameters = { position = jar.Vector2f(205, 50), },
+			class = EnemyAsteroid,
+			parameters = {	position = jar.Vector2f(205, 40),
+							movedir = jar.Vector2f(-0.03, 0.002), },
 		},
 	},
-	[2000] = {
+	[6500] = {
 		{
-			class = EnemyKamikaze,
-			position = 50,
-			parameters = { position = jar.Vector2f(205, 50), },
+			class = EnemyAsteroid,
+			parameters = {	position = jar.Vector2f(205, 77),
+							movedir = jar.Vector2f(-0.03, -0.002), },
 		},
 	},
 }

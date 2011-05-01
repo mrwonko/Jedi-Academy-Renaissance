@@ -1,3 +1,5 @@
+require("Particle.lua")
+
 Shot =
 {
 	speed = 0.5,
@@ -13,6 +15,19 @@ Shot =
 		g_SoundManager:GetSound("sound/hit01_2"),
 		g_SoundManager:GetSound("sound/hit01_3"),
 	},
+	particleInfo =
+	{
+		images =
+		{
+			g_ImageManager:GetImage("textures/lores/shot_laser_impact"),
+		},
+		minNum = 3,
+		maxNum = 6,
+		minSpeed = 0.02,
+		maxSpeed = 0.01,
+		lifetime = 300,
+		size = 1,
+	}
 }
 
 function Shot:New(info, silent)
@@ -34,11 +49,11 @@ function Shot:New(info, silent)
 	end
 	
 	if type(obj.shotsounds) == "table" and not silent then
-		obj.shotsound = jar.Sound()
-		obj.shotsound:SetBuffer(obj.shotsounds[math.random(#obj.shotsounds)])
-		obj.shotsound:SetPosition(-obj.dir, 0, 0)
-		obj.shotsound:SetVolume(g_CVarManager:GetCVar("snd_effectsvolume") or 100)
-		obj.shotsound:Play()
+		local sound = GetSound()
+		sound:SetBuffer(obj.shotsounds[math.random(#obj.shotsounds)])
+		sound:SetPosition(-obj.dir, 0, 0)
+		sound:SetVolume(g_CVarManager:GetCVar("snd_effectsvolume") or 100)
+		sound:Play()
 	end
 	
 	return obj
@@ -63,9 +78,11 @@ end
 
 function Shot:Hit()
 	self.dead = true
-	local sound = jar.Sound()
+	local sound = GetSound()
 	sound:SetBuffer(self.hitsounds[math.random(#self.hitsounds)])
+	sound:SetPosition(0, 0, 0)
 	sound:Play()
-	table.insert(g_Gamefield.managedSounds, sound)
-	--todo: impact effect!
+	
+	self.particleInfo.position = self.sprite:GetPosition()
+	CreateParticles(self.particleInfo)
 end

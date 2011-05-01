@@ -1,3 +1,5 @@
+require("Particle.lua")
+
 Enemy = {
 	health = 10,
 	crashDamage = 10, --damage when they fly into the player
@@ -12,6 +14,21 @@ Enemy = {
 		g_SoundManager:GetSound("sound/explosion01_2"),
 		g_SoundManager:GetSound("sound/explosion01_3"),
 	},
+	particleInfo =
+	{
+		images =
+		{
+			g_ImageManager:GetImage("textures/lores/explosion01"),
+			g_ImageManager:GetImage("textures/lores/explosion01_2"),
+			g_ImageManager:GetImage("textures/lores/explosion01_3"),
+		},
+		minNum = 10,
+		maxNum = 30,
+		minSpeed = 0.01,
+		maxSpeed = 0.02,
+		lifetime = 2000,
+		size = 3,
+	}
 }
 
 function Enemy:New(info, template)
@@ -46,11 +63,13 @@ function Enemy:Damage(amount)
 end
 
 function Enemy:Die()
-	local sound = jar.Sound()
+	local sound = GetSound()
 	sound:SetBuffer(self.deathsounds[math.random(#self.deathsounds)])
+	sound:SetPosition(0, 0, 0)
 	sound:Play()
-	table.insert(g_Gamefield.managedSounds, sound)
-	--todo: explosion!
+	
+	self.particleInfo.position = self.sprite:GetPosition()
+	CreateParticles(self.particleInfo)
 end
 
 function Enemy:Update(deltaT)
@@ -59,7 +78,8 @@ function Enemy:Update(deltaT)
 		self.cooldown = self.cooldown - deltaT
 		if self.cooldown <= 0 then
 			local shot = self.weapon:New{
-				position = self.position,
+				position = self.sprite:GetPosition(),
+				dir = -1,
 			}
 			table.insert(g_Gamefield.shots, shot)
 			self.cooldown = self.weapon.cooldown
