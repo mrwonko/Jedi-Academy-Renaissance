@@ -28,6 +28,12 @@ function SetCurrentState(state)
 end
 g_Music = jar.Sound()
 g_Music:SetLoop(true)
+local buf = g_SoundManager:GetSound("sound/music.ogg")
+if buf then
+	g_Music:SetBuffer(buf)
+	g_Music:SetVolume(g_CVarManager:GetCVar("snd_musicvolume") or 100)
+	g_Music:Play()
+end
 
 SetCurrentState(MainMenuState)
 

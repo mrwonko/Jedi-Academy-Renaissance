@@ -6,6 +6,13 @@ Shot =
 	dir = 1, --1 = right, -1 = left
 	dead = false,
 	scale = 1,
+	cooldown = 1000, -- AI only
+	hitsounds =
+	{
+		g_SoundManager:GetSound("sound/hit01"),
+		g_SoundManager:GetSound("sound/hit01_2"),
+		g_SoundManager:GetSound("sound/hit01_3"),
+	},
 }
 
 function Shot:New(info, silent)
@@ -48,20 +55,6 @@ function Shot:Update(deltaT)
 	end
 end
 
-function Shot:CheckCollision(sprite)
-	local ownsize = self.sprite:GetSize()
-	local ownorigin = self.sprite:GetOrigin()
-	local ownposition = self.sprite:GetPosition()
-	local othersize = sprite:GetSize()
-	local otherorigin = sprite:GetOrigin()
-	local otherposition = sprite:GetPosition()
-	
-	local ownRect = jar.FloatRect(ownposition.x-ownorigin.x, ownposition.y-ownorigin.y, ownsize.x, ownsize.y)
-	local otherRect = jar.FloatRect(otherposition.x-otherorigin.x, otherposition.y-otherorigin.y, othersize.x, othersize.y)
-	
-	return ownRect:Intersects(otherRect)
-end
-
 function Shot:Render()
 	if not self.dead then
 		g_Window:Draw(self.sprite)
@@ -70,5 +63,9 @@ end
 
 function Shot:Hit()
 	self.dead = true
-	--todo: explosion!
+	local sound = jar.Sound()
+	sound:SetBuffer(self.hitsounds[math.random(#self.hitsounds)])
+	sound:Play()
+	table.insert(g_Gamefield.managedSounds, sound)
+	--todo: impact effect!
 end

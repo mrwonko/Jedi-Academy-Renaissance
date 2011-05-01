@@ -53,10 +53,8 @@ function MainMenuState:RenderTo(target)
 end
 
 function MainMenuState:OnStart()
-	local buf = g_SoundManager:GetSound("sound/mus_title.ogg")
-	if buf then
-		g_Music:SetBuffer(buf)
-		g_Music:SetVolume(g_CVarManager:GetCVar("snd_musicvolume") or 100)
-		g_Music:Play()
-	end
+	--friggin wolfram tones terms of use
+	--local buf = g_SoundManager:GetSound("sound/mus_title.ogg")
+	--gotta make my own -.-
+	--which is now in Main().
 end

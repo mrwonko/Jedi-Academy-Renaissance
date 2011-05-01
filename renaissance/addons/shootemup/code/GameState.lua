@@ -2,7 +2,8 @@ require("Gamefield.lua")
 
 GameState =
 {
-	GameOver = false
+	GameOver = false,
+	GameWon = false,
 }
 
 
@@ -15,6 +16,10 @@ pauseText:SetPosition( (g_Window:GetWidth() - pauseText:GetWidth()) / 2, (g_Wind
 local gameoverText = jar.Text(arial, 20) -- second parameter: throw error on failure
 gameoverText:SetText("Game Over")
 gameoverText:SetPosition( (g_Window:GetWidth() - gameoverText:GetWidth()) / 2, (g_Window:GetHeight() - gameoverText:GetHeight()) / 2)
+
+local wonText = jar.Text(arial, 20) -- second parameter: throw error on failure
+wonText:SetText("You are a winner!")
+wonText:SetPosition( (g_Window:GetWidth() - wonText:GetWidth()) / 2, (g_Window:GetHeight() - wonText:GetHeight()) / 2)
 
 local pauseRect = jar.Shape.Rectangle(0, 0, g_Window:GetWidth(), g_Window:GetHeight(), jar.Color(0, 0, 0, 127), 0, jar.Color.Black)
 
@@ -48,7 +53,7 @@ g_Gamefield = 0
 local paused = false
 
 function GameState:LoseFocus()
-	if not self.GameOver then
+	if not self.GameOver and not self.GameWon then
 		paused = true
 	end
 end
@@ -59,8 +64,9 @@ function GameState:OnEvent(event)
 			if paused then
 				SetCurrentState(MainMenuState)
 				paused = false
-			elseif self.GameOver then
+			elseif self.GameOver or self.GameWon then
 				self.GameOver = false
+				self.GameWon = false
 				SetCurrentState(MainMenuState)
 				paused = false --just in case
 			else
@@ -70,12 +76,13 @@ function GameState:OnEvent(event)
 		elseif event.Key.Code == jar.Key.Return and paused then
 			paused = false
 			return true
-		elseif event.Key.Code == jar.Key.Return and self.GameOver then
+		elseif event.Key.Code == jar.Key.Return and (self.GameOver or self.GameWon) then
 			self.GameOver = false
+			self.GameWon = false
 			SetCurrentState(MainMenuState)
 			paused = false --just in case
-		elseif not paused and not self.GameOver and g_Gamefield:OnKeyDown(event.Key.Code) then
-			return true
+		elseif not paused and not self.GameOver and not self.GameWon then
+			return g_Gamefield:OnKeyDown(event.Key.Code)
 		end
 	end
 	return false --has not been used
@@ -89,31 +96,38 @@ function GameState:RenderTo(target)
 	g_Gamefield:RenderGamefield()
 	g_Window:SetView(g_Window:GetDefaultView())
 	-- pause overlay if applicable
-	if paused or self.GameOver then
+	if paused or self.GameOver or self.GameWon then
 		target:Draw(pauseRect)
 		if paused then
 			target:Draw(pauseText)
-		else
+		elseif self.GameOver then
 			target:Draw(gameoverText)
+		else
+			target:Draw(wonText)
 		end
 	end
 end
 
 function GameState:Update(deltaT)
 	if g_Console.isOpened then paused = true end
-	if paused or self.GameOver then return end
+	if paused or self.GameOver or self.GameWon then return end
 	g_Gamefield:Update(deltaT)
 end
 
 function GameState:OnStart()
 	--init
 	g_Gamefield = Gamefield:New()
-	local buf = g_SoundManager:GetSound("sound/mus_game.ogg")
+	self.currentLevel = 1
+	--todo: level stuff. enemies first.
+	--music
+	--friggin wolfram tones terms of use
+	--[[local buf = g_SoundManager:GetSound("sound/mus_game.ogg")
 	if buf then
 		g_Music:SetBuffer(buf)
 		g_Music:SetVolume(g_CVarManager:GetCVar("snd_musicvolume") or 100)
 		g_Music:Play()
 	end
+	--]]
 end
 
 function GameState:OnEnd()

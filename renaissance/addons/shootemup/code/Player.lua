@@ -22,7 +22,7 @@ function Player:New()
 		availableWeapons =
 		{
 			ShotLaser,
-			ShotLaserBlue, --todo: delete this.
+			--ShotLaserBlue, --todo: delete this.
 		}
 	}
 	obj.sprite:Resize(10, 10)
@@ -101,6 +101,17 @@ function Player:OnKeyDown(key)
 	return false
 end
 
+local hurtsounds =
+{
+	g_SoundManager:GetSound("sound/hurt01"),
+	g_SoundManager:GetSound("sound/hurt01_2"),
+	g_SoundManager:GetSound("sound/hurt01_3"),
+}
+
 function Player:Damage(amount)
 	self.health = self.health - amount
+	local sound = jar.Sound()
+	sound:SetBuffer(hurtsounds[math.random(#hurtsounds)])
+	sound:Play()
+	table.insert(g_Gamefield.managedSounds, sound)
 end

@@ -1,7 +1,7 @@
 require("Shot.lua")
 
 ShotLaserBlue = Shot:New({
-	speed = 0.2,
+	speed = 0.1,
 	image = g_ImageManager:GetImage("textures/lores/shot_laser_blue.png", true),
 	damage = 20,
 	shotsounds = {
