@@ -93,6 +93,8 @@ while g_running do
 	currentState:RenderTo(g_Window)
 	--console last since it's an overlay
 	g_Console:RenderTo(g_Window)
+	--hack: there's some kind of bug related to a wrong view being used when the console is opened in the main menu. This circumvents it.
+	g_Window:SetView(g_Window:GetDefaultView())
 	
 	g_Window:Display()
 	if not hasFocus then

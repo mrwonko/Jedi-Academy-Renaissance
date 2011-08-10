@@ -91,11 +91,24 @@ InputDeviceJoystick* InputDeviceManager::GetJoystick(const unsigned int index) c
     {
         if((*it)->GetDeviceType() != InputDevice::DT_Joystick) continue;
         //this device is a joystick. But is it the right one?
-        InputDeviceJoystick& joy = *dynamic_cast<InputDeviceJoystick*>(*it);
-        if(joy.Index == index) return &joy;
+        InputDeviceJoystick* joy = dynamic_cast<InputDeviceJoystick*>(*it);
+        if(joy->GetIndex() == index) return joy;
     }
     Logger::GetDefaultLogger().Warning("Input Device Manager: Request for invalid joystick #" + Helpers::IntToString(index));
     return NULL;
+}
+
+std::list<InputDeviceJoystick*>& InputDeviceManager::GetAllJoysticks() const
+{
+    static std::list<InputDeviceJoystick*> l;
+    l.clear();
+    for(std::set<InputDevice*>::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
+    {
+        //skip if no joystick
+        if((*it)->GetDeviceType() != InputDevice::DT_Joystick) continue;
+        l.push_back(dynamic_cast<InputDeviceJoystick*>(*it));
+    }
+    return l;
 }
 
 void InputDeviceManager::ReceiveEvent(const Event& event)

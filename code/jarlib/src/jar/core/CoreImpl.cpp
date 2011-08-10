@@ -99,13 +99,13 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
     assert(argc > 0);
     if(!fs::Init(argv[0]))
     {
-        Logger::GetDefaultLogger().Error(fs::GetLastError());
+        Logger::GetDefaultLogger().Error("Cannot initialize filesystem: " + fs::GetLastError());
         Deinit();
         return false;
     }
     if(not fs::SetWriteDir("./"))
     {
-        Logger::GetDefaultLogger().Error(fs::GetLastError());
+        Logger::GetDefaultLogger().Error("Cannot set write directory: " + fs::GetLastError());
         Deinit();
         return false;
     }

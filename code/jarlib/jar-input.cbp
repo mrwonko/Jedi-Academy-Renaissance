@@ -97,6 +97,9 @@
 		<Unit filename="src\jar\input\Windows\WinJoystickDirectInput.cpp" />
 		<Unit filename="src\jar\input\Windows\WinJoystickXInput.cpp" />
 		<Unit filename="src\jar\input\luabind\Event.cpp" />
+		<Unit filename="src\jar\input\luabind\InputDeviceJoystick.cpp" />
+		<Unit filename="src\jar\input\luabind\InputDeviceManager.cpp" />
+		<Unit filename="src\jar\input\luabind\InputImpl.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

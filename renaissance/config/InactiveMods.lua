@@ -1,0 +1,5 @@
+inactiveMods =
+{
+	"testsuite/",
+	"leaktest/",
+}

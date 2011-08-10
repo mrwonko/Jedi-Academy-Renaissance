@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/API.hpp"
 
 class lua_State;
+class InputDeviceJoystick;
 
 namespace sf
 {
@@ -105,7 +106,7 @@ struct JARINPUTAPI Event
     **/
     struct JARINPUTAPI JoyButtonEvent
     {
-        unsigned int JoyIndex; ///< The joystick index
+        InputDeviceJoystick* Joystick; ///< The joystick
         unsigned int Button; ///< the button index
     };
 
@@ -113,7 +114,7 @@ struct JARINPUTAPI Event
     **/
     struct JARINPUTAPI JoyAxisEvent
     {
-        unsigned int JoyIndex; ///< The joystick index
+        InputDeviceJoystick* Joystick; ///< The joystick
         unsigned int Axis; ///< The axis index
         float Position; ///< The Axis's position, in [-1; 1]
     };

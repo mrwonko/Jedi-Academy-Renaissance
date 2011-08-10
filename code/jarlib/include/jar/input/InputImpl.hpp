@@ -41,6 +41,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <vector>
 #include <cassert>
 
+class lua_State;
+
 namespace jar {
 
 class InputDeviceManager;
@@ -76,6 +78,9 @@ class InputImpl : public Component
         EventManager& GetEventManager() { assert(mEventManager); return *mEventManager; }
 
         void OnWindowCreated();
+
+        /** \brief Exposes Input to Lua (not InputImpl!) **/
+        static void Luabind(lua_State* state);
 
     private:
         InputDeviceManager* mInputDeviceManager;

@@ -75,8 +75,6 @@
 		<Unit filename="include\jar\core\Updatable.hpp" />
 		<Unit filename="include\jar\core\VoidLogger.hpp" />
 		<Unit filename="include\jar\luabind\Core.hpp" />
-		<Unit filename="include\jar\luabind\FileSystem.hpp" />
-		<Unit filename="include\jar\luabind\STL.hpp" />
 		<Unit filename="src\jar\Core.cpp" />
 		<Unit filename="src\jar\core\CLArguments.cpp" />
 		<Unit filename="src\jar\core\Component.cpp" />
@@ -92,8 +90,6 @@
 		<Unit filename="src\jar\core\Time.cpp" />
 		<Unit filename="src\jar\core\Updatable.cpp" />
 		<Unit filename="src\jar\luabind\Core.cpp" />
-		<Unit filename="src\jar\luabind\FileSystem.cpp" />
-		<Unit filename="src\jar\luabind\STL.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -28,6 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Helpers.hpp"
 #include "jar/core/Lua.hpp"
 #include "jar/Core.hpp"
+#include "jar/input/InputDeviceJoystick.hpp"
 
 #ifdef _WIN32
 #include "jar/input/Windows/WinJoystickXInput.hpp"
@@ -97,7 +98,11 @@ const bool InputImpl::Init()
     }
 
     Logger::GetDefaultLogger().Info("Exposing Event System to Lua...", 2);
-    Event::Luabind(Core::GetSingleton().GetLua().GetState());
+    lua_State* L = Core::GetSingleton().GetLua().GetState();
+    InputDeviceJoystick::Luabind(L);
+    InputDeviceManager::Luabind(L);
+    Event::Luabind(L);
+    InputImpl::Luabind(L);
     Logger::GetDefaultLogger().Info("Exposed Event System to Lua", 2);
 
     Logger::GetDefaultLogger().Info("- Input component initialized...", 1);
@@ -301,8 +306,7 @@ namespace
 
         DirectInputEnumInfo* info = static_cast<DirectInputEnumInfo* >(voidptr);
 
-        Windows::WinJoystickDirectInput* joy = new Windows::WinJoystickDirectInput();
-        joy->Index = info->NumJoysticks;
+        Windows::WinJoystickDirectInput* joy = new Windows::WinJoystickDirectInput(info->NumJoysticks);
         if(!joy->Init(info->DirectInput, device))
         {
             delete joy;
@@ -335,9 +339,7 @@ const bool InputImpl::InitJoysticks()
         if(XInputGetState(i, &state) == ERROR_SUCCESS)
         {
             //controller connected
-            Windows::WinJoystickXInput* joy = new Windows::WinJoystickXInput();
-            //InputDeviceJoystick::Index is the JAR-Index of that gamepad, while the one supplied to Init is the XInput index
-            joy->Index = numJoysticks;
+            Windows::WinJoystickXInput* joy = new Windows::WinJoystickXInput(numJoysticks);
             if(!joy->Init(i))
             {
                 delete joy;

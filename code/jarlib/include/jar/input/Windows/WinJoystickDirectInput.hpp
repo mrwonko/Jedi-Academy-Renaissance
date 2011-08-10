@@ -34,6 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <dinput.h>
 
 #include <cmath>
+#include <boost/noncopyable.hpp>
 
 #include "jar/input/InputDeviceJoystick.hpp"
 
@@ -44,10 +45,10 @@ namespace Windows {
 
     \note The buttons 0-15 are reserved for DPad up (0/4/8/12), down (1/5/9/13), left (2/6/10/14), right (3/7/11/15).
 **/
-class WinJoystickDirectInput : public jar::InputDeviceJoystick, public Updatable
+class WinJoystickDirectInput : public jar::InputDeviceJoystick, public Updatable, public boost::noncopyable
 {
     public:
-        WinJoystickDirectInput();
+        WinJoystickDirectInput(unsigned int index);
         virtual ~WinJoystickDirectInput();
 
         const bool Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEINSTANCE deviceInfo);
@@ -57,6 +58,8 @@ class WinJoystickDirectInput : public jar::InputDeviceJoystick, public Updatable
         virtual void Update(TimeType deltaT);
 
         void OnFirstWindowCreated(HWND hwnd);
+
+        virtual std::string GetUniqueID() const;
 
         struct AxisRangeInfo
         {

@@ -140,7 +140,7 @@ function Gamefield:Update(deltaT)
 			--spawn enemies!
 			for _, info in ipairs(enemiesToSpawn) do
 				if (info.type or "enemy") == "enemy" then
-					info.class:New(info.parameters)
+					--info.class:New(info.parameters)
 				--todo: item spawning!
 				end
 			end
@@ -168,7 +168,7 @@ function Gamefield:Update(deltaT)
 	
 	self.nextStarIn = self.nextStarIn - deltaT
 	if self.nextStarIn <= 0 then
-		table.insert(self.stars, Star:New())
+		--table.insert(self.stars, Star:New())
 		self.nextStarIn = math.random(100, 200)
 	end
 	local i = 1

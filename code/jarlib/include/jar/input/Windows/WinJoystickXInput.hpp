@@ -56,7 +56,7 @@ namespace Windows {
 class WinJoystickXInput : public InputDeviceJoystick, public Updatable
 {
     public:
-        WinJoystickXInput();
+        WinJoystickXInput(unsigned int index);
         virtual ~WinJoystickXInput();
 
         /** \brief Initializes the joystick
@@ -68,6 +68,8 @@ class WinJoystickXInput : public InputDeviceJoystick, public Updatable
         virtual const bool Deinit();
 
         virtual void Update(TimeType deltaT);
+
+        virtual std::string GetUniqueID() const;
 
     private:
         /// XInput index of this Gamepad

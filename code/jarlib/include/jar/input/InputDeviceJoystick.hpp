@@ -28,6 +28,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include <vector>
 
+class lua_State;
+
 namespace jar {
 
 class JARINPUTAPI InputDeviceJoystick : public InputDevice
@@ -37,8 +39,6 @@ class JARINPUTAPI InputDeviceJoystick : public InputDevice
         virtual ~InputDeviceJoystick();
 
         virtual const DeviceType GetDeviceType() const { return DT_Joystick; }
-
-        unsigned int Index;
 
         const unsigned int GetNumRumblers() const;
 
@@ -55,7 +55,16 @@ class JARINPUTAPI InputDeviceJoystick : public InputDevice
         /** \brief Enable or disable rumbling **/
         void EnableRumble(const bool enable) { mRumbleEnabled = enable; }
 
+        const unsigned int GetIndex() const { return mIndex; }
+
+        /** \note While two Joysticks may have the same name, they'll never have the same UID. **/
+        virtual std::string GetUniqueID() const = 0;
+
+        static void Luabind(lua_State* L);
+
     protected:
+
+        unsigned int mIndex;
 
         /** \brief Whether rumbling is enabled (default: true) **/
         bool mRumbleEnabled;
@@ -71,7 +80,7 @@ class JARINPUTAPI InputDeviceJoystick : public InputDevice
         unsigned int mNumRumblers;
 
         /** \brief Constructor **/
-        InputDeviceJoystick();
+        InputDeviceJoystick(unsigned int index);
 
         /** \brief Sends a JoyButtonPressed Event.
             \param button index of the pressed button **/

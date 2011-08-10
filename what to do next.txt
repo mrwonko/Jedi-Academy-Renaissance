@@ -1,7 +1,4 @@
-basic things I'll probably need in just about every project:
-CVars
-Console
-Console commands
+hey, sobasic things I'll probably need in just about every project:
 Menus
 Profiles
 

@@ -38,6 +38,9 @@ function Shot:New(info, silent)
 	if obj.image then
 		obj.image:SetSmooth(false)
 		obj.sprite = jar.Sprite(obj.image)
+		if obj.dir < 0 then
+			obj.sprite:FlipX(true)
+		end
 		obj.sprite:SetOrigin(obj.image:GetWidth()/2, obj.image:GetHeight()/2)
 		obj.sprite:Scale(obj.scale, obj.scale)
 	else

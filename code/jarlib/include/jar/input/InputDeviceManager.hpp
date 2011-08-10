@@ -28,6 +28,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Time.hpp"
 #include "jar/input/API.hpp"
 #include <set>
+#include <list>
+
+class lua_State;
 
 namespace jar
 {
@@ -69,7 +72,7 @@ class JARINPUTAPI InputDeviceManager : public EventListener
 
         /** \brief Deinitializes, deletes and removes an InputDevice from the manager.
             \param device The InputDevice
-            \return Whether the device existed in the manager. Even if it didn't it still got deleted.
+            \return Whether the device existed in the manager. Even if it didn't it still gets deleted.
         **/
         const bool DeleteInputDevice(InputDevice* device);
 
@@ -77,7 +80,12 @@ class JARINPUTAPI InputDeviceManager : public EventListener
             \return The joystick, or NULL if no such joystick exists. **/
         InputDeviceJoystick* GetJoystick(const unsigned int index) const;
 
+        /** \note For luabind to be able to work with the returned list, it apparently mustn't be an object since Luabind only takes iterator ownership. **/
+        std::list<InputDeviceJoystick*>& GetAllJoysticks() const;
+
         virtual void ReceiveEvent(const Event& event);
+
+        static void Luabind(lua_State* state);
     private:
         std::set<InputDevice*> mDevices;
         bool mInitialized;

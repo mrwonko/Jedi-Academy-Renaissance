@@ -31,7 +31,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 namespace jar {
 namespace Windows {
 
-WinJoystickDirectInput::WinJoystickDirectInput() :
+WinJoystickDirectInput::WinJoystickDirectInput(unsigned int index) :
+    InputDeviceJoystick(index),
     mDevice(NULL),
     mIsExclusive(false)
 {
@@ -679,6 +680,18 @@ void WinJoystickDirectInput::OnFirstWindowCreated(HWND hwnd)
         mIsExclusive = true;
     }
     assert(mDevice->Acquire() == DI_OK);
+}
+
+
+std::string WinJoystickDirectInput::GetUniqueID() const
+{
+    std::stringstream ss;
+    ss<<mGUID.Data1<<mGUID.Data2<<mGUID.Data3;
+    for(int i = 0; i < 8; ++i)
+    {
+        ss<<mGUID.Data4[i];
+    }
+    return ss.str();
 }
 
 } // namespace Windows

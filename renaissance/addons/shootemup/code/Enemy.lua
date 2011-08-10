@@ -76,6 +76,7 @@ function Enemy:Update(deltaT)
 	self:Move(deltaT)
 	if self.weapon then
 		self.cooldown = self.cooldown - deltaT
+		do return end
 		if self.cooldown <= 0 then
 			local shot = self.weapon:New{
 				position = self.sprite:GetPosition(),

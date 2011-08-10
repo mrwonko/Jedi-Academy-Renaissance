@@ -45,6 +45,7 @@ const bool Deinit()
 
 const bool SetWriteDir(const std::string& writedir)
 {
+    //FIXME: does not work if directory has special characters, especially 'é' (Salathé)
     return PHYSFS_setWriteDir((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + writedir).c_str());
 }
 

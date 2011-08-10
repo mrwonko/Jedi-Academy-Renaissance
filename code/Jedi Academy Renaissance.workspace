@@ -5,7 +5,7 @@
 		<Project filename="jarlib/jar-input.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
-		<Project filename="jarlib/jar-graphics.cbp" active="1">
+		<Project filename="jarlib/jar-graphics.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 		</Project>
@@ -15,10 +15,11 @@
 		<Project filename="02-filesystem/02-filesytem.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
-		<Project filename="03-testsnshit/03-testsnshit.cbp">
+		<Project filename="03-testsnshit/03-testsnshit.cbp" active="1">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 			<Depends filename="jarlib/jar-graphics.cbp" />
+			<Depends filename="jarlib/jar-audio.cbp" />
 		</Project>
 		<Project filename="04-inputtest/04-inputtest.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />

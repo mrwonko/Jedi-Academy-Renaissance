@@ -30,7 +30,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 namespace jar {
 namespace Windows {
 
-WinJoystickXInput::WinJoystickXInput()
+WinJoystickXInput::WinJoystickXInput(unsigned int index) :
+    InputDeviceJoystick(index)
 {
     //ctor
     mButtonMap[XINPUT_GAMEPAD_DPAD_UP] = 0;
@@ -158,6 +159,11 @@ void WinJoystickXInput::CheckAxis(int oldValue, int newValue, int multiplicator,
             JoyAxisMoved(axis, ((float)newValue)/multiplicator);
         }
     }
+}
+
+std::string WinJoystickXInput::GetUniqueID() const
+{
+    return "XInput Gamepad " + Helpers::IntToString(mIndex+1);
 }
 
 } // namespace Windows

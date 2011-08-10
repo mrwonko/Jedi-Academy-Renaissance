@@ -20,6 +20,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
+#include "jar/input/InputDeviceJoystick.hpp" //if I place this after Event.hpp include, I get "incomplete type" errors... wut?
 #include "jar/input/Event.hpp"
 #include "jar/input/EventManager.hpp"
 #include <lua.hpp>
@@ -169,13 +170,13 @@ void Event::Luabind(lua_State* L)
             [
                 luabind::class_<Event::JoyAxisEvent>("JoyAxisEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("JoyIndex", &Event::JoyAxisEvent::JoyIndex)
+                    .def_readonly("Joystick", &Event::JoyAxisEvent::Joystick)
                     .def_readonly("Axis", &Event::JoyAxisEvent::Axis)
                     .def_readonly("Position", &Event::JoyAxisEvent::Position),
 
                 luabind::class_<Event::JoyButtonEvent>("JoyButtonEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("JoyIndex", &Event::JoyButtonEvent::JoyIndex)
+                    .def_readonly("Joystick", &Event::JoyButtonEvent::Joystick)
                     .def_readonly("Button", &Event::JoyButtonEvent::Button),
 
                 luabind::class_<Event::KeyEvent>("KeyEvent")

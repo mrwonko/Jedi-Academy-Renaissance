@@ -6,6 +6,7 @@ zlib (http://zlib.net/)
 minizip (shipped with zlib in contrib/minizip/)
 Lua (http://www.lua.org)
 luabind (http://www.rasterbar.com/products/luabind.html)
+boost (http://www.boost.org)
 
 on Windows:
 Microsoft DirectX SDK (DirectInput)

@@ -26,8 +26,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace jar {
 
-InputDeviceJoystick::InputDeviceJoystick() :
-    Index(0),
+InputDeviceJoystick::InputDeviceJoystick(unsigned int index) :
+    mIndex(index),
     mRumbleEnabled(true),
     mNumRumblers(0)
 {
@@ -89,7 +89,7 @@ void InputDeviceJoystick::JoyButtonPressed(unsigned int button)
     Event e;
     e.Type = Event::JoyButtonPressed;
     e.JoyButton.Button = button;
-    e.JoyButton.JoyIndex = Index;
+    e.JoyButton.Joystick = this;
     SendEvent(e);
 }
 
@@ -98,7 +98,7 @@ void InputDeviceJoystick::JoyButtonReleased(unsigned int button)
     Event e;
     e.Type = Event::JoyButtonReleased;
     e.JoyButton.Button = button;
-    e.JoyButton.JoyIndex = Index;
+    e.JoyButton.Joystick = this;
     SendEvent(e);
 }
 
@@ -108,7 +108,7 @@ void InputDeviceJoystick::JoyAxisMoved(unsigned int axis, float position)
     e.Type = Event::JoyAxisMoved;
     e.JoyAxis.Axis = axis;
     e.JoyAxis.Position = position;
-    e.JoyButton.JoyIndex = Index;
+    e.JoyButton.Joystick = this;
     SendEvent(e);
 }
 
