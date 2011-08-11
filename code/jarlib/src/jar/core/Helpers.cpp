@@ -253,7 +253,7 @@ namespace jar
         dirent* entry;
         while( (entry = readdir(dir)) )
         {
-          if(entry->d_type == DT_REG || entry->d_type == DT_LNK) //regular file or symbolic link
+          if(entry->d_type == DT_REG)
           {
             g_tempVec.push_back(std::string(entry->d_name));
           }
