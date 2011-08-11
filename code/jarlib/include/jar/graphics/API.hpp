@@ -23,10 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_GRAPHICS_API_HPP
 #define JAR_GRAPHICS_API_HPP
 
+#include "jar/OS.hpp"
+
 #ifdef JAR_GRAPHICS_LIBRARY_BUILD
-#define JARGRAPHICSAPI __declspec(dllexport)
+#define JARGRAPHICSAPI JAR_DLLEXPORT
 #else
-#define JARGRAPHICSAPI __declspec(dllimport)
+#define JARGRAPHICSAPI JAR_DLLIMPORT
 #endif
 
 #endif

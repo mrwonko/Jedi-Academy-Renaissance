@@ -22,6 +22,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/Audio.hpp"
 #include "jar/audio/AudioImpl.hpp"
+#include <cstddef>
 
 namespace jar {
 

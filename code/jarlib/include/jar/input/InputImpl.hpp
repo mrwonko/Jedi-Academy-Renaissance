@@ -94,7 +94,7 @@ class InputImpl : public Component
 
         bool mNoWindowExists;
 #else
-#warning input not yet supported on this OS!
+#warning joystick input not yet supported on this OS!
 #endif
 };
 

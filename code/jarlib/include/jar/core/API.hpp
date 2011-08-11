@@ -23,10 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_CORE_API_HPP
 #define JAR_CORE_API_HPP
 
+#include "jar/OS.hpp"
+
 #ifdef JAR_CORE_LIBRARY_BUILD
-#define JARCOREAPI __declspec(dllexport)
+#define JARCOREAPI JAR_DLLEXPORT
 #else
-#define JARCOREAPI __declspec(dllimport)
+#define JARCOREAPI JAR_DLLIMPORT
 #endif
 
 #endif

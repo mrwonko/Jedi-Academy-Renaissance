@@ -23,10 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_INPUT_API_HPP
 #define JAR_INPUT_API_HPP
 
+#include "jar/OS.hpp"
+
 #ifdef JAR_INPUT_LIBRARY_BUILD
-#define JARINPUTAPI __declspec(dllexport)
+#define JARINPUTAPI JAR_DLLEXPORT
 #else
-#define JARINPUTAPI __declspec(dllimport)
+#define JARINPUTAPI JAR_DLLIMPORT
 #endif
 
 #endif

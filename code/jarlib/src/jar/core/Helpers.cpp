@@ -33,10 +33,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <iostream>
 
 #if defined(_WIN32)
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
+  #ifndef WIN32_LEAN_AND_MEAN
+    #define WIN32_LEAN_AND_MEAN
+  #endif
+  #include <windows.h>
+#else
+  extern "C"
+  {
+    #include <dirent.h>
+  }
 #endif
 
 namespace jar
@@ -240,8 +245,19 @@ namespace jar
 #if defined(_WIN32)
         g_tempVec = GetStuffInDirectory(directoryPath, &IsFile);
 #else
-        Logger::GetDefaultLogger().Error("Helpers::GetFilesInDirectory() not implemented for current platform!");
-#warning Helpers::GetFilesInDirectory() not implemented for this platform
+        DIR* dir;
+        if(int(dir = opendir(directoryPath.c_str())) == -1)
+        {
+          return g_tempVec;
+        }
+        dirent* entry;
+        while( (entry = readdir(dir)) )
+        {
+          if(entry->d_type == DT_REG || entry->d_type == DT_LNK) //regular file or symbolic link
+          {
+            g_tempVec.push_back(std::string(entry->d_name));
+          }
+        }
 #endif
         return g_tempVec;
     }
@@ -253,8 +269,24 @@ namespace jar
 #if defined(_WIN32)
         g_tempVec = GetStuffInDirectory(directoryPath, &IsDirectory);
 #else
-        Logger::GetDefaultLogger().Error("Helpers::GetDirectoriesInDirectory() not implemented for current platform!");
-#warning Helpers::GetFilesInDirectory() not implemented for this platform
+        DIR* dir;
+        if(int(dir = opendir(directoryPath.c_str())) == -1)
+        {
+          return g_tempVec;
+        }
+        dirent* entry;
+        while( (entry = readdir(dir)) )
+        {
+          if(entry->d_type == DT_DIR)
+          {
+            std::string name(entry->d_name);
+            if(name.length() == 0 || name == "." || name == "..")
+            {
+              continue;
+            }
+            g_tempVec.push_back(name);
+          }
+        }
 #endif
         return g_tempVec;
     }

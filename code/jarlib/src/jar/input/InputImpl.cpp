@@ -487,8 +487,8 @@ void InputImpl::OnWindowCreated()
             (*it)->OnFirstWindowCreated(info.Hwnd);
         }
     }
-#endif
     mNoWindowExists = false;
+#endif
 }
 
 } // namespace jar

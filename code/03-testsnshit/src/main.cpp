@@ -24,9 +24,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <jar/Input.hpp>
 #include <jar/Graphics.hpp>
 #include <jar/Audio.hpp>
-#include <jar/Core/CoutAndFileLogger.hpp>
-#include <jar/Core/FileSystem.hpp>
-#include <jar/Core/Lua.hpp>
+#include <jar/core/CoutAndFileLogger.hpp>
+#include <jar/core/FileSystem.hpp>
+#include <jar/core/Lua.hpp>
 
 #include <SFML/System.hpp>
 

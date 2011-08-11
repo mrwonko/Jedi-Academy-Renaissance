@@ -23,10 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef JAR_AUDIO_API_HPP
 #define JAR_AUDIO_API_HPP
 
+#include "jar/OS.hpp"
+
 #ifdef JAR_AUDIO_LIBRARY_BUILD
-#define JARAUDIOAPI __declspec(dllexport)
+#define JARAUDIOAPI JAR_DLLEXPORT
 #else
-#define JARAUDIOAPI __declspec(dllimport)
+#define JARAUDIOAPI JAR_DLLIMPORT
 #endif
 
 #endif

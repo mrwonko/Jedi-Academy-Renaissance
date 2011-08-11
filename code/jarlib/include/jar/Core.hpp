@@ -20,8 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 
-#ifndef JAR_JAR_HPP
-#define JAR_JAR_HPP
+#ifndef JAR_CORE_HPP
+#define JAR_CORE_HPP
 
 #include <string>
 #include "core/Singleton.hpp"
@@ -65,4 +65,4 @@ template<> JARCOREAPI Core* Singleton<Core>::mSingleton;
 
 } // namespace jar
 
-#endif // JAR_JAR_HPP
+#endif // JAR_CORE_HPP

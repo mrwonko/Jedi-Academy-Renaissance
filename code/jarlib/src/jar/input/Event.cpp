@@ -175,6 +175,8 @@ const bool Event::FromSFML(const sf::Event& e)
             return true;
         }
         #ifndef _WIN32 //joysticks for win32 handled separately via DirectInput & XInput
+        #warning no joystick support on non-win32 yet!
+        /*
         case sf::Event::JoyButtonPressed:
         {
             Type = Event::JoyButtonPressed;
@@ -197,6 +199,7 @@ const bool Event::FromSFML(const sf::Event& e)
             JoyAxis.Position = e.JoyMove.Position;
             return true;
         }
+        */
         #endif
         default:
         {
