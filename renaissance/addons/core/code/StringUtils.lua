@@ -15,3 +15,22 @@ function explode(str, sep)
     end
   return t
 end
+
+function Escape(str)
+	local output = ""
+	for i = 1, #str do
+		local char = str:sub(i, i)
+		--escape any escape signs and quotes
+		if char == "\\" or char == "\"" then
+			char = "\\" .. char
+		--and newlines
+		elseif char == "\n" then
+			char = "\\n"
+		--is this even possible?
+		elseif char == "\0" then
+			char = "\\0"
+		end
+		output = output .. char
+	end
+	return output
+end

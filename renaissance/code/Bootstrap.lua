@@ -4,6 +4,9 @@
 
 --loadfile, used by dofile
 function loadfile(filename)
+	if type(filename) ~= "string" then
+		error("loadfile() called with non-string argument!", 2)
+	end
 	
 	local file = jar.fs.OpenRead(filename)
 	
@@ -28,6 +31,10 @@ end
 
 --module loader for require
 local function mrwloadmodule(filename)
+	if type(filename) ~= "string" then
+		error("require() called with non-string argument!", 2)
+	end
+	
 	local file = jar.fs.OpenRead(filename)
 	local name = filename
 	if not file then

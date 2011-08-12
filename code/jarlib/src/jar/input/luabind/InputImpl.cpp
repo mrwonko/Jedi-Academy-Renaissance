@@ -10,8 +10,11 @@ namespace jar
         luabind::module(state, "jar")
         [
             luabind::class_<Input>("Input")
-                .def("GetSingleton", &Input::GetSingleton)
                 .def("GetInputDeviceManager", &Input::GetInputDeviceManager)
+                .scope
+                [
+                    luabind::def("GetSingleton", &Input::GetSingleton)
+                ]
         ];
     }
 }

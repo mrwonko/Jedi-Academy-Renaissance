@@ -31,6 +31,11 @@ g_Console:BindPrint()
 g_ConsoleLogger = ConsoleLogger(g_Console)
 jar.Logger.SetDefaultLogger(g_ConsoleLogger)
 
+if not JoystickManager:Init() then
+	return -- before using the BindManager!
+end
+JoystickManager:Save()
+
 g_BindManager = BindManager:New(g_InstructionInterpreter, g_TestWindow:GetWidth(), g_TestWindow:GetHeight())
 g_BindManager:RegisterBindCommand(g_CCommandManager)
 g_BindManager:Load()

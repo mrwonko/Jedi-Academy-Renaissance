@@ -244,7 +244,7 @@ namespace jar
         g_tempVec.clear();
 #if defined(_WIN32)
         g_tempVec = GetStuffInDirectory(directoryPath, &IsFile);
-#else
+#elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
         if(int(dir = opendir(directoryPath.c_str())) == -1)
         {
@@ -258,6 +258,8 @@ namespace jar
             g_tempVec.push_back(std::string(entry->d_name));
           }
         }
+#else
+  #warning Helpers::GetFilesInDirectory() not implemented for this platform - stuff will break.
 #endif
         return g_tempVec;
     }
@@ -268,7 +270,7 @@ namespace jar
         g_tempVec.clear();
 #if defined(_WIN32)
         g_tempVec = GetStuffInDirectory(directoryPath, &IsDirectory);
-#else
+#elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
         if(int(dir = opendir(directoryPath.c_str())) == -1)
         {
@@ -287,6 +289,8 @@ namespace jar
             g_tempVec.push_back(name);
           }
         }
+#else
+  #warning Helpers::GetFilesInDirectory() not implemented for this platform - stuff will break.
 #endif
         return g_tempVec;
     }

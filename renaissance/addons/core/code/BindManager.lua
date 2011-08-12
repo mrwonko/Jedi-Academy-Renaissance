@@ -1,5 +1,7 @@
 require("InstructionBuffer.lua")
 require("Instruction.lua")
+require("StringUtils.lua")
+require("JoystickManager.lua")
 
 local KeyToStringMap =
 {
@@ -111,7 +113,6 @@ local function KeyToString(key)
 end
 
 local function JoyAxisToString(joyIndex, axis, amount)
-	--TODO: joystick/index management
 	local sign = "+"
 	if amount < 0 then
 		sign = "-"
@@ -120,7 +121,6 @@ local function JoyAxisToString(joyIndex, axis, amount)
 end
 
 local function JoyButtonToString(joyIndex, button)
-	--TODO: joystick/index management
 	return "joy"..joyIndex.."_button"..(button+1)
 end
 
@@ -215,6 +215,7 @@ function BindManager:OnEvent(event)
 			self.interpreter:Interpret(AddAmount(self.binds[key], math.abs(amount))) --abs since I use axisN+ and axisN- for sign.
 			--make sure to send 0 to both axes if the amount is 0 (Actually only one of them needs this, but I can't tell which one... meh, I don't like this)
 			if amount == 0 then
+				assert(key:sub(-2, -1) == "+")
 				key = key:sub(1, -2) .. "-"
 				if self.binds[key] then
 					self.interpreter:Interpret(AddAmount(self.binds[key], 0)) --abs since I use axisN+ and axisN- for sign.
@@ -224,6 +225,7 @@ function BindManager:OnEvent(event)
 		end
 		return false
 	end
+	-- Keyboard
 	if event.Type == jar.Event.KeyPressed then
 		return ExecuteBind(KeyToString(event.Key.Code))
 	elseif event.Type == jar.Event.KeyReleased then
@@ -234,15 +236,7 @@ function BindManager:OnEvent(event)
 			return true
 		end
 		return false
-	elseif event.Type == jar.Event.JoyButtonPressed then
-		return ExecuteBind(JoyButtonToString(event.JoyButton.JoyIndex, event.JoyButton.Button))
-	elseif event.Type == jar.Event.JoyButtonReleased then
-		local button = JoyButtonToString(event.JoyButton.JoyIndex, event.JoyButton.Button)
-		if self.binds[button] then
-			self.interpreter:Interpret(ToMinus(self.binds[button]))
-			return true
-		end
-		return false
+	-- Mouse
 	elseif event.Type == jar.Event.MouseButtonPressed then
 		return ExecuteBind(MouseButtonToString(event.MouseButton.Button))
 	elseif event.Type == jar.Event.MouseButtonReleased then
@@ -265,9 +259,23 @@ function BindManager:OnEvent(event)
 		self.lastMousePos.x = event.MouseMove.X
 		self.lastMousePos.y = event.MouseMove.Y
 		return true
+	-- Joystick
+	elseif event.Type == jar.Event.JoyButtonPressed then
+		return ExecuteBind(JoyButtonToString(JoystickManager:GetIndex(event.JoyButton.Joystick:GetUniqueID()), event.JoyButton.Button))
+	elseif event.Type == jar.Event.JoyButtonReleased then
+		local button = JoyButtonToString(JoystickManager:GetIndex(event.JoyButton.Joystick:GetUniqueID()), event.JoyButton.Button)
+		if self.binds[button] then
+			self.interpreter:Interpret(ToMinus(self.binds[button]))
+			return true
+		end
+		return false
 	elseif event.Type == jar.Event.JoyAxisMoved then
-		--todo: get sensitivity
-		return ExecuteAxisBind(JoyAxisToString(event.JoyAxis.JoyIndex, event.JoyAxis.Axis, event.JoyAxis.Position), event.JoyAxis.Position * sensitivity)
+		local joystick = JoystickManager.joysticksByGUID[event.JoyAxis.Joystick:GetUniqueID()]
+		if not joystick then
+			return false
+		end
+		local amount = joystick:ApplySensitivity(event.JoyAxis.Position)
+		return ExecuteAxisBind(JoyAxisToString(joystick.index, event.JoyAxis.Axis, amount), amount)
 	end
 	return false
 end
@@ -453,24 +461,6 @@ function BindManager:Save()
 	end
 	file:WriteString("-- automatically generated bind list. Changes to the layout and comments will be discarded on next save.\n")
 
-	local function Escape(str)
-		local output = ""
-		for i = 1, #str do
-			local char = str:sub(i, i)
-			--escape any escape signs and quotes
-			if char == "\\" or char == "\"" then
-				char = "\\" .. char
-			--and newlines
-			elseif char == "\n" then
-				char = "\\n"
-			--is this even possible?
-			elseif char == "\0" then
-				char = "\\0"
-			end
-			output = output .. char
-		end
-		return output
-	end
 	for key, bind in pairs(self.binds) do
 		file:WriteString("_G[\"" ..tostring(key) .. "\"] = \"" .. Escape(bind) .. "\"\n")
 	end
