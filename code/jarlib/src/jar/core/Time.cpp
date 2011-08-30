@@ -31,12 +31,12 @@ static sf::Clock g_clock;
 
 TimeType GetTime()
 {
-    return TimeType(g_clock.GetElapsedTime() * TimeTypesPerSecond + 0.5f);
+    return TimeType(g_clock.GetElapsedTime());
 }
 
 void Sleep(TimeType duration)
 {
-    sf::Sleep(duration * SecondsPerTimeType);
+    sf::Sleep(duration);
 }
 
 } //namespace jar

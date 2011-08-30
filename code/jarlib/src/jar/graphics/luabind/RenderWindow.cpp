@@ -26,9 +26,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 
-#include "SFML/Graphics/Drawable.hpp"
-#include "SFML/Graphics/View.hpp"
-#include "SFML/Graphics/Image.hpp"
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/View.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <SFML/Graphics/Image.hpp>
 
 namespace jar
 {
@@ -52,6 +53,11 @@ static TimeType GetFrameTime(const jar::RenderWindow& window)
 static void RenderWindowSetIcon(jar::RenderWindow& window, const sf::Image& image)
 {
     window.SetIcon(image.GetWidth(), image.GetHeight(), image.GetPixelsPtr());
+}
+
+void SetCursorPosition(const RenderWindow& window, const sf::Vector2i& position)
+{
+    sf::Mouse::SetPosition(position, window);
 }
 
 void RenderWindow::Luabind(lua_State* L)
@@ -81,7 +87,8 @@ void RenderWindow::Luabind(lua_State* L)
             //.def("GetSettings", &jar::RenderWindow::GetSettings)
             .def("GetWidth", &jar::RenderWindow::GetWidth)
             .def("SetActive", &jar::RenderWindow::SetActive)
-            .def("SetCursorPosition", &jar::RenderWindow::SetCursorPosition)
+//            .def("SetCursorPosition", &jar::RenderWindow::SetCursorPosition)
+            .def("SetCursorPosition", &SetCursorPosition)
             .def("SetFramerateLimit", &jar::RenderWindow::SetFramerateLimit)
             .def("SetIcon", &RenderWindowSetIcon)
             .def("SetPosition", &jar::RenderWindow::SetPosition)

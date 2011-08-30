@@ -58,10 +58,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 namespace jar {
 
-InputImpl::InputImpl()
+InputImpl::InputImpl() :
+    mInputDeviceManager(NULL),
+    mEventManager(NULL)
 #ifdef _WIN32
-    :
-    mEventManager(NULL),
+    ,
     mDirectInput(NULL),
     mNoWindowExists(true)
 #endif

@@ -33,8 +33,8 @@ const float TimeTypesPerSecond = 1000;
 /// Conversion from TimeType to seconds
 const float SecondsPerTimeType = 1.0f / TimeTypesPerSecond;
 
-/// The type of time variables
-typedef long int TimeType; //when you change this, check GetTime() for validity!
+/// The type of time variables - unsigned int, will overflow every 49 days
+typedef unsigned int TimeType; //when you change this, check GetTime() for validity!
 
 JARCOREAPI TimeType GetTime();
 

@@ -24,24 +24,24 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/luabind/SFMLGraphics.hpp"
 #include "jar/core/Logger.hpp"
 #include "jar/core/FileSystem.hpp"
-#include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <algorithm>
 #include <cassert>
 
 namespace jar {
 
 Font::Font() :
-    mImage(new sf::Image()),
+    mTexture(new sf::Texture()),
     mTabWidth(8)
 {
     //ctor
-    assert(mImage && "Could not allocate memory!");
+    assert(mTexture && "Could not allocate memory!");
 }
 
 Font::~Font()
 {
     //dtor
-    delete mImage;
+    delete mTexture;
 }
 
 const bool Font::LoadFromFile(const std::string& filename, std::string& error)
@@ -67,7 +67,7 @@ const bool Font::LoadFromFile(const std::string& filename, std::string& error)
     }
     fs::Close(file);
 
-    if(!ImageLoadFromFile(*mImage, filename))
+    if(!TextureLoadFromFile(*mTexture, filename))
     {
         error = ("Could not load image " + filename + "!");
         return false;
@@ -101,6 +101,7 @@ const unsigned int Font::GetWidth(const std::string& str) const
             if(next != str.end() && (*next >= '0') && (*next <= '7'))
             {
                 ++it; //skip this and the next one
+                //cppcheck false positive here - it cannot be incremented past the end because next already checks for ==str.end()
                 continue;
             }
         }

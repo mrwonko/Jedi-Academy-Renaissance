@@ -86,7 +86,7 @@ levelString:SetPosition(200, 0)
 function Gamefield:RenderGUI()
 	--scale must be strictly positive, I'm told.
 	healthBar:SetScale(math.max(self.player.health, 1)/self.player.maxHealth, 1)
-	weaponSprite:SetImage(self.player.availableWeapons[self.player.currentWeapon].image, true)
+	weaponSprite:SetTexture(self.player.availableWeapons[self.player.currentWeapon].image, true)
 	scoreString:SetText("score: "  .. self.score)
 	-- in case the score string gets too long :P
 	while scoreString:GetWidth() + scoreString:GetPosition().x > levelString:GetPosition().x do

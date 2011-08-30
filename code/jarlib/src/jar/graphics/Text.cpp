@@ -108,7 +108,7 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
     float scaleFactor = mFontSize / data.mPointSize;
 
     //render code goes here
-    renderer.SetTexture(&mFont->GetImage());
+    renderer.SetTexture(&mFont->GetTexture());
     renderer.SetBlendMode(sf::Blend::Alpha);
     renderer.Begin(sf::Renderer::QuadList);
 

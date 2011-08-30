@@ -45,7 +45,7 @@ void EventQueue::ReceiveEvent(const Event& event)
 const bool EventQueue::GetEvent(Event& event)
 {
     mQueueMutex.Lock();
-    if(mEventQueue.size())
+    if(!mEventQueue.empty())
     {
         event = mEventQueue.front();
         mEventQueue.pop();

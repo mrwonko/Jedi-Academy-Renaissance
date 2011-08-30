@@ -24,15 +24,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "jar/core/FileSystem.hpp"
 
-#include "SFML/Audio/Listener.hpp"
-#include "SFML/Audio/SoundSource.hpp"
-#include "SFML/Audio/Sound.hpp"
-#include "SFML/Audio/SoundBuffer.hpp"
-#include "SFML/Audio/SoundStream.hpp"
-#include "SFML/Audio/Music.hpp"
+#include <SFML/Audio/Listener.hpp>
+#include <SFML/Audio/SoundSource.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Audio/SoundStream.hpp>
+#include <SFML/Audio/Music.hpp>
 
 //TODO: Music requires some more work to make streaming work with PhysFS, do that later.
-//#include "SFML/Audio/Music.hpp"
+#include <SFML/Audio/Music.hpp>
 
 #include <lua.hpp>
 #include <luabind/luabind.hpp>

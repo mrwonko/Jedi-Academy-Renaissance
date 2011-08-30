@@ -53,7 +53,7 @@ function ImageManager:GetImage(imgname, throwError)
 	end
 	
 	-- not loaded yet, load it!
-	local img = jar.Image()
+	local img = jar.Texture()
 	if img:LoadFromFile(imgname) then
 		self.images[imgname] = img
 		return img

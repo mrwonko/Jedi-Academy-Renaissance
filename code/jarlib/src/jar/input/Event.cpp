@@ -21,7 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "jar/input/Event.hpp"
-#include "SFML/Window/Event.hpp"
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <map>
 
 namespace jar
@@ -29,82 +30,82 @@ namespace jar
 
 const bool Event::FromSFML(const sf::Event& e)
 {
-    static std::map<sf::Key::Code, jar::Key::Code> keyMap;
-    if(keyMap.size() == 0)
+    static std::map<sf::Keyboard::Key, jar::Key::Code> keyMap;
+    if(keyMap.empty())
     {
-        for(unsigned long i = sf::Key::A; i <= sf::Key::Z; ++i)
+        for(unsigned long i = sf::Keyboard::A; i <= sf::Keyboard::Z; ++i)
         {
-            keyMap[sf::Key::Code(i)] = Key::Code(i - sf::Key::A + Key::A);
+            keyMap[sf::Keyboard::Key(i)] = Key::Code(i - sf::Keyboard::A + Key::A);
         }
-        for(unsigned long i = sf::Key::Num0; i <= sf::Key::Num9; ++i)
+        for(unsigned long i = sf::Keyboard::Num0; i <= sf::Keyboard::Num9; ++i)
         {
-            keyMap[sf::Key::Code(i)] = Key::Code(i - sf::Key::Num0 + Key::Num0);
+            keyMap[sf::Keyboard::Key(i)] = Key::Code(i - sf::Keyboard::Num0 + Key::Num0);
         }
-        keyMap[sf::Key::Escape] = Key::Escape;
-        keyMap[sf::Key::LControl] = Key::LControl;
-        keyMap[sf::Key::LShift] = Key::LShift;
-        keyMap[sf::Key::LAlt] = Key::LAlt;
-        keyMap[sf::Key::LSystem] = Key::LSystem;
-        keyMap[sf::Key::RControl] = Key::RControl;
-        keyMap[sf::Key::RShift] = Key::RShift;
-        keyMap[sf::Key::RAlt] = Key::RAlt;
-        keyMap[sf::Key::RSystem] = Key::RSystem;
-        keyMap[sf::Key::Menu] = Key::Menu;
-        keyMap[sf::Key::LBracket] = Key::LBracket;
-        keyMap[sf::Key::RBracket] = Key::RBracket;
-        keyMap[sf::Key::SemiColon] = Key::SemiColon;
-        keyMap[sf::Key::Comma] = Key::Comma;
-        keyMap[sf::Key::Period] = Key::Period;
-        keyMap[sf::Key::Quote] = Key::Quote;
-        keyMap[sf::Key::Slash] = Key::Slash;
-        keyMap[sf::Key::BackSlash] = Key::BackSlash;
-        keyMap[sf::Key::Tilde] = Key::Tilde;
-        keyMap[sf::Key::Equal] = Key::Equal;
-        keyMap[sf::Key::Dash] = Key::Dash;
-        keyMap[sf::Key::Space] = Key::Space;
-        keyMap[sf::Key::Return] = Key::Return;
-        keyMap[sf::Key::Back] = Key::Back;
-        keyMap[sf::Key::Tab] = Key::Tab;
-        keyMap[sf::Key::PageUp] = Key::PageUp;
-        keyMap[sf::Key::PageDown] = Key::PageDown;
-        keyMap[sf::Key::End] = Key::End;
-        keyMap[sf::Key::Home] = Key::Home;
-        keyMap[sf::Key::Insert] = Key::Insert;
-        keyMap[sf::Key::Delete] = Key::Delete;
-        keyMap[sf::Key::Add] = Key::Add;
-        keyMap[sf::Key::Subtract] = Key::Subtract;
-        keyMap[sf::Key::Multiply] = Key::Multiply;
-        keyMap[sf::Key::Divide] = Key::Divide;
-        keyMap[sf::Key::Left] = Key::Left;
-        keyMap[sf::Key::Right] = Key::Right;
-        keyMap[sf::Key::Up] = Key::Up;
-        keyMap[sf::Key::Down] = Key::Down;
-        keyMap[sf::Key::Numpad0] = Key::Numpad0;
-        keyMap[sf::Key::Numpad1] = Key::Numpad1;
-        keyMap[sf::Key::Numpad2] = Key::Numpad2;
-        keyMap[sf::Key::Numpad3] = Key::Numpad3;
-        keyMap[sf::Key::Numpad4] = Key::Numpad4;
-        keyMap[sf::Key::Numpad5] = Key::Numpad5;
-        keyMap[sf::Key::Numpad6] = Key::Numpad6;
-        keyMap[sf::Key::Numpad7] = Key::Numpad7;
-        keyMap[sf::Key::Numpad8] = Key::Numpad8;
-        keyMap[sf::Key::Numpad9] = Key::Numpad9;
-        keyMap[sf::Key::F1] = Key::F1;
-        keyMap[sf::Key::F2] = Key::F2;
-        keyMap[sf::Key::F3] = Key::F3;
-        keyMap[sf::Key::F4] = Key::F4;
-        keyMap[sf::Key::F5] = Key::F5;
-        keyMap[sf::Key::F6] = Key::F6;
-        keyMap[sf::Key::F7] = Key::F7;
-        keyMap[sf::Key::F8] = Key::F8;
-        keyMap[sf::Key::F9] = Key::F9;
-        keyMap[sf::Key::F10] = Key::F10;
-        keyMap[sf::Key::F11] = Key::F11;
-        keyMap[sf::Key::F12] = Key::F12;
-        keyMap[sf::Key::F13] = Key::F13;
-        keyMap[sf::Key::F14] = Key::F14;
-        keyMap[sf::Key::F15] = Key::F15;
-        keyMap[sf::Key::Pause] = Key::Pause;
+        keyMap[sf::Keyboard::Escape] = Key::Escape;
+        keyMap[sf::Keyboard::LControl] = Key::LControl;
+        keyMap[sf::Keyboard::LShift] = Key::LShift;
+        keyMap[sf::Keyboard::LAlt] = Key::LAlt;
+        keyMap[sf::Keyboard::LSystem] = Key::LSystem;
+        keyMap[sf::Keyboard::RControl] = Key::RControl;
+        keyMap[sf::Keyboard::RShift] = Key::RShift;
+        keyMap[sf::Keyboard::RAlt] = Key::RAlt;
+        keyMap[sf::Keyboard::RSystem] = Key::RSystem;
+        keyMap[sf::Keyboard::Menu] = Key::Menu;
+        keyMap[sf::Keyboard::LBracket] = Key::LBracket;
+        keyMap[sf::Keyboard::RBracket] = Key::RBracket;
+        keyMap[sf::Keyboard::SemiColon] = Key::SemiColon;
+        keyMap[sf::Keyboard::Comma] = Key::Comma;
+        keyMap[sf::Keyboard::Period] = Key::Period;
+        keyMap[sf::Keyboard::Quote] = Key::Quote;
+        keyMap[sf::Keyboard::Slash] = Key::Slash;
+        keyMap[sf::Keyboard::BackSlash] = Key::BackSlash;
+        keyMap[sf::Keyboard::Tilde] = Key::Tilde;
+        keyMap[sf::Keyboard::Equal] = Key::Equal;
+        keyMap[sf::Keyboard::Dash] = Key::Dash;
+        keyMap[sf::Keyboard::Space] = Key::Space;
+        keyMap[sf::Keyboard::Return] = Key::Return;
+        keyMap[sf::Keyboard::Back] = Key::Back;
+        keyMap[sf::Keyboard::Tab] = Key::Tab;
+        keyMap[sf::Keyboard::PageUp] = Key::PageUp;
+        keyMap[sf::Keyboard::PageDown] = Key::PageDown;
+        keyMap[sf::Keyboard::End] = Key::End;
+        keyMap[sf::Keyboard::Home] = Key::Home;
+        keyMap[sf::Keyboard::Insert] = Key::Insert;
+        keyMap[sf::Keyboard::Delete] = Key::Delete;
+        keyMap[sf::Keyboard::Add] = Key::Add;
+        keyMap[sf::Keyboard::Subtract] = Key::Subtract;
+        keyMap[sf::Keyboard::Multiply] = Key::Multiply;
+        keyMap[sf::Keyboard::Divide] = Key::Divide;
+        keyMap[sf::Keyboard::Left] = Key::Left;
+        keyMap[sf::Keyboard::Right] = Key::Right;
+        keyMap[sf::Keyboard::Up] = Key::Up;
+        keyMap[sf::Keyboard::Down] = Key::Down;
+        keyMap[sf::Keyboard::Numpad0] = Key::Numpad0;
+        keyMap[sf::Keyboard::Numpad1] = Key::Numpad1;
+        keyMap[sf::Keyboard::Numpad2] = Key::Numpad2;
+        keyMap[sf::Keyboard::Numpad3] = Key::Numpad3;
+        keyMap[sf::Keyboard::Numpad4] = Key::Numpad4;
+        keyMap[sf::Keyboard::Numpad5] = Key::Numpad5;
+        keyMap[sf::Keyboard::Numpad6] = Key::Numpad6;
+        keyMap[sf::Keyboard::Numpad7] = Key::Numpad7;
+        keyMap[sf::Keyboard::Numpad8] = Key::Numpad8;
+        keyMap[sf::Keyboard::Numpad9] = Key::Numpad9;
+        keyMap[sf::Keyboard::F1] = Key::F1;
+        keyMap[sf::Keyboard::F2] = Key::F2;
+        keyMap[sf::Keyboard::F3] = Key::F3;
+        keyMap[sf::Keyboard::F4] = Key::F4;
+        keyMap[sf::Keyboard::F5] = Key::F5;
+        keyMap[sf::Keyboard::F6] = Key::F6;
+        keyMap[sf::Keyboard::F7] = Key::F7;
+        keyMap[sf::Keyboard::F8] = Key::F8;
+        keyMap[sf::Keyboard::F9] = Key::F9;
+        keyMap[sf::Keyboard::F10] = Key::F10;
+        keyMap[sf::Keyboard::F11] = Key::F11;
+        keyMap[sf::Keyboard::F12] = Key::F12;
+        keyMap[sf::Keyboard::F13] = Key::F13;
+        keyMap[sf::Keyboard::F14] = Key::F14;
+        keyMap[sf::Keyboard::F15] = Key::F15;
+        keyMap[sf::Keyboard::Pause] = Key::Pause;
     }
 
     switch(e.Type)

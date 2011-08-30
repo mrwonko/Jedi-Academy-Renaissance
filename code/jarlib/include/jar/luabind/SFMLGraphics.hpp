@@ -29,7 +29,7 @@ struct lua_State;
 
 namespace sf
 {
-    class Image;
+    class Texture;
 }
 
 namespace jar
@@ -41,7 +41,7 @@ void JARGRAPHICSAPI BindSFMLGraphics(lua_State* L);
 
 /** \brief Loads an image from a file using PhysicsFS
 **/
-const bool JARGRAPHICSAPI ImageLoadFromFile(sf::Image& image, const std::string& filename);
+const bool JARGRAPHICSAPI TextureLoadFromFile(sf::Texture& image, const std::string& filename);
 }
 
 #endif

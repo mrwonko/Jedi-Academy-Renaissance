@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/InputDeviceManager.hpp"
 #include "jar/input/Event.hpp"
 #include "jar/input/EventManager.hpp"
+#include <SFML/Window/Event.hpp>
 
 namespace jar {
 

@@ -30,7 +30,7 @@ struct lua_State;
 
 namespace sf
 {
-    class Image;
+    class Texture;
 }
 
 namespace jar {
@@ -58,6 +58,7 @@ class JARGRAPHICSAPI Font
         // these structs corresponds 1:1 with the "*.fontdat" files, so don't change them
         struct GlyphInfo
         {
+            GlyphInfo() : mWidth(0), mHeight(0), mHorizAdvance(0), mHorizOffset(0), mBaseline(0), mTexCoordX1(0.f), mTexCoordY1(0.f), mTexCoordX2(0.f), mTexCoordY2(0.f) {}
             short		mWidth;					// number of pixels wide
             short		mHeight;				// number of scan lines
             short		mHorizAdvance;			// number of pixels to advance to the next char
@@ -71,6 +72,7 @@ class JARGRAPHICSAPI Font
 
         struct FontData
         {
+            FontData() : mPointSize(0), mHeight(0), mAscender(0), mDescender(0), mKoreanHack(0) {}
             static const unsigned int GLYPH_COUNT = 256;
             GlyphInfo	mGlyphs[GLYPH_COUNT];
 
@@ -84,7 +86,7 @@ class JARGRAPHICSAPI Font
 
         const FontData& GetFontData() const { return mFontData; }
 
-        const sf::Image& GetImage() const { return *mImage; }
+        const sf::Texture& GetTexture() const { return *mTexture; }
 
         /** \brief Sets the width of tabstops (in multiples of the space width), default is 8 **/
         void SetTabWidth(unsigned int width) {mTabWidth = width;}
@@ -95,7 +97,7 @@ class JARGRAPHICSAPI Font
     private:
 
         FontData mFontData;
-        sf::Image* mImage; //pointer so I can get away with a forward declaration
+        sf::Texture* mTexture; //pointer so I can get away with a forward declaration
         unsigned int mTabWidth; ///< In multiples of space width, default 8
 };
 

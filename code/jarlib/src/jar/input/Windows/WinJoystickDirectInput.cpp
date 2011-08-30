@@ -34,6 +34,9 @@ namespace Windows {
 WinJoystickDirectInput::WinJoystickDirectInput(unsigned int index) :
     InputDeviceJoystick(index),
     mDevice(NULL),
+    mNumAxes(0),
+    mNumButtons(0),
+    mNumPOVs(0),
     mIsExclusive(false)
 {
     //ctor
@@ -53,7 +56,7 @@ namespace
 {
     struct DIControlObjectSharedInfo
     {
-        DIControlObjectSharedInfo(const std::string& name, std::vector<DWORD>& ffAxes) : Name(name), Failed(false), FFAxes(ffAxes) {}
+        DIControlObjectSharedInfo(const std::string& name, std::vector<DWORD>& ffAxes) : Name(name), Ranges(NULL), Failed(false), FFAxes(ffAxes) {}
         const std::string& Name;
         LPDIRECTINPUTDEVICE8 Device;
         WinJoystickDirectInput::AxisRangeInfo* Ranges;
@@ -357,7 +360,7 @@ const bool WinJoystickDirectInput::Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEI
 
 const bool WinJoystickDirectInput::Deinit()
 {
-    if(mRumbleEffects.size())
+    if(!mRumbleEffects.empty())
     {
         for(unsigned int i = 0; i < mRumbleEffects.size(); ++i)
         {

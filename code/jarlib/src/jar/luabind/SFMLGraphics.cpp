@@ -23,12 +23,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/luabind/SFMLGraphics.hpp"
 #include "jar/core/FileSystem.hpp"
 
-#include "SFML/Graphics/Shape.hpp"
-#include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Image.hpp"
-#include "SFML/Graphics/Drawable.hpp"
-#include "SFML/Graphics/Color.hpp"
-#include "SFML/Graphics/View.hpp"
+#include <SFML/Graphics/Shape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/View.hpp>
 
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
@@ -44,7 +44,7 @@ namespace luabind_dummy
 class Blend {};
 }
 
-const bool ImageLoadFromFile(sf::Image& image, const std::string& filename)
+const bool TextureLoadFromFile(sf::Texture& texture, const std::string& filename)
 {
     std::string content;
     if(!fs::ReadFile(filename, content) &&
@@ -52,7 +52,7 @@ const bool ImageLoadFromFile(sf::Image& image, const std::string& filename)
        !fs::ReadFile(filename + ".png", content) &&
        !fs::ReadFile(filename + ".jpg", content)
        ) return false;
-    if(!image.LoadFromMemory(content.c_str(), content.length())) return false;
+    if(!texture.LoadFromMemory(content.c_str(), content.length())) return false;
     return true;
 }
 
@@ -177,20 +177,19 @@ void BindSFMLGraphics(lua_State* L)
                 luabind::def("Circle", (sf::Shape(*)(const sf::Vector2f&,float, const sf::Color&, float, const sf::Color&)) &sf::Shape::Circle)
             ],
 
-        luabind::class_<sf::Image>("Image")
+        luabind::class_<sf::Texture>("Texture")
             .def(luabind::constructor<>())
-            .def("LoadFromFile", &ImageLoadFromFile)
+            .def("LoadFromFile", &TextureLoadFromFile)
             //TODO: document the following
-            .def("GetHeight", &sf::Image::GetHeight)
-            .def("GetWidth", &sf::Image::GetWidth)
-            .def("SetSmooth", &sf::Image::SetSmooth),
+            .def("GetHeight", &sf::Texture::GetHeight)
+            .def("GetWidth", &sf::Texture::GetWidth)
+            .def("SetSmooth", &sf::Texture::SetSmooth),
 
         luabind::class_<sf::Sprite, sf::Drawable>("Sprite")
             .def(luabind::constructor<>())
-            .def(luabind::constructor<const sf::Image&>())
-            .def(luabind::constructor<const sf::Image&, const sf::Vector2f&>())
-            .def("SetImage", &sf::Sprite::SetImage)
-            .def("GetImage", &sf::Sprite::GetImage)
+            .def(luabind::constructor<const sf::Texture&>())
+            .def("SetTexture", &sf::Sprite::SetTexture)
+            .def("GetTexture", &sf::Sprite::GetTexture)
             .def("FlipX", &sf::Sprite::FlipX)
             .def("FlipY", &sf::Sprite::FlipY)
             .def("SetSubRect", &sf::Sprite::SetSubRect)

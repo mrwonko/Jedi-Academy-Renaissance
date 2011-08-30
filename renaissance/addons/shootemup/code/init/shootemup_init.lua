@@ -27,6 +27,19 @@ function GetSound()
 	return sounds[cursound]
 end
 
+--[[ Uncomment to disable sounds (except music) - unfortunately, that doesn't seem to be the source of my memory leaks.
+sounddummy = {}
+function sounddummy:SetBuffer() end
+function sounddummy:Play() end
+function sounddummy:Stop() end
+function sounddummy:Pause() end
+function sounddummy:SetPosition() end
+function sounddummy:SetVolume() end
+function GetSound()
+	return sounddummy
+end
+--]]
+
 jar.Logger.GetDefaultLogger():Log("Initializing Shoot'em Up")
 
 g_CCommandManager = CCommandManager:New()
