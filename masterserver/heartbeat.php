@@ -23,7 +23,7 @@ $port = intval($port);
 
 // validate/sanitize IP
 $ip = $_SERVER['REMOTE_ADDR'];
-$ipOkay = (preg_match('[0-9a-f\:\.]+', $ip, $matches) == 1) //IPv6 use hexadecimal values, colon separated.
+$ipOkay = (preg_match('/[0-9a-f\:\.]+/', $ip, $matches) == 1); //IPv6 use hexadecimal values, colon separated.
 if($ipOkay)
 {
 	$ipOkay = ($ip == $matches[0]);
