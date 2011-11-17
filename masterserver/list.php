@@ -1,17 +1,26 @@
 <?php
 require("common.php");
 
-header("content-type: text/plain");
-
-if(!isset($_GET['protocol'])) Error("no protocol set");
-
-global $db;
-
+// remove old entries
 Purge();
 
-$query = "SELECT ip FROM gameservers WHERE protocol = " . $_GET['protocol'];
+// set type
+header("content-type: text/plain");
+
+// sanitize protocol
+if(!isset($_GET['protocol'])) Error('No protocol set!');
+$protocol = $_GET['protocol'];
+if(!is_numeric($protocol))
+{
+	Error('Protocol not numeric!');
+}
+$protocol = intval($protocol);
+
+// build query
+$query = 'SELECT ip FROM gameservers WHERE protocol = ' . $protocol;
+global $db;
 $result = $db->query($query);
-if(!$result) Error($db->error . " - " . $query);
+if(!$result) Error($db->error . ' - ' . $query);
 
 while($row = $result->fetch_assoc())
 {
