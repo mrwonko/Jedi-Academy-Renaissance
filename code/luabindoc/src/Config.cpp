@@ -34,6 +34,21 @@ const bool Config::LoadFromFile(const std::string& filename)
     {
         if(!ReadBlock(file)) return false;
     }
+    if(mIncludeDirs.empty())
+    {
+        std::cout<<"Error: No include directories defined!"<<std::endl;
+        return false;
+    }
+    if(mSourceFiles.empty())
+    {
+        std::cout<<"Error: No source files defined!"<<std::endl;
+        return false;
+    }
+    if(mOutputDir == "")
+    {
+        std::cout<<"Info: No output directory defined, will use working directory."<<std::endl;
+    }
+
     return true;
 }
 
