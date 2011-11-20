@@ -67,17 +67,6 @@ static void SkipEmptyLines(std::ifstream& file)
     }
 }
 
-static void ReadIntoList(std::ifstream& file, std::list<std::string>& out_list)
-{
-    while(!IsBlockOver(file))
-    {
-        std::string filename;
-        std::getline(file, filename);
-        out_list.push_back(filename);
-        SkipEmptyLines(file);
-    }
-}
-
 const bool Config::ReadBlock(std::ifstream& file)
 {
     //skip to next block
@@ -102,7 +91,13 @@ const bool Config::ReadBlock(std::ifstream& file)
     {
         //source file block
         std::list<std::string>::size_type prevSize = mSourceFiles.size();
-        ReadIntoList(file, mSourceFiles);
+        while(!IsBlockOver(file))
+        {
+            std::string filename;
+            std::getline(file, filename);
+            mSourceFiles.push_back(filename);
+            SkipEmptyLines(file);
+        }
         if(prevSize == mSourceFiles.size())
         {
             std::cout<<"Warning: Empty [files] block!"<<std::endl;
@@ -112,7 +107,19 @@ const bool Config::ReadBlock(std::ifstream& file)
     {
         //include dir block
         std::list<std::string>::size_type prevSize = mIncludeDirs.size();
-        ReadIntoList(file, mIncludeDirs);
+        while(!IsBlockOver(file))
+        {
+            std::string filename;
+            std::getline(file, filename);
+            //append slash if none at end.
+            std::string lastChar = filename.substr(filename.length() - 2);
+            if(lastChar != "\\" && lastChar != "/")
+            {
+                filename += "/";
+            }
+            mIncludeDirs.push_back(filename);
+            SkipEmptyLines(file);
+        }
         if(prevSize == mIncludeDirs.size())
         {
             std::cout<<"Warning: Empty [includedirs] block!"<<std::endl;

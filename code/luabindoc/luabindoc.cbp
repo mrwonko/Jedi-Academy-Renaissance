@@ -34,7 +34,11 @@
 			<Add directory="include" />
 		</Compiler>
 		<Unit filename="include\Config.h" />
+		<Unit filename="include\Filesystem.h" />
+		<Unit filename="include\Parser.h" />
 		<Unit filename="src\Config.cpp" />
+		<Unit filename="src\Filesystem.cpp" />
+		<Unit filename="src\Parser.cpp" />
 		<Unit filename="src\main.cpp" />
 		<Extensions>
 			<code_completion />
