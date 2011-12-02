@@ -1,0 +1,7 @@
+*.o
+*.dll
+*.exe
+*.layout
+*.depend
+*.html
+changelog.txt

@@ -5,12 +5,15 @@ RegisterCommand
 	description = "Prints all parameters on the console (separated by spaces)",
 	
 	Execute = function(self, ...)
-		if #arg == 0 then
+		local arguments = {...}
+		local numArguments = #arguments
+		if numArguments == 0 then
 			return
 		end
 		printMe = ""
-		for i, cur_arg in ipairs(arg) do
-			if i < #arg then
+		for i, cur_arg in ipairs(arguments) do
+			-- append space if not last argument
+			if i < numArguments then
 				printMe = printMe .. cur_arg .. " "
 			else
 				printMe = printMe .. cur_arg
