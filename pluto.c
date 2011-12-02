@@ -51,6 +51,9 @@
 
 #ifdef PLUTO_DEBUG
 #include <stdio.h>
+
+/* mrwonko: for debug compile */
+#include <assert.h>
 #endif
 
 #define PLUTO_TPERMANENT 101
@@ -1661,7 +1664,8 @@ static luaL_reg pluto_reg[] = {
 	{ NULL, NULL }
 };
 
-LUALIB_API int luaopen_pluto(lua_State *L) {
+/* mrwonko: added export/import specification for gcc on windows */
+LUALIB_API int PLUTO_API luaopen_pluto(lua_State *L) {
 	luaL_openlib(L, "pluto", pluto_reg, 0);
 	return 1;
 }
