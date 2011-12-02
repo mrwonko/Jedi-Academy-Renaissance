@@ -339,7 +339,8 @@ Usage: bind [button/axis] [instruction string]",
 				print("Usage: bind [button/axis] [instruction string]")
 				return
 			end
-			if #arg == 0 then
+			local additionalArguments = {...}
+			if #additionalArguments == 0 then
 				if self.binds[key] then
 					print("\"" .. key .. "\" = \"" .. self.binds[key] .. "\"")
 				else
@@ -347,7 +348,7 @@ Usage: bind [button/axis] [instruction string]",
 				end
 				return
 			end
-			self:Bind(key, table.concat(arg, " "))
+			self:Bind(key, table.concat(additionalArguments, " "))
 		end
 	}
 	and ccommandManager:RegisterCommand

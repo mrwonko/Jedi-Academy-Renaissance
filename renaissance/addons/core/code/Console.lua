@@ -242,9 +242,9 @@ local function ConsolePrint(...)
 	if not weakConsoleStorage.console then -- got destroyed?
 		print = oldPrint
 	else
-		weakConsoleStorage.console:Print(unpack(arg))
+		weakConsoleStorage.console:Print(...)
 	end
-	return oldPrint(unpack(arg))
+	return oldPrint(...)
 end
 
 -- makes print() print to this console (as long as it lives)
@@ -256,7 +256,7 @@ function Console:BindPrint()
 end
 
 function Console:Print(...)
-	local argStr = table.concat(arg, " ") .. "^7"
+	local argStr = table.concat({...}, " ") .. "^7"
 	local wrapped = WordWrap(argStr, self.mOutputText:GetFont(), self.mOutputText:GetFontSize(), self.mSize.x)
 	
 	--first:concatenate all arguments
