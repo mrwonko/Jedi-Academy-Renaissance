@@ -4,6 +4,11 @@ the copyright statement.
 
 #include "pdep/pdep.h"
 
+/* mrwonko: for debug compile */
+#ifdef PLUTO_DEBUG
+#include <assert.h>
+#endif
+
 #define api_incr_top(L)   {api_check(L, L->top < L->ci->top); L->top++;}
 
 void pdep_pushobject (lua_State *L, const TValue *o) {
