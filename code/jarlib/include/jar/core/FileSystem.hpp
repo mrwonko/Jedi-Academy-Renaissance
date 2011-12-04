@@ -96,7 +96,8 @@ JARCOREAPI const bool ReadInt(fs::File file, int& out_num);
     \note Little endian **/
 JARCOREAPI const bool ReadUnsignedInt(fs::File file, unsigned int& out_num);
 
-/** \brief Reads a char from a given file. **/
+/** \brief Reads a char from a given file.
+    \note Luabind treats chars as numbers, so you'll get a number when calling this in luabind. **/
 JARCOREAPI const bool ReadChar(fs::File file, char& output);
 
 /** \brief Reads a float from a given file.**/
@@ -126,10 +127,10 @@ JARCOREAPI const bool WriteString(fs::File file, const std::string& str);
 
 /** \brief Moves cursor to a given position in the file.
     \return success **/
-JARCOREAPI const bool Seek(fs::File file, const int64_t position);
+JARCOREAPI const bool Seek(fs::File file, const int position);
 
 /** \brief returns the current position of the cursor. **/
-JARCOREAPI const int64_t Tell(fs::File file);
+JARCOREAPI const int Tell(fs::File file);
 
 
 /** \brief returns all the files within a given directory, ordered by filename (case sensitive?). **/

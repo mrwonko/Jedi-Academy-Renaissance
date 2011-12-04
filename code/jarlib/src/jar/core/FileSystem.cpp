@@ -27,6 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Helpers.hpp"
 #include <physfs.h>
 #include <set>
+#include <climits>
 
 namespace jar
 {
@@ -226,14 +227,19 @@ const bool WriteString(PHYSFS_File* file, const std::string& str)
     return(PHYSFS_write(file, str.c_str(), 1, str.length()) == str.length());
 }
 
-const bool Seek(PHYSFS_File* file, const int64_t position) //TODO: test whether luabind treats int64_t as number
+const bool Seek(PHYSFS_File* file, const int position)
 {
     return PHYSFS_seek(file, position);
 }
 
-const int64_t Tell(PHYSFS_File* file)
+const int Tell(PHYSFS_File* file)
 {
-    return PHYSFS_tell(file);
+    int64_t pos = PHYSFS_tell(file);
+    if(pos > INT_MAX)
+    {
+        Logger::GetDefaultLogger().Error("Tell() not supported on files bigger than 2GB!");
+    }
+    return pos;
 }
 
 namespace
