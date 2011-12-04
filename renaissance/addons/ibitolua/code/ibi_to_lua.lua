@@ -199,6 +199,65 @@ local simpleMembers =
 	[icarusInfo.defines.ID_TAG] = true,
 }
 
+-- how commands start in Lua - either a string or a function returning a string or false, errorMessage
+
+local def = icarusInfo.defines
+local commandStarts =
+{
+	[def.ID_IF] = "if ",
+	[def.ID_ELSE] = "else",
+	[def.ID_PRINT] = "print",
+	[def.ID_AFFECT] = "affect",
+	[def.ID_LOOP] = "", -- handled completely in commandParameterHandlers since it could either be while or for
+}
+
+-- how command parameters (members) are to be handled - functions returning a string or false, errorMessage
+-- only required if #members ~= 0
+
+local commandParameterHandlers =
+{
+	[def.ID_LOOP] = function(self)
+		if #self.members ~= 1 then
+			return false, "Loop with ".. #self.members .. " instead of 1 parameter(s)"
+		end
+		local param = self.members[1]
+		if param.type ~= def.TK_FLOAT then
+			return false, "Loop with non-float parameter"
+		end
+		-- endless loop?
+		if param.data == -1 then
+			return "while true do"
+		else
+			return "for i = 1, " .. string.format("%.0f", param.data) .. " do"
+		end
+	end,
+	[def.ID_IF] = function(self)
+		return "todo: if handling"
+	end,
+	-- ID_ELSE is trivial, automatically handled (must not have parameters)
+	[def.ID_PRINT] = function(self)
+		if #self.members ~= 1 then
+			return false, "Print with " .. #self.members .." instead of 1 parameter(s)"
+		end
+		local param = self.members[1]
+		if param.type ~= def.TK_STRING then
+			return false, "Print with non-string parameter"
+		end
+		return "(\"" .. param.data .. "\")"
+	end
+}
+
+-- how commands end in Lua - either a string or a function returning a string or false, errorMessage
+
+local commandEnds =
+{
+	[icarusInfo.defines.ID_IF] = "end", -- special case "followed by else" handled in Block:ToLua()
+	[icarusInfo.defines.ID_ELSE] = "end",
+	[icarusInfo.defines.ID_LOOP] = "end",
+	[icarusInfo.defines.ID_TASK] = "end)",
+	[icarusInfo.defines.ID_AFFECT] = "end)",
+}
+
 -- A member is a parameter of an instruction
 local Member = {}
 
@@ -264,7 +323,7 @@ function Member:ReadFromFile(file)
 		-- strings are null-terminated, usually.
 		local firstnull = self.data:find("\0", 1, true)
 		if firstnull then
-			self.data = self.data:sub(1, firstnull)
+			self.data = self.data:sub(1, firstnull-1)
 		end
 		return true
 	end
@@ -311,7 +370,6 @@ function Block:ReadFromFile(file, level)
 	end
 	-- root block contains all other blocks, but no information itself
 	if self.level == -1 then
-		self.children = {}
 		local success, errorMessage = self:ReadChildren(file)
 		-- this only "succeeds" if there are too many ID_BLOCK_ENDs
 		if success then
@@ -346,10 +404,9 @@ function Block:ReadFromFile(file, level)
 			if not member then
 				return false, errorMessage
 			end
-			self.members[#self.members] = member
+			self.members[#self.members+1] = member
 		end
 		if compoundStatements[self.type] then
-			self.children = {}
 			local success, errorMessage = self:ReadChildren(file)
 			if not success then
 				return false, errorMessage
@@ -360,10 +417,10 @@ function Block:ReadFromFile(file, level)
 end
 
 function Block:ReadChildren(file)
-	local block, errorMessage
+	self.children = {}
 	-- read until the end of the block is reached (or an error happens)
 	while true do
-		block, errorMessage = ReadBlock(file, self.level + 1)
+		local block, errorMessage = ReadBlock(file, self.level + 1)
 		if block then
 			-- block reading successful. It's either...
 			if block.type == icarusInfo.defines.ID_BLOCK_END then
@@ -371,14 +428,118 @@ function Block:ReadChildren(file)
 				return true
 			else
 				-- ...or not the last block.
-				self.children[#self.children] = block
+				self.children[#self.children+1] = block
 			end
 		else
 			-- block reading failed. stop, return error
 			return false, errorMessage
 		end
 	end
-	error("Internal Logic Error - infinite loop ended prematurely")
+	error("Internal Logic Error - infinite loop ended")
+end
+
+-- returns true, string or false, errorMessage
+function Block:GetLuaCommandStart()
+	-- instructions always have to start somehow
+	local value = commandStarts[self.type]
+	local valueType = type(value)
+	if valueType == "string" then
+		return true, value
+	elseif valueType == "function" then
+		local value, errorMessage = value(self)
+		if not value then
+			return false, errorMessage
+		else
+			return true, value
+		end
+	else
+		return false, "Instruction type " .. self.type .. " not supported"
+	end
+end
+
+-- returns true, parameterString or false, errorString
+function Block:GetLuaCommandParameters()
+	local handler = commandParameterHandlers[self.type]
+	-- no handler for this command?
+	if not handler then
+		-- if there are no parameters to be handled, all is fine.
+		if #self.members == 0 then
+			return true, ""
+		else
+			return false, "No Parameter Handler for Instructions of type " .. self.type
+		end
+	end
+	local value, errorMessage = handler(self)
+	if not value then
+		return false, errorMessage
+	else
+		return true, value
+	end
+end
+
+function Block:GetLuaCommandEnd()
+	local value = commandEnds[self.type]
+	local valueType = type(value)
+	if type(value) == "function" then
+		local value, errorMessage = value(self)
+		if not value then
+			return false, errorMessage
+		else
+			return true, value
+		end
+	else
+		return true, value
+	end
+end
+
+function Block:ToLua(parts, nextBlock)
+	parts = parts or {}
+
+	-- Root Block should be skipped since it's not properly handed by Block:GetLuaCommandStart()
+	local prefix = ""
+	if self.level > -1 then
+		prefix = string.rep("\t", self.level)
+
+		-- save command start
+		local success, commandStart = self:GetLuaCommandStart()
+		if not success then
+			return false, commandStart
+		end
+
+		-- save parameters
+
+		local success, commandParameters = self:GetLuaCommandParameters()
+		if success then
+			parts[#parts+1] = prefix .. commandStart .. commandParameters
+		else
+			return false, commandParameters
+		end
+	end
+
+	-- save children, if any
+	if self.children then
+		for index, child in ipairs(self.children) do
+			local retval, errorMessage = child:ToLua(parts, self.children[index+1])
+			if not retval then
+				return false, errorMessage
+			end
+			-- can disregard retval otherwise, it's parts
+		end
+	end
+
+	-- save command end, keeping special case "if followed by else" in mind
+	if self.type == icarusInfo.defines.ID_IF and nextBlock and nextBlock.type == icarusInfo.defines.ID_ELSE then
+		-- special case: "if" doesn't get an end if followed by "else"
+	else
+		local success, value = self:GetLuaCommandEnd()
+		if success and value then
+			parts[#parts+1] = prefix .. value
+		elseif not success then
+			return false, value
+		end
+	end
+
+	return parts
 end
 
 -- input: ibi file (as string)
@@ -403,9 +564,14 @@ function IbiToLua(filename)
 		file:Close()
 		return false, "wrong version"
 	end
-	local success, errorMessage = ReadBlock(file, -1)
-	if not success then
+	local rootBlock, errorMessage = ReadBlock(file, -1)
+	if not rootBlock then
 		return false, errorMessage
 	end
-	return false, "actual conversion not yet implemented"
+	local parts, errorMessage = rootBlock:ToLua()
+	if not parts then
+		return false, errorMessage
+	else
+		return table.concat(parts, "\n")
+	end
 end

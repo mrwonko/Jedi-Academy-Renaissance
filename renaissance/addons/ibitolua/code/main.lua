@@ -6,6 +6,9 @@
 
 require "ibi_to_lua.lua"
 
-local filename = "scripts/roof.ibi"
+local filename = "scripts/temp.ibi"
 print("Converting \""..filename.."\" to Lua...")
+local ret = {}
+print("--====--")
 print(IbiToLua(filename))
+print("--====--")
