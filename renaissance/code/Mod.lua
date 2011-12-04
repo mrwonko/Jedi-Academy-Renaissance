@@ -32,8 +32,9 @@ function Mod:New(filename)
 	obj.version = 1
 	obj.dependencies = {}
 	obj.incompatibilities = {}
-	obj.hasIncompatibilities = false --whether any of the incompatibilities actually occured
+	obj.hasIncompatibilities = false --whether any of the incompatibilities actually occurred
 	obj.hasUnsatisfiedDependencies = false --whether any of the dependencies are not satisfied
+	obj.essential = false -- mods that cannot be disabled
 	
 	local logger = jar.Logger.GetDefaultLogger()
 	
@@ -61,7 +62,7 @@ function Mod:New(filename)
 	--there is a modinfo.lua and we have its content. try compiling it.
 	
 	code, err = loadstring(code)
-	if not code then --code haz bugz? modinfo.lua may be vital, so don't continue.
+	if not code then --don't continue if modinfo.lua contained errors since it may contain critical information.
 		error(filename .." not loaded due to an error in its modinfo.lua: " .. err, 2)
 	end
 	
@@ -107,6 +108,7 @@ function Mod:New(filename)
 	sanitize("website", "string", nil)
 	sanitize("serverside", "boolean", false)
 	sanitize("clientside", "boolean", false)
+	sanitize("essential", "boolean", false)
 	-- dependencies and incompatibilities are pretty essential, thus the mod is not loaded when they are incorrect.
 	if not obj:GetVersionInfo(modinfoFEnv, "dependencies") then
 		error("Error in the dependencies information of " .. filename .. "'s modinfo.lua.", 2)

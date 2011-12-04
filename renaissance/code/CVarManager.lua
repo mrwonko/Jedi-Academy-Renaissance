@@ -14,10 +14,11 @@ function CVarManager:New()
 	return obj
 end
 
---[[!	\brief Registers a new CVar, i.e. creates one unless it already exists (and is not usercreated)
+--[[!	\brief Registers a new CVar, i.e. creates one unless it already exists (and is not user-created)
 		\param info see CVar:New()
 --]]
 function CVarManager:RegisterCVar(info)
+	-- validate parameter
 	if type(info) ~= "table" then
 		jar.Logger.GetDefaultLogger():Warning("CVarManager:RegisterCVar(): no table supplied!")
 		return false
@@ -99,7 +100,7 @@ function CVarManager:SetCVar(cvarname, value)
 	end
 end
 
-function CVarManager:GetCVar(cvarname)
+function CVarManager:GetCVarValue(cvarname)
 	cvarname = string.lower(cvarname)
 	if not self.CVars[cvarname] then
 		return nil

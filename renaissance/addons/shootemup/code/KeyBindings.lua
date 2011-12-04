@@ -106,6 +106,8 @@ StringToKeyMap =
 	["pause"] = jar.Key.Pause,
 }
 
+-- Shoot Em Up specific: key_*** (e.g. key_up) contains the name of the key for some action.
+-- For renaissance, I should not do this.
 function GetKey(name)
-	return StringToKeyMap[g_CVarManager:GetCVar("key_"..name)]
+	return StringToKeyMap[g_CVarManager:GetCVarValue("key_"..name)]
 end
