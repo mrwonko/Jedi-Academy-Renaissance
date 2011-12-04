@@ -108,7 +108,7 @@ g_CVarManager:RegisterCVar{
 	end,
 }
 
-g_Window = jar.RenderWindow(g_CVarManager:GetCVar("r_width"), g_CVarManager:GetCVar("r_height"), "Space Danger by Mr. Wonko - LD20", (not g_CVarManager:GetCVar("r_borderless")), g_CVarManager:GetCVar("r_fullscreen"))
+g_Window = jar.RenderWindow(g_CVarManager:GetCVarValue("r_width"), g_CVarManager:GetCVarValue("r_height"), "Space Danger by Mr. Wonko - LD20", (not g_CVarManager:GetCVarValue("r_borderless")), g_CVarManager:GetCVarValue("r_fullscreen"))
 g_Window:EnableKeyRepeat(false) --no automatic key repeat (fast fire would be too easy)
 --g_Window:ShowMouseCursor(false)
 

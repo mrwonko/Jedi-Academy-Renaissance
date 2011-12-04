@@ -89,8 +89,16 @@ local function LoadAndApplyConfig(self)
 			local found = false
 			for _, mod in ipairs(self.mods) do
 				if mod.filename == filename then
-					table.insert(self.inactiveMods, mod)
 					found = true
+					-- trying to disable an essential mod?
+					if mod.essential then
+						-- I'm afraid I can't do that.
+						jar.Logger.GetDefaultLogger():Warning("Attempt to disable essential mod \"" .. filename .. "\" in config/InactiveMods.lua")
+					else
+						table.insert(self.inactiveMods, mod)
+					end
+					-- file names are GUIDs, so we can stop after finding one.
+					break
 				end
 			end
 			if not found then

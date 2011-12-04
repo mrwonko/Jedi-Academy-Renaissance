@@ -55,7 +55,7 @@ function Shot:New(info, silent)
 		local sound = GetSound()
 		sound:SetBuffer(obj.shotsounds[math.random(#obj.shotsounds)])
 		sound:SetPosition(-obj.dir, 0, 0)
-		sound:SetVolume(g_CVarManager:GetCVar("snd_effectsvolume") or 100)
+		sound:SetVolume(g_CVarManager:GetCVarValue("snd_effectsvolume") or 100)
 		sound:Play()
 	end
 	

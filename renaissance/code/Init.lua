@@ -26,42 +26,50 @@ g_CVarManager:RegisterCVar{
 
 -- ==FileSystem==
 
-g_CVarManager:RegisterCVar{
+
+-- register cvars - add the OnChange functions after registration because we don't want it to be called during registration (which is the only time it *can* be changed)
+
+assert(g_CVarManager:RegisterCVar
+{
 	name = "fs_noBase",
 	type = CVar.TYPES.BOOLEAN,
 	defaultValue = false,
 	description = "Whether the base folder should be ignored altogether. (e.g. Standalone game)",
-	OnChange = function(oldVal, newVal)
-		jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_noBase to take effect.", 0)
-	end,
-}
-g_CVarManager:RegisterCVar{
+})
+g_CVarManager.CVars["fs_nobase"].OnChange = function(oldVal, newVal)
+	jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_noBase to take effect.", 0)
+end
+
+assert(g_CVarManager:RegisterCVar
+{
 	name = "fs_baseOnlyArchives",
 	type = CVar.TYPES.BOOLEAN,
 	defaultValue = true,
 	description = "Whether only archives in base (i.e. .pk3 files) should be loaded, or also the non-zipped files in base.",
-	OnChange = function(oldVal, newVal)
-		jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_baseOnlyArchives to take effect.", 0)
-	end,
-}
-g_CVarManager:RegisterCVar{
+})
+g_CVarManager.CVars["fs_baseonlyarchives"].OnChange = function(oldVal, newVal)
+	jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_baseOnlyArchives to take effect.", 0)
+end
+
+assert(g_CVarManager:RegisterCVar
+{
 	name = "fs_baseNoMods",
 	type = CVar.TYPES.BOOLEAN,
 	defaultValue = false,
 	description = "Whether only the assetsX.pk3 files should be loaded from ../Base/. If true then fs_baseOnlyArchives is ignored since non-archive files in base are mods, too.",
-	OnChange = function(oldVal, newVal)
-		jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_baseNoMods to take effect.", 0)
-	end,
-}
+})
+g_CVarManager.CVars["fs_nobase"].OnChange = function(oldVal, newVal)
+	jar.Logger.GetDefaultLogger():Info("Restart the game for changes to fs_baseNoMods to take effect.", 0)
+end
 
 -- TODO CLArguments -> CVars
 jar.Logger.GetDefaultLogger():Log("TODO: (Init.lua): parse arguments for Instructions")
 
-if not g_CVarManager:GetCVar("fs_noBase") then
+if not g_CVarManager:GetCVarValue("fs_noBase") then
 	jar.Logger.GetDefaultLogger():Info("Mounting base", 3)
 
-	local noBaseMods = g_CVarManager:GetCVar("fs_baseNoMods")
-	local onlyArchives = g_CVarManager:GetCVar("fs_baseOnlyArchives")
+	local noBaseMods = g_CVarManager:GetCVarValue("fs_baseNoMods")
+	local onlyArchives = g_CVarManager:GetCVarValue("fs_baseOnlyArchives")
 	-- first mount unzipped stuff in base, if enabled
 	if not onlyArchives and not noBaseMods then
 		if jar.fs.Mount("../Base/", false) then

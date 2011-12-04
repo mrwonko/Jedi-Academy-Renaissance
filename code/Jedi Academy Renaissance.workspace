@@ -15,7 +15,7 @@
 		<Project filename="02-filesystem/02-filesytem.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
-		<Project filename="03-testsnshit/03-testsnshit.cbp">
+		<Project filename="03-testsnshit/03-testsnshit.cbp" active="1">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 			<Depends filename="jarlib/jar-graphics.cbp" />
@@ -32,6 +32,6 @@
 		<Project filename="06-jka-fonttest/06-jka-fonttest.cbp" />
 		<Project filename="07-masterserver/07-masterserver.cbp" />
 		<Project filename="luabind-crashtest/luabind-crashtest.cbp" />
-		<Project filename="luabindoc/luabindoc.cbp" active="1" />
+		<Project filename="luabindoc/luabindoc.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

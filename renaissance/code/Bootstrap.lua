@@ -65,7 +65,7 @@ local function mrwloadmodule(filename)
 	error(err, 3)
 end
 --I only want my loader, so... let's just replace all the others.
-package.loaders = { [1] = mrwloadmodule }
+package.loaders = { mrwloadmodule }
 
 --TODO: replace with assets1.pk3 loading, put this there
 if not RELEASE then

@@ -62,8 +62,8 @@ function Instruction:Execute(silent)
 		instruction = string.sub(instruction, 2)
 	end
 	
-	-- + commands have only one parameter: the amount (optional, assumed to be 1)
-	-- to stop a + command, you can either use "+name 0 [other parameters]" or "-name [other parameters]" - convert the latter to the former!
+	-- "+"-prefixed commands have only one parameter: the amount (optional, defaults to 1)
+	-- to stop a + command, you can either use "+name 0 [other parameters]" or "-name [other parameters]" - the latter is converted to the former
 	local firstchar = instruction:sub(1, 1)
 	if firstchar == "+" then
 		if #parameters > 1 then
@@ -89,7 +89,7 @@ function Instruction:Execute(silent)
 	
 	--were there 0 results?
 	if #available == 0 then
-		--TODO: in MP use say.
+		--TODO: in MP use say. (Is this really desirable?)
 		-- error, not found
 		if not silent then
 			print("No such command or cvar: " .. instruction)
@@ -109,7 +109,7 @@ function Instruction:Execute(silent)
 		end
 		
 		if not unambiguous then
-			-- display them
+			-- display possibilities, do nothing else
 			if not silent then
 				for _, name in ipairs(available) do
 					print(name)
@@ -118,16 +118,18 @@ function Instruction:Execute(silent)
 			-- done
 			return false
 		end
-		--else: unambiguous. 
+		--else: unambiguous.
 	end
 	
-	--there was an unambiguous match
+	-- there was an unambiguous match
+	-- that means there's either a CCommand of this name...
 	if self.ccommandManager.CCommands[instruction:lower()] then
 		--it's a command, call it with the right parameters
 		self.ccommandManager.CCommands[instruction:lower()]:Execute(unpack(parameters))
 		--done
 		return true
 	end
+	-- ...or a CVar.
 	if self.cvarManager.CVars[instruction:lower()] then
 		if instruction:sub(1, 1) == "+" then
 			jar.Logger.GetDefaultLogger():Warning("CVar names must not start with + or -!")
@@ -231,7 +233,7 @@ function Instruction:Execute(silent)
 		end
 	end
 	
-	--shouldn't get here
+	-- shouldn't get here (instruction can only be either CCommand or CVar)
 	jar.Logger.GetDefaultLogger():Warning("Instruction:Execute(): Internal logic error, command \"" .. instruction .. "\" not executed")
 	return false
 end

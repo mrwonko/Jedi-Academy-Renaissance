@@ -284,8 +284,8 @@ g_CVarManager:RegisterCVar
 
 function KeycodeToChar(keycode, shift)
 	if shift then
-		return KeyboardLayouts[g_CVarManager:GetCVar("in_keyboardLayout")].shift[keycode]
+		return KeyboardLayouts[g_CVarManager:GetCVarValue("in_keyboardLayout")].shift[keycode]
 	else
-		return KeyboardLayouts[g_CVarManager:GetCVar("in_keyboardLayout")].normal[keycode]
+		return KeyboardLayouts[g_CVarManager:GetCVarValue("in_keyboardLayout")].normal[keycode]
 	end
 end

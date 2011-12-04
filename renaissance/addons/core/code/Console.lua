@@ -275,7 +275,7 @@ function Console:AddOutputLines(lines)
 		self.mOutputOffset = self.mOutputOffset + #self.mOutputHistory - oldsize
 	end
 	
-	local outputHistorySize = self.mInterpreter.cvarManager:GetCVar("con_outputHistorySize")
+	local outputHistorySize = self.mInterpreter.cvarManager:GetCVarValue("con_outputHistorySize")
 	assert(outputHistorySize)
 	if outputHistorySize > 0 then
 		for i = 1, #self.mOutputHistory - outputHistorySize do
@@ -344,7 +344,7 @@ function Console:ProcessInput()
 	print("]" .. inst)
 	self.mInterpreter:Interpret(inst)
 	table.insert(self.mInputHistory, 1, inst)
-	local historySize = self.mInterpreter.cvarManager:GetCVar("con_inputHistorySize")
+	local historySize = self.mInterpreter.cvarManager:GetCVarValue("con_inputHistorySize")
 	assert(historySize)
 	while #self.mInputHistory > historySize and historySize ~= -1 do
 		table.remove(self.mInputHistory)
