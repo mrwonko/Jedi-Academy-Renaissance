@@ -159,6 +159,7 @@ void BindCore(lua_State* L)
 
                 luabind::class_<PHYSFS_File>("File")
                     .def("Close", &fs::Close)
+                    //chars are read as numbers - keep that in mind!
                     .def("ReadChar", &fs::ReadChar, luabind::pure_out_value(_2))
                     .def("ReadString", (ReadString1Signature) &fs::ReadString, luabind::pure_out_value(_2))
                     .def("ReadString", (ReadString2Signature) &fs::ReadString, luabind::pure_out_value(_3))

@@ -41,7 +41,7 @@ local function JoystickManager_Load(self)
 		self.joysticksByIndex[joy.index] = joy
 		self.lastIndex = math.max(self.lastIndex, joy.index)
 	end
-	--todo
+	--todo (really? or is this just some leftover code? in any case, I should re-evaluate the way I handle joystick input)
 	local code, err = loadfile(self.configfilename)
 	if not code then
 		jar.Logger.GetDefaultLogger():Info("Could not load joystick config file " .. self.configfilename ..": " .. err, 0)
@@ -127,4 +127,4 @@ function JoystickManager:Save()
 	return true
 end
 
--- todo: functions for user setup (they don't want to fiddle with configfiles)
+-- todo: functions for user setup (they don't want to fiddle with config files)
