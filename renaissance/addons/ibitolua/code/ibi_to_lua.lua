@@ -12,9 +12,9 @@ icarusInfo.defines =
 	TK_CHAR = 3,
 	TK_STRING = 4,
 	TK_INT = 5,
-	TK_INTEGER = TK_INT,
+	TK_INTEGER = 5,
 	TK_FLOAT = 6,
-	TK_IDENTIFIER = 7,
+	TK_IDENTIFIER = 7, -- strings, but enum names (e.g. CHAN_AUTO) - not used on set though since that's a jack-of-all-trades
 	TK_USERDEF = 8,
 
 	TK_BLOCK_START = 8,
@@ -202,23 +202,58 @@ local simpleMembers =
 	[icarusInfo.defines.ID_RANDOM] = true,
 }
 
--- names of functions to create
+-- names of functions to create todo: create these functions
 
 local functionNames =
 {
-	print = "print",
-	randomInt = "randomInt", -- I don't think this even exists - todo: remove if not used
-	randomFloat = "randomFloat",
-	affect = "affect",
-	vector = "vector",
-	euler = "euler",
-	getEntity = "getEntity",
-	task = "task",
-	run = "run", --not dofile since this may need to do ibi to lua conversion and file search
+	print = "print", -- print(var)
+	randomInt = "randomInt", -- randomInt(min, max) - I don't think this even exists in JKA, but I need it for random for loops.
+	randomFloat = "randomFloat", -- randomFloat(min, max)
+	affect = "affect", -- affect(script_targetname, method, func)
+	vector = "vector", -- vector(x, y, z)
+	euler = "euler", -- euler(pitch, yaw, roll)
+	getEntity = "getEntity", -- getEntity(targetname) - used for GetAngles() and GetOrigin() - targetname or script_targetname?
+	task = "task", -- task(name, func)
+	run = "run", -- run(filename) - not dofile since this may need to do ibi to lua conversion and file search
+	get = "get", -- get(value, type) - uses self:Get if self has such a parameter, global variable otherwise
+	set = "set", -- set(key, value) - uses self:Set if self has such a parameter, global variable otherwise (adjusting type in both cases - e.g. String to Float, Euler to Vector)
+	kill = "kill", -- kill(targetname) - just calls getEntity(target):Kill(self), but this is shorter & simpler. targetname or script_targetname?
+	remove = "remove", -- remove(targetname) - see kill
+	declare = "declare", -- declare(name, type) - just initializes that variable, ensures correct type when using set()
+	free = "_G", -- _G[varname] = nil
+	signal = "signal", -- signal(name)
+	wait = "wait", -- wait(time_ms) or wait(taskname)
+	waitSignal = "waitSignal", -- waitSignal(name)
+	use = "use", -- use(targetname) - probably just calls getEntity(target):Use(self)
+
+	camera =
+	{
+		pan = "camera.panTo", -- panTo(angle, dir, time) - pans to new absolute angle in direction over time
+		zoom = "camera.zoomTo", -- zoomTo(fov, time) - zoom to new fov over time
+		move = "camera.moveTo", -- moveTo(pos, time) - move to position over time
+		fade = "camera.fadeFromTo", -- fadeFromTo(startColor, endColor, time) - fades from start color to end color over time
+		path = "camera.playRoff", -- playRoff(filename) - makes the camera follow a path defined by a roff file (relative)
+		enable = "camera.enable", -- enables cinematic mode
+		disable = "camera.disable", -- disables cinematic mode
+		shake = "camera.shakeFor", -- shakeFor(intensity, duration) - makes camera shake at intensity (1-16) for duration ms
+		roll = "camera.roll", -- roll(angle, time) - rolls to relative roll over time
+		track = "camera.track", -- track(name, speed, lerp) - get on track with name and move with speed - optionally lerp there
+		distance = "camera.distance", -- distance(distance, lerp) - keep this distance from current cameraGroup, optionally lerping there
+		follow = "camera.follow", -- follow(groupname, angleSpeed, lerp) - follow entities in group rotating at speed, optionally lerping there
+	},
+
 	-- entity methods
-	get = "Get",
-	getAngles = "GetAngles",
-	getOrigin = "GetOrigin",
+	-- special cases: used by ID_TAG, don't operate on self
+	getAngles = "GetAngles", -- GetAngles()
+	getOrigin = "GetOrigin", -- GetOrigin()
+
+	sound = "self:PlaySound", -- PlaySound(channel, filename)
+	move = "self:MoveTo", -- MoveTo(position, time_ms) - a move command may result in both a MoveTo and a RotateTo
+	rotate = "self:RotateTo", -- RotateTo(rotation, time_ms)
+	play = "self:PlayRoff", -- PlayRoff(filename)
+
+	-- helper functions
+	vectorAndAlphaToColor = "vectorAndAlphaToColor", -- vectorAndAlphaToColor(vector, alpha) -> color
 }
 
 -- names of constants to use
@@ -229,7 +264,25 @@ local constantNames =
 	insert = "INSERT",
 }
 
+local validChannels =
+{
+	["\"CHAN_AUTO\""] = true,
+	["\"CHAN_LOCAL\""] = true,
+	["\"CHAN_WEAPON\""] = true,
+	["\"CHAN_VOICE\""] = true,
+	["\"CHAN_VOICE_ATTEN\""] = true,
+	["\"CHAN_VOICE_GLOBAL\""] = true,
+	["\"CHAN_ITEM\""] = true,
+	["\"CHAN_BODY\""] = true,
+	["\"CHAN_AMBIENT\""] = true,
+	["\"CHAN_LOCAL_SOUND\""] = true,
+	["\"CHAN_ANNOUNCER\""] = true,
+	["\"CHAN_LESS_ATTEN\""] = true,
+	["\"CHAN_MUSIC\""] = true,
+}
+
 -- second parameter for self:Get (the type) to use
+-- incidentally also the first declare parameter
 
 local getTypes =
 {
@@ -296,12 +349,12 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 		return false
 	end
 	if memberType == def.TK_INT then
-		return true, curMemberIndex, string.format("%i", curMember.data)
+		return true, curMemberIndex, tostring(curMember.data)
 	elseif memberType == def.TK_FLOAT then
-		return true, curMemberIndex, string.format("%f", curMember.data)
+		return true, curMemberIndex, tostring(curMember.data)
 	elseif memberType == def.TK_CHAR then
 		return true, curMemberIndex, "\"" .. string.char(curMember.data) .. "\""
-	elseif memberType == def.TK_STRING then
+	elseif memberType == def.TK_STRING or memberType == def.TK_IDENTIFIER then
 		return true, curMemberIndex, "\"" .. curMember.data .. "\""
 	elseif memberType == def.TK_VECTOR then
 		-- vectors are usually 3 floats, though those can be gotten through ID_GET as well (and more?)
@@ -345,10 +398,10 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 		if not getTypes[getTypeMember.data] then
 			return false
 		end
-		return true, curMemberIndex, "self:" .. functionNames.get .. "(" .. nameCode .. ", \"" .. getTypes[getTypeMember.data] .. "\")"
+		return true, curMemberIndex, functionNames.get .. "(" .. nameCode .. ", \"" .. getTypes[getTypeMember.data] .. "\")"
 	elseif memberType == def.ID_RANDOM then
 		local randomCode = {}
-		--todo: is there even another type than float?
+		--I don't think there's ever anything else than floats, actually. No harm in supporting it though.
 		local randomType = allowed[def.ID_RANDOM]
 		for i = 1, 2 do
 			local success, code
@@ -431,9 +484,66 @@ local commandStarts =
 	[def.ID_AFFECT] = functionNames.affect,
 	[def.ID_LOOP] = "", -- handled completely in commandParameterHandlers since it could either be while or for
 	[def.ID_TASK] = functionNames.task,
-	[def.ID_PRINT] = functionNames.print,
+
 	[def.ID_RUN] = functionNames.run,
+	[def.ID_PRINT] = functionNames.print,
+	[def.ID_SET] = functionNames.set,
+	[def.ID_KILL] = functionNames.kill,
+	[def.ID_REMOVE] = functionNames.remove,
+	[def.ID_CAMERA] = "", -- chosen dynamically based on first parameter
+	[def.ID_DECLARE] = functionNames.declare,
+	[def.ID_FREE] = functionNames.free,
+	[def.ID_SIGNAL] = functionNames.signal,
+	[def.ID_WAIT] = functionNames.wait,
+	[def.ID_WAITSIGNAL] = functionNames.waitSignal,
+	[def.ID_USE] = functionNames.use,
+
+	[def.ID_SOUND] = functionNames.sound,
+	[def.ID_MOVE] = functionNames.move,
+	[def.ID_ROTATE] = functionNames.rotate,
+	[def.ID_PLAY] = functionNames.play,
 }
+
+-- some repeatedly used allowed types
+
+local validVector =
+{
+	[def.TK_VECTOR] = functionNames.vector,
+	[def.ID_GET] =
+	{
+		[def.TK_VECTOR] = true,
+	},
+	[def.ID_TAG] = true,
+}
+local validEuler =
+{
+	[def.TK_VECTOR] = functionNames.euler,
+	[def.ID_GET] =
+	{
+		[def.TK_VECTOR] = true,
+	},
+	[def.ID_TAG] = true,
+}
+
+local validString =
+{
+	[def.TK_STRING] = true,
+	[def.ID_GET] =
+	{
+		[def.TK_STRING] = true
+	}
+}
+
+local validFloat =
+{
+	[def.TK_FLOAT] = true,
+	[def.ID_GET] =
+	{
+		[def.TK_FLOAT] = true,
+	},
+	[def.ID_RANDOM] = def.TK_FLOAT,
+}
+
 -- how command parameters (members) are to be handled - functions returning a string or false, errorMessage
 -- only required if #members ~= 0
 
@@ -441,15 +551,48 @@ local commandParameterHandlers =
 {
 	-- loop(iterations)
 	[def.ID_LOOP] = function(self)
-		local success, errorMessage, iterations = GetFloatParameter(self.members, 1)
-		if not success then
-			return false, "Loop amount: " .. errorMessage
+		local isFloat, errorMessage, iterations = GetFloatParameter(self.members, 1)
+		-- if it's not a float, it may be a dynamic parameter.
+		-- that results in very ugly code since I still need to do an endless loop if it's -1
+		if not isFloat then -- no float - may be a get or a random though.
+			local code
+			-- is it a get?
+			local isGet, errorMessage, getCode = ValidateParameter(self.members, 1, {[def.ID_GET] = {[def.TK_FLOAT] = true,},})
+			if isGet then
+				code = getCode
+			else
+				-- well, could be random. I need to change that from float to int though, I think.
+				if #self.members == 0 then return false, "loop with 0 parameters" end
+				if self.members[1].type ~= def.ID_RANDOM then return false, "loop with invalid parameter type" end
+				local randomCode = {}
+				--I don't think there's ever anything else than floats, actually. No harm in supporting it though.
+				local curMemberIndex = 2
+				for i = 1, 2 do
+					local success, code2
+					success, curMemberIndex, code2 = ValidateParameter(self.members, curMemberIndex,
+						{
+							[def.TK_FLOAT] = true,
+							[def.ID_GET] = {[def.TK_FLOAT] = true,},
+							[def.ID_RANDOM] = def.TK_FLOAT,
+						})
+					if not success then
+						return false, "Loop with invalid parameters (in random block)"
+					end
+					randomCode[i] = code2
+				end
+				code = functionNames.randomInt .. "(" .. randomCode[1] .. ", " .. randomCode[2] .. ")"
+			end
+			if code then
+				return "local __automatic__i = 0 local __automatic__iterations = math.floor(" .. code ..  " + 0.5) local __automatic__finite = __automatic__iterations >= 0 while not __automatic__finite or (__automatic__i < __automatic__iterations) do if __automatic__finite then __automatic__i = __automatic__i + 1 end"
+			else
+				return false, "Loop with invalid parameter"
+			end
 		end
 		-- endless loop?
-		if iterations == -1 then
+		if iterations < 0 then
 			return "while true do"
 		else
-			return "for i = 1, " .. string.format("%.0f", iterations) .. " do"
+			return "for __automatic__i = 1, " .. string.format("%.0f", iterations) .. " do"
 		end
 	end,
 
@@ -508,9 +651,9 @@ local commandParameterHandlers =
 
 		-- if one operand is definitely an Angle (ends with "GetAngle()") and the other might be one, too (starts with "vector("), make the other an Angle.
 		if leftOperand:sub(- #functionNames.getAngles - 2, -1) == functionNames.getAngles.."()" and rightOperand:sub(1, #functionNames.vector + 1) == functionNames.vector .. "(" then
-			rightOperand = functionNames.euler .. rightOperand:sub(#functionNames.vector)
+			rightOperand = functionNames.euler .. rightOperand:sub(#functionNames.vector + 1)
 		elseif rightOperand:sub(- #functionNames.getAngles - 2, -1) == functionNames.getAngles.."()" and leftOperand:sub(1, #functionNames.vector + 1) == functionNames.vector .. "(" then
-			leftOperand = functionNames.euler .. leftOperand:sub(#functionNames.vector)
+			leftOperand = functionNames.euler .. leftOperand:sub(#functionNames.vector + 1)
 		end
 		return leftOperand .. operator .. rightOperand .. " then"
 	end,
@@ -537,7 +680,7 @@ local commandParameterHandlers =
 
 	-- Affect(target, method)
 	[def.ID_AFFECT] = function(self)
-		local valid, curMember, target = ValidateParameter(self.members, 1, {[def.TK_STRING] = true, [def.ID_GET] = {[def.TK_STRING] = true}})
+		local valid, curMember, target = ValidateParameter(self.members, 1, validString)
 		if not valid then return false, "Affect with non-string target" end
 		local success, errorMessage, method = GetFloatParameter(self.members, curMember)
 		if not success then
@@ -554,7 +697,7 @@ local commandParameterHandlers =
 
 	-- task(name)
 	[def.ID_TASK] = function(self)
-		local valid, curMember, name = ValidateParameter(self.members, 1, {[def.TK_STRING] = true, [def.ID_GET] = {[def.TK_STRING]= true}})
+		local valid, curMember, name = ValidateParameter(self.members, 1, validString)
 		if not valid then
 			return false, "task with non-string parameter"
 		end
@@ -563,9 +706,271 @@ local commandParameterHandlers =
 
 	-- run(filename)
 	[def.ID_RUN] = function(self)
-		local valid, curMember, filename = ValidateParameter(self.members, 1, {[def.TK_STRING] = true, [def.ID_GET] = {[def.TK_STRING]= true}})
+		local valid, curMember, filename = ValidateParameter(self.members, 1, validString)
 		if not valid then return false, "run with non-string parameter" end
-		return ("(" .. filename .. ")")
+		return "(" .. filename .. ")"
+	end,
+
+	-- set(name, value)
+	[def.ID_SET] = function(self)
+		local valid, curMember, name = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "set with invalid first parameter" end
+		local valid, curMember, value = ValidateParameter(self.members, curMember, {
+			[def.TK_FLOAT] = true,
+			[def.TK_STRING] = true,
+			[def.TK_VECTOR] = functionNames.vector,
+			[def.ID_GET] =
+			{
+				[def.TK_FLOAT] = true,
+				[def.TK_STRING] = true,
+				[def.TK_VECTOR] = true,
+			},
+			[def.ID_RANDOM] = def.TK_FLOAT,
+		})
+		if not valid then return false, "set with invalid second parameter" end
+		if curMember <= #self.members then return false, "set with too many parameters" end
+		return "(" .. name .. ", " .. value .. ")"
+	end,
+
+	-- kill(targetname)
+	[def.ID_KILL] = function(self)
+		local valid, curMember, targetname = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "kill with invalid parameter" end
+		if curMember <= #self.members then return false, "kill with too many parameters" end
+		return "(" .. targetname .. ")"
+	end,
+
+	-- remove(targetname)
+	[def.ID_REMOVE] = function(self)
+		local valid, curMember, targetname = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "remove with invalid parameter" end
+		if curMember <= #self.members then return false, "remove with too many parameters" end
+		return "(" .. targetname .. ")"
+	end,
+
+	-- camera(command, ...)
+	[def.ID_CAMERA] = function(self)
+		local valid, curMember, command = ValidateParameter(self.members, 1, {[def.TK_FLOAT] = true})
+		-- if the string starts with vector(, replace that with euler(
+		local function vectorToEuler(str)
+			if str:sub(1, #functionNames.vector + 1) == functionNames.vector .. "(" then
+				return functionNames.euler .. str:sub(#functionNames.vector + 1)
+			else
+				return str
+			end
+		end
+		if not valid then return false, "camera with invalid first parameter" end
+		command = tonumber(command)
+
+		if command == def.TYPE_ENABLE then
+			if curMember <= #self.members then return false, "camera enable with too many parameters" end
+			return functionNames.camera.enable .. "()"
+
+		elseif command == def.TYPE_DISABLE then
+			if curMember <= #self.members then return false, "camera disable with too many parameters" end
+			return functionNames.camera.disable .. "()"
+
+		elseif command == def.TYPE_PAN then
+			local valid, curMember, newAbsAngle = ValidateParameter(self.members, curMember, validEuler)
+			if not valid then return false, "camera pan with invalid argument" end
+			newAbsAngle = vectorToEuler(newAbsAngle) -- if vector, use euler instead (no way of distinguishing in .ibi)
+			local valid, curMember, dir = ValidateParameter(self.members, curMember, validVector)
+			if not valid then return false, "camera pan with invalid argument" end
+			local valid, curMember, time = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera pan with invalid argument" end
+			if curMember <= #self.members then return false, "camera pan with too many parameters" end
+			return functionNames.camera.pan .. "(" .. newAbsAngle .. ", " .. dir .. ", " .. time .. ")"
+
+		elseif command == def.TYPE_ZOOM then
+			local valid, curMember, fov= ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera zoom with invalid argument" end
+			local valid, curMember, time = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera zoom with invalid argument" end
+			if curMember <= #self.members then return false, "camera zoom with too many parameters" end
+			return functionNames.camera.zoom .. "(" .. fov .. ", " .. time .. ")"
+
+		elseif command == def.TYPE_MOVE then
+			local valid, curMember, pos = ValidateParameter(self.members, curMember, validVector)
+			if not valid then return false, "camera move with invalid argument" end
+			local valid, curMember, time = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera move with invalid argument" end
+			if curMember <= #self.members then return false, "camera move with too many parameters" end
+			return functionNames.camera.move .. "(" .. pos .. ", " .. time .. ")"
+
+		elseif command == def.TYPE_FADE then
+			local valid, curMember, col1 = ValidateParameter(self.members, curMember, validVector)
+			if not valid then return false, "camera fade with invalid argument" end
+			local valid, curMember, col1alpha = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera fade with invalid argument" end
+			local valid, curMember, col2 = ValidateParameter(self.members, curMember, validVector)
+			if not valid then return false, "camera fade with invalid argument" end
+			local valid, curMember, col2alpha = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera fade with invalid argument" end
+			local valid, curMember, time = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera fade with invalid argument" end
+			if curMember <= #self.members then return false, "camera fade with too many parameters" end
+			return functionNames.camera.fade .. "(" .. functionNames.vectorAndAlphaToColor .. "(" .. col1 .. ", " .. col1alpha .."), " .. functionNames.vectorAndAlphaToColor .. "(" .. col2 .. ", " .. col2alpha .. "), " .. time .. ")"
+
+		elseif command == def.TYPE_PATH then
+			local valid, curMember, filename = ValidateParameter(self.members, curMember, validString)
+			if not valid then return false, "camera path with invalid argument" end
+			if curMember <= #self.members then return false, "camera path with too many parameters" end
+			return functionNames.camera.path .. "(" .. filename .. ")"
+
+		elseif command == def.TYPE_SHAKE then
+			local valid, curMember, intensity = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera shake with invalid argument" end
+			local valid, curMember, duration = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera shake with invalid argument" end
+			if curMember <= #self.members then return false, "camera shake with too many parameters" end
+			return functionNames.camera.shake .. "(" .. intensity .. ", " .. duration .. ")"
+
+		elseif command == def.TYPE_ROLL then
+			local valid, curMember, angle = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera roll with invalid argument" end
+			local valid, curMember, duration = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera roll with invalid argument" end
+			if curMember <= #self.members then return false, "camera roll with too many parameters" end
+			return functionNames.camera.roll .. "(" .. angle .. ", " .. duration .. ")"
+
+		elseif command == def.TYPE_TRACK then
+			local valid, curMember, name = ValidateParameter(self.members, curMember, validString)
+			if not valid then return false, "camera track with invalid argument" end
+			local valid, curMember, speed = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera track with invalid argument" end
+			local valid, curMember, lerp = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera track with invalid argument" end
+			if curMember <= #self.members then return false, "camera track with too many parameters" end
+			return functionNames.camera.track .. "(" .. name .. ", " .. speed .. ", " .. lerp .. " ~= 0)"
+
+		elseif command == def.TYPE_DISTANCE then
+			local valid, curMember, distance = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera distance with invalid argument" end
+			local valid, curMember, lerp = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera distance with invalid argument" end
+			if curMember <= #self.members then return false, "camera distance with too many parameters" end
+			return functionNames.camera.distance .. "(" .. distance .. ", " .. lerp .. " ~= 0)"
+
+		elseif command == def.TYPE_FOLLOW then
+			local valid, curMember, name = ValidateParameter(self.members, curMember, validString)
+			if not valid then return false, "camera follow with invalid argument" end
+			local valid, curMember, speed = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera follow with invalid argument" end
+			local valid, curMember, lerp = ValidateParameter(self.members, curMember, validFloat)
+			if not valid then return false, "camera follow with invalid argument" end
+			if curMember <= #self.members then return false, "camera follow with too many parameters" end
+			return functionNames.camera.follow .. "(" .. name .. ", " .. speed .. ", " .. lerp .. " ~= 0)"
+
+		else
+			return false, "camera with invalid command"
+		end
+	end,
+
+	[def.ID_DECLARE] = function(self)
+		local valid, curMember, varType = GetFloatParameter(self.members, 1)
+		if not valid then return false, "invalid declare parameter" end
+		if not getTypes[varType] then return false, "declare: invalid type" end
+		local valid, curMember, name = ValidateParameter(self.members, curMember, validString)
+		if not valid then return false, "invalid declare parameter" end
+		if curMember <= #self.members then return false, "declare with too many parameters" end
+		return "(" .. name .. ", \"" .. getTypes[varType] .. "\")"
+	end,
+
+	-- _G[name] = nil
+	[def.ID_FREE] = function(self)
+		local valid, curMember, varName = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "free with invalid parameter" end
+		if curMember <= #self.members then return false, "free with too many parameters" end
+		return "[" .. varName .. "] = nil"
+	end,
+
+	-- signal(name)
+	[def.ID_SIGNAL] = function(self)
+		local valid, curMember, signalname = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "signal with invalid parameter" end
+		if curMember <= #self.members then return false, "signal with too many parameters" end
+		return "(" .. signalname .. ")"
+	end,
+
+	-- wait(taskname) or wait(time_ms)
+	[def.ID_WAIT] = function(self)
+		local valid, curMember, param = ValidateParameter(self.members, 1,
+			{
+				[def.TK_FLOAT] = true,
+				[def.TK_INT] = true,
+				[def.TK_STRING] = true,
+				[def.ID_GET] =
+				{
+					[def.TK_STRING]= true,
+					[def.TK_FLOAT]= true,
+				},
+				[def.ID_RANDOM] = def.TK_FLOAT,
+			})
+		if not valid then return false, "wait with invalid parameter" end
+		if curMember <= #self.members then return false, "wait with too many parameters" end
+		return "(" .. param .. ")"
+	end,
+
+	-- waitsignal(name)
+	[def.ID_WAITSIGNAL] = function(self)
+		local valid, curMember, signalname = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "waitsignal with invalid parameter" end
+		if curMember <= #self.members then return false, "waitsignal with too many parameters" end
+		return "(" .. signalname .. ")"
+	end,
+
+	-- use(targetname)
+	[def.ID_USE] = function(self)
+		local valid, curMember, targetname = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "use with invalid parameter" end
+		if curMember <= #self.members then return false, "use with too many parameters" end
+		return "(" .. targetname .. ")"
+	end,
+
+	-- sound(channel, filename)
+	[def.ID_SOUND] = function(self)
+		local valid, curMember, channel = ValidateParameter(self.members, 1, {[def.TK_IDENTIFIER] = true})
+		if not valid then return false, "sound with invalid first parameter" end
+		if not validChannels[channel] then return false, "sound with invalid channel" end
+		local valid, curMember, filename = ValidateParameter(self.members, curMember, validString)
+		if not valid then return false, "sound with invalid second parameter" end
+		if curMember <= #self.members then return false, "sound with too many parameters" end
+		return "(" .. channel .. ", " .. filename .. ")"
+	end,
+
+	[def.ID_MOVE] = function(self)
+		local valid, curMember, position = ValidateParameter(self.members, 1, validVector)
+		if not valid then return false, "move with non-vector parameter 1" end
+		local hasRotation, curMember2, rotation = ValidateParameter(self.members, curMember, validEuler)
+		if hasRotation then curMember = curMember2 end
+		local valid, curMember, time = GetFloatParameter(self.members, curMember, validFloat)
+		if not valid then return false, "move with invalid parameter" end
+		if curMember <= #self.members then return false, "move with too many parameters" end
+		if hasRotation then
+			return "(" .. position .. ", " .. time .. ") " .. functionNames.rotate .. "( " .. rotation .. ", " .. time .. ")"
+		else
+			return "(" .. position .. ", " .. time .. ")"
+		end
+	end,
+
+	[def.ID_ROTATE] = function(self)
+		local valid, curMember, rotation = ValidateParameter(self.members, 1, validEuler)
+		if not valid then return false, "rotate with invalid first parameter" end
+		local valid, curMember, time = ValidateParameter(self.members, 1, validFloat)
+		if not valid then return false, "rotate with invalid second parameter" end
+		if curMember <= #self.members then return false, "rotate with too many parameters" end
+		return "(" .. rotation .. ", " .. time .. ")"
+	end,
+
+	-- PlayRoff(filename)
+	[def.ID_PLAY] = function(self)
+		local valid, curMember, playType = ValidateParameter(self.members, 1, {[def.TK_STRING] = true})
+		if not valid then return false, "play with invalid first parameter" end
+		if playType ~= "\"PLAY_ROFF\"" then return false, "non-roff play" end
+		local valid, curMember, filename = ValidateParameter(self.members, curMember, validString)
+		if not valid then return false, "play with invalid second parameter" end
+		if curMember <= #self.members then return false, "play with too many parameters" end
+		return "(" .. filename .. ")"
 	end,
 }
 
@@ -638,8 +1043,8 @@ function Member:ReadFromFile(file)
 			return false, "TK_FLOAT member does not have length 4"
 		end
 	end
-	-- string?
-	if self.type == icarusInfo.defines.TK_STRING then
+	-- string or identifier? (basically the same, except identifiers are basically enum entries
+	if self.type == icarusInfo.defines.TK_STRING or self.type == icarusInfo.defines.TK_IDENTIFIER then
 		success, self.data = file:ReadString(self.len)
 		if not success then return false, "could not TK_STRING member data @"..file:Tell() end
 		-- strings are null-terminated, usually.
