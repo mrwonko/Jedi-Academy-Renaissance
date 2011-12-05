@@ -2,7 +2,7 @@
 
 rem ( "temporary tests for ibi to lua conversion" );
 
-if ( $2$, $<$, $3$ )
+if ( $get( FLOAT, "SET_PARM1")$, $<$, $tag( "targetname", ORIGIN)$ )
 {
 	print ( "DEFAULT" );
 }
@@ -16,7 +16,7 @@ else (  )
 
 loop ( 3 )
 {
-	print ( "looped x3" );
+	print ( "foo\\bar" );
 }
 
 

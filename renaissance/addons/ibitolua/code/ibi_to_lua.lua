@@ -176,6 +176,8 @@ icarusInfo.IDLookup =
 	[70] = "TYPE_EOF",
 	[71] = "NUM_TYPES",
 }
+-- I don't want to type that much
+local def = icarusInfo.defines
 
 -- table containing all compound statements for fast checks whether children need to be loaded
 local compoundStatements =
@@ -199,17 +201,212 @@ local simpleMembers =
 	[icarusInfo.defines.ID_TAG] = true,
 }
 
+-- names of functions to create
+
+local functionNames =
+{
+	print = "print",
+	randomInt = "randomInt", -- I don't think this even exists - todo: remove if not used
+	randomFloat = "randomFloat",
+	affect = "affect",
+	vector = "vector",
+	euler = "euler",
+	getEntity = "getEntity",
+	-- entity methods
+	get = "Get",
+	getAngles = "GetAngles",
+	getOrigin = "GetOrigin",
+}
+
+-- second parameter for self:Get (the type) to use
+
+local getTypes =
+{
+	[def.TK_FLOAT] = "float",
+	[def.TK_INT] = "int",
+	[def.TK_STRING] = "string",
+}
+
 -- how commands start in Lua - either a string or a function returning a string or false, errorMessage
 
-local def = icarusInfo.defines
 local commandStarts =
 {
 	[def.ID_IF] = "if ",
 	[def.ID_ELSE] = "else",
-	[def.ID_PRINT] = "print",
-	[def.ID_AFFECT] = "affect",
+	[def.ID_PRINT] = functionNames.print,
+	[def.ID_AFFECT] = functionNames.affect,
 	[def.ID_LOOP] = "", -- handled completely in commandParameterHandlers since it could either be while or for
 }
+
+local function Escape(str)
+	-- escape un-escaped backslash at end
+	local numBackslashes = 0 -- at the end
+	local pos = -1
+	while str:sub(pos, pos) == "\\" do
+		numBackslashes = numBackslashes + 1
+		pos = pos - 1
+	end
+	if numBackslashes % 2 == 1 then
+		str = str .. "\\"
+	end
+	-- escape newlines
+	str = str:gsub("\n", "\\n")
+	-- escape un-escaped quotes
+	local parts = {}
+	local numBackslashes = 0
+	for index = 1, #str do
+		local char = str:sub(index, index)
+		if char == "\\" then
+			numBackslashes = numBackslashes + 1
+			parts[#parts + 1] = "\\"
+		elseif char == "\"" and numBackslashes % 2 == 0 then
+			parts[#parts + 1] = "\\\""
+			numBackslashes = 0
+		elseif char == "\'" and numBackslashes % 2 == 0 then
+			parts[#parts + 1] = "\\\'"
+			numBackslashes = 0
+		else
+			parts[#parts + 1] = char
+			numBackslashes = 0
+		end
+	end
+	str = table.concat(parts)
+	return str
+end
+
+-- Checks if this is a valid parameter
+-- Gets a table containing the allowed types as keys, and true as value, except:
+-- * ID_RANDOM gets type of random - TK_FLOAT or TK_INT
+-- * ID_GET gets table of allowed Get types as value - only TK_FLOAT, TK_STRING and TK_VECTOR are possible
+-- * TK_VECTOR gets name of function to call (usually vector or euler)
+-- allowed: TK_VECTOR, TK_FLOAT, TK_STRING, TK_CHAR, ID_GET (see above), ID_RANDOM (see above), ID_TAG, TK_GREATER_THAN, TK_LESS_THAN, TK_EQUALS, TK_NOT
+-- returns false if not allowed, otherwise true, new value of curMember (i.e. increased by number of read members) and the parameter as a string
+
+local ValidateParameter -- forward declaration for recursion - is this necessary?
+local function ValidateParameter(members, curMemberIndex, allowed)
+	if type(allowed) ~= "table" then
+		error("\"allowed\" parameter is no table", 2)
+	end
+	local curMember = members[curMemberIndex]
+	curMemberIndex = curMemberIndex + 1
+	local memberType = curMember.type
+	if not allowed[memberType] then
+		return false
+	end
+	if memberType == def.TK_INT then
+		return true, curMemberIndex, string.format("%i", curMember.data)
+	elseif memberType == def.TK_FLOAT then
+		return true, curMemberIndex, string.format("%f", curMember.data)
+	elseif memberType == def.TK_CHAR then
+		return true, curMemberIndex, "\"" .. string.char(curMember.data) .. "\""
+	elseif memberType == def.TK_STRING then
+		return true, curMemberIndex, "\"" .. curMember.data .. "\""
+	elseif memberType == def.TK_VECTOR then
+		-- vectors are usually 3 floats, though those can be gotten through ID_GET as well (and more?)
+		local values = {}
+		for i=1,3 do
+			local success, curMemberIndex, code = ValidateParameter(members, curMemberIndex,
+				{
+					[def.TK_FLOAT] = true,
+					[def.ID_GET] = {[def.TK_FLOAT] = true,},
+					[def.ID_RANDOM] = def.TK_FLOAT,
+				})
+			if not success then
+				return false
+			end
+			values[i] = code
+		end
+		return true, curMemberIndex, allowed[def.TK_VECTOR] .. "(" .. table.concat(values, ", ") .. ")"
+	elseif memberType == def.ID_GET then
+		-- are there enough parameters for a get?
+		if curMemberIndex + 1 > #members then
+			return false
+		end
+		local getTypeMember = members[curMemberIndex]
+		curMemberIndex = curMemberIndex + 1
+		if getTypeMember.type ~= def.TK_FLOAT then
+			return false
+		end
+		if not allowed[def.ID_GET][getTypeMember.data] then
+			return false
+		end
+		local success, curMemberIndex, nameCode = ValidateParameter(members, curMemberIndex,
+			{
+				[def.TK_STRING] = true,
+				[def.ID_GET] = {[def.TK_STRING] = true},
+			})
+		if not success then
+			return false
+		end
+		return true, curMemberIndex, "self:" .. functionNames.get .. "(" .. nameCode .. ", \"" .. getTypes[getTypeMember.data] .. "\")"
+	elseif memberType == def.ID_RANDOM then
+		-- enough members?
+		if curMemberIndex + 1 > #members then
+			return false
+		end
+		local randomCode = {}
+		--todo: is there even another type than float?
+		local randomType = allowed[def.ID_RANDOM]
+		for i = 1, 2 do
+			local success, curMemberIndex, code = ValidateParameter(members, curMemberIndex,
+				{
+					[randomType] = true,
+					[def.ID_GET] = {[randomType] = true,},
+					[def.ID_RANDOM] = randomType,
+				})
+			if not success then
+				return false
+			end
+			code = randomCode[i]
+		end
+		if randomType == def.TK_FLOAT then
+			return true, curMemberIndex, functionNames.randomFloat .. "(" .. randomCode[1] .. ", " .. randomCode[2] .. ")"
+		elseif randomType == def.TK_INT then
+			return true, curMemberIndex, functionNames.randomInt .. "(" .. randomCode[1] .. ", " .. randomCode[2] .. ")"
+		else
+			error("Random type neither float nor int", 2)
+		end
+	elseif memberType == def.ID_TAG then
+		-- enough members?
+		if curMemberIndex + 1 > #members then
+			return false
+		end
+		-- read members
+		local success, curMemberIndex, nameCode = ValidateParameter(members, curMemberIndex,
+			{
+				[def.TK_STRING] = true,
+				[def.ID_GET] = {[def.TK_STRING] = true,},
+			})
+		if not success then
+			return false
+		end
+		local tagTypeMember = members[curMemberIndex]
+		curMemberIndex = curMemberIndex + 1
+		-- right type?
+		if tagTypeMember.type ~= def.TK_FLOAT then
+			return false
+		end
+		if tagTypeMember.data == def.TYPE_ANGLES then
+			return true, curMemberIndex, functionNames.getEntity .. "(" .. nameCode .. "):" .. functionNames.getAngles .. "()"
+		elseif tagTypeMember.data == def.TYPE_ORIGIN then
+			return true, curMemberIndex, functionNames.getEntity .. "(" .. nameCode .. "):" .. functionNames.getOrigin .. "()"
+		else
+			return false
+		end
+	elseif memberType == def.TK_GREATER_THAN then
+		return true, curMemberIndex, " > "
+	elseif memberType == def.TK_LESS_THAN then
+		return true, curMemberIndex, " < "
+	elseif memberType == def.TK_EQUALS then
+		return true, curMemberIndex, " == "
+	elseif memberType == def.TK_NOT then
+		return true, curMemberIndex, " ~= "
+	else
+		-- unhandled type? then I entered something invalid in allowed, that's an error in the script.
+		error("invalid allowed parameter type", 2)
+	end
+	error("Should not be reached, I forgot a return somewhere")
+end
 
 -- how command parameters (members) are to be handled - functions returning a string or false, errorMessage
 -- only required if #members ~= 0
@@ -217,6 +414,7 @@ local commandStarts =
 local commandParameterHandlers =
 {
 	[def.ID_LOOP] = function(self)
+		-- not using ValidateParameter() here since I'd like the member as a float
 		if #self.members ~= 1 then
 			return false, "Loop with ".. #self.members .. " instead of 1 parameter(s)"
 		end
@@ -232,19 +430,73 @@ local commandParameterHandlers =
 		end
 	end,
 	[def.ID_IF] = function(self)
-		return "todo: if handling"
+		local curMember = 1
+		-- first operand
+		local success, curMember, leftOperand = ValidateParameter(self.members, curMember,
+			{
+				[def.TK_VECTOR] = true,
+				[def.TK_FLOAT] = true,
+				[def.TK_STRING] = true,
+				[def.TK_CHAR] = true,
+				[def.ID_GET] =
+				{
+					[def.TK_FLOAT] = true,
+					[def.TK_INT] = true,
+					[def.TK_VECTOR] = functionNames.vector,
+				},
+				[def.ID_RANDOM] = def.TK_FLOAT,
+				[def.ID_TAG] = true,
+			})
+		if not success then return false, "invalid first if operand" end
+
+		-- operator
+		local success, curMember, operator = ValidateParameter(self.members, curMember,
+			{
+				[def.TK_EQUALS] = true,
+				[def.TK_GREATER_THAN] = true,
+				[def.TK_LESS_THAN] = true,
+				[def.TK_NOT] = true,
+			})
+		if not success then return false, "invalid if operator" end
+
+		-- second operand
+		local success, curMember, rightOperand = ValidateParameter(self.members, curMember,
+			{
+				[def.TK_VECTOR] = true,
+				[def.TK_FLOAT] = true,
+				[def.TK_STRING] = true,
+				[def.TK_CHAR] = true,
+				[def.ID_GET] =
+				{
+					[def.TK_FLOAT] = true,
+					[def.TK_INT] = true,
+					[def.TK_VECTOR] = functionNames.vector,
+				},
+				[def.ID_RANDOM] = def.TK_FLOAT,
+				[def.ID_TAG] = true,
+			})
+		if not success then return false, "invalid first if operand" end
+
+		if curMember <= #self.members then
+			return false, "if with to many parameters"
+		end
+
+		-- if one operand is definitely an Angle (ends with "GetAngle()") and the other might be one, too (starts with "vector("), make the other an Angle.
+		if leftOperand:sub(- #functionNames.getAngles - 2, -1) == functionNames.getAngles.."()" and rightOperand:sub(1, #functionNames.vector + 1) == functionNames.vector .. "(" then
+			rightOperand = functionNames.euler .. rightOperand:sub(#functionNames.vector)
+		elseif rightOperand:sub(- #functionNames.getAngles - 2, -1) == functionNames.getAngles.."()" and leftOperand:sub(1, #functionNames.vector + 1) == functionNames.vector .. "(" then
+			leftOperand = functionNames.euler .. leftOperand:sub(#functionNames.vector)
+		end
+		return leftOperand .. operator .. rightOperand .. " then"
 	end,
 	-- ID_ELSE is trivial, automatically handled (must not have parameters)
 	[def.ID_PRINT] = function(self)
-		if #self.members ~= 1 then
-			return false, "Print with " .. #self.members .." instead of 1 parameter(s)"
-		end
-		local param = self.members[1]
-		if param.type ~= def.TK_STRING then
-			return false, "Print with non-string parameter"
-		end
-		return "(\"" .. param.data .. "\")"
-	end
+		local valid, curMember, memberString = ValidateParameter(self.members, 1, {[def.TK_STRING] = true})
+		if not valid then return false, "Print with non-string parameter" end
+		if #self.members >= curMember then return false, "Print with too many parameters" end
+		return "(" .. memberString .. ")"
+	end,
+	["more"] = "foo",
 }
 
 -- how commands end in Lua - either a string or a function returning a string or false, errorMessage
