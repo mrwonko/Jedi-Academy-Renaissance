@@ -414,6 +414,14 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 	error("Should not be reached, I forgot a return somewhere")
 end
 
+-- returns true, curMemberIndex, value (as a number) or false, errorMessage
+local function GetFloatParameter(members, curMemberIndex)
+	local member = members[curMemberIndex]
+	if not member then return false, "parameter not there" end
+	if member.type ~= def.TK_FLOAT then return false, "non-float" end
+	return true, curMemberIndex+1, member.data
+end
+
 -- how commands start in Lua - either a string or a function returning a string or false, errorMessage
 
 local commandStarts =
@@ -433,19 +441,15 @@ local commandParameterHandlers =
 {
 	-- loop(iterations)
 	[def.ID_LOOP] = function(self)
-		-- not using ValidateParameter() here since I'd like the member as a float
-		if #self.members ~= 1 then
-			return false, "Loop with ".. #self.members .. " instead of 1 parameter(s)"
-		end
-		local param = self.members[1]
-		if param.type ~= def.TK_FLOAT then
-			return false, "Loop with non-float parameter"
+		local success, errorMessage, iterations = GetFloatParameter(self.members, 1)
+		if not success then
+			return false, "Loop amount: " .. errorMessage
 		end
 		-- endless loop?
-		if param.data == -1 then
+		if iterations == -1 then
 			return "while true do"
 		else
-			return "for i = 1, " .. string.format("%.0f", param.data) .. " do"
+			return "for i = 1, " .. string.format("%.0f", iterations) .. " do"
 		end
 	end,
 
@@ -535,12 +539,13 @@ local commandParameterHandlers =
 	[def.ID_AFFECT] = function(self)
 		local valid, curMember, target = ValidateParameter(self.members, 1, {[def.TK_STRING] = true, [def.ID_GET] = {[def.TK_STRING] = true}})
 		if not valid then return false, "Affect with non-string target" end
-		local methodMember = self.members[curMember]
-		if not methodMember then return false, "Affect without method parameter" end
-		if methodMember.type ~= def.TK_FLOAT then return false, "Affect without non-float method parameter" end
-		if methodMember.data == def.TYPE_FLUSH then
+		local success, errorMessage, method = GetFloatParameter(self.members, curMember)
+		if not success then
+			return false, "Affect method: " .. errorMessage
+		end
+		if method == def.TYPE_FLUSH then
 			return "(" .. target .. ", " .. constantNames.flush .. ", function()"
-		elseif methodMember.data == def.TYPE_INSERT then
+		elseif method == def.TYPE_INSERT then
 			return "(" .. target .. ", " .. constantNames.insert .. ", function()"
 		else
 			return false, "Affect with invalid method parameter (neither flush nor insert)"
