@@ -225,6 +225,8 @@ local functionNames =
 	wait = "wait", -- wait(time_ms) or wait(taskname)
 	waitSignal = "waitSignal", -- waitSignal(name)
 	use = "use", -- use(targetname) - probably just calls getEntity(target):Use(self)
+	doTask = "doTask", -- doTask(name)
+	flush = "flush", -- flush()
 
 	camera =
 	{
@@ -254,6 +256,7 @@ local functionNames =
 
 	-- helper functions
 	vectorAndAlphaToColor = "vectorAndAlphaToColor", -- vectorAndAlphaToColor(vector, alpha) -> color
+	floor = "floor"
 }
 
 -- names of constants to use
@@ -266,19 +269,19 @@ local constantNames =
 
 local validChannels =
 {
-	["\"CHAN_AUTO\""] = true,
-	["\"CHAN_LOCAL\""] = true,
-	["\"CHAN_WEAPON\""] = true,
-	["\"CHAN_VOICE\""] = true,
-	["\"CHAN_VOICE_ATTEN\""] = true,
-	["\"CHAN_VOICE_GLOBAL\""] = true,
-	["\"CHAN_ITEM\""] = true,
-	["\"CHAN_BODY\""] = true,
-	["\"CHAN_AMBIENT\""] = true,
-	["\"CHAN_LOCAL_SOUND\""] = true,
-	["\"CHAN_ANNOUNCER\""] = true,
-	["\"CHAN_LESS_ATTEN\""] = true,
-	["\"CHAN_MUSIC\""] = true,
+	["CHAN_AUTO"] = true,
+	["CHAN_LOCAL"] = true,
+	["CHAN_WEAPON"] = true,
+	["CHAN_VOICE"] = true,
+	["CHAN_VOICE_ATTEN"] = true,
+	["CHAN_VOICE_GLOBAL"] = true,
+	["CHAN_ITEM"] = true,
+	["CHAN_BODY"] = true,
+	["CHAN_AMBIENT"] = true,
+	["CHAN_LOCAL_SOUND"] = true,
+	["CHAN_ANNOUNCER"] = true,
+	["CHAN_LESS_ATTEN"] = true,
+	["CHAN_MUSIC"] = true,
 }
 
 -- second parameter for self:Get (the type) to use
@@ -333,7 +336,7 @@ end
 -- * ID_RANDOM gets type of random - TK_FLOAT or TK_INT
 -- * ID_GET gets table of allowed Get types as value - only TK_FLOAT, TK_STRING and TK_VECTOR are possible
 -- * TK_VECTOR gets name of function to call (usually vector or euler)
--- allowed: TK_VECTOR, TK_FLOAT, TK_STRING, TK_CHAR, ID_GET (see above), ID_RANDOM (see above), ID_TAG, TK_GREATER_THAN, TK_LESS_THAN, TK_EQUALS, TK_NOT
+-- allowed: TK_VECTOR, TK_FLOAT, TK_STRING, TK_IDENTIFIER, TK_CHAR, ID_GET (see above), ID_RANDOM (see above), ID_TAG, TK_GREATER_THAN, TK_LESS_THAN, TK_EQUALS, TK_NOT
 -- returns false if not allowed, otherwise true, new value of curMember (i.e. increased by number of read members) and the parameter as a string
 
 local ValidateParameter -- forward declaration for recursion - is this necessary?
@@ -497,6 +500,8 @@ local commandStarts =
 	[def.ID_WAIT] = functionNames.wait,
 	[def.ID_WAITSIGNAL] = functionNames.waitSignal,
 	[def.ID_USE] = functionNames.use,
+	[def.ID_DO] = functionNames.doTask,
+	[def.ID_FLUSH] = functionNames.flush,
 
 	[def.ID_SOUND] = functionNames.sound,
 	[def.ID_MOVE] = functionNames.move,
@@ -583,7 +588,7 @@ local commandParameterHandlers =
 				code = functionNames.randomInt .. "(" .. randomCode[1] .. ", " .. randomCode[2] .. ")"
 			end
 			if code then
-				return "local __automatic__i = 0 local __automatic__iterations = math.floor(" .. code ..  " + 0.5) local __automatic__finite = __automatic__iterations >= 0 while not __automatic__finite or (__automatic__i < __automatic__iterations) do if __automatic__finite then __automatic__i = __automatic__i + 1 end"
+				return "local __automatic__i = 0 local __automatic__iterations = " .. functionNames.floor .. "(" .. code ..  " + 0.5) local __automatic__finite = __automatic__iterations >= 0 while not __automatic__finite or (__automatic__i < __automatic__iterations) do if __automatic__finite then __automatic__i = __automatic__i + 1 end"
 			else
 				return false, "Loop with invalid parameter"
 			end
@@ -715,9 +720,11 @@ local commandParameterHandlers =
 	[def.ID_SET] = function(self)
 		local valid, curMember, name = ValidateParameter(self.members, 1, validString)
 		if not valid then return false, "set with invalid first parameter" end
+		local temp = curMember
 		local valid, curMember, value = ValidateParameter(self.members, curMember, {
 			[def.TK_FLOAT] = true,
 			[def.TK_STRING] = true,
+			[def.TK_IDENTIFIER] = true,
 			[def.TK_VECTOR] = functionNames.vector,
 			[def.ID_GET] =
 			{
@@ -726,6 +733,7 @@ local commandParameterHandlers =
 				[def.TK_VECTOR] = true,
 			},
 			[def.ID_RANDOM] = def.TK_FLOAT,
+			[def.ID_TAG] = true,
 		})
 		if not valid then return false, "set with invalid second parameter" end
 		if curMember <= #self.members then return false, "set with too many parameters" end
@@ -931,7 +939,7 @@ local commandParameterHandlers =
 	[def.ID_SOUND] = function(self)
 		local valid, curMember, channel = ValidateParameter(self.members, 1, {[def.TK_IDENTIFIER] = true})
 		if not valid then return false, "sound with invalid first parameter" end
-		if not validChannels[channel] then return false, "sound with invalid channel" end
+		if not validChannels[channel:sub(2, -2)] then return false, "sound with invalid channel" end
 		local valid, curMember, filename = ValidateParameter(self.members, curMember, validString)
 		if not valid then return false, "sound with invalid second parameter" end
 		if curMember <= #self.members then return false, "sound with too many parameters" end
@@ -956,7 +964,7 @@ local commandParameterHandlers =
 	[def.ID_ROTATE] = function(self)
 		local valid, curMember, rotation = ValidateParameter(self.members, 1, validEuler)
 		if not valid then return false, "rotate with invalid first parameter" end
-		local valid, curMember, time = ValidateParameter(self.members, 1, validFloat)
+		local valid, curMember, time = ValidateParameter(self.members, curMember, validFloat)
 		if not valid then return false, "rotate with invalid second parameter" end
 		if curMember <= #self.members then return false, "rotate with too many parameters" end
 		return "(" .. rotation .. ", " .. time .. ")"
@@ -971,6 +979,20 @@ local commandParameterHandlers =
 		if not valid then return false, "play with invalid second parameter" end
 		if curMember <= #self.members then return false, "play with too many parameters" end
 		return "(" .. filename .. ")"
+	end,
+
+	-- doTask(taskname)
+	[def.ID_DO] = function(self)
+		local valid, curMember, name = ValidateParameter(self.members, 1, validString)
+		if not valid then return false, "do with invalid parameter" end
+		if curMember <= #self.members then return false, "do with too many parameters" end
+		return "(" .. name .. ")"
+	end,
+
+	-- flush()
+	[def.ID_FLUSH] = function(self)
+		if #self.members > 0 then return false, "flush with too many parameters" end
+		return "()"
 	end,
 }
 
@@ -1093,7 +1115,11 @@ end
 function Block:ReadFromFile(file, level)
 	self.level = level
 	if file:EOF() then
-		return false, "End of File"
+		if self.level == -1 then -- main block may be empty - sure, it's strange to have an empty script, but hoth2/aft_wampa_obj.ibi is, for example.
+			return true
+		else
+			return false, "End of File"
+		end
 	end
 	-- root block contains all other blocks, but no information itself
 	if self.level == -1 then
@@ -1275,7 +1301,7 @@ function IbiToLua(filename)
 	-- open the file
 	local file = jar.fs.OpenRead(filename)
 	if not file then
-		return false, "Could not open " .. ibiname .. ": "..jar.fs.GetLastError()
+		return false, "Could not open " .. filename .. ": "..jar.fs.GetLastError()
 	end
 	-- verify it's an ibi file of the correct version
 	local success, ident = file:ReadString(string.len(icarusInfo.ident))
