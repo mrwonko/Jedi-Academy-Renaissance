@@ -2,21 +2,32 @@
 
 rem ( "temporary tests for ibi to lua conversion" );
 
-if ( $get( FLOAT, "SET_PARM1")$, $<$, $tag( "targetname", ORIGIN)$ )
+if ( $get( VECTOR, "SET_ORIGIN")$, $=$, $tag( "targetname", ORIGIN)$ )
 {
-	print ( "DEFAULT" );
+	print ( $get( FLOAT, "SET_PARM1")$ );
 }
 
 
 else (  )
 {
-	print ( "else block" );
+	print ( $random( 0, 1 )$ );
+}
+
+
+affect ( "myEnt", /*@AFFECT_TYPE*/ FLUSH )
+{
+
+	task ( "runscript" )
+	{
+		run ( "coolscript" );
+	}
+
 }
 
 
 loop ( 3 )
 {
-	print ( "foo\\bar" );
+	print ( "foo//bar" );
 }
 
 

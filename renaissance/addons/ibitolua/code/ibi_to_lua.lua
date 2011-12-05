@@ -199,6 +199,7 @@ local simpleMembers =
 	[icarusInfo.defines.TK_NOT] = true,
 	[icarusInfo.defines.ID_GET] = true,
 	[icarusInfo.defines.ID_TAG] = true,
+	[icarusInfo.defines.ID_RANDOM] = true,
 }
 
 -- names of functions to create
@@ -212,10 +213,20 @@ local functionNames =
 	vector = "vector",
 	euler = "euler",
 	getEntity = "getEntity",
+	task = "task",
+	run = "run", --not dofile since this may need to do ibi to lua conversion and file search
 	-- entity methods
 	get = "Get",
 	getAngles = "GetAngles",
 	getOrigin = "GetOrigin",
+}
+
+-- names of constants to use
+
+local constantNames =
+{
+	flush = "FLUSH",
+	insert = "INSERT",
 }
 
 -- second parameter for self:Get (the type) to use
@@ -223,20 +234,10 @@ local functionNames =
 local getTypes =
 {
 	[def.TK_FLOAT] = "float",
-	[def.TK_INT] = "int",
+	[def.TK_VECTOR] = "vector",
 	[def.TK_STRING] = "string",
 }
 
--- how commands start in Lua - either a string or a function returning a string or false, errorMessage
-
-local commandStarts =
-{
-	[def.ID_IF] = "if ",
-	[def.ID_ELSE] = "else",
-	[def.ID_PRINT] = functionNames.print,
-	[def.ID_AFFECT] = functionNames.affect,
-	[def.ID_LOOP] = "", -- handled completely in commandParameterHandlers since it could either be while or for
-}
 
 local function Escape(str)
 	-- escape un-escaped backslash at end
@@ -288,6 +289,7 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 		error("\"allowed\" parameter is no table", 2)
 	end
 	local curMember = members[curMemberIndex]
+	if not curMember then return false end
 	curMemberIndex = curMemberIndex + 1
 	local memberType = curMember.type
 	if not allowed[memberType] then
@@ -305,7 +307,8 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 		-- vectors are usually 3 floats, though those can be gotten through ID_GET as well (and more?)
 		local values = {}
 		for i=1,3 do
-			local success, curMemberIndex, code = ValidateParameter(members, curMemberIndex,
+			local success, code
+			success, curMemberIndex, code = ValidateParameter(members, curMemberIndex,
 				{
 					[def.TK_FLOAT] = true,
 					[def.ID_GET] = {[def.TK_FLOAT] = true,},
@@ -330,7 +333,8 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 		if not allowed[def.ID_GET][getTypeMember.data] then
 			return false
 		end
-		local success, curMemberIndex, nameCode = ValidateParameter(members, curMemberIndex,
+		local success, nameCode
+		success, curMemberIndex, nameCode = ValidateParameter(members, curMemberIndex,
 			{
 				[def.TK_STRING] = true,
 				[def.ID_GET] = {[def.TK_STRING] = true},
@@ -338,17 +342,18 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 		if not success then
 			return false
 		end
-		return true, curMemberIndex, "self:" .. functionNames.get .. "(" .. nameCode .. ", \"" .. getTypes[getTypeMember.data] .. "\")"
-	elseif memberType == def.ID_RANDOM then
-		-- enough members?
-		if curMemberIndex + 1 > #members then
+		if not getTypes[getTypeMember.data] then
 			return false
 		end
+		return true, curMemberIndex, "self:" .. functionNames.get .. "(" .. nameCode .. ", \"" .. getTypes[getTypeMember.data] .. "\")"
+	elseif memberType == def.ID_RANDOM then
 		local randomCode = {}
 		--todo: is there even another type than float?
 		local randomType = allowed[def.ID_RANDOM]
 		for i = 1, 2 do
-			local success, curMemberIndex, code = ValidateParameter(members, curMemberIndex,
+			local success, code
+			local temp = curMemberIndex
+			success, curMemberIndex, code = ValidateParameter(members, curMemberIndex,
 				{
 					[randomType] = true,
 					[def.ID_GET] = {[randomType] = true,},
@@ -357,7 +362,7 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 			if not success then
 				return false
 			end
-			code = randomCode[i]
+			randomCode[i] = code
 		end
 		if randomType == def.TK_FLOAT then
 			return true, curMemberIndex, functionNames.randomFloat .. "(" .. randomCode[1] .. ", " .. randomCode[2] .. ")"
@@ -372,7 +377,8 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 			return false
 		end
 		-- read members
-		local success, curMemberIndex, nameCode = ValidateParameter(members, curMemberIndex,
+		local success, nameCode
+		success, curMemberIndex, nameCode = ValidateParameter(members, curMemberIndex,
 			{
 				[def.TK_STRING] = true,
 				[def.ID_GET] = {[def.TK_STRING] = true,},
@@ -408,11 +414,24 @@ local function ValidateParameter(members, curMemberIndex, allowed)
 	error("Should not be reached, I forgot a return somewhere")
 end
 
+-- how commands start in Lua - either a string or a function returning a string or false, errorMessage
+
+local commandStarts =
+{
+	[def.ID_IF] = "if ",
+	[def.ID_ELSE] = "else",
+	[def.ID_AFFECT] = functionNames.affect,
+	[def.ID_LOOP] = "", -- handled completely in commandParameterHandlers since it could either be while or for
+	[def.ID_TASK] = functionNames.task,
+	[def.ID_PRINT] = functionNames.print,
+	[def.ID_RUN] = functionNames.run,
+}
 -- how command parameters (members) are to be handled - functions returning a string or false, errorMessage
 -- only required if #members ~= 0
 
 local commandParameterHandlers =
 {
+	-- loop(iterations)
 	[def.ID_LOOP] = function(self)
 		-- not using ValidateParameter() here since I'd like the member as a float
 		if #self.members ~= 1 then
@@ -429,20 +448,22 @@ local commandParameterHandlers =
 			return "for i = 1, " .. string.format("%.0f", param.data) .. " do"
 		end
 	end,
+
+	-- if(leftOperand, operator, rightOperand)
 	[def.ID_IF] = function(self)
 		local curMember = 1
 		-- first operand
 		local success, curMember, leftOperand = ValidateParameter(self.members, curMember,
 			{
-				[def.TK_VECTOR] = true,
+				[def.TK_VECTOR] = functionNames.vector,
 				[def.TK_FLOAT] = true,
 				[def.TK_STRING] = true,
 				[def.TK_CHAR] = true,
 				[def.ID_GET] =
 				{
 					[def.TK_FLOAT] = true,
-					[def.TK_INT] = true,
-					[def.TK_VECTOR] = functionNames.vector,
+					[def.TK_STRING] = true,
+					[def.TK_VECTOR] = true,
 				},
 				[def.ID_RANDOM] = def.TK_FLOAT,
 				[def.ID_TAG] = true,
@@ -462,15 +483,15 @@ local commandParameterHandlers =
 		-- second operand
 		local success, curMember, rightOperand = ValidateParameter(self.members, curMember,
 			{
-				[def.TK_VECTOR] = true,
+				[def.TK_VECTOR] = functionNames.vector,
 				[def.TK_FLOAT] = true,
 				[def.TK_STRING] = true,
 				[def.TK_CHAR] = true,
 				[def.ID_GET] =
 				{
 					[def.TK_FLOAT] = true,
-					[def.TK_INT] = true,
-					[def.TK_VECTOR] = functionNames.vector,
+					[def.TK_STRING] = true,
+					[def.TK_VECTOR] = true,
 				},
 				[def.ID_RANDOM] = def.TK_FLOAT,
 				[def.ID_TAG] = true,
@@ -489,14 +510,58 @@ local commandParameterHandlers =
 		end
 		return leftOperand .. operator .. rightOperand .. " then"
 	end,
+
 	-- ID_ELSE is trivial, automatically handled (must not have parameters)
+
+	-- Print(string)
 	[def.ID_PRINT] = function(self)
-		local valid, curMember, memberString = ValidateParameter(self.members, 1, {[def.TK_STRING] = true})
-		if not valid then return false, "Print with non-string parameter" end
+		local valid, curMember, memberString = ValidateParameter(self.members, 1,
+			{
+				[def.TK_STRING] = true,
+				[def.TK_FLOAT] = true,
+				[def.ID_GET] =
+				{
+					[def.TK_STRING] = true,
+					[def.TK_FLOAT] = true,
+				},
+				[def.ID_RANDOM] = def.TK_FLOAT,
+			})
+		if not valid then return false, "Print with invalid parameter" end
 		if #self.members >= curMember then return false, "Print with too many parameters" end
 		return "(" .. memberString .. ")"
 	end,
-	["more"] = "foo",
+
+	-- Affect(target, method)
+	[def.ID_AFFECT] = function(self)
+		local valid, curMember, target = ValidateParameter(self.members, 1, {[def.TK_STRING] = true, [def.ID_GET] = {[def.TK_STRING] = true}})
+		if not valid then return false, "Affect with non-string target" end
+		local methodMember = self.members[curMember]
+		if not methodMember then return false, "Affect without method parameter" end
+		if methodMember.type ~= def.TK_FLOAT then return false, "Affect without non-float method parameter" end
+		if methodMember.data == def.TYPE_FLUSH then
+			return "(" .. target .. ", " .. constantNames.flush .. ", function()"
+		elseif methodMember.data == def.TYPE_INSERT then
+			return "(" .. target .. ", " .. constantNames.insert .. ", function()"
+		else
+			return false, "Affect with invalid method parameter (neither flush nor insert)"
+		end
+	end,
+
+	-- task(name)
+	[def.ID_TASK] = function(self)
+		local valid, curMember, name = ValidateParameter(self.members, 1, {[def.TK_STRING] = true, [def.ID_GET] = {[def.TK_STRING]= true}})
+		if not valid then
+			return false, "task with non-string parameter"
+		end
+		return "(" .. name .. ", function()"
+	end,
+
+	-- run(filename)
+	[def.ID_RUN] = function(self)
+		local valid, curMember, filename = ValidateParameter(self.members, 1, {[def.TK_STRING] = true, [def.ID_GET] = {[def.TK_STRING]= true}})
+		if not valid then return false, "run with non-string parameter" end
+		return ("(" .. filename .. ")")
+	end,
 }
 
 -- how commands end in Lua - either a string or a function returning a string or false, errorMessage
@@ -589,7 +654,7 @@ function Member:ReadFromFile(file)
 		return true
 	end
 	-- none of the above
-	return false, "unhandled nontrivial member type " .. self.type .." @"..file:Tell()
+	return false, "unhandled nontrivial member type " .. self.type .. " (" .. (icarusInfo.IDLookup[self.type] or "unknown") .. ") @"..file:Tell()
 end
 
 -- A block is either a single instruction (like print()) or a compound statement like an if-(else-)block
@@ -705,7 +770,7 @@ function Block:GetLuaCommandStart()
 			return true, value
 		end
 	else
-		return false, "Instruction type " .. self.type .. " not supported"
+		return false, "Instruction type " .. self.type .. " (" .. (icarusInfo.IDLookup[self.type] or "unknown") .. ") not supported"
 	end
 end
 
@@ -718,7 +783,7 @@ function Block:GetLuaCommandParameters()
 		if #self.members == 0 then
 			return true, ""
 		else
-			return false, "No Parameter Handler for Instructions of type " .. self.type
+			return false, "No Parameter Handler for Instructions of type " .. self.type .. " (" .. (icarusInfo.IDLookup[self.type] or "unknown") .. ")"
 		end
 	end
 	local value, errorMessage = handler(self)
