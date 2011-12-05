@@ -37,43 +37,51 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <luabind/luabind.hpp>
 #include <luabind/out_value_policy.hpp> //for pure_out_value
 #include <luabind/iterator_policy.hpp>
+#include <luabind/object.hpp>
 
 namespace jar
 {
 
-//  Helpers for unz/MiniZip
-
-static int GetCurrentUnzFileContent(unzFile filehandle, std::string& output)
+namespace
 {
-    int status;
-    if((status = unzOpenCurrentFile(filehandle)) != UNZ_OK)
+    //  Helpers for unz/MiniZip
+
+    int GetCurrentUnzFileContent(unzFile filehandle, std::string& output)
     {
+        int status;
+        if((status = unzOpenCurrentFile(filehandle)) != UNZ_OK)
+        {
+            return status;
+        }
+        char buf[1024];
+        while((status = unzReadCurrentFile(filehandle, buf, sizeof(buf))) > 0)
+        {
+            //status returns number of bytes read
+            output += std::string(buf, status);
+        }
+        unzCloseCurrentFile(filehandle);
         return status;
     }
-    char buf[1024];
-    while((status = unzReadCurrentFile(filehandle, buf, sizeof(buf))) > 0)
+
+    unzFile MyUnzOpen(const std::string& filename)
     {
-        //status returns number of bytes read
-        output += std::string(buf, status);
+        return unzOpen((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str());
     }
-    unzCloseCurrentFile(filehandle);
-    return status;
-}
 
-static unzFile MyUnzOpen(const std::string& filename)
-{
-    return unzOpen((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str());
-}
+    //  Helpers for the STL
 
-//  Helpers for the STL
+    /** luabind doesn't recognize the return value of std::vector<std::string>::at as a string, thus I need this helper function.
+        That's all right since I need to change it to return nil on invalid indices anyway. **/
+    void StringVectorAt(const std::vector<std::string>& vec, unsigned int index, lua_State* L)
+    {
+        if(index >= vec.size()) return;
+        lua_pushstring(L, vec[index].c_str());
+    }
 
-/** luabind doesn't recognize the return value of std::vector<std::string>::at as a string, thus I need this helper function.
-    That's all right since I need to change it to return nil on invalid indices anyway. **/
-//note: I get an error if the return type is an std string* complaining about unregistered types. bullshit. anyway, using const char* instead works.
-static const char * StringVectorAt(std::vector<std::string>& vec, unsigned int index)
-{
-    if(index >= vec.size()) return NULL;
-    return vec[index].c_str();
+    const std::vector<std::string>& StringVectorIter(const std::vector<std::string>& vec)
+    {
+        return vec;
+    }
 }
 
 void BindCore(lua_State* L)
@@ -110,6 +118,7 @@ void BindCore(lua_State* L)
                 .def("at", &StringVectorAt)
                 .def("__len", &std::vector<std::string>::size)
                 .def("size", &std::vector<std::string>::size)
+                .def("items", &StringVectorIter, luabind::return_stl_iterator)
         ],
 
         // jar - Jedi Academy: Renaissance
@@ -134,8 +143,8 @@ void BindCore(lua_State* L)
 
             luabind::def("Sleep", &Sleep),
 
-            luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory, luabind::return_stl_iterator),
-            luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory, luabind::return_stl_iterator),
+            luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory),
+            luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory),
 
             luabind::class_<Core>("Core")
                 .def("Update", &Core::Update)
@@ -154,8 +163,8 @@ void BindCore(lua_State* L)
                 luabind::def("OpenRead", &fs::OpenRead),
                 luabind::def("OpenWrite", &fs::OpenWrite),
                 luabind::def("Unmount", &fs::Unmount),
-                luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory, luabind::return_stl_iterator),
-                luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory, luabind::return_stl_iterator),
+                luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory),
+                luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory),
 
                 luabind::class_<PHYSFS_File>("File")
                     .def("Close", &fs::Close)

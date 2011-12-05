@@ -54,7 +54,8 @@ function CCommandManager:LoadCommands(dir)
 	local oldRegisterCommand = RegisterCommand
 	RegisterCommand = function(info) return self:RegisterCommand(info) end
 	theCommandManager = self
-	for filename in jar.fs.GetFilesInDirectory(dir) do
+	local files = jar.fs.GetFilesInDirectory(dir)
+	for filename in files:items() do
 		if string.sub(filename, -4) == ".lua" then
 			jar.Logger.GetDefaultLogger():Info("CCommandManager:LoadCommands(): loading \"" .. dir .. "/" .. filename .. "\"", 3)
 			local success, err = pcall(dofile, dir .. "/" .. filename)

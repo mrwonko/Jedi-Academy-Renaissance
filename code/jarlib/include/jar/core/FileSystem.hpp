@@ -134,10 +134,10 @@ JARCOREAPI const int Tell(fs::File file);
 
 
 /** \brief returns all the files within a given directory, ordered by filename (case sensitive?). **/
-JARCOREAPI const std::vector<std::string>& GetFilesInDirectory(const std::string& dir);
+JARCOREAPI const std::vector<std::string> GetFilesInDirectory(const std::string& dir);
 
 /** \brief returns all the directories within a given directory, ordered by filename (case sensitive?). **/
-JARCOREAPI const std::vector<std::string>& GetDirectoriesInDirectory(const std::string& dir);
+JARCOREAPI const std::vector<std::string> GetDirectoriesInDirectory(const std::string& dir);
 
 }
 }
