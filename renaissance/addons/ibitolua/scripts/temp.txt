@@ -47,15 +47,22 @@ loop ( -1 )
 declare ( /*@DECLARE_TYPE*/ FLOAT, "floatvar" );
 set ( "floatvar", "15" );
 free ( "floatvar" );
-camera ( /*@CAMERA_COMMANDS*/ ENABLE );
-camera ( /*@CAMERA_COMMANDS*/ DISABLE );
-camera ( /*@CAMERA_COMMANDS*/ ZOOM, 0.000, 0 );
-camera ( /*@CAMERA_COMMANDS*/ MOVE, < 0.000 0.000 0.000 >, 0 );
-camera ( /*@CAMERA_COMMANDS*/ PAN, < 0.000 0.000 0.000 >, < 0.000 0.000 0.000 >, 0 );
-camera ( /*@CAMERA_COMMANDS*/ ROLL, 0.000, 0 );
-camera ( /*@CAMERA_COMMANDS*/ TRACK, "trackName", 0.000, 0 );
-camera ( /*@CAMERA_COMMANDS*/ FOLLOW, "cameraGroup", 0.000, 0 );
-camera ( /*@CAMERA_COMMANDS*/ DISTANCE, 0.000, 0 );
-camera ( /*@CAMERA_COMMANDS*/ FADE, < 0.000 0.000 0.000 >, 0.000, < 0.000 0.000 0.000 >, 0.000, 0 );
-camera ( /*@CAMERA_COMMANDS*/ SHAKE, 0.000, 0 );
-camera ( /*@CAMERA_COMMANDS*/ PATH, "filename" );
+
+task ( "DEFAULT" )
+{
+	camera ( /*@CAMERA_COMMANDS*/ ENABLE );
+	camera ( /*@CAMERA_COMMANDS*/ DISABLE );
+	camera ( /*@CAMERA_COMMANDS*/ ZOOM, 0.000, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ MOVE, < 0.000 0.000 0.000 >, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ PAN, < 0.000 0.000 0.000 >, < 0.000 0.000 0.000 >, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ ROLL, 0.000, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ TRACK, "trackName", 0.000, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ FOLLOW, "cameraGroup", 0.000, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ DISTANCE, 0.000, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ FADE, < 0.000 0.000 0.000 >, 0.000, < 0.000 0.000 0.000 >, 0.000, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ SHAKE, 0.000, 0 );
+	camera ( /*@CAMERA_COMMANDS*/ PATH, "filename" );
+}
+
+set ( /*@SET_TYPES*/ "SET_SHOT_SPACING", 1000 );
+dowait ( "DEFAULT" );
