@@ -285,34 +285,31 @@ namespace
     {
         AddToSet(*static_cast<caseInsStringSet* >(vecPtrVoid), dir, file, true);
     }
-
-    //luabind only gets the iterators of return_stl_iterators functions, i.e. the vector itself is not saved, thus the iterators don't work anymore unless I've got a vector that still exists
-    static std::vector<std::string> g_stringVec;
 }
 
-const std::vector<std::string>& GetFilesInDirectory(const std::string& dir)
+const std::vector<std::string> GetFilesInDirectory(const std::string& dir)
 {
     caseInsStringSet set;
     PHYSFS_enumerateFilesCallback(dir.c_str(), AddFileToSet, static_cast<void*>(&set));
-    g_stringVec.clear();
+    std::vector<std::string> vec;
     for(caseInsStringSet::iterator it = set.begin(); it != set.end(); ++it)
     {
-        g_stringVec.push_back(*it);
+        vec.push_back(*it);
     }
-    return g_stringVec;
+    return vec;
 }
 
-const std::vector<std::string>& GetDirectoriesInDirectory(const std::string& dir)
+const std::vector<std::string> GetDirectoriesInDirectory(const std::string& dir)
 {
     caseInsStringSet set;
     PHYSFS_enumerateFilesCallback(dir.c_str(), AddDirToSet, static_cast<void*>(&set));
-    g_stringVec.clear();
+    std::vector<std::string> vec;
     for(caseInsStringSet::iterator it = set.begin(); it != set.end(); ++it)
     {
-        g_stringVec.push_back(*it);
+        vec.push_back(*it);
         //Logger::GetDefaultLogger().Log(*it);
     }
-    return g_stringVec;
+    return vec;
 }
 
 }
