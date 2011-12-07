@@ -18,7 +18,7 @@
 
 /* lua.h must be included before this file */
 
-/* mrwonko: dll export on windows */
+/* symbol export/import */
 #ifdef PLUTO_BUILD_DLL
 #define PLUTO_API __declspec(dllexport)
 #else
@@ -29,4 +29,4 @@ void pluto_persist(lua_State *L, lua_Chunkwriter writer, void *ud);
 
 void pluto_unpersist(lua_State *L, lua_Chunkreader reader, void *ud);
 
-LUALIB_API int PLUTO_API luaopen_pluto(lua_State *L);
+PLUTO_API int luaopen_pluto(lua_State *L);
