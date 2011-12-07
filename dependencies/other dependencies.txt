@@ -1,0 +1,7 @@
+To compile, you'll need these libraries, besides Lua with Bitwise Operator Patch by Thierry Grellier (included):
+
+Luabind, preferably compiled against the custom Lua library (I'm not sure this is necessary but it won't hurt.)
+Pluto, a persistence library for Lua, e.g. from https://github.com/mrwonko/pluto (forked from hoelzro (64 bit patch) with added Code::Blocks project)
+SFML 2.0, the Simple & Fast Multimedia Library, as available on https://github.com/LaurentGomila/SFML
+PhysicsFS, a quake 3-style filesystem library, available on http://icculus.org/physfs/
+Minizip, from zlib's contrib/ - http://zlib.net
