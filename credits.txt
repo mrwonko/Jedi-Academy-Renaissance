@@ -2,3 +2,5 @@ Some of the people who helped me:
 
 Marcus Riemer - Tought me quite some C++ and wrote the Singleton class.
 Frédéric Bellaiche - Made the "Tango-styled jar icon", available under GPL from http://www.quantum-bits.org/?page_id=3 and http://commons.wikimedia.org/wiki/File:Jar.svg
+SFML, Lua, Luabind
+Thierry Grellier for Lua Bitwise Operators patch from http://lua-users.org/wiki/LuaPowerPatches
