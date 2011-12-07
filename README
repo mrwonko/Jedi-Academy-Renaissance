@@ -129,6 +129,7 @@ may or may not be what you want.
 * Closures of C functions may not be persisted. Once it becomes possible
 to specify a C function "proto" as a permanent object, this restriction
 will be relaxed.
+* Live Coroutines reportedly cannot be persisted. (Suspended and dead ones can be.)
 
 BUGS: None known. Emphasis on the 'known'.
 
