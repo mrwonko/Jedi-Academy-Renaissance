@@ -79,6 +79,13 @@
 		<Linker>
 			<Add library="m" />
 		</Linker>
+		<ExtraCommands>
+			<Add after='cmd /c copy &quot;$(PROJECT_DIR)src\lauxlib.h&quot; $(PROJECT_DIR)include\&quot;' />
+			<Add after='cmd /c copy &quot;$(PROJECT_DIR)src\lualib.h&quot; $(PROJECT_DIR)include\&quot;' />
+			<Add after='cmd /c copy &quot;$(PROJECT_DIR)src\luaconf.h&quot; $(PROJECT_DIR)include\&quot;' />
+			<Add after='cmd /c copy &quot;$(PROJECT_DIR)src\lua.h&quot; $(PROJECT_DIR)include\&quot;' />
+			<Add after='cmd /c copy &quot;$(PROJECT_DIR)etc\lua.hpp&quot; $(PROJECT_DIR)include\&quot;' />
+		</ExtraCommands>
 		<Unit filename="src\lapi.c">
 			<Option compilerVar="CC" />
 			<Option target="Dynamic Debug" />
