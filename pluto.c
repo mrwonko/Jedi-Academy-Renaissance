@@ -1664,8 +1664,7 @@ static luaL_reg pluto_reg[] = {
 	{ NULL, NULL }
 };
 
-/* mrwonko: added export/import specification for gcc on windows */
-LUALIB_API int PLUTO_API luaopen_pluto(lua_State *L) {
+PLUTO_API int luaopen_pluto(lua_State *L) {
 	luaL_openlib(L, "pluto", pluto_reg, 0);
 	return 1;
 }

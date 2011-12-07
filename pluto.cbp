@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="pluto Debug">
-				<Option output="bin\pluto" prefix_auto="1" extension_auto="1" />
+				<Option output="lib\pluto" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -23,7 +23,7 @@
 				</Compiler>
 			</Target>
 			<Target title="pluto Release">
-				<Option output="bin\pluto" prefix_auto="1" extension_auto="1" />
+				<Option output="lib\pluto" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj\Release\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -84,6 +84,10 @@
 		</Unit>
 		<Unit filename="pluto.c">
 			<Option compilerVar="CC" />
+			<Option target="pluto Debug" />
+			<Option target="pluto Release" />
+		</Unit>
+		<Unit filename="pluto.h">
 			<Option target="pluto Debug" />
 			<Option target="pluto Release" />
 		</Unit>
