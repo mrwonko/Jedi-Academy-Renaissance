@@ -19,16 +19,12 @@
 /* lua.h must be included before this file */
 
 /* symbol export/import */
-#ifdef PLUTO_BUILD_DLL
-#define PLUTO_API __declspec(dllexport)
-#else
-#define PLUTO_API __declspec(dllimport)
-#endif
+#include "pluto_api.h"
 
 void pluto_persist(lua_State *L, lua_Chunkwriter writer, void *ud);
 
 void pluto_unpersist(lua_State *L, lua_Chunkreader reader, void *ud);
 
-PLUTO_API int luaopen_pluto(lua_State *L);
+int PLUTO_API luaopen_pluto(lua_State *L);
 
 #undef PLUTO_API

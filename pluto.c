@@ -1664,7 +1664,9 @@ static luaL_reg pluto_reg[] = {
 	{ NULL, NULL }
 };
 
-__declspec(dllexport) int luaopen_pluto(lua_State *L) {
+#include "pluto_api.h"
+
+int PLUTO_API luaopen_pluto(lua_State *L) {
 	luaL_openlib(L, "pluto", pluto_reg, 0);
 	return 1;
 }
