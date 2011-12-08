@@ -2,13 +2,13 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="pluto" />
+		<Option title="jar-pluto" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="pluto Debug">
-				<Option output="lib\pluto" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="lib/jar_pluto_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -17,14 +17,17 @@
 					<Add option="-Wall" />
 					<Add option="-ansi" />
 					<Add option="-g" />
-					<Add option="-Dlua_assert(x)=assert(x)" />
+					<Add option="-Dlua_assert=assert" />
 					<Add option="-DPLUTO_DEBUG" />
 					<Add option="-DPLUTO_BUILD_DLL" />
 				</Compiler>
+				<Linker>
+					<Add library="../lua-5.1.4-jar/lib/jar_lua_d" />
+				</Linker>
 			</Target>
 			<Target title="pluto Release">
-				<Option output="lib\pluto" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option output="lib/jar_pluto" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -37,10 +40,11 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="../lua-5.1.4-jar/lib/jar_lua" />
 				</Linker>
 			</Target>
 			<Target title="pptest Debug">
-				<Option output="bin\pptest" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/pptest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin" />
 				<Option object_output="obj" />
 				<Option type="1" />
@@ -51,9 +55,12 @@
 					<Add option="-ansi" />
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add library="../lua-5.1.4-jar/lib/jar_lua_d" />
+				</Linker>
 			</Target>
 			<Target title="puptest Debug">
-				<Option output="bin\puptest" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/puptest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin" />
 				<Option object_output="obj" />
 				<Option type="1" />
@@ -64,14 +71,14 @@
 					<Add option="-ansi" />
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add library="../lua-5.1.4-jar/lib/jar_lua_d" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Linker>
-			<Add library="lua" />
-		</Linker>
 		<Unit filename="lzio.c">
 			<Option compilerVar="CC" />
 			<Option target="pluto Debug" />
