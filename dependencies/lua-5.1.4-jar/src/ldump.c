@@ -6,6 +6,8 @@
 
 #include <stddef.h>
 
+#include <assert.h>
+
 #define ldump_c
 #define LUA_CORE
 

@@ -7,6 +7,8 @@
 
 #include <stddef.h>
 
+#include <assert.h>
+
 #define lstate_c
 #define LUA_CORE
 
@@ -36,7 +38,7 @@ typedef struct LG {
   lua_State l;
   global_State g;
 } LG;
-  
+
 
 
 static void stack_init (lua_State *L1, lua_State *L) {

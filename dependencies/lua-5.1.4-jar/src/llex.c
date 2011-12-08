@@ -9,6 +9,8 @@
 #include <locale.h>
 #include <string.h>
 
+#include <assert.h>
+
 #define llex_c
 #define LUA_CORE
 

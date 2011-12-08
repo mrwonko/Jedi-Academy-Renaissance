@@ -6,6 +6,8 @@
 
 #include <string.h>
 
+#include <assert.h>
+
 #define lundump_c
 #define LUA_CORE
 

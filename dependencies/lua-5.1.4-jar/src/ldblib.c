@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <assert.h>
+
 #define ldblib_c
 #define LUA_LIB
 
@@ -139,7 +141,7 @@ static int db_getinfo (lua_State *L) {
     treatstackoption(L, L1, "func");
   return 1;  /* return table */
 }
-    
+
 
 static int db_getlocal (lua_State *L) {
   int arg;

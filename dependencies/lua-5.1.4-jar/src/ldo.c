@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <assert.h>
+
 #define ldo_c
 #define LUA_CORE
 
@@ -365,7 +367,7 @@ int luaD_poscall (lua_State *L, StkId firstResult) {
 ** The arguments are on the stack, right after the function.
 ** When returns, all the results are on the stack, starting at the original
 ** function position.
-*/ 
+*/
 void luaD_call (lua_State *L, StkId func, int nResults) {
   if (++L->nCcalls >= LUAI_MAXCCALLS) {
     if (L->nCcalls == LUAI_MAXCCALLS)

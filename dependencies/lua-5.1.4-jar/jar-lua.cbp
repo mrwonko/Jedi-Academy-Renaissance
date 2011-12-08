@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Lua" />
+		<Option title="jar-Lua" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -15,6 +15,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-Dlua_assert=assert" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;$(PROJECT_DIR)bin\&quot;' />
@@ -56,6 +57,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-Dlua_assert=assert" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)src\lauxlib.h&quot; &quot;$(PROJECT_DIR)include\&quot;' />
@@ -105,6 +107,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-Dlua_assert=assert" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;$(PROJECT_DIR)bin/&quot;' />
@@ -146,6 +149,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
+					<Add option="-Dlua_assert=assert" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)src/lauxlib.h&quot; &quot;$(PROJECT_DIR)include/&quot;' />
