@@ -25,6 +25,6 @@ void pluto_persist(lua_State *L, lua_Chunkwriter writer, void *ud);
 
 void pluto_unpersist(lua_State *L, lua_Chunkreader reader, void *ud);
 
-int PLUTO_API luaopen_pluto(lua_State *L);
+int PLUTO_API luaopen_jar_pluto(lua_State *L);
 
 #undef PLUTO_API
