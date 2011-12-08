@@ -1,5 +1,9 @@
 $Id$
 
+-- jar --
+* Removed makefiles since they're out of date now...
+* ... because I use jar_lua instead (dynamic linking, bitwise operators)
+
 -- 2.4 --
 * Changed upval unboxing to allow upvals which contain func-housed cycles
 * Added stack checking to all stack-growing functions
