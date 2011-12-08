@@ -33,7 +33,8 @@
 		<Project filename="07-masterserver/07-masterserver.cbp" />
 		<Project filename="luabind-crashtest/luabind-crashtest.cbp" />
 		<Project filename="luabindoc/luabindoc.cbp" />
-		<Project filename="../dependencies/lua-5.1.4-jar/jar-lua.cbp" active="1" />
+		<Project filename="../dependencies/lua-5.1.4-jar/jar-lua.cbp" />
 		<Project filename="../dependencies/pluto-jar/jar-pluto.cbp" />
+		<Project filename="RenderTest/RenderTest.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>
