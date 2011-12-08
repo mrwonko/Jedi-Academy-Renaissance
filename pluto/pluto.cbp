@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="pluto" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="pluto Debug">
+				<Option output="lib\pluto" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-pedantic" />
+					<Add option="-Wall" />
+					<Add option="-ansi" />
+					<Add option="-g" />
+					<Add option="-Dlua_assert(x)=assert(x)" />
+					<Add option="-DPLUTO_DEBUG" />
+					<Add option="-DPLUTO_BUILD_DLL" />
+				</Compiler>
+			</Target>
+			<Target title="pluto Release">
+				<Option output="lib\pluto" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-pedantic" />
+					<Add option="-Wall" />
+					<Add option="-ansi" />
+					<Add option="-DPLUTO_BUILD_DLL" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="pptest Debug">
+				<Option output="bin\pptest" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-pedantic-errors" />
+					<Add option="-Wall" />
+					<Add option="-ansi" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="puptest Debug">
+				<Option output="bin\puptest" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-pedantic" />
+					<Add option="-Wall" />
+					<Add option="-ansi" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Linker>
+			<Add library="lua" />
+		</Linker>
+		<Unit filename="lzio.c">
+			<Option compilerVar="CC" />
+			<Option target="pluto Debug" />
+			<Option target="pluto Release" />
+		</Unit>
+		<Unit filename="pdep.c">
+			<Option compilerVar="CC" />
+			<Option target="pluto Debug" />
+			<Option target="pluto Release" />
+		</Unit>
+		<Unit filename="pluto.c">
+			<Option compilerVar="CC" />
+			<Option target="pluto Debug" />
+			<Option target="pluto Release" />
+		</Unit>
+		<Unit filename="pluto.h">
+			<Option target="pluto Debug" />
+			<Option target="pluto Release" />
+		</Unit>
+		<Unit filename="pptest.c">
+			<Option compilerVar="CC" />
+			<Option target="pptest Debug" />
+		</Unit>
+		<Unit filename="puptest.c">
+			<Option compilerVar="CC" />
+			<Option target="puptest Debug" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
