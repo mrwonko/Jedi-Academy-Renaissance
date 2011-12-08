@@ -9,6 +9,8 @@
 #include <stddef.h>
 #include <string.h>
 
+#include <assert.h>
+
 
 #define ldebug_c
 #define LUA_CORE
@@ -184,7 +186,7 @@ static void collectvalidlines (lua_State *L, Closure *f) {
     int i;
     for (i=0; i<f->l.p->sizelineinfo; i++)
       setbvalue(luaH_setnum(L, t, lineinfo[i]), 1);
-    sethvalue(L, L->top, t); 
+    sethvalue(L, L->top, t);
   }
   incr_top(L);
 }

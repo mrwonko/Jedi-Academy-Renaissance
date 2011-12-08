@@ -7,6 +7,8 @@
 
 #include <string.h>
 
+#include <assert.h>
+
 #define lstring_c
 #define LUA_CORE
 

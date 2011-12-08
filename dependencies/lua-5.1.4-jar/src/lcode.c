@@ -7,6 +7,8 @@
 
 #include <stdlib.h>
 
+#include <assert.h>
+
 #define lcode_c
 #define LUA_CORE
 

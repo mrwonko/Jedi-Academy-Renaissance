@@ -7,6 +7,8 @@
 
 #include <stddef.h>
 
+#include <assert.h>
+
 #define lmem_c
 #define LUA_CORE
 

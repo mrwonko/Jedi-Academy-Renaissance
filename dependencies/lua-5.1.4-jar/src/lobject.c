@@ -10,6 +10,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <assert.h>
+
 #define lobject_c
 #define LUA_CORE
 

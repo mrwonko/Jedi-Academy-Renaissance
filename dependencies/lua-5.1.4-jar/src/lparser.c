@@ -7,6 +7,8 @@
 
 #include <string.h>
 
+#include <assert.h>
+
 #define lparser_c
 #define LUA_CORE
 
