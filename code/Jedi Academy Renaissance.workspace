@@ -12,28 +12,15 @@
 		<Project filename="jarlib/jar-audio.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
-		<Project filename="02-filesystem/02-filesytem.cbp">
-			<Depends filename="jarlib/jar-core.cbp" />
-		</Project>
-		<Project filename="03-testsnshit/03-testsnshit.cbp">
+		<Project filename="renaissance/renaissance.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 			<Depends filename="jarlib/jar-graphics.cbp" />
 			<Depends filename="jarlib/jar-audio.cbp" />
 		</Project>
-		<Project filename="04-inputtest/04-inputtest.cbp">
-			<Depends filename="jarlib/jar-core.cbp" />
-			<Depends filename="jarlib/jar-input.cbp" />
-			<Depends filename="jarlib/jar-graphics.cbp" />
-		</Project>
-		<Project filename="05-luabind-tests/05-luabind-tests.cbp">
-			<Depends filename="jarlib/jar-core.cbp" />
-		</Project>
-		<Project filename="06-jka-fonttest/06-jka-fonttest.cbp" />
-		<Project filename="07-masterserver/07-masterserver.cbp" />
-		<Project filename="luabind-crashtest/luabind-crashtest.cbp" />
-		<Project filename="luabindoc/luabindoc.cbp" />
 		<Project filename="../dependencies/lua-5.1.4-jar/jar-lua.cbp" active="1" />
-		<Project filename="../dependencies/pluto-jar/jar-pluto.cbp" />
+		<Project filename="../dependencies/pluto-jar/jar-pluto.cbp">
+			<Depends filename="../dependencies/lua-5.1.4-jar/jar-lua.cbp"/>
+		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>
