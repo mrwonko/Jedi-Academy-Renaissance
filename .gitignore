@@ -5,4 +5,5 @@
 *.layout
 *.depend
 *.html
+*.so
 changelog.txt
