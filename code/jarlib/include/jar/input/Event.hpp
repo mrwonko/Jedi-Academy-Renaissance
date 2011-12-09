@@ -6,7 +6,6 @@
 #include "jar/input/API.hpp"
 
 class lua_State;
-class InputDeviceJoystick;
 
 namespace sf
 {
@@ -15,6 +14,8 @@ namespace sf
 
 namespace jar
 {
+
+class InputDeviceJoystick;
 
 /**
     \brief Events that happen.

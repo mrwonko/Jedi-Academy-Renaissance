@@ -1,5 +1,5 @@
-#include "jar/input/InputDeviceJoystick.hpp" //if I place this after Event.hpp include, I get "incomplete type" errors... wut?
 #include "jar/input/Event.hpp"
+#include "jar/input/InputDeviceJoystick.hpp"
 #include "jar/input/EventManager.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
