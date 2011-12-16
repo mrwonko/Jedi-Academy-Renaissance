@@ -1,0 +1,1 @@
+jar.Logger.GetDefaultLogger():Info("Welcome to my Ludum Dare 22 game! I see you have logging enabled... :)", 3)
