@@ -1,3 +1,0 @@
-renaissance/ is the folder that will eventually have to be copied into GameData, containing all the data, the binaries etc.
-code/ contains the C++ source.
-dependencies/ contains modified dependencies - Lua with added bitwise operators

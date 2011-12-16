@@ -1,5 +1,3 @@
 inactiveMods =
 {
-	"testsuite/",
-	"shootemup/",
 }

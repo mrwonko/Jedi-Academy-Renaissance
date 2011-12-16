@@ -1,4 +1,0 @@
-load mods from /addons/ in *.pk3 & *.zip & folders
-I'll need a "GTK Renaissadiant" (ZeroRadiant fork) supporting all the mod's features. Fix win32 save dialog in it.
-g_allowClientSideMods to disable mods - i.e. I'll need mod reloading at run time? That could be a problem with scripts relying on things no longer available etc.? No. Lua needs to be restarted.
-AutoComplete in console has to take into account both cvars and commands

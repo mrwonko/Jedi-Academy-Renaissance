@@ -1,9 +1,0 @@
-== required lua functions ==
-GetEntity(name : string)
-GetEntity(ID : int)
-affect(name : string, method : int, commands : function)
-wait(time : float)
-
-== required constants ==
-FLUSH
-INSERT

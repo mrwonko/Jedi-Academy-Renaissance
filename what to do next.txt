@@ -1,5 +1,0 @@
-hey, sobasic things I'll probably need in just about every project:
-Menus
-Profiles
-
-Dummy non-Windows joystick class (for InputDeviceManager::GetJoystick())

@@ -2,4 +2,4 @@ Some of the people who helped me:
 
 Marcus Riemer - Tought me quite some C++ and wrote the Singleton class.
 Frédéric Bellaiche - Made the "Tango-styled jar icon", available under GPL from http://www.quantum-bits.org/?page_id=3 and http://commons.wikimedia.org/wiki/File:Jar.svg
-The authors of the libraries I used, obviously. (See dependencies/other dependencies.txt)
+The authors of the libraries I used, obviously.

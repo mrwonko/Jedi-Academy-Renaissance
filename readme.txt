@@ -1,3 +1,3 @@
-== Jedi Academy: Renaissance ==
+== Renaissance: Ludum Dare 22 ==
 
-An attempt to recode Jedi Academy using C++ and Lua for improved moddability.
+My Ludum Dare 22 project, based on my WIP engine, Renaissance.
