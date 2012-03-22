@@ -5,10 +5,6 @@
 #include <string>
 #include <cctype>
 #include <algorithm>
-#include <cctype>
-
-//TODO: delete
-#include <iostream>
 
 #if defined(_WIN32)
   #ifndef WIN32_LEAN_AND_MEAN
@@ -120,7 +116,7 @@ namespace jar
 
     std::string& Helpers::ToLower(std::string& text)
     {
-        std::transform(text.begin(), text.end(), text.begin(), (int (*)(int))std::tolower);
+        std::transform(text.begin(), text.end(), text.begin(), (int (*)(int))std::tolower); //my compiler confuses cctype's tolower with the template one from std locale otherwise
         return text;
     }
 
@@ -211,48 +207,43 @@ namespace jar
     }
 #endif
 
-    namespace
+    std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
     {
-        std::vector<std::string> g_tempVec;
-    }
-
-    std::vector<std::string>& Helpers::GetFilesInDirectory(std::string directoryPath)
-    {
+        std::vector<std::string> results;
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
-        g_tempVec.clear();
 #if defined(_WIN32)
-        g_tempVec = GetStuffInDirectory(directoryPath, &IsFile);
+        results = GetStuffInDirectory(directoryPath, &IsFile);
 #elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
         if(int(dir = opendir(directoryPath.c_str())) == -1)
         {
-          return g_tempVec;
+          return results;
         }
         dirent* entry;
         while( (entry = readdir(dir)) )
         {
           if(entry->d_type == DT_REG)
           {
-            g_tempVec.push_back(std::string(entry->d_name));
+            results.push_back(std::string(entry->d_name));
           }
         }
 #else
   #warning Helpers::GetFilesInDirectory() not implemented for this platform - stuff will break.
 #endif
-        return g_tempVec;
+        return results;
     }
 
-    std::vector<std::string>& Helpers::GetDirectoriesInDirectory(std::string directoryPath)
+    std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
     {
+        std::vector<std::string> results;
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
-        g_tempVec.clear();
 #if defined(_WIN32)
-        g_tempVec = GetStuffInDirectory(directoryPath, &IsDirectory);
+        results = GetStuffInDirectory(directoryPath, &IsDirectory);
 #elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
         if(int(dir = opendir(directoryPath.c_str())) == -1)
         {
-          return g_tempVec;
+          return results;
         }
         dirent* entry;
         while( (entry = readdir(dir)) )
@@ -264,13 +255,13 @@ namespace jar
             {
               continue;
             }
-            g_tempVec.push_back(name);
+            results.push_back(name);
           }
         }
 #else
   #warning Helpers::GetFilesInDirectory() not implemented for this platform - stuff will break.
 #endif
-        return g_tempVec;
+        return results;
     }
 
     const bool Helpers::CaseInsensitiveStringLessThan(std::string str1, std::string str2)
