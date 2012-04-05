@@ -6,7 +6,7 @@
 namespace jar
 {
 
-/** \brief Automatically gets updated every frame. (If Core gets updated, that is.) **/
+/** \brief Automatically gets updated every frame. (Whenever Core gets updated, that is.) **/
 class JARCOREAPI Updatable
 {
     public:
