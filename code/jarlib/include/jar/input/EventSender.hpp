@@ -9,7 +9,7 @@ namespace jar
 
 class Event;
 class EventListener;
-/** \brief Class for sending Events. Adds timestamps.
+/** \brief Class for sending Events.
 **/
 class JARINPUTAPI EventSender
 {

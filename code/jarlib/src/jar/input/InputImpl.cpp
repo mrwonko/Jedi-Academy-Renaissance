@@ -6,11 +6,11 @@
 #include "jar/core/Helpers.hpp"
 #include "jar/core/Lua.hpp"
 #include "jar/Core.hpp"
-#include "jar/input/InputDeviceJoystick.hpp"
+#include "jar/input/InputDeviceController.hpp"
 
 #ifdef _WIN32
-#include "jar/input/Windows/WinJoystickXInput.hpp"
-#include "jar/input/Windows/WinJoystickDirectInput.hpp"
+#include "jar/input/Windows/WinControllerXInput.hpp"
+#include "jar/input/Windows/WinControllerDirectInput.hpp"
 
 //for IsXInputDevice
 #include <wbemidl.h>
@@ -78,7 +78,7 @@ const bool InputImpl::Init()
 
     Logger::GetDefaultLogger().Info("Exposing Event System to Lua...", 2);
     lua_State* L = Core::GetSingleton().GetLua().GetState();
-    InputDeviceJoystick::Luabind(L);
+    InputDeviceController::Luabind(L);
     InputDeviceManager::Luabind(L);
     Event::Luabind(L);
     InputImpl::Luabind(L);
@@ -256,7 +256,7 @@ namespace
     struct DirectInputEnumInfo
     {
         DirectInputEnumInfo(unsigned int& numJoysticks,
-                            std::vector<Windows::WinJoystickDirectInput*>& joyVec,
+                            std::vector<Windows::WinControllerDirectInput*>& joyVec,
                             InputDeviceManager& manager,
                             LPDIRECTINPUT8 dinput
                             ) :
@@ -267,7 +267,7 @@ namespace
         {}
 
         unsigned int& NumJoysticks;
-        std::vector<Windows::WinJoystickDirectInput*>& JoyVec;
+        std::vector<Windows::WinControllerDirectInput*>& JoyVec;
         InputDeviceManager& DeviceManager;
         LPDIRECTINPUT8 DirectInput;
     };
@@ -285,7 +285,7 @@ namespace
 
         DirectInputEnumInfo* info = static_cast<DirectInputEnumInfo* >(voidptr);
 
-        Windows::WinJoystickDirectInput* joy = new Windows::WinJoystickDirectInput(info->NumJoysticks);
+        Windows::WinControllerDirectInput* joy = new Windows::WinControllerDirectInput(info->NumJoysticks);
         if(!joy->Init(info->DirectInput, device))
         {
             delete joy;
@@ -318,7 +318,7 @@ const bool InputImpl::InitJoysticks()
         if(XInputGetState(i, &state) == ERROR_SUCCESS)
         {
             //controller connected
-            Windows::WinJoystickXInput* joy = new Windows::WinJoystickXInput(numJoysticks);
+            Windows::WinControllerXInput* joy = new Windows::WinControllerXInput(numJoysticks);
             if(!joy->Init(i))
             {
                 delete joy;
@@ -388,7 +388,7 @@ const bool InputImpl::DeinitJoysticks()
     //  deinit XInput
 
     XInputEnable(FALSE);
-    for(std::vector<Windows::WinJoystickXInput*>::iterator it = mXInputJoysticks.begin(); it != mXInputJoysticks.end(); ++it)
+    for(std::vector<Windows::WinControllerXInput*>::iterator it = mXInputJoysticks.begin(); it != mXInputJoysticks.end(); ++it)
     {
         mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(*it); //failure means it hasn't been added yet - that's ok.
         if(!(*it)->Deinit())
@@ -402,7 +402,7 @@ const bool InputImpl::DeinitJoysticks()
     //  deinit DirectInput
 
     //release joysticks
-    for(std::vector<Windows::WinJoystickDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
+    for(std::vector<Windows::WinControllerDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
     {
         mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(*it); //failure means it hasn't been added yet - that's ok.
         if(!(*it)->Deinit())
@@ -461,7 +461,7 @@ void InputImpl::OnWindowCreated()
         char title[128];
         GetWindowText(info.Hwnd, title, sizeof(title));
         Logger::GetDefaultLogger().Info(std::string("First window created is called \"")+title+"\".", 5);
-        for(std::vector<Windows::WinJoystickDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
+        for(std::vector<Windows::WinControllerDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
         {
             (*it)->OnFirstWindowCreated(info.Hwnd);
         }

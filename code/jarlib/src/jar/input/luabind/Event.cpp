@@ -1,5 +1,5 @@
 #include "jar/input/Event.hpp"
-#include "jar/input/InputDeviceJoystick.hpp"
+#include "jar/input/InputDeviceController.hpp"
 #include "jar/input/EventManager.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
@@ -138,24 +138,24 @@ void Event::Luabind(lua_State* L)
             .def(luabind::constructor<>())
             .def_readonly("Type", &Event::Type)
             //the event union - depends on Type.
-            .def_readonly("JoyButton", &Event::JoyButton)
-            .def_readonly("JoyAxis", &Event::JoyAxis)
+            .def_readonly("ControllerButton", &Event::ControllerButton)
+            .def_readonly("ControllerAxis", &Event::ControllerAxis)
             .def_readonly("Key", &Event::Key)
             .def_readonly("MouseMove", &Event::MouseMove)
             .def_readonly("MouseButton", &Event::MouseButton)
             .def_readonly("MouseWheel", &Event::MouseWheel)
             .scope
             [
-                luabind::class_<Event::JoyAxisEvent>("JoyAxisEvent")
+                luabind::class_<Event::ControllerAxisEvent>("ControllerAxisEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Joystick", &Event::JoyAxisEvent::Joystick)
-                    .def_readonly("Axis", &Event::JoyAxisEvent::Axis)
-                    .def_readonly("Position", &Event::JoyAxisEvent::Position),
+                    .def_readonly("Controller", &Event::ControllerAxisEvent::Controller)
+                    .def_readonly("Axis", &Event::ControllerAxisEvent::Axis)
+                    .def_readonly("Position", &Event::ControllerAxisEvent::Position),
 
-                luabind::class_<Event::JoyButtonEvent>("JoyButtonEvent")
+                luabind::class_<Event::ControllerButtonEvent>("ControllerButtonEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Joystick", &Event::JoyButtonEvent::Joystick)
-                    .def_readonly("Button", &Event::JoyButtonEvent::Button),
+                    .def_readonly("Controller", &Event::ControllerButtonEvent::Controller)
+                    .def_readonly("Button", &Event::ControllerButtonEvent::Button),
 
                 luabind::class_<Event::KeyEvent>("KeyEvent")
                     .def(luabind::constructor<>())
@@ -188,9 +188,9 @@ void Event::Luabind(lua_State* L)
                 luabind::value("MouseButtonPressed", Event::MouseButtonPressed),
                 luabind::value("MouseButtonReleased", Event::MouseButtonReleased),
                 luabind::value("MouseWheelMoved", Event::MouseWheelMoved),
-                luabind::value("JoyAxisMoved", Event::JoyAxisMoved),
-                luabind::value("JoyButtonPressed", Event::JoyButtonPressed),
-                luabind::value("JoyButtonReleased", Event::JoyButtonReleased)
+                luabind::value("ControllerAxisMoved", Event::ControllerAxisMoved),
+                luabind::value("ControllerButtonPressed", Event::ControllerButtonPressed),
+                luabind::value("ControllerButtonReleased", Event::ControllerButtonReleased)
             ],
 
         //doesn't really belong here, but I don't feel so little code justified a new file or even function

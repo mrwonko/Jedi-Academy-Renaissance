@@ -20,7 +20,7 @@
 				<Linker>
 					<Add option="-enable-auto-import" />
 					<Add library="user32" />
-					<Add library="lua" />
+					<Add library="jar_lua_d" />
 					<Add library="luabindd" />
 					<Add library="zdll" />
 					<Add library="minizip-d" />
@@ -43,7 +43,7 @@
 					<Add option="-s" />
 					<Add option="-enable-auto-import" />
 					<Add library="user32" />
-					<Add library="lua" />
+					<Add library="jar_lua" />
 					<Add library="luabind" />
 					<Add library="zdll" />
 					<Add library="minizip" />
@@ -101,10 +101,12 @@
 			<Add option="-DJAR_CORE_LIBRARY_BUILD" />
 			<Add option="-DLUABIND_DYNAMIC_LINK" />
 			<Add directory="include" />
+			<Add directory="..\..\dependencies\lua-5.1.4-jar\include" />
 		</Compiler>
 		<Linker>
 			<Add library="physfs" />
 			<Add library="sfml-system" />
+			<Add directory="..\..\dependencies\lua-5.1.4-jar\lib" />
 		</Linker>
 		<Unit filename="include\jar\Core.hpp" />
 		<Unit filename="include\jar\Jar.hpp" />

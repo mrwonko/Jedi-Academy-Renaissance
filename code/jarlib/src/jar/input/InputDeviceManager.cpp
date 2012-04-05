@@ -1,6 +1,6 @@
 #include "jar/input/InputDeviceManager.hpp"
 #include "jar/input/InputDevice.hpp"
-#include "jar/input/InputDeviceJoystick.hpp"
+#include "jar/input/InputDeviceController.hpp"
 #include "jar/input/EventManager.hpp"
 #include "jar/Input.hpp"
 #include "jar/core/Logger.hpp"
@@ -63,28 +63,28 @@ const bool InputDeviceManager::DeleteInputDevice(InputDevice* device)
     return ret;
 }
 
-InputDeviceJoystick* InputDeviceManager::GetJoystick(const unsigned int index) const
+InputDeviceController* InputDeviceManager::GetController(const unsigned int index) const
 {
     for(std::set<InputDevice*>::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
     {
-        if((*it)->GetDeviceType() != InputDevice::DT_Joystick) continue;
+        if((*it)->GetDeviceType() != InputDevice::DT_Controller) continue;
         //this device is a joystick. But is it the right one?
-        InputDeviceJoystick* joy = dynamic_cast<InputDeviceJoystick*>(*it);
+        InputDeviceController* joy = dynamic_cast<InputDeviceController*>(*it);
         if(joy->GetIndex() == index) return joy;
     }
     Logger::GetDefaultLogger().Warning("Input Device Manager: Request for invalid joystick #" + Helpers::IntToString(index));
     return NULL;
 }
 
-std::list<InputDeviceJoystick*>& InputDeviceManager::GetAllJoysticks() const
+std::list<InputDeviceController*>& InputDeviceManager::GetAllControllers() const
 {
-    static std::list<InputDeviceJoystick*> l;
+    static std::list<InputDeviceController*> l;
     l.clear();
     for(std::set<InputDevice*>::const_iterator it = mDevices.begin(); it != mDevices.end(); ++it)
     {
         //skip if no joystick
-        if((*it)->GetDeviceType() != InputDevice::DT_Joystick) continue;
-        l.push_back(dynamic_cast<InputDeviceJoystick*>(*it));
+        if((*it)->GetDeviceType() != InputDevice::DT_Controller) continue;
+        l.push_back(dynamic_cast<InputDeviceController*>(*it));
     }
     return l;
 }

@@ -9,7 +9,7 @@
 #endif
 #include <windows.h>
 
-//if you change this, also change it in WinJoystickDirectInput.hpp
+//if you change this, also change it in WinControllerDirectInput.hpp
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
@@ -31,8 +31,8 @@ namespace Windows
 {
     class WinKeyboard;
     class WinMouse;
-    class WinJoystickXInput;
-    class WinJoystickDirectInput;
+    class WinControllerXInput;
+    class WinControllerDirectInput;
 }
 #endif
 
@@ -65,10 +65,10 @@ class InputImpl : public Component
         EventManager* mEventManager;
 #ifdef _WIN32
         //XInput
-        std::vector<Windows::WinJoystickXInput*> mXInputJoysticks;
+        std::vector<Windows::WinControllerXInput*> mXInputJoysticks;
         //DirectInput
         LPDIRECTINPUT8 mDirectInput;
-        std::vector<Windows::WinJoystickDirectInput*> mDirectInputJoysticks;
+        std::vector<Windows::WinControllerDirectInput*> mDirectInputJoysticks;
 
         bool mNoWindowExists;
 #else

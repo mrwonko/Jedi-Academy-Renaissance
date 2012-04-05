@@ -13,7 +13,7 @@ namespace jar
 
 /** \brief An input devices
 
-    Input devices send their input via events, i.e. SendEvent(). They are to include a timestamp.
+    Input devices send their input via events, i.e. SendEvent().
 **/
 class JARINPUTAPI InputDevice : public EventSender
 {
@@ -36,7 +36,7 @@ class JARINPUTAPI InputDevice : public EventSender
         {
             DT_Keyboard,
             DT_Mouse,
-            DT_Joystick, ///< Joystick, Gamepad, Steeringwheel etc.
+            DT_Controller, ///< Joystick, Gamepad, Steeringwheel etc.
         };
 
         /** \brief Gives this device's type

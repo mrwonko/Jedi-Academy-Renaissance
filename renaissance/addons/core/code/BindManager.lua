@@ -260,22 +260,22 @@ function BindManager:OnEvent(event)
 		self.lastMousePos.y = event.MouseMove.Y
 		return true
 	-- Joystick
-	elseif event.Type == jar.Event.JoyButtonPressed then
-		return ExecuteBind(JoyButtonToString(JoystickManager:GetIndex(event.JoyButton.Joystick:GetUniqueID()), event.JoyButton.Button))
-	elseif event.Type == jar.Event.JoyButtonReleased then
-		local button = JoyButtonToString(JoystickManager:GetIndex(event.JoyButton.Joystick:GetUniqueID()), event.JoyButton.Button)
+	elseif event.Type == jar.Event.ControllerButtonPressed then
+		return ExecuteBind(JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Joystick:GetUniqueID()), event.ControllerButton.Button))
+	elseif event.Type == jar.Event.ControllerButtonReleased then
+		local button = JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Joystick:GetUniqueID()), event.ControllerButton.Button)
 		if self.binds[button] then
 			self.interpreter:Interpret(ToMinus(self.binds[button]))
 			return true
 		end
 		return false
-	elseif event.Type == jar.Event.JoyAxisMoved then
-		local joystick = JoystickManager.joysticksByGUID[event.JoyAxis.Joystick:GetUniqueID()]
+	elseif event.Type == jar.Event.ControllerAxisMoved then
+		local joystick = JoystickManager.joysticksByGUID[event.ControllerAxis.Joystick:GetUniqueID()]
 		if not joystick then
 			return false
 		end
-		local amount = joystick:ApplySensitivity(event.JoyAxis.Position)
-		return ExecuteAxisBind(JoyAxisToString(joystick.index, event.JoyAxis.Axis, amount), amount)
+		local amount = joystick:ApplySensitivity(event.ControllerAxis.Position)
+		return ExecuteAxisBind(JoyAxisToString(joystick.index, event.ControllerAxis.Axis, amount), amount)
 	end
 	return false
 end

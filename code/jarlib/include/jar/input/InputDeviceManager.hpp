@@ -14,7 +14,7 @@ namespace jar
 {
 
 class InputDevice;
-class InputDeviceJoystick;
+class InputDeviceController;
 class JARINPUTAPI InputDeviceManager : public EventListener
 {
     public:
@@ -56,10 +56,10 @@ class JARINPUTAPI InputDeviceManager : public EventListener
 
         /** \brief Retrieve a joystick of a given index
             \return The joystick, or NULL if no such joystick exists. **/
-        InputDeviceJoystick* GetJoystick(const unsigned int index) const;
+        InputDeviceController* GetController(const unsigned int index) const;
 
         /** \note For luabind to be able to work with the returned list, it apparently mustn't be an object since Luabind only takes iterator ownership. **/
-        std::list<InputDeviceJoystick*>& GetAllJoysticks() const;
+        std::list<InputDeviceController*>& GetAllControllers() const;
 
         virtual void ReceiveEvent(const Event& event);
 

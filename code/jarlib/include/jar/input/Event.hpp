@@ -15,7 +15,7 @@ namespace sf
 namespace jar
 {
 
-class InputDeviceJoystick;
+class InputDeviceController;
 
 /**
     \brief Events that happen.
@@ -39,9 +39,9 @@ struct JARINPUTAPI Event
         MouseButtonPressed,
         MouseButtonReleased,
         MouseWheelMoved,
-        JoyAxisMoved,
-        JoyButtonPressed,
-        JoyButtonReleased,
+        ControllerAxisMoved,
+        ControllerButtonPressed,
+        ControllerButtonReleased,
         //Resized, ///< The window has been resized
         LostFocus, ///< The window lost focus
         GainedFocus, ///< The window gained focus
@@ -83,17 +83,17 @@ struct JARINPUTAPI Event
 
     /** \brief Info for Event of EventType JoyButtonPressed or JoyButtonReleased
     **/
-    struct JARINPUTAPI JoyButtonEvent
+    struct JARINPUTAPI ControllerButtonEvent
     {
-        InputDeviceJoystick* Joystick; ///< The joystick
+        InputDeviceController* Controller; ///< The joystick
         unsigned int Button; ///< the button index
     };
 
     /** \brief Info for Event of EventType JoyAxisMoved
     **/
-    struct JARINPUTAPI JoyAxisEvent
+    struct JARINPUTAPI ControllerAxisEvent
     {
-        InputDeviceJoystick* Joystick; ///< The joystick
+        InputDeviceController* Controller; ///< The joystick
         unsigned int Axis; ///< The axis index
         float Position; ///< The Axis's position, in [-1; 1]
     };
@@ -105,8 +105,8 @@ struct JARINPUTAPI Event
         MouseMovedEvent MouseMove;
         MouseButtonEvent MouseButton;
         MouseWheelEvent MouseWheel;
-        JoyButtonEvent JoyButton;
-        JoyAxisEvent JoyAxis;
+        ControllerButtonEvent ControllerButton;
+        ControllerAxisEvent ControllerAxis;
     };
 
     /** \brief Binds Events to Lua via luabind **/
