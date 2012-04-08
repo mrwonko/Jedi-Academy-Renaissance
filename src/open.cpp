@@ -147,7 +147,7 @@ namespace
         lua_pushcclosure(L, &deprecated_super, 0);
         lua_settable(L, LUA_GLOBALSINDEX);
 
-        set_package_preload(L, "luabind.function_introspection", &bind_function_introspection);
+        //set_package_preload(L, "luabind.function_introspection", &bind_function_introspection);
     }
 
 } // namespace luabind

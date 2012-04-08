@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Luabind">
-		<Project filename="luabind.cbp" />
+		<Project filename="luabind.cbp" active="1" />
 		<Project filename="test/test_abstract_base.cbp" />
 		<Project filename="test/test_adopt.cbp" />
 		<Project filename="test/test_adopt_wrapper.cbp" />
@@ -28,7 +28,7 @@
 		<Project filename="test/test_lua_classes.cbp" />
 		<Project filename="test/test_null_pointer.cbp" />
 		<Project filename="test/test_object.cbp" />
-		<Project filename="test/test_object_identity.cbp" active="1" />
+		<Project filename="test/test_object_identity.cbp" />
 		<Project filename="test/test_operators.cbp" />
 		<Project filename="test/test_package_preload.cbp" />
 		<Project filename="test/test_policies.cbp" />
