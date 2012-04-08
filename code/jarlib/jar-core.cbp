@@ -21,7 +21,7 @@
 					<Add option="-enable-auto-import" />
 					<Add library="user32" />
 					<Add library="jar_lua_d" />
-					<Add library="luabindd" />
+					<Add library="luabind_d" />
 					<Add library="zdll" />
 					<Add library="minizip-d" />
 				</Linker>
@@ -65,8 +65,8 @@
 					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="lua5.1" />
-					<Add library="luabind" />
+					<Add library="jar_lua_d" />
+					<Add library="luabind_d" />
 					<Add library="z" />
 					<Add library="minizip-d" />
 				</Linker>
@@ -87,7 +87,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="lua5.1" />
+					<Add library="jar_lua" />
 					<Add library="luabind" />
 					<Add library="z" />
 					<Add library="minizip" />
@@ -100,6 +100,7 @@
 		<Compiler>
 			<Add option="-DJAR_CORE_LIBRARY_BUILD" />
 			<Add option="-DLUABIND_DYNAMIC_LINK" />
+			<Add option="-DLUA_BUILD_AS_DLL" />
 			<Add directory="include" />
 			<Add directory="..\..\dependencies\lua-5.1.4-jar\include" />
 		</Compiler>

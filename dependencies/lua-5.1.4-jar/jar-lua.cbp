@@ -16,6 +16,7 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-Dlua_assert=assert" />
+					<Add option="-DLUA_BUILD_AS_DLL" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;$(PROJECT_DIR)bin\&quot;' />
@@ -35,6 +36,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-Wall" />
+					<Add option="-DLUA_BUILD_AS_DLL" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -108,6 +110,7 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-Dlua_assert=assert" />
+					<Add option="-DLUA_BUILD_AS_DLL" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;$(PROJECT_DIR)bin/&quot;' />
@@ -127,6 +130,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-Wall" />
+					<Add option="-DLUA_BUILD_AS_DLL" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
