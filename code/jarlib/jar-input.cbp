@@ -22,7 +22,7 @@
 					<Add option="-enable-auto-import" />
 					<Add library="jar-core-d" />
 					<Add library="jar_lua_d" />
-					<Add library="luabind_d" />
+					<Add library="jar_luabind_d" />
 					<Add library="xinput" />
 					<Add library="dinput8" />
 					<Add library="dxguid" />
@@ -49,7 +49,7 @@
 					<Add option="-enable-auto-import" />
 					<Add library="jar-core" />
 					<Add library="jar_lua" />
-					<Add library="luabind" />
+					<Add library="jar_luabind" />
 					<Add library="xinput" />
 					<Add library="dinput8" />
 					<Add library="dxguid" />
@@ -76,7 +76,7 @@
 				<Linker>
 					<Add library="jar-core-d" />
 					<Add library="jar_lua_d" />
-					<Add library="luabind_d" />
+					<Add library="jar_luabind_d" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin/&quot;' />
@@ -98,7 +98,7 @@
 					<Add option="-s" />
 					<Add library="jar-core" />
 					<Add library="jar_lua" />
-					<Add library="luabind" />
+					<Add library="jar_luabind" />
 					<Add library="dinput8" />
 				</Linker>
 				<ExtraCommands>
