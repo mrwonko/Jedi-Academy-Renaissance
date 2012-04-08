@@ -33,6 +33,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 // OR OTHER DEALINGS IN THE SOFTWARE.
 
+#define LUABIND_BUILDING
+
 // Internal Includes
 #include <luabind/function_introspection.hpp>
 #include <luabind/function.hpp>
@@ -64,7 +66,7 @@ namespace {
 		if (!f) {
 			return "";
 		}
-		return f->name;	
+		return f->name;
 	}
 
 	object get_function_overloads(argument const& fn) {
@@ -81,11 +83,11 @@ namespace {
             f->format_signature(L, function_name);
             detail::stack_pop pop(L, 1);
             overloadTable[count] = object(from_stack(L, -1));
-            
+
             ++count;
         }
 		/// @todo
-		
+
 		return overloadTable;
 	}
 
@@ -94,7 +96,7 @@ namespace {
 LUABIND_API int bind_function_introspection(lua_State * L) {
 	module(L, "function_info")[
 		def("get_function_overloads", &get_function_overloads),
-		def("get_function_name", &get_function_name)	
+		def("get_function_name", &get_function_name)
 	];
 	return 0;
 }

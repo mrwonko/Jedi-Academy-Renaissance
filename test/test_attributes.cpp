@@ -25,9 +25,9 @@
 
 struct A
 {
-	int get() const 
-	{ 
-		return 5; 
+	int get() const
+	{
+		return 5;
 	}
 };
 
@@ -41,7 +41,7 @@ struct C
 };
 
 struct property_test : counted_type<property_test>
-{  
+{
     property_test(): o(6), c_ref(&c) {}
 	 ~property_test() { c.a = 0; }
 
@@ -57,11 +57,11 @@ struct property_test : counted_type<property_test>
 
     void setA(A* /*a*/) {}
 	 A* getA() const { return 0; }
-	 
-    void set_str(const char* str) 
+
+    void set_str(const char* str)
     { str_ = str; }
 
-    const char* get_str() const 
+    const char* get_str() const
     { return str_.c_str(); }
 };
 
@@ -172,7 +172,7 @@ void test_main(lua_State* L)
 		"collectgarbage()\n"
 		"assert(c.a == 1)\n"
 		"assert(c2.a == 1)");
-	 
+
 	DOSTRING(L,
 		"a = B()\n");
 
