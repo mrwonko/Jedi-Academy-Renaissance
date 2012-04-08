@@ -5,7 +5,7 @@ PhysicsFS (http://icculus.org/physfs/)
 zlib (http://zlib.net/)
 minizip (shipped with zlib in contrib/minizip/)
 Lua (http://www.lua.org)
-luabind (http://www.rasterbar.com/products/luabind.html)
+My luabind fork (http://github.com/mrwonko/luabind)
 boost (http://www.boost.org)
 
 on Windows:
