@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Win DLL Debug">
-				<Option output="lib/jar_lua_d" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+				<Option output="lib\jar_lua_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -27,8 +27,8 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Win DLL Release">
-				<Option output="lib/jar_lua" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+				<Option output="lib\jar_lua" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -49,9 +49,9 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Win Static Debug">
-				<Option output="lib/libjar_lua_s_d" prefix_auto="1" extension_auto="1" />
+				<Option output="lib\libjar_lua_s_d" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug/" />
+				<Option object_output="obj\Debug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -68,9 +68,9 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Win Static Release">
-				<Option output="lib/libjar_lua_s" prefix_auto="1" extension_auto="1" />
+				<Option output="lib\libjar_lua_s" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Release/" />
+				<Option object_output="obj\Release\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -89,7 +89,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Lua">
-				<Option output="bin/Lua" prefix_auto="1" extension_auto="1" />
+				<Option output="bin\Lua" prefix_auto="1" extension_auto="1" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
@@ -99,8 +99,8 @@
 				</Linker>
 			</Target>
 			<Target title="Linux Dynamic Debug">
-				<Option output="lib/libjar_lua_d" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+				<Option output="lib\libjar_lua_d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -119,8 +119,8 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Linux Dynamic Release">
-				<Option output="lib/libjar_lua" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+				<Option output="lib\libjar_lua" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -141,9 +141,9 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Linux Static Debug">
-				<Option output="lib/libjar_lua_s_d" prefix_auto="1" extension_auto="1" />
+				<Option output="lib\libjar_lua_s_d" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Debug/" />
+				<Option object_output="obj\Debug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -160,9 +160,9 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Linux Static Release">
-				<Option output="lib/libjar_lua_s" prefix_auto="1" extension_auto="1" />
+				<Option output="lib\libjar_lua_s" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj/Release/" />
+				<Option object_output="obj\Release\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -187,7 +187,7 @@
 		<Linker>
 			<Add library="m" />
 		</Linker>
-		<Unit filename="src/lapi.c">
+		<Unit filename="src\lapi.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -198,7 +198,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lapi.h">
+		<Unit filename="src\lapi.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -208,7 +208,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lauxlib.c">
+		<Unit filename="src\lauxlib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -219,7 +219,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lauxlib.h">
+		<Unit filename="src\lauxlib.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -229,7 +229,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lbaselib.c">
+		<Unit filename="src\lbaselib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -240,7 +240,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lcode.c">
+		<Unit filename="src\lcode.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -251,7 +251,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lcode.h">
+		<Unit filename="src\lcode.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -261,7 +261,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ldblib.c">
+		<Unit filename="src\ldblib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -272,7 +272,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ldebug.c">
+		<Unit filename="src\ldebug.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -283,7 +283,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ldebug.h">
+		<Unit filename="src\ldebug.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -293,7 +293,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ldo.c">
+		<Unit filename="src\ldo.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -304,7 +304,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ldo.h">
+		<Unit filename="src\ldo.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -314,7 +314,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ldump.c">
+		<Unit filename="src\ldump.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -325,7 +325,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lfunc.c">
+		<Unit filename="src\lfunc.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -336,7 +336,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lfunc.h">
+		<Unit filename="src\lfunc.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -346,7 +346,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lgc.c">
+		<Unit filename="src\lgc.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -357,7 +357,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lgc.h">
+		<Unit filename="src\lgc.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -367,7 +367,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/linit.c">
+		<Unit filename="src\linit.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -378,7 +378,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/liolib.c">
+		<Unit filename="src\liolib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -389,7 +389,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/llex.c">
+		<Unit filename="src\llex.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -400,7 +400,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/llex.h">
+		<Unit filename="src\llex.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -410,7 +410,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/llimits.h">
+		<Unit filename="src\llimits.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -420,7 +420,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lmathlib.c">
+		<Unit filename="src\lmathlib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -431,7 +431,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lmem.c">
+		<Unit filename="src\lmem.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -442,7 +442,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lmem.h">
+		<Unit filename="src\lmem.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -452,7 +452,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/loadlib.c">
+		<Unit filename="src\loadlib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -463,7 +463,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lobject.c">
+		<Unit filename="src\lobject.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -474,7 +474,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lobject.h">
+		<Unit filename="src\lobject.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -484,7 +484,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lopcodes.c">
+		<Unit filename="src\lopcodes.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -495,7 +495,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lopcodes.h">
+		<Unit filename="src\lopcodes.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -505,7 +505,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/loslib.c">
+		<Unit filename="src\loslib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -516,7 +516,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lparser.c">
+		<Unit filename="src\lparser.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -527,7 +527,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lparser.h">
+		<Unit filename="src\lparser.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -537,7 +537,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lstate.c">
+		<Unit filename="src\lstate.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -548,7 +548,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lstate.h">
+		<Unit filename="src\lstate.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -558,7 +558,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lstring.c">
+		<Unit filename="src\lstring.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -569,7 +569,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lstring.h">
+		<Unit filename="src\lstring.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -579,7 +579,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lstrlib.c">
+		<Unit filename="src\lstrlib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -590,7 +590,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ltable.c">
+		<Unit filename="src\ltable.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -601,7 +601,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ltable.h">
+		<Unit filename="src\ltable.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -611,7 +611,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ltablib.c">
+		<Unit filename="src\ltablib.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -622,7 +622,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ltm.c">
+		<Unit filename="src\ltm.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -633,7 +633,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/ltm.h">
+		<Unit filename="src\ltm.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -643,14 +643,14 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lua.c">
+		<Unit filename="src\lua.c">
 			<Option compilerVar="CC" />
 			<Option target="Lua" />
 		</Unit>
-		<Unit filename="src/lua.h">
+		<Unit filename="src\lua.h">
 			<Option target="Lua" />
 		</Unit>
-		<Unit filename="src/luaconf.h">
+		<Unit filename="src\luaconf.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -660,7 +660,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lualib.h">
+		<Unit filename="src\lualib.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -670,7 +670,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lundump.c">
+		<Unit filename="src\lundump.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -681,7 +681,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lundump.h">
+		<Unit filename="src\lundump.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -691,7 +691,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lvm.c">
+		<Unit filename="src\lvm.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -702,7 +702,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lvm.h">
+		<Unit filename="src\lvm.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />
@@ -712,7 +712,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lzio.c">
+		<Unit filename="src\lzio.c">
 			<Option compilerVar="CC" />
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
@@ -723,7 +723,7 @@
 			<Option target="Linux Static Debug" />
 			<Option target="Linux Static Release" />
 		</Unit>
-		<Unit filename="src/lzio.h">
+		<Unit filename="src\lzio.h">
 			<Option target="Win DLL Debug" />
 			<Option target="Win DLL Release" />
 			<Option target="Win Static Release" />

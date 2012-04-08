@@ -131,11 +131,11 @@
 		<Unit filename="include\jar\input\InputDeviceManager.hpp" />
 		<Unit filename="include\jar\input\InputImpl.hpp" />
 		<Unit filename="include\jar\input\KeyCodes.hpp" />
-		<Unit filename="include\jar\input\Windows\WinControllerXInput.hpp">
+		<Unit filename="include\jar\input\Windows\WinControllerDirectInput.hpp">
 			<Option target="Debug Win32" />
 			<Option target="Release Win32" />
 		</Unit>
-		<Unit filename="include\jar\input\Windows\WinControllerkDirectInput.hpp">
+		<Unit filename="include\jar\input\Windows\WinControllerXInput.hpp">
 			<Option target="Debug Win32" />
 			<Option target="Release Win32" />
 		</Unit>
