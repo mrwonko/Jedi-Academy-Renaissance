@@ -1,12 +1,15 @@
 extern "C"
 {
-    #include "lauxlib.h"
-    #include "lualib.h"
+#include "lua.h"
+#include "lualib.h"
 }
 
 #include <iostream>
 #include <luabind/luabind.hpp>
 #include <luabind/class_info.hpp>
+
+#include <luabind/object.hpp> //for luabind::object, obviously - also include luabind/detail/call.hpp defining luabind::function_object
+#include <luabind/function.hpp> //for is_luabind_function
 
 int pcall_handler(lua_State* /*L*/)
 {
@@ -54,6 +57,78 @@ struct MyClass
     }
 };
 
+int GetLuabindInfo (lua_State* L)
+{
+    int numArgs = lua_gettop(L);
+
+    //if there are no arguments, return nil
+    if(numArgs == 0)
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    //if there is more than 1 argument, silently discard additional ones
+    if(numArgs > 1)
+    {
+        lua_pop(L, numArgs - 1);
+    }
+
+    //is it a luabind function?
+    if(luabind::detail::is_luabind_function(L, -1))
+    {
+        //retrieve luabind function object containing the information we want
+        assert(lua_getupvalue(L, -1, 1));
+        luabind::detail::function_object const* funcObj = *(luabind::detail::function_object const**)lua_touserdata(L, -1);
+
+        lua_pop(L, 2); //upvalue and its origin
+
+        //create table containing information
+        luabind::object info = luabind::newtable(L);
+
+        //this is a function
+        info["type"] = "function";
+
+        //we know its name
+        if(!funcObj->name.empty())
+        {
+            info["name"] = funcObj->name;
+        }
+
+        //iterate through the overloads, save signatures
+        luabind::object overloads = luabind::newtable(L);
+        info["overloads"] = overloads;
+
+        //return gathered information
+        info.push(L);
+        return 1;
+    }
+
+    //is it a luabind class?
+    if(luabind::detail::is_class_rep(L, -1))
+    {
+        const luabind::detail::class_rep* crep = (const luabind::detail::class_rep*)lua_touserdata(L, -1);
+
+        //create table containing information
+        luabind::object info = luabind::newtable(L);
+
+        //this is a class
+        info["type"] = "class";
+
+        //we know its name
+        info["name"] = crep->name();
+
+        //return gathered information
+        info.push(L);
+        return 1;
+    }
+    //not a luabind object
+    lua_pop(L, 1);
+
+    lua_pushnil(L);
+    return 1;
+}
+
 int main()
 {
     lua_State* L = lua_open();
@@ -78,41 +153,77 @@ int main()
             .def("Hello", &MyClass::Hello)
     ];
 
+    lua_register(L, "GetLuabindInfo", &GetLuabindInfo);
+
     try
     {
-        dostring(L,
+//        dostring(L,
 //                 "success, msg = pcall(function()\n"
-
-                 "namespace.HelloWorld(1)\n" // I don't get the correct error when using the wrong function signature - problem with this luabind fork?
-                 "testUs = class_names()\n"
-                 "table.insert(testUs, \"int\") int = 1\n"
-                 "table.insert(testUs, \"str\") str = \"test\"\n"
-                 "table.insert(testUs, \"print\")\n"
-                 "table.insert(testUs, \"table\")\n"
-                 "for _, name in ipairs(testUs) do\n"
-                 " class = _G[name]\n"
-                 " if not class then\n"
-                 "  print(\"could not find class \" .. name)\n"
-                 "  print()\n"
-                 " else\n"
-                 "  info = class_info(class)\n"
-                 "  print(\"== \" .. info.name .. \" ==\")\n"
-                 "  print(\"= attributes =\")\n"
-                 "  for _, attrib in ipairs(info.attributes) do\n"
-                 "   print(attrib)\n"
-                 "  end\n"
-                 "  print(\"= methods =\")\n"
-                 "  for func, _ in pairs(info.methods) do\n"
-                 "   print(func)\n"
-                 "  end\n"
-                 "  print()\n"
-                 " end\n"
-                 "end\n"
-
+//
+//                 "namespace.HelloWorld(1)\n" // I don't get the correct error when using the wrong function signature - problem with this luabind fork?
+//
 //                 "end)\n"
 //                 "if not success then\n"
 //                 " print(msg)\n"
 //                 "end\n"
+//                 );
+//
+//        dostring(L,
+//                 "success, msg = pcall(function()\n"
+//
+//                 "testUs = class_names()\n"
+//                 "table.insert(testUs, \"int\") int = 1\n"
+//                 "table.insert(testUs, \"str\") str = \"test\"\n"
+//                 "table.insert(testUs, \"print\")\n"
+//                 "table.insert(testUs, \"table\")\n"
+//                 "for _, name in ipairs(testUs) do\n"
+//                 " class = _G[name]\n"
+//                 " if not class then\n"
+//                 "  print(\"could not find class \" .. name)\n"
+//                 "  print()\n"
+//                 " else\n"
+//                 "  info = class_info(class)\n"
+//                 "  print(\"== \" .. info.name .. \" ==\")\n"
+//                 "  print(\"= attributes =\")\n"
+//                 "  for _, attrib in ipairs(info.attributes) do\n"
+//                 "   print(attrib)\n"
+//                 "  end\n"
+//                 "  print(\"= methods =\")\n"
+//                 "  for func, _ in pairs(info.methods) do\n"
+//                 "   print(func)\n"
+//                 "  end\n"
+//                 "  print()\n"
+//                 " end\n"
+//                 "end\n"
+//
+//                 "end)\n"
+//                 "if not success then\n"
+//                 " print(msg)\n"
+//                 "end\n"
+//                 );
+
+        dostring(L,
+                 "success, msg = pcall(function()\n"
+
+                 "assert(GetLuabindInfo() == nil)\n"
+                 "assert(GetLuabindInfo(1) == nil)\n"
+                 "assert(GetLuabindInfo(\"test\") == nil)\n"
+
+                 "testUs = {class_info, class_info_data, namespace.HelloWorld, namespace.MyClass}\n"
+                 "for index, testMe in ipairs(testUs) do\n"
+                 " print(\"testing entry \" .. index)\n"
+                 " info = GetLuabindInfo(testMe)\n"
+                 " if not info then\n"
+                 "  print(\"entry \" .. index .. \" is no luabind function/class\")\n"
+                 " else\n"
+                 "  print(\"entry \" .. index .. \" is a \" .. info.type .. \" called \" .. (info.name or \"\"))\n"
+                 " end\n"
+                 "end\n"
+
+                 "end)\n"
+                 "if not success then\n"
+                 " print(msg)\n"
+                 "end\n"
                  );
     }
     catch(std::string err)
