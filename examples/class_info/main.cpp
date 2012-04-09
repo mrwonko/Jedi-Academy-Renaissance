@@ -82,7 +82,9 @@ int GetLuabindInfo (lua_State* L)
         int counter = 0;
         for(const luabind::detail::function_object* overload = funcObj; overload != 0; overload = overload->next)
         {
+            int top = lua_gettop(L); //sometimes, format_signature pushes multiple strings (e.g. for void Function())
             overload->format_signature(L, (funcObj->name.empty() ? "<unknown>" : funcObj->name.c_str()));
+            lua_concat(L, lua_gettop(L) - top); //concatenate if there's more than 1 string
             overloads[++counter] = lua_tostring(L, -1);
             lua_pop(L, 1);
         }
@@ -166,8 +168,8 @@ int main()
 
     luabind::module(L, "namespace")
     [
-        luabind::def("HelloWorld", (void(*)(const std::string&))&HelloWorld),
         luabind::def("HelloWorld", (void(*)())&HelloWorld),
+        luabind::def("HelloWorld", (void(*)(const std::string&))&HelloWorld),
         luabind::def("HelloWorld", (void(*)(const int))&HelloWorld),
         luabind::class_<MyClass>("MyClass")
             .def(luabind::constructor<>())
