@@ -207,7 +207,7 @@ namespace jar
     }
 #endif
 
-    std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
+    const std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
     {
         std::vector<std::string> results;
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
@@ -233,7 +233,7 @@ namespace jar
         return results;
     }
 
-    std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
+    const std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
     {
         std::vector<std::string> results;
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
