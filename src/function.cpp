@@ -128,7 +128,7 @@ void invoke_context::format_error(
                 lua_pushstring(L, "\n");
             candidates[i]->format_signature(L, function_name);
         }
-        lua_concat(L, candidate_index * 2);
+        lua_concat(L, candidate_index * 2 + 1);
     }
 }
 
