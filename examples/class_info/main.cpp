@@ -39,24 +39,6 @@ void dostring(lua_State* state, char const* str)
     lua_pop(state, 1);
 }
 
-void HelloWorld()
-{
-    std::cout<<"Hello World!"<<std::endl;
-}
-
-void HelloWorld(const std::string& text)
-{
-    std::cout<<"Hello World! "<<text<<std::endl;
-}
-
-struct MyClass
-{
-    void Hello()
-    {
-        std::cout<<"My Class says Hello!"<<std::endl;
-    }
-};
-
 int GetLuabindInfo (lua_State* L)
 {
     int numArgs = lua_gettop(L);
@@ -79,7 +61,7 @@ int GetLuabindInfo (lua_State* L)
     {
         //retrieve luabind function object containing the information we want
         assert(lua_getupvalue(L, -1, 1));
-        luabind::detail::function_object const* funcObj = *(luabind::detail::function_object const**)lua_touserdata(L, -1);
+        const luabind::detail::function_object* funcObj = *(const luabind::detail::function_object**)lua_touserdata(L, -1);
 
         lua_pop(L, 2); //upvalue and its origin
 
@@ -97,6 +79,13 @@ int GetLuabindInfo (lua_State* L)
 
         //iterate through the overloads, save signatures
         luabind::object overloads = luabind::newtable(L);
+        int counter = 0;
+        for(const luabind::detail::function_object* overload = funcObj; overload != 0; overload = overload->next)
+        {
+            overload->format_signature(L, (funcObj->name.empty() ? "<unknown>" : funcObj->name.c_str()));
+            overloads[++counter] = lua_tostring(L, -1);
+            lua_pop(L, 1);
+        }
         info["overloads"] = overloads;
 
         //return gathered information
@@ -129,6 +118,39 @@ int GetLuabindInfo (lua_State* L)
     return 1;
 }
 
+void HelloWorld()
+{
+    std::cout<<"Hello World!"<<std::endl;
+}
+
+void HelloWorld(const std::string& text)
+{
+    std::cout<<"Hello World! "<<text<<std::endl;
+}
+
+void HelloWorld(const int num)
+{
+    std::cout<<"Hello World! "<<num<<std::endl;
+}
+
+struct MyClass
+{
+    void Hello()
+    {
+        std::cout<<"My Class says Hello!"<<std::endl;
+    }
+
+    void Hello(const std::string& text)
+    {
+        std::cout<<"My Class says Hello! "<<text<<std::endl;
+    }
+};
+
+struct MyOtherClass
+{
+    int num;
+};
+
 int main()
 {
     lua_State* L = lua_open();
@@ -144,11 +166,18 @@ int main()
 
     luabind::module(L, "namespace")
     [
-        luabind::def("HelloWorld", (void(*)())&HelloWorld),
         luabind::def("HelloWorld", (void(*)(const std::string&))&HelloWorld),
+        luabind::def("HelloWorld", (void(*)())&HelloWorld),
+        luabind::def("HelloWorld", (void(*)(const int))&HelloWorld),
         luabind::class_<MyClass>("MyClass")
             .def(luabind::constructor<>())
-            .def("Hello", &MyClass::Hello)
+            .def("Hello", (void(MyClass::*)()) &MyClass::Hello)
+            .def("Hello", (void(MyClass::*)(const std::string&)) &MyClass::Hello)
+            .scope
+            [
+                luabind::class_<MyOtherClass>("MyOtherClass")
+                    .property("num", &MyOtherClass::num)
+            ]
     ];
 
     lua_register(L, "GetLuabindInfo", &GetLuabindInfo);
@@ -161,20 +190,25 @@ int main()
                  "assert(GetLuabindInfo(1) == nil)\n"
                  "assert(GetLuabindInfo(\"test\") == nil)\n"
 
-                 "testUs = {namespace.HelloWorld, namespace.MyClass}\n"
+                 "testUs = {namespace.HelloWorld, namespace.MyClass, namespace.MyClass.MyOtherClass}\n"
                  "for index, testMe in ipairs(testUs) do\n"
-                 " print(\"testing entry \" .. index)\n"
                  " info = GetLuabindInfo(testMe)\n"
                  " if not info then\n"
                  "  print(\"entry \" .. index .. \" is no luabind function/class\")\n"
                  " else\n"
                  "  print(\"entry \" .. index .. \" is a \" .. info.type .. \" called \" .. (info.name or \"\"))\n"
                  "  if info.type == \"function\" then\n"
+                 "   print(\"available overloads:\")\n"
+                 "   for _, signature in ipairs(info.overloads) do\n"
+                 "    print(signature)\n"
+                 "   end\n"
                  "  else\n"
                  "   assert(info.type == \"class\")\n"
                  "  end\n"
                  " end\n"
+                 " print()\n"
                  "end\n"
+                 "namespace.HelloWorld{}\n" //this prints the correct signature in the error
                  );
     }
     catch(std::string err)
