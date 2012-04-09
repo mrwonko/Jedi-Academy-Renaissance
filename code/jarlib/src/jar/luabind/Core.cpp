@@ -42,9 +42,16 @@ namespace
         return status;
     }
 
-    unzFile MyUnzOpen(const std::string& filename)
+    struct MyUnzFile
     {
-        return unzOpen((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str());
+        MyUnzFile(unzFile f) : file(f) {}
+        unzFile file;
+        operator unzFile() {return file;}
+    };
+
+    MyUnzFile MyUnzOpen(const std::string& filename)
+    {
+        return MyUnzFile(unzOpen((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str()));
     }
 
     //  Helpers for the STL
@@ -82,7 +89,7 @@ void BindCore(lua_State* L)
 
         luabind::namespace_("unz")
         [
-            luabind::class_<unzFile>("File")
+            luabind::class_<MyUnzFile>("ZipFile")
                 .def("Close", &unzClose)
                 .def("LocateFile", &unzLocateFile)
                 .def("GetCurrentFileContent", &GetCurrentUnzFileContent),
