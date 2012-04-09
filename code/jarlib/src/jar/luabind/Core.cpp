@@ -7,6 +7,7 @@
 #include "jar/core/Updatable.hpp"
 #include "jar/Core.hpp"
 #include "jar/core/CLArguments.hpp"
+#include "jar/core/GetLuabindInfo.hpp"
 #include <physfs.h> //for PHYSFS_File
 #include <unzip.h>
 #include <string>
@@ -173,6 +174,13 @@ void BindCore(lua_State* L)
     luabind::globals(L)["unz"]["BADZIPFILE"] = UNZ_BADZIPFILE;
     luabind::globals(L)["unz"]["INTERNALERROR"] = UNZ_INTERNALERROR;
     luabind::globals(L)["unz"]["CRCERROR"] = UNZ_CRCERROR;
+
+    //register jar.GetLuabindInfo()
+    lua_getglobal(L, "jar"); //push jar table
+    assert(lua_istable(L, -1));
+    lua_pushcfunction(L, &GetLuabindInfo); //push function
+    lua_setfield(L, -2, "GetLuabindInfo"); //add function to table (pops value)
+    lua_pop(L, 1); //pop jar table
 }
 
 }
