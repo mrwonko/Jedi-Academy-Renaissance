@@ -142,8 +142,6 @@ int main()
 #endif
     luabind::open(L);
 
-    luabind::bind_class_info(L);
-
     luabind::module(L, "namespace")
     [
         luabind::def("HelloWorld", (void(*)())&HelloWorld),
@@ -157,59 +155,13 @@ int main()
 
     try
     {
-//        dostring(L,
-//                 "success, msg = pcall(function()\n"
-//
-//                 "namespace.HelloWorld(1)\n" // I don't get the correct error when using the wrong function signature - problem with this luabind fork?
-//
-//                 "end)\n"
-//                 "if not success then\n"
-//                 " print(msg)\n"
-//                 "end\n"
-//                 );
-//
-//        dostring(L,
-//                 "success, msg = pcall(function()\n"
-//
-//                 "testUs = class_names()\n"
-//                 "table.insert(testUs, \"int\") int = 1\n"
-//                 "table.insert(testUs, \"str\") str = \"test\"\n"
-//                 "table.insert(testUs, \"print\")\n"
-//                 "table.insert(testUs, \"table\")\n"
-//                 "for _, name in ipairs(testUs) do\n"
-//                 " class = _G[name]\n"
-//                 " if not class then\n"
-//                 "  print(\"could not find class \" .. name)\n"
-//                 "  print()\n"
-//                 " else\n"
-//                 "  info = class_info(class)\n"
-//                 "  print(\"== \" .. info.name .. \" ==\")\n"
-//                 "  print(\"= attributes =\")\n"
-//                 "  for _, attrib in ipairs(info.attributes) do\n"
-//                 "   print(attrib)\n"
-//                 "  end\n"
-//                 "  print(\"= methods =\")\n"
-//                 "  for func, _ in pairs(info.methods) do\n"
-//                 "   print(func)\n"
-//                 "  end\n"
-//                 "  print()\n"
-//                 " end\n"
-//                 "end\n"
-//
-//                 "end)\n"
-//                 "if not success then\n"
-//                 " print(msg)\n"
-//                 "end\n"
-//                 );
 
         dostring(L,
-                 "success, msg = pcall(function()\n"
-
                  "assert(GetLuabindInfo() == nil)\n"
                  "assert(GetLuabindInfo(1) == nil)\n"
                  "assert(GetLuabindInfo(\"test\") == nil)\n"
 
-                 "testUs = {class_info, class_info_data, namespace.HelloWorld, namespace.MyClass}\n"
+                 "testUs = {namespace.HelloWorld, namespace.MyClass}\n"
                  "for index, testMe in ipairs(testUs) do\n"
                  " print(\"testing entry \" .. index)\n"
                  " info = GetLuabindInfo(testMe)\n"
@@ -217,12 +169,11 @@ int main()
                  "  print(\"entry \" .. index .. \" is no luabind function/class\")\n"
                  " else\n"
                  "  print(\"entry \" .. index .. \" is a \" .. info.type .. \" called \" .. (info.name or \"\"))\n"
+                 "  if info.type == \"function\" then\n"
+                 "  else\n"
+                 "   assert(info.type == \"class\")\n"
+                 "  end\n"
                  " end\n"
-                 "end\n"
-
-                 "end)\n"
-                 "if not success then\n"
-                 " print(msg)\n"
                  "end\n"
                  );
     }
