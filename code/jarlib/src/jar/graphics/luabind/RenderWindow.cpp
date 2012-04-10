@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Window/Mouse.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>
 
 namespace jar
@@ -28,9 +29,10 @@ static TimeType GetFrameTime(const jar::RenderWindow& window)
     return roundedTime;
 }
 
-static void RenderWindowSetIcon(jar::RenderWindow& window, const sf::Image& image)
+static void RenderWindowSetIcon(jar::RenderWindow& window, const sf::Texture& texture)
 {
-    window.SetIcon(image.GetWidth(), image.GetHeight(), image.GetPixelsPtr());
+    sf::Image img(texture.CopyToImage());
+    window.SetIcon(img.GetWidth(), img.GetHeight(), img.GetPixelsPtr());
 }
 
 void SetCursorPosition(const RenderWindow& window, const sf::Vector2i& position)
