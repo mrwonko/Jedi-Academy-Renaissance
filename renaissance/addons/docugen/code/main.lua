@@ -65,7 +65,6 @@ while not done do
 						if luabindClassesByName[info.name] == nil then
 							luabindClassesByName[info.name] = {}
 						else
-							local msg
 							if #luabindClassesByName[info.name] == 1 then
 								print(info.name .. " is ambiguous" .. ", used by " .. luabindClassesByName[info.name][1].actualName .. " and " .. info.actualName)
 							else
@@ -154,20 +153,54 @@ processed = nil
 print()
 print("== Classes == ")
 print()
+
+local function PrintClassInfo(info)
+	assert(info.type == "class")
+	print(("= %s ="):format(info.actualName))
+	-- print properties, if any
+	---[[
+	if #info.properties > 0 then
+		print("- properties -")
+		for _, propInfo in ipairs(info.properties) do
+			print(propInfo.name)
+		end
+	end
+	--]]
+	-- print methods, if any
+	---[[
+	if #info.methods > 0 then
+		print("- methods -")
+		for _, methodInfo in ipairs(info.methods) do
+			assert(methodInfo.type == "function")
+			methodInfo.actualName = methodInfo.name
+			for _, overload in ipairs(methodInfo.overloads) do
+				print(processSignature(overload, methodInfo))
+			end
+		end
+	end
+	--]]
+	---[[
+	-- print constants, if any
+	if #info.constants > 0 then
+		-- sort constants by value (as opposed to by name, the default order)
+		table.sort(info.constants, function(lhs, rhs) return lhs.value < rhs.value end)
+		print("- constants -")
+		for _, constantInfo in ipairs(info.constants) do
+			print(("%s (%i)"):format(constantInfo.name, constantInfo.value))
+		end
+	end
+	--]]
+	print()
+end
+
 for _, t in pairs(luabindClassesByName) do
 	for _, info in ipairs(t) do
-		assert(info.type == "class")
-		print(info.actualName)
+		PrintClassInfo(info)
 	end
 end
 
 for _, info in ipairs(unnamedLuabindClasses) do
-	if info.type == "function" then
-		--print(info.signature)
-		print(processSignature(info.signature, info, function(info) return info.name end))
-	else
-		print(info.name)
-	end
+	PrintClassInfo(info)
 end
 
 print()
