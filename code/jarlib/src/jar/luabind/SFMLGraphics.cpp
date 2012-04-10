@@ -43,7 +43,6 @@ static std::string GetStringText(const sf::String& str)
 
 void BindSFMLGraphics(lua_State* L)
 {
-    typedef sf::Vector2f (*funcptr1)(const sf::Vector2f&);
     luabind::module(L, "jar")
     [
         luabind::class_<sf::Vector2f>("Vector2f")
@@ -52,12 +51,25 @@ void BindSFMLGraphics(lua_State* L)
             .def(luabind::constructor<float, float>())
             .def_readwrite("x", &sf::Vector2f::x)
             .def_readwrite("y", &sf::Vector2f::y)
-            .def("Invert", (funcptr1)&sf::operator-)
+            .def("Invert", (sf::Vector2f (*)(const sf::Vector2f&))&sf::operator-)
             .def(luabind::self + luabind::other<sf::Vector2f>())
             .def(luabind::self - luabind::other<sf::Vector2f>())
             .def(luabind::self * float())
             .def(luabind::self / float())
             .def(luabind::self == luabind::other<sf::Vector2f>()),
+
+        luabind::class_<sf::Vector2i>("Vector2i")
+            .def(luabind::constructor<>())
+            .def(luabind::constructor<const sf::Vector2i&>())
+            .def(luabind::constructor<int, int>())
+            .def_readwrite("x", &sf::Vector2i::x)
+            .def_readwrite("y", &sf::Vector2i::y)
+            .def("Invert", (sf::Vector2i (*)(const sf::Vector2i&))&sf::operator-)
+            .def(luabind::self + luabind::other<sf::Vector2i>())
+            .def(luabind::self - luabind::other<sf::Vector2i>())
+            .def(luabind::self * int())
+            .def(luabind::self / int())
+            .def(luabind::self == luabind::other<sf::Vector2i>()),
 
         luabind::class_<sf::Color>("Color")
             .def(luabind::constructor<>())
