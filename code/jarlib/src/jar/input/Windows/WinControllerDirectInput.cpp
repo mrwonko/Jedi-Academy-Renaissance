@@ -672,7 +672,23 @@ std::string WinControllerDirectInput::GetUniqueID() const
     {
         ss<<mGUID.Data4[i];
     }
-    return ss.str();
+    //there may be nulls in the stream, I replace those with 1. (is there a better way to do that? probably.)
+    std::stringstream ss2;
+    while(true)
+    {
+        char c;
+        ss.get(c);
+        if(ss.eof())
+        {
+            break;
+        }
+        if(c == '\0')
+        {
+            c += 1;
+        }
+        ss2 << c;
+    }
+    return ss2.str();
 }
 
 } // namespace Windows
