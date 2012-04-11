@@ -15,22 +15,22 @@ EventQueue::~EventQueue()
 
 void EventQueue::ReceiveEvent(const Event& event)
 {
-    mQueueMutex.Lock();
+    mQueueMutex.lock();
     mEventQueue.push(event);
-    mQueueMutex.Unlock();
+    mQueueMutex.unlock();
 }
 
 const bool EventQueue::GetEvent(Event& event)
 {
-    mQueueMutex.Lock();
+    mQueueMutex.lock();
     if(!mEventQueue.empty())
     {
         event = mEventQueue.front();
         mEventQueue.pop();
-        mQueueMutex.Unlock();
+        mQueueMutex.unlock();
         return true;
     }
-    mQueueMutex.Unlock();
+    mQueueMutex.unlock();
     return false;
 }
 
