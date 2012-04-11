@@ -128,6 +128,7 @@ void BindCore(lua_State* L)
                 ],
 
             luabind::def("Sleep", &Sleep),
+            luabind::def("GetTime", &GetTime),
 
             luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory),
             luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory),
