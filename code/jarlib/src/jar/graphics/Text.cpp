@@ -2,7 +2,7 @@
 #include "jar/core/Helpers.hpp"
 #include "jar/graphics/Font.hpp"
 #include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Renderer.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <cassert>
 
 namespace jar {
@@ -35,6 +35,7 @@ Text::~Text()
 void Text::SetText(const std::string& text)
 {
     mText = text;
+    UpdateCache();
 }
 
 const std::string& Text::GetText() const
@@ -63,7 +64,19 @@ const float Text::GetFontSize() const
     return mFontSize;
 }
 
-void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
+void Text::Render(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    float scaleFactor = mFontSize / mFont->GetFontData().mPointSize;
+    //TODO/FIXME: order correct?
+    states.transform *= getTransform();
+    states.transform.scale(scaleFactor, scaleFactor);
+
+    states.texture = &mFont->GetTexture();
+    states.blendMode = sf::BlendAlpha;
+    target.draw(mVertices.data(), mVertices.size(), sf::Quads, states);
+}
+
+void Text::UpdateCache()
 {
     static sf::Color color_table[8] =
     {
@@ -77,18 +90,15 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
         sf::Color::White, //7
     };
 
+    //clear cache
+    mVertices.clear();
+
     //trivial case
     if(mText == "") return;
 
     const Font::FontData& data = mFont->GetFontData();
 
-    //NOTE: I don't know how to do this using renderer, so I'm multiplying it. If this turns out to slow stuff down, I might want to change it.
-    float scaleFactor = mFontSize / data.mPointSize;
-
-    //render code goes here
-    renderer.SetTexture(&mFont->GetTexture());
-    renderer.SetBlendMode(sf::Blend::Alpha);
-    renderer.Begin(sf::Renderer::QuadList);
+    const sf::Color* currentColor = &color_table[0];
 
     int posX = 0;
     int posY = -data.mDescender;
@@ -123,7 +133,7 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
             nextIsColor = false;
             assert(*it >= '0' && *it <= '7');
             unsigned int col = *it - '0';
-            renderer.ApplyColor(color_table[col]);
+            currentColor = &color_table[col];
             continue;
         }
         const Font::GlyphInfo& info = data.mGlyphs[static_cast<unsigned char>(*it)];
@@ -132,17 +142,16 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
         int y = posY + data.mHeight - info.mBaseline;
 
         //left, top
-        renderer.AddVertex(scaleFactor*x, scaleFactor*(y + info.mHeight), info.mTexCoordX1, info.mTexCoordY2);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX1, info.mTexCoordY2)));
         //left, bottom
-        renderer.AddVertex(scaleFactor*x, scaleFactor*y, info.mTexCoordX1, info.mTexCoordY1);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y), *currentColor, sf::Vector2f(info.mTexCoordX1, info.mTexCoordY1)));
         //right, bottom
-        renderer.AddVertex(scaleFactor*(x + info.mWidth), scaleFactor*y, info.mTexCoordX2, info.mTexCoordY1);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y), *currentColor, sf::Vector2f(info.mTexCoordX2, info.mTexCoordY1)));
         //right, top
-        renderer.AddVertex(scaleFactor*(x + info.mWidth), scaleFactor*(y + info.mHeight), info.mTexCoordX2, info.mTexCoordY2);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX2, info.mTexCoordY2)));
 
         posX += info.mHorizAdvance;
     }
-    renderer.End();
 }
 
 const float Text::GetWidth() const

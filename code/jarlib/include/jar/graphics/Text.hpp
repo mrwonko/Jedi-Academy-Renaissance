@@ -3,7 +3,10 @@
 
 #include "jar/graphics/API.hpp"
 #include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/Vertex.hpp>
 #include <string>
+#include <vector>
 
 struct lua_State;
 
@@ -11,7 +14,7 @@ namespace jar {
 
 class Font;
 
-class JARGRAPHICSAPI Text : public sf::Drawable
+class JARGRAPHICSAPI Text : public sf::Drawable, public sf::Transformable
 {
     public:
         /** \note don't use, just here so autopointers work **/
@@ -47,7 +50,7 @@ class JARGRAPHICSAPI Text : public sf::Drawable
         /** \brief Gets the height of the text, in pixels **/
         const float GetHeight() const;
 
-        virtual void Render(sf::RenderTarget& target, sf::Renderer& renderer) const;
+        virtual void Render(sf::RenderTarget& target, sf::RenderStates states) const;
 
         static void BindToLua(lua_State* L);
     protected:
@@ -55,6 +58,9 @@ class JARGRAPHICSAPI Text : public sf::Drawable
         std::string mText;
         const Font* mFont;
         float mFontSize;
+
+        std::vector<sf::Vertex> mVertices;
+        void UpdateCache();
 };
 
 } // namespace jar
