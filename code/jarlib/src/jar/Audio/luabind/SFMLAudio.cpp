@@ -27,7 +27,7 @@ const bool SoundBufferLoadFromFile(sf::SoundBuffer& buf, const std::string& file
        !fs::ReadFile(filename + ".mp3", content) &&
        !fs::ReadFile(filename + ".ogg", content)
        ) return false;
-    return buf.LoadFromMemory(content.c_str(), content.length());
+    return buf.loadFromMemory(content.c_str(), content.length());
 }
 
 /*
@@ -56,14 +56,14 @@ void BindSFMLAudio(lua_State* L)
         luabind::class_<sf::Listener>("Listener")
             .scope
             [
-                luabind::def("SetGlobalVolume", sf::Listener::SetGlobalVolume),
-                luabind::def("GetGlobalVolume", sf::Listener::GetGlobalVolume),
-                luabind::def("SetPosition", (void(*)(float, float, float))sf::Listener::SetPosition),
+                luabind::def("SetGlobalVolume", sf::Listener::setGlobalVolume),
+                luabind::def("GetGlobalVolume", sf::Listener::getGlobalVolume),
+                luabind::def("SetPosition", (void(*)(float, float, float))sf::Listener::setPosition),
                 //TODO: expose Vector3f first!
-                //luabind::def("GetPosition", sf::Listener::GetPosition),
-                luabind::def("SetDirection", (void(*)(float, float, float))sf::Listener::SetDirection)
+                //luabind::def("GetPosition", sf::Listener::getPosition),
+                luabind::def("SetDirection", (void(*)(float, float, float))sf::Listener::setDirection)
                 //TODO: expose Vector3f first!
-                //luabind::def("GetDirection", sf::Listener::GetDirection),
+                //luabind::def("GetDirection", sf::Listener::getDirection),
             ],
 
         luabind::class_<sf::SoundSource>("SoundSource")
@@ -73,19 +73,19 @@ void BindSFMLAudio(lua_State* L)
                 luabind::value("Paused", sf::SoundSource::Paused),
                 luabind::value("Playing", sf::SoundSource::Playing)
             ]
-            .def("SetPitch", &sf::SoundSource::SetPitch)
-            .def("GetPitch", &sf::SoundSource::GetPitch)
-            .def("SetVolume", &sf::SoundSource::SetVolume)
-            .def("GetVolume", &sf::SoundSource::GetVolume)
-            .def("SetAttentuation", &sf::SoundSource::SetAttenuation)
-            .def("GetAttentuation", &sf::SoundSource::GetAttenuation)
-            .def("SetPosition", (void(sf::SoundSource::*)(float, float, float))&sf::SoundSource::SetPosition)
+            .def("SetPitch", &sf::SoundSource::setPitch)
+            .def("GetPitch", &sf::SoundSource::getPitch)
+            .def("SetVolume", &sf::SoundSource::setVolume)
+            .def("GetVolume", &sf::SoundSource::getVolume)
+            .def("SetAttentuation", &sf::SoundSource::setAttenuation)
+            .def("GetAttentuation", &sf::SoundSource::getAttenuation)
+            .def("SetPosition", (void(sf::SoundSource::*)(float, float, float))&sf::SoundSource::setPosition)
             //TODO: expose Vector3f first!
-            //luabind::def("GetPosition", &sf::SoundSource::GetPosition),
-            .def("SetRelativeToListener", &sf::SoundSource::SetRelativeToListener)
-            .def("IsRelativeToListener", &sf::SoundSource::IsRelativeToListener)
-            .def("SetMinDistance", &sf::SoundSource::SetMinDistance)
-            .def("GetMinDistance", &sf::SoundSource::GetMinDistance),
+            //luabind::def("GetPosition", &sf::SoundSource::getPosition),
+            .def("SetRelativeToListener", &sf::SoundSource::setRelativeToListener)
+            .def("IsRelativeToListener", &sf::SoundSource::isRelativeToListener)
+            .def("SetMinDistance", &sf::SoundSource::setMinDistance)
+            .def("GetMinDistance", &sf::SoundSource::getMinDistance),
 
         luabind::class_<sf::SoundBuffer>("SoundBuffer")
             .def(luabind::constructor<>())
@@ -93,16 +93,16 @@ void BindSFMLAudio(lua_State* L)
 
         luabind::class_<sf::Sound, sf::SoundSource>("Sound")
             .def(luabind::constructor<>())
-            .def("Play", &sf::Sound::Play)
-            .def("Pause", &sf::Sound::Pause)
-            .def("Stop", &sf::Sound::Stop)
-            .def("SetBuffer", &sf::Sound::SetBuffer, luabind::dependency(_1, _2)) //1st: who keeps alive, 2nd: who is kept alive. _1 = this.
-            .def("GetBuffer", &sf::Sound::GetBuffer)
-            .def("SetLoop", &sf::Sound::SetLoop)
-            .def("GetLoop", &sf::Sound::GetLoop)
-            .def("SetPlayingOffset", &sf::Sound::SetPlayingOffset)
-            .def("GetPlayingOffset", &sf::Sound::GetPlayingOffset)
-            .def("GetStatus", &sf::Sound::GetStatus)
+            .def("Play", &sf::Sound::play)
+            .def("Pause", &sf::Sound::pause)
+            .def("Stop", &sf::Sound::stop)
+            .def("SetBuffer", &sf::Sound::setBuffer, luabind::dependency(_1, _2)) //1st: who keeps alive, 2nd: who is kept alive. _1 = this.
+            .def("GetBuffer", &sf::Sound::getBuffer)
+            .def("SetLoop", &sf::Sound::setLoop)
+            .def("GetLoop", &sf::Sound::getLoop)
+            .def("SetPlayingOffset", &sf::Sound::setPlayingOffset)
+            .def("GetPlayingOffset", &sf::Sound::getPlayingOffset)
+            .def("GetStatus", &sf::Sound::getStatus)
 /*
         //music requires the memory from where it is read to remain intact, I don't want to deal with that at the moment, would require a manager of sorts or inheriting for PhysFS support.
         luabind::class_<sf::SoundStream, sf::SoundSource>("SoundStream")
