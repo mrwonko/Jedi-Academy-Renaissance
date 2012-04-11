@@ -96,7 +96,7 @@
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
 				<Linker>
-					<Add library="lua" />
+					<Add library="jar_lua" />
 					<Add directory="lib" />
 				</Linker>
 			</Target>
