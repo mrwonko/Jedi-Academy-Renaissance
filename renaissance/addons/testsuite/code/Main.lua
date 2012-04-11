@@ -82,6 +82,8 @@ if not SoundBuffer:LoadFromFile("sound/beep.wav") then
 end
 Sound:SetBuffer(SoundBuffer)
 
+local lastFrametime = jar.GetTime()
+
 local middleX = g_TestWindow:GetWidth()/2
 local middleY = g_TestWindow:GetHeight()/2
 while running do
@@ -90,22 +92,25 @@ while running do
 		g_TestWindow:SetCursorPosition(middleX, middleY)
 	end
 	
-	local frametime = g_TestWindow:GetFrameTime()
-	if frametime == 0 then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
+	local frametime = jar.GetTime()
+	if frametime == lastFrametime == 0 then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
 		jar.Sleep(1)
-		frametime = g_TestWindow:GetFrameTime()
+		frametime = jar.GetTime()
 	end
+	local deltaT = lastFrametime - frametime
+	lastFrameTime = frametime
 	
-	g_InstructionInterpreter:Update(frametime)
+	g_InstructionInterpreter:Update(deltaT)
 	
-	jar.Core.GetSingleton():Update(frametime)
+	jar.Core.GetSingleton():Update(deltaT)
 	
 	aLittleCircle:SetX(x)
 	
+	
 	if moar then
-		x = x + 0.1 * frametime
+		x = x + 0.1 * deltaT
 	else
-		x = x - 0.1 * frametime
+		x = x - 0.1 * deltaT
 	end
 	
 	if x <= 50 or x >= 750 then

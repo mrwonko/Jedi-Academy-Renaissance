@@ -71,23 +71,21 @@ local function HandleEvents()
 	g_EventListenerStack:PostEvent()
 end
 
-local slept = false
+local lastFrametime = jar.GetTime()
 while g_running do
 	HandleEvents()
 	
-	local frametime = g_Window:GetFrameTime()
-	if frametime == 0 then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
+	local frametime = jar.GetTime()
+	if frametime == lastFrametime then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
 		jar.Sleep(1)
-		frametime = 1
+		frametime = lastFrameTime - jar.GetTime()
 	end
-	if slept then
-		frametime = frametime + 5 -- GetFrameTime seems to return the *actual* frame time, not the time since the last frame.
-		slept = false
-	end
+	local deltaT = lastFrametime - frametime()
+	lastFrametime = frametime
 	
-	g_InstructionInterpreter:Update(frametime)
-	jar.Core.GetSingleton():Update(frametime)
-	currentState:Update(frametime)
+	g_InstructionInterpreter:Update(deltaT)
+	jar.Core.GetSingleton():Update(deltaT)
+	currentState:Update(deltaT)
 	
 	g_Window:Clear(jar.Color.Black)
 	currentState:RenderTo(g_Window)
@@ -100,7 +98,6 @@ while g_running do
 	if not hasFocus then
 		-- sleep 5 ms
 		jar.Sleep(5)
-		slept = true
 	end
 end
 
