@@ -101,6 +101,7 @@
 			<Add option="-DJAR_CORE_LIBRARY_BUILD" />
 			<Add option="-DLUABIND_DYNAMIC_LINK" />
 			<Add option="-DLUA_BUILD_AS_DLL" />
+			<Add option="-DSFML_DYNAMIC" />
 			<Add directory="include" />
 			<Add directory="..\..\dependencies\lua-5.1.4-jar\include" />
 		</Compiler>
