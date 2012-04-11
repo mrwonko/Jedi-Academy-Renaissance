@@ -9,12 +9,12 @@ static sf::Clock g_clock;
 
 TimeType GetTime()
 {
-    return TimeType(g_clock.GetElapsedTime());
+	return TimeType(g_clock.getElapsedTime().asMilliseconds());
 }
 
 void Sleep(TimeType duration)
 {
-    sf::Sleep(duration);
+	sf::sleep(sf::milliseconds(duration));
 }
 
 } //namespace jar
