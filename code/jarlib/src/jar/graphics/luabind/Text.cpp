@@ -11,7 +11,7 @@ void Text::BindToLua(lua_State* L)
 {
     luabind::module(L, "jar")
     [
-        luabind::class_<Text, sf::Drawable>("Text")
+        luabind::class_<Text, luabind::bases<sf::Drawable, sf::Transformable> >("Text")
             //since fonts are stored as a pointer, they better not be deleted while texts still use them.
             //first parameter: who keeps alive? second parameter: who is kept alive? (_1 is "this")
             .def(luabind::constructor<const Font&>(), luabind::dependency(_1, _2))
