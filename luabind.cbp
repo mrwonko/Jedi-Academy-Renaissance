@@ -15,10 +15,9 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-DLUABIND_DYNAMIC_LINK" />
-					<Add option="-DNDEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="jar-lua" />
+					<Add library="lua" />
 				</Linker>
 			</Target>
 			<Target title="Release DLL">
@@ -33,7 +32,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="jar-lua" />
+					<Add library="lua" />
 				</Linker>
 			</Target>
 			<Target title="Debug Static">
@@ -45,7 +44,6 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-DNDEBUG" />
 				</Compiler>
 			</Target>
 			<Target title="Release Static">
@@ -71,7 +69,7 @@
 					<Add option="-g" />
 					<Add option="-DLUABIND_DYNAMIC_LINK" />
 					<Add option="-DLUA_BUILD_AS_DLL" />
-					<Add option="-DNDEBUG" />
+					<Add directory="..\..\..\Games\jarenaissance\dependencies\lua-5.1.4-jar\include" />
 				</Compiler>
 				<Linker>
 					<Add library="jar_lua_d" />
