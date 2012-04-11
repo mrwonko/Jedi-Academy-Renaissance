@@ -1,8 +1,8 @@
 #ifndef JAR_GRAPHICS_HPP
 #define JAR_GRAPHICS_HPP
 
-#include "jar/core/Singleton.hpp"
-#include "jar/graphics/API.hpp"
+#include <jar/core/Singleton.hpp>
+#include <jar/graphics/API.hpp>
 
 namespace jar {
 
