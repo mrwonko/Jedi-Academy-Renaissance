@@ -50,6 +50,8 @@ class JARGRAPHICSAPI Text : public sf::Drawable, public sf::Transformable
         /** \brief Gets the height of the text, in pixels **/
         const float GetHeight() const;
 
+        const sf::Vector2f GetSize() const { return sf::Vector2f(GetHeight(), GetWidth()); }
+
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
         static void BindToLua(lua_State* L);
@@ -60,6 +62,8 @@ class JARGRAPHICSAPI Text : public sf::Drawable, public sf::Transformable
         float mFontSize;
 
         std::vector<sf::Vertex> mVertices;
+        unsigned int mNumLines;
+        unsigned int mWidth;
         void UpdateCache();
 };
 

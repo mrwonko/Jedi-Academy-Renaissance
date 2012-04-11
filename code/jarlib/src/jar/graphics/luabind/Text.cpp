@@ -25,6 +25,7 @@ void Text::BindToLua(lua_State* L)
             .def("GetWidth", &Text::GetWidth)
             .def("GetLineHeight", &Text::GetLineHeight)
             .def("GetHeight", &Text::GetHeight)
+            .def("GetSize", &Text::GetSize)
     ];
 }
 }
