@@ -9,7 +9,9 @@ namespace jar {
 
 Text::Text() :
     mFont(NULL),
-    mFontSize(12)
+    mFontSize(12),
+    mNumLines(0),
+    mWidth(0)
 {
     //ctor
 }
@@ -106,12 +108,15 @@ void Text::UpdateCache()
 
     int tabWidth = data.mGlyphs[' '].mHorizAdvance * mFont->GetTabWidth();
 
+    mNumLines = 1;
+
     for(std::string::const_iterator it = mText.begin(); it != mText.end(); ++it)
     {
         if(*it == '\n')
         {
             posX = 0;
             posY += data.mHeight;
+            ++mNumLines;
             continue;
         }
         if(*it == '\t')
@@ -152,11 +157,12 @@ void Text::UpdateCache()
 
         posX += info.mHorizAdvance;
     }
+    mWidth = mFont->GetWidth(mText);
 }
 
 const float Text::GetWidth() const
 {
-    return (float)mFontSize / (float) mFont->GetFontData().mPointSize * (float) mFont->GetWidth(mText);
+    return (float)mFontSize / (float) mFont->GetFontData().mPointSize * (float) mWidth;
 }
 
 const float Text::GetLineHeight() const
@@ -166,12 +172,7 @@ const float Text::GetLineHeight() const
 
 const float Text::GetHeight() const
 {
-    int lines = 1;
-    for(std::string::const_iterator it = mText.begin(); it != mText.end(); ++it)
-    {
-        if(*it == '\n') ++lines;
-    }
-    return lines * GetLineHeight();
+    return GetLineHeight() * mNumLines;
 }
 
 } // namespace jar
