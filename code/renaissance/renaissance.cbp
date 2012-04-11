@@ -84,7 +84,6 @@
 			<Add directory="..\jarlib\include" />
 		</Compiler>
 		<Linker>
-			<Add library="sfml-system" />
 			<Add directory="..\jarlib\lib" />
 		</Linker>
 		<Unit filename="src\main.cpp" />

@@ -6,8 +6,6 @@
 #include <jar/core/FileSystem.hpp>
 #include <jar/core/Lua.hpp>
 
-#include <SFML/System.hpp>
-
 #include <iostream>
 #include <exception>
 
