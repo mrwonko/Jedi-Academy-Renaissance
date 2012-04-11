@@ -3,17 +3,21 @@
 
 namespace jar {
 
-template<> Input* Singleton<Input>::mSingleton = NULL;
+Input* Input::mSingleton = NULL;
 
 Input::Input() :
     mImpl(new InputImpl)
 {
     assert(mImpl);
+    assert(!mSingleton);
+    mSingleton = this;
 }
 
 Input::~Input()
 {
     delete mImpl;
+    assert(mSingleton);
+    mSingleton = NULL;
 }
 
 InputDeviceManager& Input::GetInputDeviceManager()

@@ -1,8 +1,8 @@
 #ifndef JAR_INPUT_HPP
 #define JAR_INPUT_HPP
 
-#include "jar/core/Singleton.hpp"
-#include "jar/input/API.hpp"
+#include <jar/input/API.hpp>
+#include <cassert>
 
 namespace jar {
 
@@ -11,7 +11,7 @@ class InputDeviceManager;
 class EventManager;
 class RenderWindow;
 
-class JARINPUTAPI Input : public Singleton<Input>
+class JARINPUTAPI Input
 {
     public:
         Input();
@@ -20,14 +20,16 @@ class JARINPUTAPI Input : public Singleton<Input>
         InputDeviceManager& GetInputDeviceManager();
         EventManager& GetEventManager();
 
+        static Input& GetSingleton() { assert(mSingleton); return *mSingleton; }
+
     private:
         InputImpl* mImpl;
 
         friend class RenderWindow;
         void OnWindowCreated();
-};
 
-template<> JARINPUTAPI Input* Singleton<Input>::mSingleton;
+        static Input* mSingleton;
+};
 
 } // namespace jar
 

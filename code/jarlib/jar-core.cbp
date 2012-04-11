@@ -126,7 +126,6 @@
 		<Unit filename="include\jar\core\Logger.hpp" />
 		<Unit filename="include\jar\core\Lua.hpp" />
 		<Unit filename="include\jar\core\LuaLogger.hpp" />
-		<Unit filename="include\jar\core\Singleton.hpp" />
 		<Unit filename="include\jar\core\Time.hpp" />
 		<Unit filename="include\jar\core\Updatable.hpp" />
 		<Unit filename="include\jar\core\VoidLogger.hpp" />

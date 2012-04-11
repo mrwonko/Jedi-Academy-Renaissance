@@ -4,18 +4,22 @@
 
 namespace jar {
 
-template<> Graphics* Singleton<Graphics>::mSingleton = NULL;
+Graphics* Graphics::mSingleton = NULL;
 
 Graphics::Graphics()
 {
     //ctor
     mImpl = new GraphicsImpl();
+    assert(!mSingleton);
+    mSingleton = this;
 }
 
 Graphics::~Graphics()
 {
     //dtor
     delete mImpl;
+    assert(mSingleton);
+    mSingleton = NULL;
 }
 
 } // namespace jar

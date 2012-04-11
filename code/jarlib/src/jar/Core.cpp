@@ -3,17 +3,21 @@
 
 namespace jar {
 
-template<> Core* Singleton<Core>::mSingleton = NULL;
+Core* Core::mSingleton = NULL;
 
 Core::Core() :
     mImpl(new CoreImpl)
 {
     assert(mImpl);
+    assert(!mSingleton);
+    mSingleton = this;
 }
 
 Core::~Core()
 {
     delete mImpl;
+    assert(mSingleton);
+    mSingleton = NULL;
 }
 
 const bool Core::Init(int argc, char** argv, const std::string& rootPath)

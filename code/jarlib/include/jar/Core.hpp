@@ -2,7 +2,7 @@
 #define JAR_CORE_HPP
 
 #include <string>
-#include "core/Singleton.hpp"
+#include <cassert>
 #include <jar/core/API.hpp>
 #include <jar/core/Time.hpp>
 
@@ -12,7 +12,7 @@ class CoreImpl;
 class Lua;
 
 /** \brief Main Framework class for core systems. You, the user, just need to create & initialize this (only once!), plus any other systems you need. **/
-class JARCOREAPI Core : public Singleton<Core>
+class JARCOREAPI Core
 {
     public:
         Core();
@@ -34,12 +34,14 @@ class JARCOREAPI Core : public Singleton<Core>
 
         CoreImpl& GetImpl();
 
+        static Core& GetSingleton() { assert(mSingleton); return *mSingleton; }
+        static const bool HasSingleton() { return mSingleton != NULL; }
+
     private:
         /** \brief Pointer to implementation of this class, so user doesn't need to include all the files. **/
         CoreImpl* mImpl;
+        static Core* mSingleton;
 };
-
-template<> JARCOREAPI Core* Singleton<Core>::mSingleton;
 
 } // namespace jar
 

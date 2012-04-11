@@ -3,11 +3,12 @@
 
 namespace jar
 {
-    //Singleton
-    template<> CLArguments* Singleton<CLArguments>::mSingleton = NULL;
+    CLArguments* CLArguments::mSingleton = NULL;
 
     CLArguments::CLArguments(int argc, char** argv)
     {
+        assert(!mSingleton);
+        mSingleton = this;
         bool first = true;
         //Loop through the arguments
         for(int i = 0; i < argc; ++i)
@@ -59,6 +60,12 @@ namespace jar
                 first = false;
             }
         }
+    }
+
+    CLArguments::~CLArguments()
+    {
+        assert(mSingleton);
+        mSingleton = NULL;
     }
 
     std::string CLArguments::MatchPath(const std::string& dir) const

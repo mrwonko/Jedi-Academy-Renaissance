@@ -4,17 +4,21 @@
 
 namespace jar {
 
-template<> Audio* Singleton<Audio>::mSingleton = NULL;
+Audio* Audio::mSingleton = NULL;
 
 Audio::Audio() :
     mImpl(new AudioImpl)
 {
     assert(mImpl);
+    assert(!mSingleton);
+    mSingleton = this;
 }
 
 Audio::~Audio()
 {
     delete mImpl;
+    assert(mSingleton);
+    mSingleton = NULL;
 }
 
 } // namespace jar

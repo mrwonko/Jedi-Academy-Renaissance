@@ -8,8 +8,8 @@
 #define JAR_CORE_CLARGUMENTS_HPP
 #include <string>
 #include <vector>
-#include "Singleton.hpp"
 #include <jar/core/API.hpp>
+#include <cassert>
 
 namespace jar
 {
@@ -19,7 +19,7 @@ namespace jar
      *  Also parses the first argument to get the path to the program
      *  \headerfile <jar/core/CLArguments.hpp>
      **/
-    class JARCOREAPI CLArguments : public Singleton<CLArguments>
+    class JARCOREAPI CLArguments
     {
         public:
             /**
@@ -32,6 +32,7 @@ namespace jar
             *
             **/
             CLArguments(int argc, char** argv);
+            ~CLArguments();
 
 
             /**
@@ -84,6 +85,8 @@ namespace jar
             const int FindArgument(const std::string& requestedArgument, bool caseSensitive = false) const;
 
             const int NumArguments() const { return mArguments.size(); }
+
+            static CLArguments& GetSingleton() { assert(mSingleton); return *mSingleton; }
         private:
             /// All the arguments (except the path)
             std::vector < std::string > mArguments;
@@ -98,9 +101,9 @@ namespace jar
 
             /// Whether this is windows. Unreliable! Only checks for \\ in path, which may not be present on windows.
             bool mWindows;
-    };
 
-    template<> JARCOREAPI CLArguments* Singleton<CLArguments>::mSingleton;
+            static CLArguments* mSingleton;
+    };
 
 }
 #endif // JAR_CORE_CLARGUMENTS_HPP
