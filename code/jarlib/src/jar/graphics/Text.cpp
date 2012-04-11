@@ -64,7 +64,7 @@ const float Text::GetFontSize() const
     return mFontSize;
 }
 
-void Text::Render(sf::RenderTarget& target, sf::RenderStates states) const
+void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     float scaleFactor = mFontSize / mFont->GetFontData().mPointSize;
     //TODO/FIXME: order correct?

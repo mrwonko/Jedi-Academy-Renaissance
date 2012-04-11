@@ -50,7 +50,7 @@ class JARGRAPHICSAPI Text : public sf::Drawable, public sf::Transformable
         /** \brief Gets the height of the text, in pixels **/
         const float GetHeight() const;
 
-        virtual void Render(sf::RenderTarget& target, sf::RenderStates states) const;
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
         static void BindToLua(lua_State* L);
     protected:
