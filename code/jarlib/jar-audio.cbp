@@ -112,7 +112,7 @@
 		<Unit filename="include\jar\audio\luabind\SFMLAudio.hpp" />
 		<Unit filename="src\jar\Audio.cpp" />
 		<Unit filename="src\jar\Audio\AudioImpl.cpp" />
-		<Unit filename="src\jar\Audio\luabind\SFMLAudio.cpp" />
+		<Unit filename="src\jar\audio\luabind\LBSFMLAudio.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
