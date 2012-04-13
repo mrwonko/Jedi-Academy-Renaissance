@@ -82,7 +82,7 @@
     <OutDir>$(ProjectDir)lib\msvc\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>$(ProjectDir)obj\msvc\$(Configuration)\</IntDir>
+    <IntDir>$(ProjectDir)obj\msvc\$(ProjectName)_$(Configuration)\</IntDir>
     <TargetExt>.dll</TargetExt>
     <TargetName>jar-core-d</TargetName>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
@@ -92,7 +92,7 @@
     <OutDir>$(ProjectDir)lib\msvc\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IntDir>$(ProjectDir)obj\msvc\$(Configuration)\</IntDir>
+    <IntDir>$(ProjectDir)obj\msvc\$(ProjectName)_$(Configuration)\</IntDir>
     <TargetExt>.dll</TargetExt>
     <TargetName>jar-core</TargetName>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>

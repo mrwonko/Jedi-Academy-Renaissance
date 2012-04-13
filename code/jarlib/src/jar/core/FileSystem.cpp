@@ -74,14 +74,15 @@ const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
 {
     if(PHYSFS_fileLength(file) == 0) return true;
 
-    char buf[1024];
-    int status;
+	static const unsigned int BUF_LEN = 1024;
+    char buf[BUF_LEN];
+    PHYSFS_sint64 status;
     //PHYSFS_read returns the read characters.
     while(true)
     {
-        status = PHYSFS_read(file, &buf, sizeof(char), sizeof(buf)) != 0;
+        status = PHYSFS_read(file, &buf, sizeof(char), BUF_LEN);
         output += std::string(buf, status);
-        if(status < (int)sizeof(buf)) break; //eof reached
+        if(status < BUF_LEN) break; //eof reached
     }
     //-1 on error
     if(status == -1)
@@ -92,10 +93,12 @@ const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
     //if no error was set, the reason for status == 0 should be EOF
     if(!PHYSFS_eof(file))
     {
+		const char* error = PHYSFS_getLastError();
+		assert(error);
 #ifdef _DEBUG
-        Logger::GetDefaultLogger().Warning(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+PHYSFS_getLastError());
+			Logger::GetDefaultLogger().Warning(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+error);
 #else
-        Logger::GetDefaultLogger().Info(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+PHYSFS_getLastError(), 1);
+			Logger::GetDefaultLogger().Info(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+error, 1);
 #endif
     }
     return true;
