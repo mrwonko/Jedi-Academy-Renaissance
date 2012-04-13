@@ -17,9 +17,10 @@ true)
 
 function EnemyKamikaze:New(info)
 	local obj = Enemy.New(self, info)
-	obj.sprite:SetSubRect(jar.IntRect(0, 0, 16, 16))
-	obj.sprite:Resize(obj.size, obj.size)
-	obj.sprite:SetOrigin(obj.image:GetWidth()/4, obj.image:GetHeight()/2) --anim hack, image is too wide
+	obj.sprite:SetTextureRect(jar.IntRect(0, 0, 16, 16))
+	--TODO: replace outdated Resize code
+	--obj.sprite:Resize(obj.size, obj.size)
+	obj.sprite:SetOrigin(obj.image:GetSize().X/4, obj.image:GetSize().Y/2) --anim hack, image is too wide
 	return obj
 end
 
@@ -32,14 +33,14 @@ function EnemyKamikaze:Update(deltaT)
 		if self.curFrame >= self.numFrames then
 			self.curFrame = 0
 		end
-		self.sprite:SetSubRect(jar.IntRect(self.curFrame*16, 0, 16, 16))
+		self.sprite:SetTextureRect(jar.IntRect(self.curFrame*16, 0, 16, 16))
 	end
 end
 
 function EnemyKamikaze:Move(deltaT)
-	if self.sprite:GetPosition().y > g_Gamefield.player.sprite:GetPosition().y + 2 then
+	if self.sprite:GetPosition().Y > g_Gamefield.player.sprite:GetPosition().Y + 2 then
 		self.sprite:Move(-self.speed*deltaT, -self.speedY*deltaT)
-	elseif self.sprite:GetPosition().y < g_Gamefield.player.sprite:GetPosition().y - 2 then
+	elseif self.sprite:GetPosition().Y < g_Gamefield.player.sprite:GetPosition().Y - 2 then
 		self.sprite:Move(-self.speed*deltaT, self.speedY*deltaT)
 	else
 		self.sprite:Move(-self.speed*deltaT, 0)

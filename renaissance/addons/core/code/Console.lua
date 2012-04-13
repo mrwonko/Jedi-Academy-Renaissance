@@ -55,12 +55,16 @@ function Console:New(width, height, interpreter, font, fontsize)
 		mSize = jar.Vector2f(width, height),
 		mInputHistory = {}, --what's been drawn to the console recently
 		mOutputHistory = {}, --stuff the user has recently entered
-		mRect = jar.Shape.Rectangle(0, 0, width, height-1, jar.Color(0, 0, 0, 195), 1, jar.Color.White),
+		mRect = jar.RectangleShape(jar.Vector2f(width, height-1)),
 		mInterpreter = interpreter,
 		mOutputText = jar.Text(font, fontsize),
 		mInputText = jar.Text(font, fontsize),
 	}
+	obj.mRect:SetFillColor(jar.Color(0, 0, 0, 195))
+	obj.mRect:SetOutlineThickness(1)
+	obj.mRect:SetOutlineColor(jar.Color.White)
 	setmetatable(obj, self)
+	
 	self.__index = self
 	if not obj.mInterpreter then
 		error("Console:New(): No valid interpreter set!", 2)
@@ -257,7 +261,7 @@ end
 
 function Console:Print(...)
 	local argStr = table.concat({...}, " ") .. "^7"
-	local wrapped = WordWrap(argStr, self.mOutputText:GetFont(), self.mOutputText:GetFontSize(), self.mSize.x)
+	local wrapped = WordWrap(argStr, self.mOutputText:GetFont(), self.mOutputText:GetFontSize(), self.mSize.X)
 	
 	--first:concatenate all arguments
 	--next: calculate word wrap (result: array of lines)
@@ -321,7 +325,7 @@ function Console:UpdateInputText()
 	local font = self.mInputText:GetFont()
 	local factor = self.mInputText:GetFontSize() / font:GetDefaultSize()
 	local numCutFront = 0
-	while font:GetWidth("]" .. text) * factor > self.mSize.x and #text > 5 do
+	while font:GetWidth("]" .. text) * factor > self.mSize.X and #text > 5 do
 		if numCutFront + 1 == self.mInputCursorPos then
 			text = text:sub(1, -2)
 		else
@@ -389,7 +393,7 @@ function Console:RenderTo(target)
 	local oldView = jar.View(target:GetView())
 	-- NOTE: here I'm assuming the console should take half of the screen's height and all of its width... why am I doing that? o.O
 	-- TODO: "fix" the aforementioned size problem
-	target:SetView(jar.View(jar.Vector2f(self.mSize.x/2, self.mSize.y), jar.Vector2f(self.mSize.x, self.mSize.y*2)))
+	target:SetView(jar.View(jar.Vector2f(self.mSize.X/2, self.mSize.Y), jar.Vector2f(self.mSize.X, self.mSize.Y*2)))
 	target:Draw(self.mRect)
 	if self.mOutputHasChanged then
 		self:UpdateOutputText()

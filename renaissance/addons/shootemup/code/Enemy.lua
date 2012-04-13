@@ -38,8 +38,9 @@ function Enemy:New(info, template)
 	
 	if obj.image then
 		obj.sprite = jar.Sprite(obj.image)
-		obj.sprite:SetOrigin(obj.image:GetWidth()/2, obj.image:GetHeight()/2)
-		obj.sprite:Resize(obj.size, obj.size)
+		obj.sprite:SetOrigin(obj.image:GetSize()/2)
+		--TODO: replace outdated Resize code
+		--obj.sprite:Resize(obj.size, obj.size)
 	else
 		error("no image set!", 2)
 	end

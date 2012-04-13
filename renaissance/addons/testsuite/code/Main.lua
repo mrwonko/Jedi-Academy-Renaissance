@@ -5,6 +5,11 @@ require("WordWrap.lua")
 print("==== Test Suite Start ====")
 print("")
 
+if not testsuiteInitialized then
+	error("Not correctly initialized!")
+end
+testsuiteInitialized = nil
+
 local testImage = g_ImageManager:GetImage("textures/tests/me2.jpg", true) -- true = throw error on failure, not usually wanted
 local testSprite = jar.Sprite(testImage)
 
@@ -23,20 +28,28 @@ Special characters also work, as far as I can tell: Für Khazad-Dûm! Öhöhö, Spaß!
 
 now		I		also
 added	support	for
-tabstops.]], testFont, nil, g_TestWindow:GetWidth()-20), "\n")
+tabstops.]], testFont, nil, g_TestWindow:GetSize().X-20), "\n")
 
 
 local testText = jar.Text(testFont)
 testText:SetText(wrappedText)
 testText:SetPosition(10, 10)
-textBox = jar.Shape.Rectangle(10, 10, g_TestWindow:GetWidth()-20, g_TestWindow:GetHeight()-20, jar.Color(0, 0, 0, 0), 1, jar.Color.Yellow)
+local textBox = jar.RectangleShape(jar.Vector2f(g_TestWindow:GetSize().X-20, g_TestWindow:GetSize().Y-20))
+textBox:SetPosition(10, 10)
+textBox:SetFillColor(jar.Color.Transparent)
+textBox:SetOutlineThickness(1)
+textBox:SetOutlineColor(jar.Color.Yellow)
 
 --testText:SetFontSize(8)
 
 local moar = true
 local x = 400
-local aLittleCircle = jar.Shape.Circle(0, 0, 32, jar.Color(0, 0, 0, 0), 1, jar.Color.Red)
+local aLittleCircle = jar.CircleShape(32)
+aLittleCircle:SetFillColor(jar.Color.Transparent)
+aLittleCircle:SetOutlineColor(jar.Color.Red)
+aLittleCircle:SetOutlineThickness(1)
 aLittleCircle:SetY(300)
+aLittleCircle:SetOrigin(32, 32)
 aLittleCircle:SetX(x)
 
 local running = true
@@ -63,10 +76,10 @@ local function HandleEvents()
 			running = false
 		elseif event.Type == jar.Event.GainedFocus then
 			hasFocus = true
-			g_TestWindow:ShowMouseCursor(false)
+			g_TestWindow:SetMouseCursorVisible(false)
 		elseif event.Type == jar.Event.LostFocus then
 			hasFocus = false
-			g_TestWindow:ShowMouseCursor(true)
+			g_TestWindow:SetMouseCursorVisible(true)
 		elseif hasFocus then
 			g_EventListenerStack:OnEvent(event)
 		end
@@ -84,21 +97,28 @@ Sound:SetBuffer(SoundBuffer)
 
 local lastFrametime = jar.GetTime()
 
-local middleX = g_TestWindow:GetWidth()/2
-local middleY = g_TestWindow:GetHeight()/2
+local counter = 0
+
+local middle = jar.Vector2i(g_TestWindow:GetSize().X \ 2, g_TestWindow:GetSize().Y \ 2) -- \ is div
 while running do
 	HandleEvents()
 	if hasFocus then
-		g_TestWindow:SetCursorPosition(middleX, middleY)
+		g_TestWindow:SetCursorPosition(middle)
 	end
 	
 	local frametime = jar.GetTime()
+	assert(frametime >= lastFrametime)
 	if frametime == lastFrametime == 0 then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
 		jar.Sleep(1)
 		frametime = jar.GetTime()
 	end
-	local deltaT = lastFrametime - frametime
-	lastFrameTime = frametime
+	local deltaT = frametime - lastFrametime
+	lastFrametime = frametime
+	
+	if counter < 20 then
+		counter = counter + 1
+		print(deltaT)
+	end
 	
 	g_InstructionInterpreter:Update(deltaT)
 	

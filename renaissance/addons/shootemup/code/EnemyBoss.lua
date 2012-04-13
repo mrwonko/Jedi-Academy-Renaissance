@@ -37,17 +37,18 @@ true)
 
 function EnemyBoss:New(info)
 	local obj = Enemy.New(self, info)
-	obj.sprite:Resize(obj.size, obj.size)
+	--TODO: replace outdated Resize code
+	--obj.sprite:Resize(obj.size, obj.size)
 	return obj
 end
 
 function EnemyBoss:Move(deltaT)
-	if self.sprite:GetPosition().x > 150 then
+	if self.sprite:GetPosition().X > 150 then
 		self.sprite:Move(self.movedir*deltaT)
 	else
-		if self.moveup and self.sprite:GetPosition().y < 10 then
+		if self.moveup and self.sprite:GetPosition().Y < 10 then
 			self.moveup = false
-		elseif not self.moveup and self.sprite:GetPosition().y > 90 then
+		elseif not self.moveup and self.sprite:GetPosition().Y > 90 then
 			self.moveup = true
 		end
 		if self.moveup then

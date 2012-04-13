@@ -66,7 +66,8 @@ end
 local function JoystickManager_ProcessAvailableJoysticks(self)
 	local connectedIDJs = {} -- by GUID
 	-- see which Joysticks are connected
-	for idj in jar.Input.GetSingleton():GetInputDeviceManager():GetAllJoysticks() do
+	for idj in jar.Input.GetSingleton():GetInputDeviceManager():GetAllControllers() do
+		print("Connected joystick: \"" .. idj:GetUniqueID() .. "\".")
 		if connectedIDJs[idj:GetUniqueID()] then
 			if DEBUG then
 				error("Duplicate Joystick GUID \"" .. idj:GetUniqueID() .. "\"!")

@@ -52,11 +52,11 @@ local function HandleEvents()
 		elseif event.Type == jar.Event.GainedFocus then
 			hasFocus = true
 			if currentState.GainFocus then currentState:GainFocus() end
-			--g_Window:ShowMouseCursor(false)
+			--g_Window:SetMouseCursorVisible(false)
 		elseif event.Type == jar.Event.LostFocus then
 			hasFocus = false
 			if currentState.LoseFocus then currentState:LoseFocus() end
-			--g_Window:ShowMouseCursor(true)
+			--g_Window:SetMouseCursorVisible(true)
 		elseif hasFocus then
 			if event.Type == jar.Event.KeyPressed then
 				KeyManager:OnKeyDown(event.Key.Code)

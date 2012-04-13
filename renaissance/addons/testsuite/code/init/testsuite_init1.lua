@@ -19,12 +19,12 @@ g_InstructionInterpreter = InstructionInterpreter:New(g_CVarManager, g_CCommandM
 
 print("TODO: cvar window size / fullscreen (testsuite_init1.lua)")
 g_TestWindow = jar.RenderWindow(800, 600, "Test Window", true, false)
-g_TestWindow:ShowMouseCursor(false)
+g_TestWindow:SetMouseCursorVisible(false)
 
 g_FontManager = FontManager:New()
 g_ImageManager = ImageManager:New()
 
-g_Console = Console:New(g_TestWindow:GetWidth(), g_TestWindow:GetHeight()/2, g_InstructionInterpreter, g_FontManager:GetFont("lucida8pt", true))
+g_Console = Console:New(g_TestWindow:GetSize().X, g_TestWindow:GetSize().Y/2, g_InstructionInterpreter, g_FontManager:GetFont("lucida8pt", true))
 -- commented out for now so I can do debug output via print in Console:Print
 g_Console:BindPrint()
 
@@ -36,10 +36,9 @@ if not JoystickManager:Init() then
 end
 JoystickManager:Save()
 
-g_BindManager = BindManager:New(g_InstructionInterpreter, g_TestWindow:GetWidth(), g_TestWindow:GetHeight())
+g_BindManager = BindManager:New(g_InstructionInterpreter, g_TestWindow:GetSize().X, g_TestWindow:GetSize().Y)
 g_BindManager:RegisterBindCommand(g_CCommandManager)
 g_BindManager:Load()
-
 g_EventListenerStack:PushListener(g_BindManager)
 --register console later so it receives commands earlier - before the bind manager in particular.
 g_EventListenerStack:PushListener(g_Console)
@@ -64,4 +63,4 @@ RegisterAction{
 }
 --]]
 
-print("Testsuite 1 initialized")
+testsuiteInitialized = true

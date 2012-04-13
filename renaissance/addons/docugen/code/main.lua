@@ -5,7 +5,7 @@ local addInaccesible = false -- if the key to a table is a function/table/userva
 print("Luabind documentation generation")
 
 -- walk through the globals, following every table, finding luabind generated stuff, remembering how to get there
-local todo = {[_G] = ""}
+local todo = {[_G] = "_G"}
 -- remember what you already processed in case of cycles
 local processed = {[_G] = true}
 
@@ -22,6 +22,29 @@ local unnamedLuabindClasses = {}
 -- all the Luabind functions by their actual name
 local luabindFunctionsByActualName = {}
 
+local function AddToTodo(parentName, name, value)
+	-- only add unprocessed ones
+	if processed[value] == nil then
+		local nameType = type(name)
+		if writeableTypes[nameType] or addInaccesible then
+			assert(todo[value] == nil)
+			processed[value] = true
+			if nameType == "string" then
+				if parentName == "_G" then
+					todo[value] = name
+				else
+					todo[value] = parentName .. "." .. name
+				end
+			elseif writeableTypes[nameType] then
+				todo[value] = parentName .. "[" .. name .. "]"
+			else
+				assert(addInaccessible)
+				todo[value] = "<inaccesible>"
+			end
+		end
+	end
+end
+
 local done = false
 while not done do
 	-- get the next entry from the todo list
@@ -35,26 +58,8 @@ while not done do
 		todo[object] = nil
 		-- if this is a table, add all its unprocessed entries
 		if type(object) == "table" then
-			local name = name
-			if name == "" then
-				name = nil
-			end
 			for key, value in pairs(object) do
-				-- only add unprocessed ones
-				if processed[value] == nil then
-					local keyType = type(key)
-					if writeableTypes[keyType] or addInaccesible then
-						assert(todo[value] == nil)
-						processed[value] = true
-						if keyType == "string" then
-							todo[value] = (name and (name .. "." .. key)) or key
-						elseif writeableTypes[keyType] then
-							todo[value] = (name or "_G") .. "[" .. key .. "]"
-						else
-							todo[value] = "<inaccesible>"
-						end
-					end
-				end
+				AddToTodo(name, key, value)
 			end
 		else -- not a table
 			-- try to get information on this object
@@ -78,6 +83,10 @@ while not done do
 						table.insert(luabindClassesByName[info.name], info)
 					else
 						table.insert(unnamedLuabindClasses, info)
+					end
+					-- add stuff from the scope to the todo list
+					for key, value in pairs(info.scope) do
+						AddToTodo(name, key, value)
 					end
 				else
 					assert(info.type == "function")
@@ -346,6 +355,17 @@ local function PrintClassInfo(info)
 		print("- binary operators -")
 		for _, op in ipairs(info.binaryOperators) do
 			print(op.arguments[1] .. " " .. binaryOperatorSymbols[op.name] .. " " .. op.arguments[2])
+		end
+		print()
+	end
+	
+	-- print static member functions, if any
+	if #info.staticMemberFunctions > 0 then
+		print("- static member functions -")
+		for _, funcInfo in ipairs(info.staticMemberFunctions) do
+			for _, signature in ipairs(funcInfo.overloads) do
+				print(processSignature(signature, funcInfo, objectFormatter))
+			end
 		end
 		print()
 	end
