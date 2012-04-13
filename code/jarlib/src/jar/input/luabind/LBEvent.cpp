@@ -148,34 +148,34 @@ void Event::Luabind(lua_State* L)
             [
                 luabind::class_<Event::ControllerAxisEvent>("ControllerAxisEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Controller", &Event::ControllerAxisEvent::Controller)
-                    .def_readonly("Axis", &Event::ControllerAxisEvent::Axis)
-                    .def_readonly("Position", &Event::ControllerAxisEvent::Position),
+                    .def_readonly("Controller", &ControllerAxisEvent::Controller)
+                    .def_readonly("Axis", &ControllerAxisEvent::Axis)
+                    .def_readonly("Position", &ControllerAxisEvent::Position),
 
                 luabind::class_<Event::ControllerButtonEvent>("ControllerButtonEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Controller", &Event::ControllerButtonEvent::Controller)
-                    .def_readonly("Button", &Event::ControllerButtonEvent::Button),
+                    .def_readonly("Controller", &ControllerButtonEvent::Controller)
+                    .def_readonly("Button", &ControllerButtonEvent::Button),
 
                 luabind::class_<Event::KeyEvent>("KeyEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Code", &Event::KeyEvent::Code)
-                    .def_readonly("Alt", &Event::KeyEvent::Alt)
-                    .def_readonly("Control", &Event::KeyEvent::Control)
-                    .def_readonly("Shift", &Event::KeyEvent::Shift),
+                    .def_readonly("Code", &KeyEvent::Code)
+                    .def_readonly("Alt", &KeyEvent::Alt)
+                    .def_readonly("Control", &KeyEvent::Control)
+                    .def_readonly("Shift", &KeyEvent::Shift),
 
                 luabind::class_<Event::MouseButtonEvent>("MouseButtonEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Button", &Event::MouseButtonEvent::Button),
+                    .def_readonly("Button", &MouseButtonEvent::Button),
 
                 luabind::class_<Event::MouseMovedEvent>("MouseMovedEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("X", &Event::MouseMovedEvent::X)
-                    .def_readonly("Y", &Event::MouseMovedEvent::Y),
+                    .def_readonly("X", &MouseMovedEvent::X)
+                    .def_readonly("Y", &MouseMovedEvent::Y),
 
                 luabind::class_<Event::MouseWheelEvent>("MouseWheelEvent")
                     .def(luabind::constructor<>())
-                    .def_readonly("Delta", &Event::MouseWheelEvent::Delta)
+                    .def_readonly("Delta", &MouseWheelEvent::Delta)
             ]
             .enum_("EventType")
             [

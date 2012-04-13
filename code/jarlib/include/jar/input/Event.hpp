@@ -24,6 +24,7 @@ class InputDeviceController;
 **/
 struct JARINPUTAPI Event
 {
+public:
     /** \brief Create an event based on an SFML Event
         \return success
     **/
