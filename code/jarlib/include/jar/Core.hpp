@@ -34,8 +34,8 @@ class JARCOREAPI Core
 
         CoreImpl& GetImpl();
 
-        static Core& GetSingleton() { assert(mSingleton); return *mSingleton; }
-        static const bool HasSingleton() { return mSingleton != NULL; }
+        static Core& GetSingleton();
+        static const bool HasSingleton();
 
     private:
         /** \brief Pointer to implementation of this class, so user doesn't need to include all the files. **/

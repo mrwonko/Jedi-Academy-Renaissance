@@ -57,11 +57,11 @@ const bool Close(PHYSFS_File* file)
 const bool ReadFile(const std::string& filename, std::string& output)
 {
     PHYSFS_File* file = OpenRead(filename);
-    if(not file)
+    if(!file)
     {
         return false;
     }
-    if(not GetCurrentFileContent(file, output))
+    if(!GetCurrentFileContent(file, output))
     {
         assert(Close(file));
         return false;

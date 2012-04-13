@@ -167,7 +167,7 @@ namespace jar
     {
         if(!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) return false;
         std::string name = std::string(ffd.cFileName);
-        if(name.length() == 0 or name[0] == '.') return false;
+        if(name.length() == 0 || name[0] == '.') return false;
         return true;
     }
 

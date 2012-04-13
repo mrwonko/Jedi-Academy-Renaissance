@@ -29,7 +29,7 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
     //init Command Line Arguments
 
     mCLArguments = new CLArguments(argc, argv);
-    if(not mCLArguments)
+    if(!mCLArguments)
     {
         Logger::GetDefaultLogger().Error("Could not allocate memory!");
         Deinit();
@@ -39,7 +39,7 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
     //init Lua
 
     mLua = new Lua();
-    if(not mLua)
+    if(!mLua)
     {
         Logger::GetDefaultLogger().Error("Could not allocate memory!");
         Deinit();
@@ -81,7 +81,7 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
         Deinit();
         return false;
     }
-    if(not fs::SetWriteDir("./"))
+    if(!fs::SetWriteDir("./"))
     {
         Logger::GetDefaultLogger().Error("Cannot set write directory: " + fs::GetLastError());
         Deinit();
@@ -126,7 +126,7 @@ const bool CoreImpl::Deinit()
     }
     if(mLua)
     {
-        if(not mLua->Deinit())
+        if(!mLua->Deinit())
         {
             Logger::GetDefaultLogger().Error("Could not deinitialize Lua: " + mLua->GetLastError());
             failed = true;

@@ -3,6 +3,9 @@
 
 struct lua_State;
 
-int GetLuabindInfo (lua_State* L);
+namespace jar
+{
+    int GetLuabindInfo (lua_State* L);
+}
 
 #endif

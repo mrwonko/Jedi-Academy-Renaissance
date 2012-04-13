@@ -2,15 +2,25 @@
 #include <luabind/object.hpp> //for luabind::object, obviously - also include luabind/detail/call.hpp defining luabind::function_object
 #include <luabind/function.hpp> //for is_luabind_function
 
+#include <cassert>
+
+namespace jar
+{
+
 namespace
 {
     //returns a lua table containing information on the luabind function on the stack top
     luabind::object GetLuabindFunctionInfo(lua_State* L)
     {
+#ifdef _DEBUG
         int stacktop = lua_gettop(L);
+#endif
         //retrieve luabind function object containing the information we want
         assert(lua_getupvalue(L, -1, 1));
-        const luabind::detail::function_object* funcObj = *(const luabind::detail::function_object**)lua_touserdata(L, -1);
+
+        const luabind::detail::function_object** funcObjPtr = (const luabind::detail::function_object**)lua_touserdata(L, -1);
+        assert(funcObjPtr);
+        const luabind::detail::function_object* funcObj = *funcObjPtr;
 
         lua_pop(L, 1); //upvalue
 
@@ -39,7 +49,9 @@ namespace
         }
         info["overloads"] = overloads;
 
+#ifdef _DEBUG
         assert(stacktop == lua_gettop(L));
+#endif
 
         return info;
     }
@@ -84,10 +96,53 @@ int GetLuabindInfo (lua_State* L)
         info["name"] = crep->name();
 
         //get static members (functions, classes, whatever there may be)
-        luabind::object staticMembers = luabind::newtable(L);
-        int staticMemberCounter = 0;
+        luabind::object staticMemberFunctions = luabind::newtable(L);
+        luabind::object classScope = luabind::newtable(L);
+        {
+            int staticMemberFunctionCounter = 0;
+            //copy the whole default table into scope
+            crep->get_default_table(L); // stack: crep default table
+            int index = lua_gettop(L);
+            lua_pushnil(L); //initialize lua_next - stack: crep default table, nil
+            //iterate through table (in no particular order) - pops key, pushes next key/value pair returning 1 (or 0 and pushing nothing once done)
+            while(lua_next(L, index) != 0)
+            {
+#ifdef _DEBUG
+                int stacksize = lua_gettop(L);
+#endif
+                //stack: crep default table, key, value
 
-        info["scope"] = staticMembers;
+                if(luabind::detail::is_luabind_function(L, -1))
+                {
+                    luabind::object funcInfo = GetLuabindFunctionInfo(L);
+                    funcInfo["actualName"] = lua_tostring(L, -2);
+                    staticMemberFunctions[++staticMemberFunctionCounter] = funcInfo;
+                    lua_pop(L, 1);
+                    //stack: crep default table, key
+                }
+                else
+                {
+                    classScope.push(L);
+                    //stack: crep default table, key, value, class scope table
+                    lua_pushvalue(L, -3);
+                    lua_pushvalue(L, -3);
+                    //stack: crep default table, key, value, target table, key, value
+                    lua_settable(L, -3);
+                    //stack: crep default table, key, value, target table
+                    lua_pop(L, 2);
+                    //stack: crep default table, key
+                }
+
+#ifdef _DEBUG
+                assert(stacksize - 1 == lua_gettop(L));
+#endif
+            }
+            //stack: crep default table
+            lua_pop(L, 1); //crep default table
+        }
+
+        info["staticMemberFunctions"] = staticMemberFunctions;
+        info["scope"] = classScope;
 
         //get static constants (from enums)
         luabind::object constants = luabind::newtable(L);
@@ -139,17 +194,23 @@ int GetLuabindInfo (lua_State* L)
                     else
                     {
                         //stuff in get_table that is no luabind function has most likely been added from Lua and is basically a static member.
-                        staticMembers.push(L);
-                        lua_pushvalue(L, -2);
-                        lua_pushinteger(L, ++staticMemberCounter);
+                        classScope.push(L);
+                        //stack: crep table, key, value, scope table
+                        lua_pushvalue(L, -3);
+                        //stack: crep table, key, value, scope table, key
+                        lua_pushvalue(L, -3);
+                        //stack: crep table, key, value, scope table, key, value
                         lua_settable(L, -3);
+                        //stack: crep table, key, value, scope table
                         lua_pop(L, 1);
+                        //stack: crep table, key, value
                     }
                 }
                 //pop value from stack (key is consumed by next)
                 lua_pop(L, 1);
+                //stack: crep table, key
             }
-            lua_pop(L, -1); //crep table
+            lua_pop(L, 1); //pop crep table
         }
         info["properties"] = properties;
         info["methods"] = methods;
@@ -163,4 +224,6 @@ int GetLuabindInfo (lua_State* L)
 
     lua_pushnil(L);
     return 1;
+}
+
 }

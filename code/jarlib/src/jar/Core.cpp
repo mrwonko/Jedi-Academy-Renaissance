@@ -51,4 +51,15 @@ void Core::Update(const TimeType deltaT)
     mImpl->Update(deltaT);
 }
 
+Core& Core::GetSingleton()
+{
+	assert(mSingleton);
+	return *mSingleton;
+}
+
+const bool Core::HasSingleton()
+{
+	return mSingleton != NULL;
+}
+
 } // namespace jar

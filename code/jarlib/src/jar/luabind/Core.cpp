@@ -72,12 +72,6 @@ namespace
 
 void BindCore(lua_State* L)
 {
-    //for more convenient overloaded function matching
-    typedef const bool (*Mount1Signature)(const std::string&, const bool);
-    typedef const bool (*Mount2Signature)(const std::string&, const std::string&, const bool);
-    typedef const bool (*ReadString1Signature)(PHYSFS_File*, std::string&);
-    typedef const bool (*ReadString2Signature)(PHYSFS_File*, unsigned int, std::string&);
-
     //Didz suggested these functions may be used for evil and should be omitted in C++, instead of just overwritten in Lua.
     luabind::globals(L)["dofile"] = luabind::nil;
     luabind::globals(L)["loadfile"] = luabind::nil;
@@ -145,8 +139,8 @@ void BindCore(lua_State* L)
             luabind::namespace_("fs")
             [
                 luabind::def("GetLastError", &fs::GetLastError),
-                luabind::def("Mount", (Mount1Signature) &fs::Mount),
-                luabind::def("Mount", (Mount2Signature) &fs::Mount),
+                luabind::def("Mount", (const bool (*)(const std::string&, const bool)) &fs::Mount),
+                luabind::def("Mount", (const bool (*)(const std::string&, const std::string&, const bool)) &fs::Mount),
                 luabind::def("OpenRead", &fs::OpenRead),
                 luabind::def("OpenWrite", &fs::OpenWrite),
                 luabind::def("Unmount", &fs::Unmount),
@@ -157,8 +151,8 @@ void BindCore(lua_State* L)
                     .def("Close", &fs::Close)
                     //chars are read as numbers - keep that in mind!
                     .def("ReadChar", &fs::ReadChar, luabind::pure_out_value(_2))
-                    .def("ReadString", (ReadString1Signature) &fs::ReadString, luabind::pure_out_value(_2))
-                    .def("ReadString", (ReadString2Signature) &fs::ReadString, luabind::pure_out_value(_3))
+                    .def("ReadString", (const bool (*)(PHYSFS_File*, std::string&)) &fs::ReadString, luabind::pure_out_value(_2))
+                    .def("ReadString", (const bool (*)(PHYSFS_File*, unsigned int, std::string&)) &fs::ReadString, luabind::pure_out_value(_3))
                     .def("ReadFloat", &fs::ReadFloat, luabind::pure_out_value(_2))
                     .def("ReadInt", &fs::ReadInt, luabind::pure_out_value(_2))
                     .def("ReadUnsignedInt", &fs::ReadUnsignedInt, luabind::pure_out_value(_2))
