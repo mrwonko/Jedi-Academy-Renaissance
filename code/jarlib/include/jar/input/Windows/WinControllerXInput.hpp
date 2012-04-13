@@ -16,7 +16,9 @@
 #define __out
 #define __reserved
 #endif
+
 #include <XInput.h>
+
 #ifdef __GNUC__
 #undef __in
 #undef __out
