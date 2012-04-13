@@ -2,9 +2,10 @@
 #define JAR_INPUT_EVENTQUEUE_HPP
 
 #include <SFML/System/Mutex.hpp>
-#include "jar/input/EventListener.hpp"
 #include <queue>
-#include "jar/input/API.hpp"
+#include <jar/input/EventListener.hpp>
+#include <jar/input/Event.hpp>
+#include <jar/input/API.hpp>
 
 namespace jar
 {
