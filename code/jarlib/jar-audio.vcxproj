@@ -60,7 +60,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>JAR_INPUT_LIBRARY_BUILD;SFML_DYNAMIC;_DEBUG;LUA_BUILD_AS_DLL;LUABIND_DYNAMIC_LINK;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>JAR_AUDIO_LIBRARY_BUILD;SFML_DYNAMIC;_DEBUG;LUA_BUILD_AS_DLL;LUABIND_DYNAMIC_LINK;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -81,7 +81,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>JAR_INPUT_LIBRARY_BUILD;SFML_DYNAMIC;LUA_BUILD_AS_DLL;LUABIND_DYNAMIC_LINK;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>JAR_AUDIO_LIBRARY_BUILD;SFML_DYNAMIC;LUA_BUILD_AS_DLL;LUABIND_DYNAMIC_LINK;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
