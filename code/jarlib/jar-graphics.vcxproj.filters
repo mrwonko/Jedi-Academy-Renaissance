@@ -56,9 +56,6 @@
     <ClCompile Include="src\jar\Graphics.cpp">
       <Filter>Source Files\jar</Filter>
     </ClCompile>
-    <ClCompile Include="src\jar\luabind\SFMLGraphics.cpp">
-      <Filter>Source Files\jar\luabind</Filter>
-    </ClCompile>
     <ClCompile Include="src\jar\graphics\Font.cpp">
       <Filter>Source Files\jar\graphics</Filter>
     </ClCompile>
@@ -71,13 +68,16 @@
     <ClCompile Include="src\jar\graphics\Text.cpp">
       <Filter>Source Files\jar\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\jar\graphics\luabind\Font.cpp">
+    <ClCompile Include="src\jar\luabind\LBSFMLGraphics.cpp">
+      <Filter>Source Files\jar\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\luabind\LBFont.cpp">
       <Filter>Source Files\jar\graphics\luabind</Filter>
     </ClCompile>
-    <ClCompile Include="src\jar\graphics\luabind\RenderWindow.cpp">
+    <ClCompile Include="src\jar\graphics\luabind\LBRenderWindow.cpp">
       <Filter>Source Files\jar\graphics\luabind</Filter>
     </ClCompile>
-    <ClCompile Include="src\jar\graphics\luabind\Text.cpp">
+    <ClCompile Include="src\jar\graphics\luabind\LBText.cpp">
       <Filter>Source Files\jar\graphics\luabind</Filter>
     </ClCompile>
   </ItemGroup>

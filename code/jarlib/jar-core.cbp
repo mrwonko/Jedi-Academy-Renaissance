@@ -145,7 +145,7 @@
 		<Unit filename="src\jar\core\LuaLogger.cpp" />
 		<Unit filename="src\jar\core\Time.cpp" />
 		<Unit filename="src\jar\core\Updatable.cpp" />
-		<Unit filename="src\jar\luabind\Core.cpp" />
+		<Unit filename="src\jar\luabind\LBCore.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

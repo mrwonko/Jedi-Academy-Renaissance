@@ -111,12 +111,12 @@
     <ClCompile Include="src\jar\Graphics.cpp" />
     <ClCompile Include="src\jar\graphics\Font.cpp" />
     <ClCompile Include="src\jar\graphics\GraphicsImpl.cpp" />
-    <ClCompile Include="src\jar\graphics\luabind\Font.cpp" />
-    <ClCompile Include="src\jar\graphics\luabind\RenderWindow.cpp" />
-    <ClCompile Include="src\jar\graphics\luabind\Text.cpp" />
+    <ClCompile Include="src\jar\graphics\luabind\LBFont.cpp" />
+    <ClCompile Include="src\jar\graphics\luabind\LBRenderWindow.cpp" />
+    <ClCompile Include="src\jar\graphics\luabind\LBText.cpp" />
     <ClCompile Include="src\jar\graphics\RenderWindow.cpp" />
     <ClCompile Include="src\jar\graphics\Text.cpp" />
-    <ClCompile Include="src\jar\luabind\SFMLGraphics.cpp" />
+    <ClCompile Include="src\jar\luabind\LBSFMLGraphics.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

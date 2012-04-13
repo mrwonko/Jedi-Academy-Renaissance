@@ -126,10 +126,10 @@
     <ClCompile Include="src\jar\input\InputDeviceController.cpp" />
     <ClCompile Include="src\jar\input\InputDeviceManager.cpp" />
     <ClCompile Include="src\jar\input\InputImpl.cpp" />
-    <ClCompile Include="src\jar\input\luabind\Event.cpp" />
-    <ClCompile Include="src\jar\input\luabind\InputDeviceController.cpp" />
-    <ClCompile Include="src\jar\input\luabind\InputDeviceManager.cpp" />
-    <ClCompile Include="src\jar\input\luabind\InputImpl.cpp" />
+    <ClCompile Include="src\jar\input\luabind\LBEvent.cpp" />
+    <ClCompile Include="src\jar\input\luabind\LBInputDeviceController.cpp" />
+    <ClCompile Include="src\jar\input\luabind\LBInputDeviceManager.cpp" />
+    <ClCompile Include="src\jar\input\luabind\LBInputImpl.cpp" />
     <ClCompile Include="src\jar\input\Windows\WinControllerDirectInput.cpp" />
     <ClCompile Include="src\jar\input\Windows\WinControllerXInput.cpp" />
   </ItemGroup>

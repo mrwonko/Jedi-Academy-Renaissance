@@ -5,6 +5,9 @@
 #ifndef  WIN32_LEAN_AND_MEAN      // This cleans out rarely used stuff
 #define  WIN32_LEAN_AND_MEAN
 #endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
 #include <windows.h>
 
 //if you change this, also change it in InputImpl.hpp
@@ -33,7 +36,7 @@ class WinControllerDirectInput : public jar::InputDeviceController, public Updat
 
         virtual const bool Deinit();
 
-        virtual void Update(TimeType deltaT);
+        virtual void Update(const TimeType deltaT);
 
         void OnFirstWindowCreated(HWND hwnd);
 

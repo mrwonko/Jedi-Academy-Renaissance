@@ -48,7 +48,7 @@
     <ClCompile Include="src\jar\core\LuaLogger.cpp" />
     <ClCompile Include="src\jar\core\Time.cpp" />
     <ClCompile Include="src\jar\core\Updatable.cpp" />
-    <ClCompile Include="src\jar\luabind\Core.cpp" />
+    <ClCompile Include="src\jar\luabind\LBCore.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}</ProjectGuid>

@@ -7,7 +7,7 @@
     <ClCompile Include="src\jar\Audio.cpp">
       <Filter>Source Files\jar</Filter>
     </ClCompile>
-    <ClCompile Include="src\jar\Audio\luabind\SFMLAudio.cpp">
+    <ClCompile Include="src\jar\Audio\luabind\LBSFMLAudio.cpp">
       <Filter>Source Files\jar\audio\luabind</Filter>
     </ClCompile>
   </ItemGroup>

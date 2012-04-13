@@ -273,7 +273,7 @@ namespace
     };
 
     // the __stdcall is very important, and took me ages to figure out...
-    static __stdcall BOOL ForEachDirectInputDevice(LPCDIDEVICEINSTANCE device, LPVOID voidptr)
+    static BOOL __stdcall ForEachDirectInputDevice(LPCDIDEVICEINSTANCE device, LPVOID voidptr)
     {
         //XInput devices are handled separately, so let's ignore them.
         if( IsXInputDevice(&device->guidProduct) )
@@ -434,7 +434,7 @@ namespace
         bool Success;
     };
 
-    static __stdcall BOOL EnumThreadWndProc(HWND hwnd, LPARAM lParam)
+    static BOOL __stdcall EnumThreadWndProc(HWND hwnd, LPARAM lParam)
     {
         EnumThreadWindowsInfo* info = (EnumThreadWindowsInfo*)lParam;
         info->Hwnd = hwnd;

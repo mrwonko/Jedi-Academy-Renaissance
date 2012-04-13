@@ -8,7 +8,7 @@
 #include <jar/core/Updatable.hpp>
 #include <string>
 
-class lua_State;
+struct lua_State;
 
 namespace jar {
 

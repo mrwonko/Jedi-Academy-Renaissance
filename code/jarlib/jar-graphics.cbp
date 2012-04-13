@@ -123,10 +123,10 @@
 		<Unit filename="src\jar\graphics\GraphicsImpl.cpp" />
 		<Unit filename="src\jar\graphics\RenderWindow.cpp" />
 		<Unit filename="src\jar\graphics\Text.cpp" />
-		<Unit filename="src\jar\graphics\luabind\Font.cpp" />
-		<Unit filename="src\jar\graphics\luabind\RenderWindow.cpp" />
-		<Unit filename="src\jar\graphics\luabind\Text.cpp" />
-		<Unit filename="src\jar\luabind\SFMLGraphics.cpp" />
+		<Unit filename="src\jar\graphics\luabind\LBFont.cpp" />
+		<Unit filename="src\jar\graphics\luabind\LBRenderWindow.cpp" />
+		<Unit filename="src\jar\graphics\luabind\LBText.cpp" />
+		<Unit filename="src\jar\luabind\LBSFMLGraphics.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

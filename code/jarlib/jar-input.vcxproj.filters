@@ -107,23 +107,23 @@
     <ClCompile Include="src\jar\input\InputImpl.cpp">
       <Filter>Source Files\jar\Input</Filter>
     </ClCompile>
-    <ClCompile Include="src\jar\input\luabind\Event.cpp">
-      <Filter>Source Files\jar\Input\luabind</Filter>
-    </ClCompile>
-    <ClCompile Include="src\jar\input\luabind\InputDeviceController.cpp">
-      <Filter>Source Files\jar\Input\luabind</Filter>
-    </ClCompile>
-    <ClCompile Include="src\jar\input\luabind\InputDeviceManager.cpp">
-      <Filter>Source Files\jar\Input\luabind</Filter>
-    </ClCompile>
-    <ClCompile Include="src\jar\input\luabind\InputImpl.cpp">
-      <Filter>Source Files\jar\Input\luabind</Filter>
-    </ClCompile>
     <ClCompile Include="src\jar\input\Windows\WinControllerDirectInput.cpp">
       <Filter>Source Files\jar\Input\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\jar\input\Windows\WinControllerXInput.cpp">
       <Filter>Source Files\jar\Input\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\LBEvent.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\LBInputDeviceController.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\LBInputDeviceManager.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\LBInputImpl.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

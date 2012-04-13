@@ -19,7 +19,7 @@
 #include <vector>
 #include <cassert>
 
-class lua_State;
+struct lua_State;
 
 namespace jar {
 

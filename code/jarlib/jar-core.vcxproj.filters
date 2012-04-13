@@ -45,9 +45,6 @@
     <ClInclude Include="include\jar\core\Component.hpp">
       <Filter>Header Files\jar\core</Filter>
     </ClInclude>
-    <ClInclude Include="include\jar\luabind\Core.hpp">
-      <Filter>Header Files\jar\luabind</Filter>
-    </ClInclude>
     <ClInclude Include="include\jar\core\CoreImpl.hpp">
       <Filter>Header Files\jar\core</Filter>
     </ClInclude>
@@ -87,6 +84,9 @@
     <ClInclude Include="include\jar\core\VoidLogger.hpp">
       <Filter>Header Files\jar\core</Filter>
     </ClInclude>
+    <ClInclude Include="include\jar\luabind\Core.hpp">
+      <Filter>Header Files\jar\luabind</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\jar\Core.cpp">
@@ -100,9 +100,6 @@
     </ClCompile>
     <ClCompile Include="src\jar\core\Component.cpp">
       <Filter>Source Files\jar\core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\jar\luabind\Core.cpp">
-      <Filter>Source Files\jar\luabind</Filter>
     </ClCompile>
     <ClCompile Include="src\jar\core\CoreImpl.cpp">
       <Filter>Source Files\jar\core</Filter>
@@ -136,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="src\jar\core\Time.cpp">
       <Filter>Source Files\jar\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\luabind\LBCore.cpp">
+      <Filter>Source Files\jar\luabind</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

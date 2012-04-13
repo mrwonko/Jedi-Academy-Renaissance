@@ -7,7 +7,7 @@
 namespace jar
 {
 
-class Event;
+struct Event;
 class EventListener;
 /** \brief Class for sending Events.
 **/

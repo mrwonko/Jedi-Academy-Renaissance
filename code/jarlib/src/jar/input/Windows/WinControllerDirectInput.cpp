@@ -42,7 +42,7 @@ namespace
         std::vector<DWORD>& FFAxes;
     };
 
-    static __stdcall BOOL ForEachAbsAxis(LPCDIDEVICEOBJECTINSTANCE obj, LPVOID voidptr)
+    static BOOL __stdcall ForEachAbsAxis(LPCDIDEVICEOBJECTINSTANCE obj, LPVOID voidptr)
     {
         DIControlObjectSharedInfo* info = static_cast<DIControlObjectSharedInfo*>(voidptr);
 
@@ -210,7 +210,7 @@ namespace
     };
 
     //according to MSDN it'S DIEffectInfo, but according to the mingw-w64 headers it'S DIEFFECTINFO. Since I want my code to compile, I use the latter.
-    static __stdcall BOOL DIEnumEffectsCallback(const DIEFFECTINFO* info, void* pvRef)
+    static BOOL __stdcall DIEnumEffectsCallback(const DIEFFECTINFO* info, void* pvRef)
     {
         DIEffectsSharedInfo* sharedInfo = static_cast<DIEffectsSharedInfo*>(pvRef);
 
@@ -356,7 +356,7 @@ const bool WinControllerDirectInput::Deinit()
     return true;
 }
 
-void WinControllerDirectInput::Update(TimeType deltaT)
+void WinControllerDirectInput::Update(const TimeType deltaT)
 {
     HRESULT result;
 
@@ -478,7 +478,7 @@ void WinControllerDirectInput::CheckPOVChange(unsigned int povIndex, DWORD oldSt
 void WinControllerDirectInput::UpdateRumblers()
 {
     //for rumbling we need to be in exclusive mode. Also make sure it's enabled.
-    if(not(mIsExclusive and mRumbleEnabled)) return;
+    if(!(mIsExclusive && mRumbleEnabled)) return;
 
     assert(mFFAxes.size() >= mNumRumblers);
     for(unsigned int i = 0; i < mNumRumblers; ++i)

@@ -65,7 +65,7 @@ const bool WinControllerXInput::Deinit()
     return true;
 }
 
-void WinControllerXInput::Update(TimeType deltaT)
+void WinControllerXInput::Update(const TimeType deltaT)
 {
     //  read state
 

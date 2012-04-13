@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class lua_State;
+struct lua_State;
 
 namespace jar {
 

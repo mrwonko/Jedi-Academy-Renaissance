@@ -5,7 +5,7 @@
 #include "jar/input/KeyCodes.hpp"
 #include "jar/input/API.hpp"
 
-class lua_State;
+struct lua_State;
 
 namespace sf
 {

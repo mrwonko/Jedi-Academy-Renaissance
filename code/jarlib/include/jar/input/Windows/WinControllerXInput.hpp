@@ -5,16 +5,23 @@
 #ifndef  WIN32_LEAN_AND_MEAN      // This cleans out rarely used stuff
 #define  WIN32_LEAN_AND_MEAN
 #endif
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
 #include <windows.h>
 
 //these are used in xinput.h but they seem to be only of clarifying nature, still prevent gcc from compiling...
+#ifdef __GNUC__
 #define __in
 #define __out
 #define __reserved
+#endif
 #include <XInput.h>
+#ifdef __GNUC__
 #undef __in
 #undef __out
 #undef __reserved
+#endif
 
 #include <map>
 
@@ -45,7 +52,7 @@ class WinControllerXInput : public InputDeviceController, public Updatable
 
         virtual const bool Deinit();
 
-        virtual void Update(TimeType deltaT);
+        virtual void Update(const TimeType deltaT);
 
         virtual std::string GetUniqueID() const;
 

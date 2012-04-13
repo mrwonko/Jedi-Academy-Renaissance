@@ -12,7 +12,7 @@ class JARINPUTAPI EventManager : public EventQueue
         EventManager();
         virtual ~EventManager();
         static EventManager& GetSingleton() { assert(mSingleton); return *mSingleton; }
-        static const bool HasSingleton() { return mSingleton; }
+        static const bool HasSingleton() { return mSingleton != NULL; }
     protected:
     private:
         static EventManager* mSingleton;

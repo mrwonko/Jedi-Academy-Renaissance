@@ -162,10 +162,10 @@
 			<Option target="Debug Win32" />
 			<Option target="Release Win32" />
 		</Unit>
-		<Unit filename="src\jar\input\luabind\Event.cpp" />
-		<Unit filename="src\jar\input\luabind\InputDeviceController.cpp" />
-		<Unit filename="src\jar\input\luabind\InputDeviceManager.cpp" />
-		<Unit filename="src\jar\input\luabind\InputImpl.cpp" />
+		<Unit filename="src\jar\input\luabind\LBEvent.cpp" />
+		<Unit filename="src\jar\input\luabind\LBInputDeviceController.cpp" />
+		<Unit filename="src\jar\input\luabind\LBInputDeviceManager.cpp" />
+		<Unit filename="src\jar\input\luabind\LBInputImpl.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

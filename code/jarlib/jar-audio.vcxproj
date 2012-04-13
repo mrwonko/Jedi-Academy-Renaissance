@@ -101,7 +101,7 @@
   <ItemGroup>
     <ClCompile Include="src\jar\Audio.cpp" />
     <ClCompile Include="src\jar\Audio\AudioImpl.cpp" />
-    <ClCompile Include="src\jar\Audio\luabind\SFMLAudio.cpp" />
+    <ClCompile Include="src\jar\Audio\luabind\LBSFMLAudio.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\jar\Audio.hpp" />

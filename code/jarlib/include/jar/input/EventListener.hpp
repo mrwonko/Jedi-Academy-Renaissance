@@ -6,7 +6,7 @@
 namespace jar
 {
 
-class Event;
+struct Event;
 
 /** \brief Event Listeners are objects receiving events.
  *
