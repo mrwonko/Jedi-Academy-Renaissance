@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{e0b8730d-a260-4f9b-a107-b2915e6f52fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar">
+      <UniqueIdentifier>{dd0ea76c-02fb-471a-823e-fcb28953bf55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\Input">
+      <UniqueIdentifier>{1ffa8368-2dff-461d-a430-a3925a6209ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\Input\luabind">
+      <UniqueIdentifier>{fceb9ecf-6a22-4a6f-8ced-1495f78abeaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{cdfaebcc-c067-429b-b8e3-7b360d75577d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar">
+      <UniqueIdentifier>{46e3e4c6-4ad8-42b7-9da9-abdfcd9dc60b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar\input">
+      <UniqueIdentifier>{4089048d-aa04-475b-bae1-dbb6a9d88018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar\input\Windows">
+      <UniqueIdentifier>{74687735-0591-4f7b-8873-87f35da3c0f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\Input\Windows">
+      <UniqueIdentifier>{fb131b3c-b489-47bc-9e78-d8fa98be5a8e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\jar\Input.hpp">
+      <Filter>Header Files\jar</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\API.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\Event.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\EventListener.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\EventManager.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\EventQueue.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\EventRelay.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\EventSender.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\InputDevice.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\InputDeviceController.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\InputDeviceManager.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\InputImpl.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\KeyCodes.hpp">
+      <Filter>Header Files\jar\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\Windows\WinControllerDirectInput.hpp">
+      <Filter>Header Files\jar\input\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\input\Windows\WinControllerXInput.hpp">
+      <Filter>Header Files\jar\input\Windows</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\jar\Input.cpp">
+      <Filter>Source Files\jar</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\Event.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\EventManager.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\EventQueue.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\EventRelay.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\EventSender.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\InputDevice.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\InputDeviceController.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\InputDeviceManager.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\InputImpl.cpp">
+      <Filter>Source Files\jar\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\Event.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\InputDeviceController.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\InputDeviceManager.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\luabind\InputImpl.cpp">
+      <Filter>Source Files\jar\Input\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\Windows\WinControllerDirectInput.cpp">
+      <Filter>Source Files\jar\Input\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\input\Windows\WinControllerXInput.cpp">
+      <Filter>Source Files\jar\Input\Windows</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
