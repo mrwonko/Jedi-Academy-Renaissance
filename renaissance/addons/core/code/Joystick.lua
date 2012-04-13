@@ -58,7 +58,7 @@ function Joystick:ToSaveString(functionName)
 	return (functionname or "Joystick") .. "\n\
 {\n\
 \tname = \"" .. Escape(self.name) .. "\",\n\
-\tGUID = " .. Escape(self.GUID) .. ",\n\
+\tGUID = \"" .. Escape(self.GUID) .. "\",\n\
 \tindex = " .. self.index .. ",\n\
 \tsensitivity = " .. self.sensitivity .. ",\n\
 }\n"
