@@ -83,7 +83,7 @@ local function JoystickManager_ProcessAvailableJoysticks(self)
 		assert(index == joystick.index) -- just checkin once more. These ought to be in sync.
 		if connectedIDJs[joystick.GUID] then -- hey, this joystick is connected!
 			joystick:SetFromIDJ(connectedIDJs[joystick.GUID])
-			table.remove(connectedIDJs, joystick.GUID)
+			connectedIDJs[joystick.GUID] = nil
 			self.joysticksByGUID[joystick.GUID] = joystick
 		else -- this joystick is not connected.
 			-- oh well, not much to do then
