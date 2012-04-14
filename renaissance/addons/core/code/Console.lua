@@ -70,7 +70,7 @@ function Console:New(width, height, interpreter, font, fontsize)
 		error("Console:New(): No valid interpreter set!", 2)
 	end
 	
-	local numLines = math.floor((height-3)/obj.mOutputText:GetLineHeight())
+	local numLines = (height-3) \ obj.mOutputText:GetLineHeight() -- \ is div (floored division)
 	obj.mNumOutputLines = numLines - 1
 	obj.mOutputText:SetPosition(0, 2)
 	obj.mInputText:SetPosition(0, 2 + (numLines - 1) * obj.mOutputText:GetLineHeight())
@@ -301,13 +301,14 @@ function Console:UpdateOutputText()
 		self.mOutputText:SetText(table.concat(self.mOutputHistory, "\n"))
 		return
 	end
-	local text = ""
+	local text = {}
 	local offset = #self.mOutputHistory - self.mNumOutputLines - self.mOutputOffset + 1
 	for i = offset, self.mNumOutputLines + offset - 1 do
 		assert(self.mOutputHistory[i])
-		text = text .. self.mOutputHistory[i] .. "\n"
+		table.insert(text, self.mOutputHistory[i])
+		table.insert("\n")
 	end
-	self.mOutputText:SetText(text)
+	self.mOutputText:SetText(table.concat(text))
 end
 
 function Console:UpdateInputText()
@@ -390,10 +391,6 @@ function Console:RenderTo(target)
 	if not self.isOpened then
 		return
 	end
-	local oldView = jar.View(target:GetView())
-	-- NOTE: here I'm assuming the console should take half of the screen's height and all of its width... why am I doing that? o.O
-	-- TODO: "fix" the aforementioned size problem
-	target:SetView(jar.View(jar.Vector2f(self.mSize.X/2, self.mSize.Y), jar.Vector2f(self.mSize.X, self.mSize.Y*2)))
 	target:Draw(self.mRect)
 	if self.mOutputHasChanged then
 		self:UpdateOutputText()
@@ -403,5 +400,4 @@ function Console:RenderTo(target)
 	end
 	target:Draw(self.mOutputText)
 	target:Draw(self.mInputText)
-	target:SetView(oldView)
 end
