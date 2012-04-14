@@ -262,21 +262,25 @@ function ChangeKeyboardLayout(layout)
 	end
 end
 
+local availableLayouts = {}
+for name, _ in pairs(KeyboardLayouts) do
+	table.insert(availableLayouts, name)
+	table.insert(availableLayouts, ", ")
+end
+availableLayouts[#availableLayouts] = nil -- remove trailing ", "
+availableLayouts = table.concat(availableLayouts)
+
 g_CVarManager:RegisterCVar
 {
 	name = "in_keyboardLayout",
 	type = CVar.TYPES.STRING,
 	defaultValue = "us",
-	description = "Changes the keyboard layout",
+	description = "Changes the keyboard layout (available: " .. availableLayouts .. ")",
 	IsValid = function(value)
 		if KeyboardLayouts[value] then
 			return true
 		else
-			local str = "Available keyboard layouts:"
-			for name, _ in pairs(KeyboardLayouts) do
-				str = str .. " " .. name
-			end
-			print(str)
+			print("Available keyboard layouts:" .. availableLayouts)
 			return false
 		end
 	end
