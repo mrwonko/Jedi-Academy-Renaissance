@@ -38,16 +38,16 @@ local function mrwloadmodule(filename)
 	local file = jar.fs.OpenRead(filename)
 	local name = filename
 	if not file then
-		file = jar.fs.OpenRead(filename .. ".lua")
 		name = filename .. ".lua"
+		file = jar.fs.OpenRead(name)
 	end
 	if not file then
-		file = jar.fs.OpenRead("code/" .. filename)
 		name = "code/" .. filename
+		file = jar.fs.OpenRead(name)
 	end
 	if not file then
-		file = jar.fs.OpenRead("code/" .. filename .. ".lua")
 		name = "code/" .. filename .. ".lua"
+		file = jar.fs.OpenRead(name)
 	end
 	if not file then
 		return "\n\tCould not find " .. filename .." in pk3s!"
@@ -74,4 +74,16 @@ else
 assert(jar.fs.Mount("assets1.pk3", false)) --prepend, i.e. search first
 end
 
-dofile("code/Init.lua")
+-- error callback function for xpcall()
+function AddTracebackToError(err)
+	if type(err) == "string" then
+		return debug.traceback(err, 3)
+	else
+		return err
+	end
+end
+
+local success, err = xpcall(loadfile("code/Init.lua"), AddTracebackToError)
+if not success then
+	error(err)
+end

@@ -10,6 +10,10 @@ struct lua_State;
 
 namespace jar
 {
+//error handling function that adds file and line number to errors
+JARCOREAPI int add_file_and_line_to_error(lua_State* L);
+//error handling function that adds a stack trace to errors
+JARCOREAPI int add_stacktrace_to_error(lua_State* L);
 
 /** \brief Wrapper class for commonly used Lua functions **/
 class JARCOREAPI Lua
