@@ -102,7 +102,7 @@ void Text::UpdateCache()
 
 	const sf::Vector2u textureSize = mFont->GetTexture().getSize();
 
-    const sf::Color* currentColor = &color_table[0];
+    const sf::Color* currentColor = &color_table[7];
 
     int posX = 0;
     int posY = -data.mDescender;
