@@ -24,7 +24,7 @@ local wrappedText = table.concat(WordWrap([[^1I just added font/text rendering t
 
 ^7The console will be a great tool for debugging and developing.
 
-Special characters also work, as far as I can tell: Für Khazad-Dûm! Öhöhö, Spaß! (Ja, äußerst sinnlos dieser Text.) ThisTextIsSoLongThatItUsesAWholeLineWhichIsQuiteInsaneButAppropriate(OrSoIThink)TheseBracesRemindMeThatIDon'tPreferablyWrapAtSuchSpecialCharactersLike(or)or'or,etc.
+Special characters also work, as far as I can tell: Für Khazad-Dûm! Öhöhö, Spaß! (Ja, äußerst sinnlos, dieser Text.) ThisTextIsSoLongThatItUsesAWholeLineWhichIsQuiteInsaneButAppropriate(OrSoIThink)TheseBracesRemindMeThatIDon'tPreferablyWrapAtSuchSpecialCharactersLike(or)or'or,etc.
 
 now		I		also
 added	support	for
@@ -97,8 +97,6 @@ Sound:SetBuffer(SoundBuffer)
 
 local lastFrametime = jar.GetTime()
 
-local counter = 0
-
 local middle = jar.Vector2i(g_TestWindow:GetSize().X \ 2, g_TestWindow:GetSize().Y \ 2) -- \ is div
 while running do
 	HandleEvents()
@@ -112,13 +110,8 @@ while running do
 		jar.Sleep(1)
 		frametime = jar.GetTime()
 	end
-	local deltaT = frametime - lastFrametime
+	local deltaT = math.min(frametime - lastFrametime, 100) -- no longer than 100ms per frame (e.g. breakpoints in debugging might screw up timings otherwise)
 	lastFrametime = frametime
-	
-	if counter < 20 then
-		counter = counter + 1
-		print(deltaT)
-	end
 	
 	g_InstructionInterpreter:Update(deltaT)
 	
@@ -139,7 +132,7 @@ while running do
 		else
 			Sound:SetPosition(-1, 0, 0)
 		end
-		Sound:Play()
+		--Sound:Play()
 		moar = not moar
 	end
 	
