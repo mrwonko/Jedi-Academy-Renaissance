@@ -3,6 +3,7 @@
 
 #include "jar/graphics/API.hpp"
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 struct lua_State;
 
@@ -75,7 +76,7 @@ class JARGRAPHICSAPI Font
     private:
 
         FontData mFontData;
-        sf::Texture* mTexture; //pointer so I can get away with a forward declaration
+        boost::shared_ptr<sf::Texture> mTexture; //since this is created in vram copying & assignment would usually be rather slow, I suppose
         unsigned int mTabWidth; ///< In multiples of space width, default 8
 };
 

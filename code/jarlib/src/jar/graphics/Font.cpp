@@ -14,12 +14,11 @@ Font::Font() :
 {
     //ctor
     assert(mTexture && "Could not allocate memory!");
+	mTexture->setRepeated(true);
 }
 
 Font::~Font()
 {
-    //dtor
-    delete mTexture;
 }
 
 const bool Font::LoadFromFile(const std::string& filename, std::string& error)

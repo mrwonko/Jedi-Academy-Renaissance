@@ -3,6 +3,7 @@
 #include "jar/graphics/Font.hpp"
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <cassert>
 
 namespace jar {
@@ -68,9 +69,8 @@ const float Text::GetFontSize() const
 
 void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-    float scaleFactor = mFontSize / mFont->GetFontData().mPointSize;
-    //TODO/FIXME: order correct?
     states.transform *= getTransform();
+    float scaleFactor = mFontSize / mFont->GetFontData().mPointSize;
     states.transform.scale(scaleFactor, scaleFactor);
 
     states.texture = &mFont->GetTexture();
@@ -99,6 +99,8 @@ void Text::UpdateCache()
     if(mText == "") return;
 
     const Font::FontData& data = mFont->GetFontData();
+
+	const sf::Vector2u textureSize = mFont->GetTexture().getSize();
 
     const sf::Color* currentColor = &color_table[0];
 
@@ -147,13 +149,13 @@ void Text::UpdateCache()
         int y = posY + data.mHeight - info.mBaseline;
 
         //left, top
-        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX1, info.mTexCoordY2)));
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX1 * textureSize.x, info.mTexCoordY2 * textureSize.y)));
         //left, bottom
-        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y), *currentColor, sf::Vector2f(info.mTexCoordX1, info.mTexCoordY1)));
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y), *currentColor, sf::Vector2f(info.mTexCoordX1 * textureSize.x, info.mTexCoordY1 * textureSize.y)));
         //right, bottom
-        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y), *currentColor, sf::Vector2f(info.mTexCoordX2, info.mTexCoordY1)));
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y), *currentColor, sf::Vector2f(info.mTexCoordX2 * textureSize.x, info.mTexCoordY1 * textureSize.y)));
         //right, top
-        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX2, info.mTexCoordY2)));
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX2 * textureSize.x, info.mTexCoordY2 * textureSize.y)));
 
         posX += info.mHorizAdvance;
     }
