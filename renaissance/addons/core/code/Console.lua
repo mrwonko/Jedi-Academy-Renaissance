@@ -306,7 +306,7 @@ function Console:UpdateOutputText()
 	for i = offset, self.mNumOutputLines + offset - 1 do
 		assert(self.mOutputHistory[i])
 		table.insert(text, self.mOutputHistory[i])
-		table.insert("\n")
+		table.insert(text, "\n")
 	end
 	self.mOutputText:SetText(table.concat(text))
 end
