@@ -24,6 +24,7 @@
 					<Add library="jar_luabind_d" />
 					<Add library="zdll" />
 					<Add library="minizip-d" />
+					<Add library="jar_pluto_d" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
@@ -47,6 +48,7 @@
 					<Add library="jar_luabind" />
 					<Add library="zdll" />
 					<Add library="minizip" />
+					<Add library="jar_pluto" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
@@ -69,6 +71,7 @@
 					<Add library="jar_luabind_d" />
 					<Add library="z" />
 					<Add library="minizip-d" />
+					<Add library="jar_pluto_d" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin/&quot;' />
@@ -91,6 +94,7 @@
 					<Add library="jar_luabind" />
 					<Add library="z" />
 					<Add library="minizip" />
+					<Add library="jar_pluto" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin/&quot;' />

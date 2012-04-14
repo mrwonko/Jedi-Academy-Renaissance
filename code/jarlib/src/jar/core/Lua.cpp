@@ -1,6 +1,10 @@
 #include "jar/core/Lua.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp> //includes both functions and classes. (function.hpp + class.hpp)
+extern "C"
+{
+#include <pluto.h> //must be after lua.hpp
+}
 #include <sstream>
 
 namespace jar
@@ -109,6 +113,8 @@ const bool Lua::Init()
 	// only used when luabind calls code
     luabind::set_pcall_callback(&add_file_and_line_to_error);
     //luabind::set_pcall_callback(&add_stacktrace_to_error);
+	//bind pluto.persist/pluto.unpersist
+	luaopen_jar_pluto(mState);
     return true;
 }
 

@@ -3,7 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>$(SolutionDir)jarlib\include;$(SolutionDir)..\dependencies\lua-5.1.4-jar\include;$(SolutionDir)..\dependencies\pluto-jar\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)jarlib\include;$(SolutionDir)..\dependencies\lua-5.1.4-jar\include;$(SolutionDir)..\dependencies\pluto-jar;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup>
     <LibraryPath>$(SolutionDir)jarlib\lib\msvc;$(SolutionDir)..\dependencies\lua-5.1.4-jar\lib\msvc;$(SolutionDir)..\dependencies\pluto-jar\lib\msvc;$(LibraryPath)</LibraryPath>

@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>jar-pluto</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>../lua-5.1.4-jar/lib/msvc;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\lib\msvc\</OutDir>
+    <IntDir>obj\msvc\$(Configuration)\</IntDir>
+    <TargetName>jar_pluto_d</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <IncludePath>../lua-5.1.4-jar/include;P:\Programming\Libraries\Microsoft DirectX SDK %28June 2010%29\Include;P:\Programming\Libraries\luabind-mrw;P:\Programming\Libraries\SFML-2.0\SFML\include;P:\Programming\Libraries\physfs-2.0.2;P:\Programming\Libraries\zlib-1.2.5\contrib\minizip\msvc;P:\Programming\Libraries\zlib-1.2.5\include;P:\Programming\Libraries\boost_1_43_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>../lua-5.1.4-jar/lib/msvc;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)\lib\msvc\</OutDir>
+    <IntDir>obj\msvc\$(Configuration)\</IntDir>
+    <TargetName>jar_pluto</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <IncludePath>../lua-5.1.4-jar/include;P:\Programming\Libraries\Microsoft DirectX SDK %28June 2010%29\Include;P:\Programming\Libraries\luabind-mrw;P:\Programming\Libraries\SFML-2.0\SFML\include;P:\Programming\Libraries\physfs-2.0.2;P:\Programming\Libraries\zlib-1.2.5\contrib\minizip\msvc;P:\Programming\Libraries\zlib-1.2.5\include;P:\Programming\Libraries\boost_1_43_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>LUA_BUILD_AS_DLL;WIN32;_DEBUG;PLUTO_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>jar_lua_d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)../../renaissance/bin_msvc"</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copying dlls to renaissance/bin_msvc</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(SolutionDir)../../renaissance/bin_msvc/$(TargetFileName)</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(TargetPath)</Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>LUA_BUILD_AS_DLL;WIN32;NDEBUG;PLUTO_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>jar_lua.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)../../renaissance/bin_msvc"</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Copying dlls to renaissance/bin_msvc</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(SolutionDir)../../renaissance/bin_msvc/$(TargetFileName)</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Inputs>$(TargetPath)</Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="lzio.c" />
+    <ClCompile Include="pdep.c" />
+    <ClCompile Include="pluto.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pdep\lauxlib.h" />
+    <ClInclude Include="pdep\ldo.h" />
+    <ClInclude Include="pdep\lfunc.h" />
+    <ClInclude Include="pdep\lgc.h" />
+    <ClInclude Include="pdep\llimits.h" />
+    <ClInclude Include="pdep\lobject.h" />
+    <ClInclude Include="pdep\lopcodes.h" />
+    <ClInclude Include="pdep\lstate.h" />
+    <ClInclude Include="pdep\lstring.h" />
+    <ClInclude Include="pdep\ltm.h" />
+    <ClInclude Include="pdep\lua.h" />
+    <ClInclude Include="pdep\lzio.h" />
+    <ClInclude Include="pdep\pdep.h" />
+    <ClInclude Include="pluto.h" />
+    <ClInclude Include="pluto_api.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
