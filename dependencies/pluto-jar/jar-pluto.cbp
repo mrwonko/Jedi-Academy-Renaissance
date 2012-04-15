@@ -95,7 +95,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="..\lua-5.1.4-jar\lib\jar_lua_d" />
+					<Add library="jar_lua_d" />
 				</Linker>
 			</Target>
 			<Target title="puptest Debug">
@@ -111,7 +111,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="..\lua-5.1.4-jar\lib\jar_lua_d" />
+					<Add library="jar_lua_d" />
 				</Linker>
 			</Target>
 		</Build>
