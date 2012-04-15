@@ -108,11 +108,13 @@
 			<Add option="-DSFML_DYNAMIC" />
 			<Add directory="include" />
 			<Add directory="..\..\dependencies\lua-5.1.4-jar\include" />
+			<Add directory="..\..\dependencies\pluto-jar" />
 		</Compiler>
 		<Linker>
 			<Add library="physfs" />
 			<Add library="sfml-system" />
 			<Add directory="..\..\dependencies\lua-5.1.4-jar\lib" />
+			<Add directory="..\..\dependencies\pluto-jar\lib" />
 		</Linker>
 		<Unit filename="include\jar\Core.hpp" />
 		<Unit filename="include\jar\Jar.hpp" />
