@@ -1,6 +1,6 @@
 -- $Id$
 
-require "pluto"
+require "jar_pluto"
 
 permtable = { 1234 } 
 
