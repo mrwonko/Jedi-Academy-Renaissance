@@ -40,6 +40,7 @@
 			<Add library="sfml-system" />
 			<Add library="opengl32" />
 		</Linker>
+		<Unit filename="bin\shader.frag" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

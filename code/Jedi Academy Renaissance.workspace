@@ -22,6 +22,6 @@
 		<Project filename="../dependencies/pluto-jar/jar-pluto.cbp">
 			<Depends filename="../dependencies/lua-5.1.4-jar/jar-lua.cbp" />
 		</Project>
-		<Project filename="r&amp;d/shadertests/shadertests.cbp" active="1" />
+		<Project filename="rnd/shadertests/shadertests.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>
