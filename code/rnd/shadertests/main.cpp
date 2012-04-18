@@ -13,6 +13,7 @@
 void DrawQuadTraditional(const float ofsX, const float ofsY, const float sizeX, const float sizeY)
 {
     glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 1.f);
         glVertex2f(ofsX, ofsY);
         glTexCoord2f(1.f, 1.f);
         glVertex2f(ofsX+sizeX, ofsY);
