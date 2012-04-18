@@ -96,6 +96,10 @@ int main()
 //        wnd.clear();
 
 
+
+        glEnable(GL_TEXTURE_2D);
+
+
         //  == draw left rect "traditionally" ==
         //make sure OpenGL is not buffering any commands so we get accurate timings
         glFinish();
