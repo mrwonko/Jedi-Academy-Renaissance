@@ -1,91 +1,162 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/System/Clock.hpp>
 #include <iostream>
 #include <cassert>
-#include <string>
-#include <fstream>
+#include <sstream>
+//#include <gl/gl.h>
+#include <SFML/OpenGL.hpp> //apparently only contains correct opengl include for each OS
+#include <list>
+#include <numeric> //accumulate
+#include <iomanip>
 
-#include <gl/glew.h>
-#include <gl/gl.h>
+void DrawQuadTraditional(const float ofsX, const float ofsY, const float sizeX, const float sizeY)
+{
+    glBegin(GL_QUADS);
+        glVertex2f(ofsX, ofsY);
+        glTexCoord2f(1.f, 1.f);
+        glVertex2f(ofsX+sizeX, ofsY);
+        glTexCoord2f(1.f, 0.f);
+        glVertex2f(ofsX+sizeX, ofsY+sizeY);
+        glTexCoord2f(0.f, 0.f);
+        glVertex2f(ofsX, ofsY+sizeY);
+    glEnd();
+}
 
 int main()
 {
+    enum RenderMode
+    {
+        RM_TRADITIONAL, // glBegin(); ... glEnd();
+
+        RM_COUNT, //keep last, used to count
+    };
+
     assert(sf::Shader::isAvailable() && "No shaders available on this system!");
-    sf::RenderWindow wnd(sf::VideoMode(800, 600), "Shader tests");
 
     sf::Shader shader;
     if(!shader.loadFromFile("shader.frag", sf::Shader::Fragment))
     {
         return 0;
     }
-    shader.setParameter("UniformStruct.array[0].color", 255, 0, 0);
-    shader.setParameter("UniformStruct.array[1].color", 0, 0, 255);
 
-    sf::RectangleShape rect(sf::Vector2f(400, 300));
-    rect.setOrigin(200, 150);
-    rect.setPosition(400, 300);
-
-    //unrelated draw buffer test code
-    GLenum drawBuffers[] =
+    sf::Texture background;
+    if(!background.loadFromFile("background.jpg"))
     {
-        GL_BACK_LEFT,
-        GL_BACK_RIGHT
-    };
-    assert(glewInit() == GLEW_OK);
-    glDrawBuffers(2, drawBuffers);
-
-    int numDrawBuffers = -1;
-    glGetIntegerv(GL_MAX_DRAW_BUFFERS, &numDrawBuffers);
-    std::cout<<numDrawBuffers<<" draw buffers supported:" << std::endl;
-    for(int i = 0; i < numDrawBuffers; ++i)
+        return 0;
+    }
+    sf::Texture layer1;
+    if(!layer1.loadFromFile("layer1.jpg"))
     {
-        int buffer = -1;
-        glGetIntegerv(GL_DRAW_BUFFER0 + i, &buffer);
-        switch(buffer)
-        {
-        case GL_FRONT:
-            std::cout<<" GL_FRONT"<<std::endl;
-            break;
-        case GL_FRONT_LEFT:
-            std::cout<<" GL_FRONT_LEFT"<<std::endl;
-            break;
-        case GL_FRONT_RIGHT:
-            std::cout<<" GL_FRONT_RIGHT"<<std::endl;
-            break;
-        case GL_BACK:
-            std::cout<<" GL_BACK"<<std::endl;
-            break;
-        case GL_BACK_LEFT:
-            std::cout<<" GL_BACK_LEFT"<<std::endl;
-            break;
-        case GL_BACK_RIGHT:
-            std::cout<<" GL_BACK_RIGHT"<<std::endl;
-            break;
-        case GL_NONE:
-            std::cout<<" GL_NONE"<<std::endl;
-            break;
-        default:
-            std::cout<<" "<<buffer<< std::endl;
-            break;
-        }
+        return 0;
+    }
+    sf::Texture layer2;
+    if(!layer2.loadFromFile("layer2.png"))
+    {
+        return 0;
     }
 
-    //end of unrelated draw buffer testcode
+    sf::RenderWindow wnd(sf::VideoMode(800, 600), "Shader tests");
+
+    sf::Text fpsText;
+    fpsText.setCharacterSize(12);
+    sf::Clock timer;
+    RenderMode mode = RM_TRADITIONAL;
+
+    // initialize GL
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 800, 600, 0, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+//    glCullFace(GL_FRONT);
+    glEnable(GL_TEXTURE_2D);
+//    glEnable(GL_BLEND);
+    glDisable(GL_ALPHA_TEST);
+//    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    //viewport should be correct
+    //glViewport(0, 0, wnd.getSize().x, wnd.getSize().y);
+
+    //mean time queues
+    static const unsigned int NUM_MEAN_TIMES = 2000;
+    std::list<sf::Int64> lastTraditionalTimes;
+    std::list<sf::Int64> lastShaderTimes;
 
     while(wnd.isOpen())
     {
         //  rendering (filling queue)
-        wnd.clear();
 
-        sf::RenderStates states;
-        states.shader = &shader;
-        if(1)
+        //clear screen (both methods work)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//        wnd.clear();
+
+
+        //  == draw left rect "traditionally" ==
+        //make sure OpenGL is not buffering any commands so we get accurate timings
+        glFinish();
+        //start measuring time
+        timer.restart();
+
+        //background is drawn "normally"
+        background.bind(sf::Texture::Normalized);
+        glBlendFunc(GL_ONE, GL_ZERO);
+        if(mode == RM_TRADITIONAL) DrawQuadTraditional(190, 200, 200, 200);
+
+        glFinish();
+        //how long did we take?
+        sf::Int64 traditionalTime = timer.getElapsedTime().asMicroseconds();
+
+        lastTraditionalTimes.push_back(traditionalTime);
+        if(lastTraditionalTimes.size() > NUM_MEAN_TIMES)
         {
-            wnd.draw(rect, states);
+            lastTraditionalTimes.pop_front();
         }
-        else
+        sf::Int64 meanTraditionalTime = std::accumulate(lastTraditionalTimes.begin(), lastTraditionalTimes.end(), 0) / lastTraditionalTimes.size();
+
+        //  == draw right rect with shader ==
+
+        //init
+        glDisable(GL_TEXTURE_2D);
+        glFinish();
+
+        //start measuring time
+        timer.restart();
+
+        shader.bind();
+        if(mode == RM_TRADITIONAL)
         {
-            wnd.draw(rect);
+            DrawQuadTraditional(410, 200, 200, 200);
         }
+        shader.unbind();
+
+        glFinish();
+        //how long did we take?
+        sf::Int64 shaderTime = timer.getElapsedTime().asMicroseconds();
+
+        lastShaderTimes.push_back(shaderTime);
+        if(lastShaderTimes.size() > NUM_MEAN_TIMES)
+        {
+            lastShaderTimes.pop_front();
+        }
+        sf::Int64 meanShaderTime = std::accumulate(lastShaderTimes.begin(), lastShaderTimes.end(), 0) / lastShaderTimes.size();
+
+        //make wnd ready for sfml drawing again
+        wnd.pushGLStates();
+
+        //display time taken
+        std::stringstream converter;
+        converter << std::right;
+        converter << "traditional draw time: " << std::setw(7) << traditionalTime << "탎 - average: " << std::setw(7) << meanTraditionalTime << "탎\n";
+        converter << "traditional draw time: " << std::setw(7) << shaderTime << "탎 - average: " << std::setw(7) << meanShaderTime << "탎";
+        fpsText.setString(converter.str());
+        wnd.draw(fpsText);
+
+        //reset opengl to the way it was before sfml messed with it
+        wnd.popGLStates();
 
         //  logic
         //poll events
@@ -96,10 +167,30 @@ int main()
             {
                 wnd.close();
             }
+            else if(ev.type == sf::Event::KeyPressed)
+            {
+                switch(ev.key.code)
+                {
+                case sf::Keyboard::Right:
+                    ++*((unsigned int*)&mode);
+                    if(mode == RM_COUNT)
+                    {
+                        *((unsigned int*)&mode) = 0;
+                    }
+                    break;
+                case sf::Keyboard::Left:
+                    if(mode == 0)
+                    {
+                        mode = RM_COUNT;
+                    }
+                    --*((unsigned int*)&mode);
+                default:
+                    break;
+                }
+            }
         }
 
-
-        //  buffer flipping (waits for rendering to finish if not done yet)
+        //  buffer flipping (waits for rendering to finish if not done yet, i.e. includes glFinish())
         wnd.display();
     }
     return 0;

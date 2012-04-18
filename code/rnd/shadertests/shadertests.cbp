@@ -39,7 +39,6 @@
 			<Add library="sfml-window" />
 			<Add library="sfml-system" />
 			<Add library="opengl32" />
-			<Add library="glew32" />
 		</Linker>
 		<Unit filename="bin\shader.frag" />
 		<Unit filename="main.cpp" />
