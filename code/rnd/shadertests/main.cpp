@@ -33,9 +33,8 @@ int main()
         RM_COUNT, //keep last, used to count
     };
 
-    assert(sf::Shader::isAvailable() && "No shaders available on this system!");
-
     sf::Shader shader;
+    assert(sf::Shader::isAvailable() && "No shaders available on this system!");
     if(!shader.loadFromFile("shader.frag", sf::Shader::Fragment))
     {
         return 0;
