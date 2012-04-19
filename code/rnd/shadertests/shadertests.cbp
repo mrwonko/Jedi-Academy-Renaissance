@@ -7,19 +7,22 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\shadertests" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/shadertests" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin" />
-				<Option object_output="obj\Debug\" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add library="opengl32" />
+				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\shadertests" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/shadertests" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="bin" />
-				<Option object_output="obj\Release\" />
+				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -27,6 +30,20 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="opengl32" />
+				</Linker>
+			</Target>
+			<Target title="Linux Debug">
+				<Option output="bin/shadertests" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="GL" />
 				</Linker>
 			</Target>
 		</Build>
@@ -38,9 +55,8 @@
 			<Add library="sfml-graphics" />
 			<Add library="sfml-window" />
 			<Add library="sfml-system" />
-			<Add library="opengl32" />
 		</Linker>
-		<Unit filename="bin\shader.frag" />
+		<Unit filename="bin/shader.frag" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
