@@ -74,7 +74,7 @@ int main()
 
 //    glCullFace(GL_FRONT);
     glEnable(GL_TEXTURE_2D);
-//    glEnable(GL_BLEND);
+    glEnable(GL_BLEND);
     glDisable(GL_ALPHA_TEST);
 //    glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
@@ -109,6 +109,17 @@ int main()
         background.bind(sf::Texture::Normalized);
         glBlendFunc(GL_ONE, GL_ZERO);
         if(mode == RM_TRADITIONAL) DrawQuadTraditional(190, 200, 200, 200);
+        //layer 1 is blended additively
+        layer1.bind(sf::Texture::Normalized);
+        glBlendFunc(GL_ONE, GL_ONE);
+        if(mode == RM_TRADITIONAL) DrawQuadTraditional(190, 200, 200, 200);
+        //layer 2 is alpha tests
+        layer2.bind(sf::Texture::Normalized);
+        glBlendFunc(GL_ONE, GL_ZERO);
+        glEnable(GL_ALPHA_TEST);
+        glAlphaFunc(GL_GEQUAL, 0.5);
+        if(mode == RM_TRADITIONAL) DrawQuadTraditional(190, 200, 200, 200);
+        glDisable(GL_ALPHA_TEST);
 
         glFinish();
         //how long did we take?
