@@ -27,6 +27,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-input", "jarlib\jar-inp
 		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0} = {9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-lua", "..\dependencies\lua-5.1.4-jar\jar-lua.vcxproj", "{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-pluto", "..\dependencies\pluto-jar\pluto-jar.vcxproj", "{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -53,6 +57,14 @@ Global
 		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}.Debug|Win32.Build.0 = Debug|Win32
 		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}.Release|Win32.ActiveCfg = Release|Win32
 		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}.Release|Win32.Build.0 = Release|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Debug|Win32.Build.0 = Debug|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Release|Win32.ActiveCfg = Release|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Release|Win32.Build.0 = Release|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Debug|Win32.Build.0 = Debug|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Release|Win32.ActiveCfg = Release|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
