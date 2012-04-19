@@ -12,7 +12,7 @@
 		<Project filename="jarlib/jar-audio.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 		</Project>
-		<Project filename="renaissance/renaissance.cbp" active="1">
+		<Project filename="renaissance/renaissance.cbp">
 			<Depends filename="jarlib/jar-core.cbp" />
 			<Depends filename="jarlib/jar-input.cbp" />
 			<Depends filename="jarlib/jar-graphics.cbp" />
@@ -22,5 +22,6 @@
 		<Project filename="../dependencies/pluto-jar/jar-pluto.cbp">
 			<Depends filename="../dependencies/lua-5.1.4-jar/jar-lua.cbp" />
 		</Project>
+		<Project filename="../dependencies/minizip-jar/minizip-jar.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>
