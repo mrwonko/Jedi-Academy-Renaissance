@@ -142,6 +142,9 @@ int main()
         timer.restart();
 
         shader.bind();
+        shader.setParameter("background", background);
+        shader.setParameter("layer1", layer1);
+        shader.setParameter("layer2", layer2);
         if(mode == RM_TRADITIONAL)
         {
             DrawQuadTraditional(410, 200, 200, 200);
@@ -166,7 +169,8 @@ int main()
         std::stringstream converter;
         converter << std::right;
         converter << "traditional draw time: " << std::setw(7) << traditionalTime << "탎 - average: " << std::setw(7) << meanTraditionalTime << "탎\n";
-        converter << "traditional draw time: " << std::setw(7) << shaderTime << "탎 - average: " << std::setw(7) << meanShaderTime << "탎";
+        converter << "traditional draw time: " << std::setw(7) << shaderTime << "탎 - average: " << std::setw(7) << meanShaderTime << "탎\n";
+        converter << "average ratio: " << float(meanTraditionalTime) / float(meanShaderTime) << " or " << float(meanShaderTime) / float(meanTraditionalTime);
         fpsText.setString(converter.str());
         wnd.draw(fpsText);
 
