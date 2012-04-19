@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-lua", "..\dependencies\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-pluto", "..\dependencies\pluto-jar\pluto-jar.vcxproj", "{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-minizip", "..\dependencies\minizip-jar\jar-minizip.vcxproj", "{0C415434-33D8-3E80-8981-572DD644A5E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -65,6 +67,10 @@ Global
 		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Debug|Win32.Build.0 = Debug|Win32
 		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Release|Win32.ActiveCfg = Release|Win32
 		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Release|Win32.Build.0 = Release|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Debug|Win32.Build.0 = Debug|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Release|Win32.ActiveCfg = Release|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
