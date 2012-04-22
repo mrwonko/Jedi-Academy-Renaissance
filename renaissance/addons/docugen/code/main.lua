@@ -362,6 +362,7 @@ local function PrintClassInfo(info)
 	-- print static member functions, if any
 	if #info.staticMemberFunctions > 0 then
 		print("- static member functions -")
+		-- might want to skip __init here?
 		for _, funcInfo in ipairs(info.staticMemberFunctions) do
 			for _, signature in ipairs(funcInfo.overloads) do
 				print(processSignature(signature, funcInfo, objectFormatter))

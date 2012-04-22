@@ -79,7 +79,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(ProjectDir)lib\msvc\</OutDir>
+    <OutDir>$(SolutionDir)../renaissance/bin_msvc/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(ProjectDir)obj\msvc\$(ProjectName)_$(Configuration)\</IntDir>
@@ -89,7 +89,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(ProjectDir)lib\msvc\</OutDir>
+    <OutDir>$(SolutionDir)../renaissance/bin_msvc/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(ProjectDir)obj\msvc\$(ProjectName)_$(Configuration)\</IntDir>
@@ -106,15 +106,19 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>jar_pluto_d.lib;sfml-system-d.lib;physfs-d.lib;jar_lua_d.lib;jar_luabind_d.lib;zlibd.lib;minizip-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jar_pluto_d.lib;sfml-system-d.lib;physfs-d.lib;jar_lua_d.lib;jar_luabind_d.lib;zlibd.lib;jar_minizip_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(ProjectDir)lib\msvc\$(TargetName).lib</ImportLibrary>
     </Link>
     <CustomBuildStep>
       <Command>copy "$(TargetPath)" "$(SolutionDir)../renaissance/bin_msvc"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying DLLs</Message>
-      <Outputs>$(SolutionDir)../renaissance/bin_msvc/$(TargetFileName)</Outputs>
-      <Inputs>$(TargetPath)</Inputs>
+      <Message>
+      </Message>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -129,15 +133,19 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>jar_pluto.lib;sfml-system.lib;physfs.lib;jar_lua.lib;jar_luabind.lib;zlib.lib;minizip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>jar_pluto.lib;sfml-system.lib;physfs.lib;jar_lua.lib;jar_luabind.lib;zlib.lib;jar_minizip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(ProjectDir)lib\msvc\$(TargetName).lib</ImportLibrary>
     </Link>
     <CustomBuildStep>
       <Command>copy "$(TargetPath)" "$(SolutionDir)../renaissance/bin_msvc"</Command>
     </CustomBuildStep>
     <CustomBuildStep>
-      <Message>Copying DLLs</Message>
-      <Outputs>$(SolutionDir)../renaissance/bin_msvc/$(TargetFileName)</Outputs>
-      <Inputs>$(TargetPath)</Inputs>
+      <Message>
+      </Message>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

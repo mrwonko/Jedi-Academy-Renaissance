@@ -23,7 +23,7 @@
 					<Add library="jar_lua_d" />
 					<Add library="jar_luabind_d" />
 					<Add library="zdll" />
-					<Add library="minizip-d" />
+					<Add library="jar_minizip_d" />
 					<Add library="jar_pluto_d" />
 				</Linker>
 				<ExtraCommands>
@@ -47,7 +47,7 @@
 					<Add library="jar_lua" />
 					<Add library="jar_luabind" />
 					<Add library="zdll" />
-					<Add library="minizip" />
+					<Add library="jar_minizip" />
 					<Add library="jar_pluto" />
 				</Linker>
 				<ExtraCommands>
@@ -70,7 +70,7 @@
 					<Add library="jar_lua_d" />
 					<Add library="jar_luabind_d" />
 					<Add library="z" />
-					<Add library="minizip-d" />
+					<Add library="jar_minizip_d" />
 					<Add library="jar_pluto_d" />
 				</Linker>
 				<ExtraCommands>
@@ -93,7 +93,7 @@
 					<Add library="jar_lua" />
 					<Add library="jar_luabind" />
 					<Add library="z" />
-					<Add library="minizip" />
+					<Add library="jar_minizip" />
 					<Add library="jar_pluto" />
 				</Linker>
 				<ExtraCommands>
@@ -109,12 +109,14 @@
 			<Add directory="include" />
 			<Add directory="..\..\dependencies\lua-5.1.4-jar\include" />
 			<Add directory="..\..\dependencies\pluto-jar" />
+			<Add directory="..\..\dependencies\minizip-jar" />
 		</Compiler>
 		<Linker>
 			<Add library="physfs" />
 			<Add library="sfml-system" />
 			<Add directory="..\..\dependencies\lua-5.1.4-jar\lib" />
 			<Add directory="..\..\dependencies\pluto-jar\lib" />
+			<Add directory="..\..\dependencies\minizip-jar\lib" />
 		</Linker>
 		<Unit filename="include\jar\Core.hpp" />
 		<Unit filename="include\jar\Jar.hpp" />
