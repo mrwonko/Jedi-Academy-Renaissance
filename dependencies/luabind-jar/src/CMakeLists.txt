@@ -1,7 +1,8 @@
-# Build for LuaBind
-# Ryan Pavlik <rpavlik@iastate.edu>
-# http://academic.cleardefinition.com/
-# Iowa State University HCI Graduate Program/VRAC
+cmake_minimum_required(VERSION 2.6)
+
+if(NOT JAR_BINARY_DIR)
+	message(FATAL_ERROR "Use the toplevel cmake script!")
+endif(NOT JAR_BINARY_DIR)
 
 set(LUABIND_SRCS
 	class.cpp
@@ -118,44 +119,15 @@ elseif(CMAKE_COMPILER_IS_GNUCXX)
 	list(APPEND LUABIND_EXTRA_LIBS m)
 endif()
 
-add_library(luabind ${LUABIND_SRCS} ${LUABIND_API} ${LUABIND_DETAIL_API})
-target_link_libraries(luabind ${LUA_LIBRARIES} ${LUABIND_EXTRA_LIBS})
-set_property(TARGET
-	luabind PROPERTY
-	COMPILE_FLAGS
-	${CMAKE_SHARED_LIBRARY_C_FLAGS})
+add_library(${JAR_LUABIND_NAME} SHARED ${LUABIND_SRCS} ${LUABIND_API} ${LUABIND_DETAIL_API})
+target_link_libraries(${JAR_LUABIND_NAME} ${JAR_LUA_NAME} ${LUABIND_EXTRA_LIBS})
+# is this required?
+#set_property(TARGET
+#	${JAR_LUABIND_NAME} PROPERTY
+#	COMPILE_FLAGS
+#	${CMAKE_SHARED_LIBRARY_C_FLAGS})
 
-set_property(TARGET
-	luabind
-	PROPERTY
-	PROJECT_LABEL
-	"LuaBind Library")
-
-set(ALLHEADERS ${LUABIND_API} ${LUABIND_DETAIL_API} PARENT_SCOPE)
-set(APIHEADERS ${LUABIND_API} PARENT_SCOPE)
-
-if(INSTALL_LUABIND)
-	if(NOT INCLUDE_DIR)
-		set(INCLUDE_DIR include)
-	endif()
-	if(NOT LIB_DIR)
-		set(LIB_DIR lib)
-	endif()
-	if(NOT ARCH_DIR)
-		set(ARCH_DIR lib)
-	endif()
-	if(NOT BIN_DIR)
-		set(BIN_DIR bin)
-	endif()
-	install(FILES ${LUABIND_API}
-		DESTINATION ${INCLUDE_DIR}/luabind
-		COMPONENT sdk)
-	install(FILES ${LUABIND_DETAIL_API}
-		DESTINATION ${INCLUDE_DIR}/luabind/detail
-		COMPONENT sdk)
-	install(TARGETS luabind
-		EXPORT luabind
-		RUNTIME DESTINATION ${BIN_DIR} COMPONENT runtime
-		LIBRARY DESTINATION ${LIB_DIR} COMPONENT runtime
-		ARCHIVE DESTINATION ${ARCH_DIR} COMPONENT sdk)
-endif()
+install(TARGETS ${JAR_LUABIND_NAME}
+	ARCHIVE DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/../lib"
+	LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/../lib"
+	RUNTIME DESTINATION "${JAR_BINARY_DIR}")

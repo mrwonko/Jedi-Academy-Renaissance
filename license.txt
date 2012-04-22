@@ -1,4 +1,5 @@
 Note: The libraries in dependencies/ have separate licenses, see the respective folders for more information.
+Note: cmake_modules/FindSFML.cmake is part of SFML, see cmake_modules/FindSFML_license.txt for its license
 
 Copyright (C) 2011-2012 Willi Schinmeyer
 

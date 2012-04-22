@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <exception>
+#include <cstdlib> //EXIT_SUCCESS
 
 int main(int argc, char** argv)
 {

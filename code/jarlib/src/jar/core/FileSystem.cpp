@@ -95,7 +95,7 @@ const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
     {
 		const char* error = PHYSFS_getLastError();
 		assert(error);
-#ifdef _DEBUG
+#ifdef DEBUG
 			Logger::GetDefaultLogger().Warning(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+error);
 #else
 			Logger::GetDefaultLogger().Info(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+error, 1);

@@ -1,0 +1,1 @@
+cmake -D CMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" .
