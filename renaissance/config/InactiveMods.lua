@@ -1,5 +1,7 @@
 inactiveMods =
 {
-	"testsuite/",
+	"ibitolua/",
+	"ibitolua_tests/",
 	"shootemup/",
+	"docugen/",
 }

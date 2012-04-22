@@ -1,25 +1,3 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #ifndef JAR_INPUT_INPUTDEVICEMANAGER_HPP
 #define JAR_INPUT_INPUTDEVICEMANAGER_HPP
 
@@ -30,13 +8,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <set>
 #include <list>
 
-class lua_State;
+struct lua_State;
 
 namespace jar
 {
 
 class InputDevice;
-class InputDeviceJoystick;
+class InputDeviceController;
 class JARINPUTAPI InputDeviceManager : public EventListener
 {
     public:
@@ -78,10 +56,10 @@ class JARINPUTAPI InputDeviceManager : public EventListener
 
         /** \brief Retrieve a joystick of a given index
             \return The joystick, or NULL if no such joystick exists. **/
-        InputDeviceJoystick* GetJoystick(const unsigned int index) const;
+        InputDeviceController* GetController(const unsigned int index) const;
 
         /** \note For luabind to be able to work with the returned list, it apparently mustn't be an object since Luabind only takes iterator ownership. **/
-        std::list<InputDeviceJoystick*>& GetAllJoysticks() const;
+        std::list<InputDeviceController*>& GetAllControllers() const;
 
         virtual void ReceiveEvent(const Event& event);
 

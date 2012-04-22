@@ -150,13 +150,13 @@ function BindManager:New(interpreter, windowWidth, windowHeight)
 		-- key/...-name -> instructionstring
 		binds = {},
 		-- window's size, for mouse move stuff
-		halfWindowSize = { x = windowWidth/2, y = windowHeight/2 },
+		halfWindowSize = jar.Vector2i(windowWidth/2, windowHeight/2),
 		-- where was the mouse after the last event?
-		lastMousePos = { x = windowWidth/2, y = windowHeight/2 },
+		lastMousePos = jar.Vector2i(windowWidth/2, windowHeight/2),
 		-- how far has the mouse been moved this frame?
-		mouseMove = { 0, 0 },
+		mouseMove = jar.Vector2i(),
 		-- how far has the mosue been moved in the last frame? (only execute -bind on no move once!)
-		lastMouseMove = { 0, 0 },
+		lastMouseMove = jar.Vector2i(),
 	}
 	setmetatable(obj, self)
 	self.__index = self
@@ -254,28 +254,28 @@ function BindManager:OnEvent(event)
 		end
 	elseif event.Type == jar.Event.MouseMoved then
 		--add movement to this frame's movement
-		self.mouseMove.x = self.mouseMove.x + event.MouseMove.X - self.lastMousePos.x
-		self.mouseMove.y = self.mouseMove.y + event.MouseMove.Y - self.lastMousePos.y
-		self.lastMousePos.x = event.MouseMove.X
-		self.lastMousePos.y = event.MouseMove.Y
+		self.mouseMove.X = self.mouseMove.X + event.MouseMove.X - self.lastMousePos.X
+		self.mouseMove.Y = self.mouseMove.Y + event.MouseMove.Y - self.lastMousePos.Y
+		self.lastMousePos.X = event.MouseMove.X
+		self.lastMousePos.Y = event.MouseMove.Y
 		return true
 	-- Joystick
-	elseif event.Type == jar.Event.JoyButtonPressed then
-		return ExecuteBind(JoyButtonToString(JoystickManager:GetIndex(event.JoyButton.Joystick:GetUniqueID()), event.JoyButton.Button))
-	elseif event.Type == jar.Event.JoyButtonReleased then
-		local button = JoyButtonToString(JoystickManager:GetIndex(event.JoyButton.Joystick:GetUniqueID()), event.JoyButton.Button)
+	elseif event.Type == jar.Event.ControllerButtonPressed then
+		return ExecuteBind(JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Joystick:GetUniqueID()), event.ControllerButton.Button))
+	elseif event.Type == jar.Event.ControllerButtonReleased then
+		local button = JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Joystick:GetUniqueID()), event.ControllerButton.Button)
 		if self.binds[button] then
 			self.interpreter:Interpret(ToMinus(self.binds[button]))
 			return true
 		end
 		return false
-	elseif event.Type == jar.Event.JoyAxisMoved then
-		local joystick = JoystickManager.joysticksByGUID[event.JoyAxis.Joystick:GetUniqueID()]
+	elseif event.Type == jar.Event.ControllerAxisMoved then
+		local joystick = JoystickManager.joysticksByGUID[event.ControllerAxis.Joystick:GetUniqueID()]
 		if not joystick then
 			return false
 		end
-		local amount = joystick:ApplySensitivity(event.JoyAxis.Position)
-		return ExecuteAxisBind(JoyAxisToString(joystick.index, event.JoyAxis.Axis, amount), amount)
+		local amount = joystick:ApplySensitivity(event.ControllerAxis.Position)
+		return ExecuteAxisBind(JoyAxisToString(joystick.index, event.ControllerAxis.Axis, amount), amount)
 	end
 	return false
 end
@@ -289,7 +289,7 @@ function BindManager:PostEvent()
 	end
 	
 	local function Sign(num)
-		if num == nil then error(debug.traceback()) end
+		if num == nil then error("Sign() called with invalid parameter!\n" .. debug.traceback()) end
 		if num > 0 then
 			return 1
 		elseif num < 0 then
@@ -299,10 +299,12 @@ function BindManager:PostEvent()
 		end
 	end
 	
+	local axisName = (axis == 0) and "X" or "Y"
+	
 	local function CheckMouse(axis)
 		-- necessary since axes are split in + and -
-		local sign = Sign(self.mouseMove[axis])
-		local lastSign = Sign(self.lastMouseMove[axis] or 0)
+		local sign = Sign(self.mouseMove[axisName])
+		local lastSign = Sign(self.lastMouseMove[axisName] or 0)
 		-- only send the "no move" event once!
 		if lastSign ~= 0 and sign ~= lastSign then
 			--send "no move" event
@@ -312,9 +314,9 @@ function BindManager:PostEvent()
 			--todo: keep in mind that mouse speed depends on frame time!
 			local sensitivity = 1
 			-- send move event
-			ExecuteBind(axis, sign, sensitivity * self.mouseMove[axis])
+			ExecuteBind(axis, sign, sensitivity * self.mouseMove[axisName])
 		end
-		self.lastMouseMove[axis] = self.mouseMove[axis]
+		self.lastMouseMove[axisName] = self.mouseMove[axisName]
 	end
 	CheckMouse("x")
 	CheckMouse("y")
@@ -322,10 +324,10 @@ end
 
 function BindManager:PreEvent()
 	-- make sure to actually do this every frame!
-	self.lastMousePos.x = self.halfWindowSize.x
-	self.lastMousePos.y = self.halfWindowSize.y
-	self.mouseMove.x = 0
-	self.mouseMove.y = 0
+	self.lastMousePos.X = self.halfWindowSize.X
+	self.lastMousePos.Y = self.halfWindowSize.Y
+	self.mouseMove.X = 0
+	self.mouseMove.Y = 0
 end
 
 function BindManager:RegisterBindCommand(ccommandManager)

@@ -12,5 +12,5 @@ function vectorAndAlphaToColor(vec, alpha, ...)
 	if #{...} > 0 then error("Too many parameters to vectorAndAlphaToColor()", 2) end
 	if getmetatable(vec) ~= TestVector then error("vectorAndAlphaToColor: first parameter no vector!", 2) end
 	if type(alpha) ~= "number" then error("vectorAndAlphaToColor: second parameter no number!", 2) end
-	return TestColor:New(vec.x, vec.y, vec.z, alpha)
+	return TestColor:New(vec.X, vec.Y, vec.Z, alpha)
 end

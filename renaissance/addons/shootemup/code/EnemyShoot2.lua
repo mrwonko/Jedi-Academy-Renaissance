@@ -15,7 +15,8 @@ true)
 
 function EnemyShoot2:New(info)
 	local obj = Enemy.New(self, info)
-	obj.sprite:Resize(obj.size, obj.size)
+	--TODO: replace outdated Resize code
+	--obj.sprite:Resize(obj.size, obj.size)
 	return obj
 end
 

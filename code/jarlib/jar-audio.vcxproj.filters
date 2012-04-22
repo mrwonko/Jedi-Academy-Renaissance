@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\jar\Audio\AudioImpl.cpp">
+      <Filter>Source Files\jar\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\Audio.cpp">
+      <Filter>Source Files\jar</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\Audio\luabind\LBSFMLAudio.cpp">
+      <Filter>Source Files\jar\audio\luabind</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{37fa12d2-41a8-4119-9840-4809d878d7fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar">
+      <UniqueIdentifier>{2b01ebfa-c52c-402f-af93-43d57a7f3045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{412324b6-4ef4-4406-826b-fffc54885ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar">
+      <UniqueIdentifier>{cb03b53c-1e14-4948-b5e6-3b8696dc19d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar\audio">
+      <UniqueIdentifier>{e84a4b7d-4ff6-4766-89ee-860e87974a7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar\audio\luabind">
+      <UniqueIdentifier>{72f51edc-c810-47a9-9136-92fc2a2555e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\audio">
+      <UniqueIdentifier>{aaa76e7f-d1e6-4d31-8380-4078a19af4d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\audio\luabind">
+      <UniqueIdentifier>{952abcaf-5ae6-404a-9c8b-c295e9e0347f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\jar\audio\API.hpp">
+      <Filter>Header Files\jar\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\audio\AudioImpl.hpp">
+      <Filter>Header Files\jar\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\audio\luabind\SFMLAudio.hpp">
+      <Filter>Header Files\jar\audio\luabind</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\Audio.hpp">
+      <Filter>Header Files\jar</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

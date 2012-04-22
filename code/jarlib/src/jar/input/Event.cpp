@@ -1,25 +1,3 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #include "jar/input/Event.hpp"
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -108,7 +86,7 @@ const bool Event::FromSFML(const sf::Event& e)
         keyMap[sf::Keyboard::Pause] = Key::Pause;
     }
 
-    switch(e.Type)
+    switch(e.type)
     {
         case sf::Event::Closed:
         {
@@ -127,13 +105,13 @@ const bool Event::FromSFML(const sf::Event& e)
         }
         case sf::Event::KeyPressed:
         {
-            if(keyMap.find(e.Key.Code) != keyMap.end())
+            if(keyMap.find(e.key.code) != keyMap.end())
             {
                 Type = Event::KeyPressed;
-                Key.Code = keyMap[e.Key.Code];
-                Key.Alt = e.Key.Alt;
-                Key.Control = e.Key.Control;
-                Key.Shift = e.Key.Shift;
+                Key.Code = keyMap[e.key.code];
+                Key.Alt = e.key.alt;
+                Key.Control = e.key.control;
+                Key.Shift = e.key.shift;
                 return true;
             }
             //else
@@ -141,10 +119,10 @@ const bool Event::FromSFML(const sf::Event& e)
         }
         case sf::Event::KeyReleased:
         {
-            if(keyMap.find(e.Key.Code) != keyMap.end())
+            if(keyMap.find(e.key.code) != keyMap.end())
             {
                 Type = Event::KeyReleased;
-                Key.Code = keyMap[e.Key.Code];
+                Key.Code = keyMap[e.key.code];
                 return true;
             }
             //else
@@ -153,26 +131,26 @@ const bool Event::FromSFML(const sf::Event& e)
         case sf::Event::MouseMoved:
         {
             Type = Event::MouseMoved;
-            MouseMove.X = e.MouseMove.X;
-            MouseMove.Y = e.MouseMove.Y;
+            MouseMove.X = e.mouseMove.x;
+            MouseMove.Y = e.mouseMove.y;
             return true;
         }
         case sf::Event::MouseButtonPressed:
         {
             Type = Event::MouseButtonPressed;
-            MouseButton.Button = e.MouseButton.Button;
+            MouseButton.Button = e.mouseButton.button;
             return true;
         }
         case sf::Event::MouseButtonReleased:
         {
             Type = Event::MouseButtonReleased;
-            MouseButton.Button = e.MouseButton.Button;
+            MouseButton.Button = e.mouseButton.button;
             return true;
         }
         case sf::Event::MouseWheelMoved:
         {
             Type = Event::MouseWheelMoved;
-            MouseWheel.Delta = e.MouseWheel.Delta;
+            MouseWheel.Delta = e.mouseWheel.delta;
             return true;
         }
         #ifndef _WIN32 //joysticks for win32 handled separately via DirectInput & XInput
@@ -181,23 +159,23 @@ const bool Event::FromSFML(const sf::Event& e)
         case sf::Event::JoyButtonPressed:
         {
             Type = Event::JoyButtonPressed;
-            JoyButton.Button = e.JoyButton.Button;
-            JoyButton.JoyIndex = e.JoyButton.JoystickId;
+            JoyButton.Button = e.joyButton.button;
+            JoyButton.JoyIndex = e.joyButton.joystickId;
             return true;
         }
         case sf::Event::JoyButtonReleased:
         {
             Type = Event::JoyButtonReleased;
-            JoyButton.Button = e.JoyButton.Button;
-            JoyButton.JoyIndex = e.JoyButton.JoystickId;
+            JoyButton.Button = e.joyButton.button;
+            JoyButton.JoyIndex = e.joyButton.joystickId;
             return true;
         }
         case sf::Event::JoyMoved:
         {
             Type = Event::JoyAxisMoved;
-            JoyAxis.Axis = e.JoyMove.Axis;
-            JoyAxis.JoyIndex = e.JoyMove.JoystickId;
-            JoyAxis.Position = e.JoyMove.Position;
+            JoyAxis.Axis = e.joyMove.axis;
+            JoyAxis.JoyIndex = e.joyMove.joystickId;
+            JoyAxis.Position = e.joyMove.position;
             return true;
         }
         */

@@ -1,37 +1,18 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #include "jar/graphics/Text.hpp"
 #include "jar/core/Helpers.hpp"
 #include "jar/graphics/Font.hpp"
 #include <SFML/Graphics/Image.hpp>
-#include <SFML/Graphics/Renderer.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <cassert>
 
 namespace jar {
 
 Text::Text() :
     mFont(NULL),
-    mFontSize(12)
+    mFontSize(12),
+    mNumLines(0),
+    mWidth(0)
 {
     //ctor
 }
@@ -57,6 +38,7 @@ Text::~Text()
 void Text::SetText(const std::string& text)
 {
     mText = text;
+    UpdateCache();
 }
 
 const std::string& Text::GetText() const
@@ -85,7 +67,18 @@ const float Text::GetFontSize() const
     return mFontSize;
 }
 
-void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
+void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    states.transform *= getTransform();
+    float scaleFactor = mFontSize / mFont->GetFontData().mPointSize;
+    states.transform.scale(scaleFactor, scaleFactor);
+
+    states.texture = &mFont->GetTexture();
+    states.blendMode = sf::BlendAlpha;
+    target.draw(mVertices.data(), mVertices.size(), sf::Quads, states);
+}
+
+void Text::UpdateCache()
 {
     static sf::Color color_table[8] =
     {
@@ -99,18 +92,17 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
         sf::Color::White, //7
     };
 
+    //clear cache
+    mVertices.clear();
+
     //trivial case
     if(mText == "") return;
 
     const Font::FontData& data = mFont->GetFontData();
 
-    //NOTE: I don't know how to do this using renderer, so I'm multiplying it. If this turns out to slow stuff down, I might want to change it.
-    float scaleFactor = mFontSize / data.mPointSize;
+	const sf::Vector2u textureSize = mFont->GetTexture().getSize();
 
-    //render code goes here
-    renderer.SetTexture(&mFont->GetTexture());
-    renderer.SetBlendMode(sf::Blend::Alpha);
-    renderer.Begin(sf::Renderer::QuadList);
+    const sf::Color* currentColor = &color_table[7];
 
     int posX = 0;
     int posY = -data.mDescender;
@@ -118,12 +110,15 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
 
     int tabWidth = data.mGlyphs[' '].mHorizAdvance * mFont->GetTabWidth();
 
+    mNumLines = 1;
+
     for(std::string::const_iterator it = mText.begin(); it != mText.end(); ++it)
     {
         if(*it == '\n')
         {
             posX = 0;
             posY += data.mHeight;
+            ++mNumLines;
             continue;
         }
         if(*it == '\t')
@@ -145,7 +140,7 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
             nextIsColor = false;
             assert(*it >= '0' && *it <= '7');
             unsigned int col = *it - '0';
-            renderer.ApplyColor(color_table[col]);
+            currentColor = &color_table[col];
             continue;
         }
         const Font::GlyphInfo& info = data.mGlyphs[static_cast<unsigned char>(*it)];
@@ -154,22 +149,22 @@ void Text::Render(sf::RenderTarget& target, sf::Renderer& renderer) const
         int y = posY + data.mHeight - info.mBaseline;
 
         //left, top
-        renderer.AddVertex(scaleFactor*x, scaleFactor*(y + info.mHeight), info.mTexCoordX1, info.mTexCoordY2);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX1 * textureSize.x, info.mTexCoordY2 * textureSize.y)));
         //left, bottom
-        renderer.AddVertex(scaleFactor*x, scaleFactor*y, info.mTexCoordX1, info.mTexCoordY1);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x, y), *currentColor, sf::Vector2f(info.mTexCoordX1 * textureSize.x, info.mTexCoordY1 * textureSize.y)));
         //right, bottom
-        renderer.AddVertex(scaleFactor*(x + info.mWidth), scaleFactor*y, info.mTexCoordX2, info.mTexCoordY1);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y), *currentColor, sf::Vector2f(info.mTexCoordX2 * textureSize.x, info.mTexCoordY1 * textureSize.y)));
         //right, top
-        renderer.AddVertex(scaleFactor*(x + info.mWidth), scaleFactor*(y + info.mHeight), info.mTexCoordX2, info.mTexCoordY2);
+        mVertices.push_back(sf::Vertex(sf::Vector2f(x + info.mWidth, y + info.mHeight), *currentColor, sf::Vector2f(info.mTexCoordX2 * textureSize.x, info.mTexCoordY2 * textureSize.y)));
 
         posX += info.mHorizAdvance;
     }
-    renderer.End();
+    mWidth = mFont->GetWidth(mText);
 }
 
 const float Text::GetWidth() const
 {
-    return (float)mFontSize / (float) mFont->GetFontData().mPointSize * (float) mFont->GetWidth(mText);
+    return (float)mFontSize / (float) mFont->GetFontData().mPointSize * (float) mWidth;
 }
 
 const float Text::GetLineHeight() const
@@ -179,12 +174,7 @@ const float Text::GetLineHeight() const
 
 const float Text::GetHeight() const
 {
-    int lines = 1;
-    for(std::string::const_iterator it = mText.begin(); it != mText.end(); ++it)
-    {
-        if(*it == '\n') ++lines;
-    }
-    return lines * GetLineHeight();
+    return GetLineHeight() * mNumLines;
 }
 
 } // namespace jar

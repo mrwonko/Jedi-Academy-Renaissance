@@ -1,25 +1,3 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #ifndef JAR_INPUT_EVENT_HPP
 #define JAR_INPUT_EVENT_HPP
 
@@ -27,8 +5,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/input/KeyCodes.hpp"
 #include "jar/input/API.hpp"
 
-class lua_State;
-class InputDeviceJoystick;
+struct lua_State;
 
 namespace sf
 {
@@ -38,6 +15,8 @@ namespace sf
 namespace jar
 {
 
+class InputDeviceController;
+
 /**
     \brief Events that happen.
 
@@ -45,6 +24,7 @@ namespace jar
 **/
 struct JARINPUTAPI Event
 {
+public:
     /** \brief Create an event based on an SFML Event
         \return success
     **/
@@ -60,9 +40,9 @@ struct JARINPUTAPI Event
         MouseButtonPressed,
         MouseButtonReleased,
         MouseWheelMoved,
-        JoyAxisMoved,
-        JoyButtonPressed,
-        JoyButtonReleased,
+        ControllerAxisMoved,
+        ControllerButtonPressed,
+        ControllerButtonReleased,
         //Resized, ///< The window has been resized
         LostFocus, ///< The window lost focus
         GainedFocus, ///< The window gained focus
@@ -104,17 +84,17 @@ struct JARINPUTAPI Event
 
     /** \brief Info for Event of EventType JoyButtonPressed or JoyButtonReleased
     **/
-    struct JARINPUTAPI JoyButtonEvent
+    struct JARINPUTAPI ControllerButtonEvent
     {
-        InputDeviceJoystick* Joystick; ///< The joystick
+        InputDeviceController* Controller; ///< The joystick
         unsigned int Button; ///< the button index
     };
 
     /** \brief Info for Event of EventType JoyAxisMoved
     **/
-    struct JARINPUTAPI JoyAxisEvent
+    struct JARINPUTAPI ControllerAxisEvent
     {
-        InputDeviceJoystick* Joystick; ///< The joystick
+        InputDeviceController* Controller; ///< The joystick
         unsigned int Axis; ///< The axis index
         float Position; ///< The Axis's position, in [-1; 1]
     };
@@ -126,8 +106,8 @@ struct JARINPUTAPI Event
         MouseMovedEvent MouseMove;
         MouseButtonEvent MouseButton;
         MouseWheelEvent MouseWheel;
-        JoyButtonEvent JoyButton;
-        JoyAxisEvent JoyAxis;
+        ControllerButtonEvent ControllerButton;
+        ControllerAxisEvent ControllerAxis;
     };
 
     /** \brief Binds Events to Lua via luabind **/

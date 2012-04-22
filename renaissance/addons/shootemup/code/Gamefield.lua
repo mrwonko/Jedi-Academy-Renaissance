@@ -10,20 +10,21 @@ require("EnemyShoot2.lua")
 require("EnemyBoss.lua")
 
 local function CheckCollision(sprite1, sprite2)
+	--TODO: fix outdated code - there is no GetSize()! (Use GetGlobalBounds())
 	local ownsize = sprite1:GetSize()
 	local ownorigin = jar.Vector2f(sprite1:GetOrigin()) --copy since we want to change it!
 	local ownposition = sprite1:GetPosition()
-	ownorigin.x = ownorigin.x * sprite1:GetScale().x
-	ownorigin.y = ownorigin.y * sprite1:GetScale().y
+	ownorigin.X = ownorigin.X * sprite1:GetScale().X
+	ownorigin.Y = ownorigin.Y * sprite1:GetScale().Y
 	local othersize = sprite2:GetSize()
 	local otherorigin = jar.Vector2f(sprite2:GetOrigin())
-	otherorigin.x = otherorigin.x * sprite2:GetScale().x
-	otherorigin.y = otherorigin.y * sprite2:GetScale().y
+	otherorigin.X = otherorigin.X * sprite2:GetScale().X
+	otherorigin.Y = otherorigin.Y * sprite2:GetScale().Y
 	local otherposition = sprite2:GetPosition()
 	
-	local ownRect = jar.FloatRect(ownposition.x-ownorigin.x, ownposition.y-ownorigin.y, ownsize.x, ownsize.y)
+	local ownRect = jar.FloatRect(ownposition.X-ownorigin.X, ownposition.Y-ownorigin.Y, ownsize.X, ownsize.Y)
 	--the -2 is so they collide a little
-	local otherRect = jar.FloatRect(otherposition.x-otherorigin.x+2, otherposition.y-otherorigin.y, othersize.x-2, othersize.y)
+	local otherRect = jar.FloatRect(otherposition.X-otherorigin.X+2, otherposition.Y-otherorigin.Y, othersize.X-2, othersize.Y)
 	
 	return ownRect:Intersects(otherRect)
 end
@@ -68,8 +69,13 @@ end
 ---- HUD Elements ----
 
 --health
-local healthBorder = jar.Shape.Rectangle(6, 1, 50, 10, jar.Color(0, 0, 0, 0), 1, jar.Color.White)
-local healthBar = jar.Shape.Rectangle(0, 0, 50, 10, jar.Color.Red, 0, jar.Color.White)
+local healthBorder = jar.RectangleShape(sf::Vector2f(50, 10))
+healthBorder:SetFillColor(jar.Color.Transparent)
+healthBorder:SetPosition(6, 1)
+healthBorder:SetOutlineThickness(1)
+healthBorder:SetOutlineColor(jar.Color.White)
+local healthBar = jar.RectangleShape(sf::Vector2f(50, 10))
+healthBar:SetFillColor(jar.Color.Red)
 healthBar:SetPosition(6, 1)
 --weapon
 local weaponSprite = jar.Sprite()
@@ -89,7 +95,7 @@ function Gamefield:RenderGUI()
 	weaponSprite:SetTexture(self.player.availableWeapons[self.player.currentWeapon].image, true)
 	scoreString:SetText("score: "  .. self.score)
 	-- in case the score string gets too long :P
-	while scoreString:GetWidth() + scoreString:GetPosition().x > levelString:GetPosition().x do
+	while scoreString:GetWidth() + scoreString:GetPosition().X > levelString:GetPosition().X do
 		levelString:Move(10, 0)
 	end
 	levelString:SetText("level: "  .. self.curlevel)
@@ -230,7 +236,7 @@ function Gamefield:Update(deltaT)
 		if enemy.health <= 0 then
 			self.score = self.score + enemy.score
 			table.remove(self.enemies, i)
-		elseif enemy.sprite:GetPosition().x < -5 then
+		elseif enemy.sprite:GetPosition().X < -5 then
 			table.remove(self.enemies, i)
 		else
 			i = i + 1

@@ -20,10 +20,11 @@
 				<Linker>
 					<Add option="-enable-auto-import" />
 					<Add library="user32" />
-					<Add library="lua" />
-					<Add library="luabindd" />
+					<Add library="jar_lua_d" />
+					<Add library="jar_luabind_d" />
 					<Add library="zdll" />
-					<Add library="minizip-d" />
+					<Add library="jar_minizip_d" />
+					<Add library="jar_pluto_d" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
@@ -43,10 +44,11 @@
 					<Add option="-s" />
 					<Add option="-enable-auto-import" />
 					<Add library="user32" />
-					<Add library="lua" />
-					<Add library="luabind" />
+					<Add library="jar_lua" />
+					<Add library="jar_luabind" />
 					<Add library="zdll" />
-					<Add library="minizip" />
+					<Add library="jar_minizip" />
+					<Add library="jar_pluto" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
@@ -65,10 +67,11 @@
 					<Add option="-D_DEBUG" />
 				</Compiler>
 				<Linker>
-					<Add library="lua5.1" />
-					<Add library="luabind" />
+					<Add library="jar_lua_d" />
+					<Add library="jar_luabind_d" />
 					<Add library="z" />
-					<Add library="minizip-d" />
+					<Add library="jar_minizip_d" />
+					<Add library="jar_pluto_d" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin/&quot;' />
@@ -87,10 +90,11 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="lua5.1" />
-					<Add library="luabind" />
+					<Add library="jar_lua" />
+					<Add library="jar_luabind" />
 					<Add library="z" />
-					<Add library="minizip" />
+					<Add library="jar_minizip" />
+					<Add library="jar_pluto" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin/&quot;' />
@@ -100,11 +104,19 @@
 		<Compiler>
 			<Add option="-DJAR_CORE_LIBRARY_BUILD" />
 			<Add option="-DLUABIND_DYNAMIC_LINK" />
+			<Add option="-DLUA_BUILD_AS_DLL" />
+			<Add option="-DSFML_DYNAMIC" />
 			<Add directory="include" />
+			<Add directory="..\..\dependencies\lua-5.1.4-jar\include" />
+			<Add directory="..\..\dependencies\pluto-jar" />
+			<Add directory="..\..\dependencies\minizip-jar" />
 		</Compiler>
 		<Linker>
 			<Add library="physfs" />
 			<Add library="sfml-system" />
+			<Add directory="..\..\dependencies\lua-5.1.4-jar\lib" />
+			<Add directory="..\..\dependencies\pluto-jar\lib" />
+			<Add directory="..\..\dependencies\minizip-jar\lib" />
 		</Linker>
 		<Unit filename="include\jar\Core.hpp" />
 		<Unit filename="include\jar\Jar.hpp" />
@@ -117,11 +129,11 @@
 		<Unit filename="include\jar\core\CoutLogger.hpp" />
 		<Unit filename="include\jar\core\FileLogger.hpp" />
 		<Unit filename="include\jar\core\FileSystem.hpp" />
+		<Unit filename="include\jar\core\GetLuabindInfo.hpp" />
 		<Unit filename="include\jar\core\Helpers.hpp" />
 		<Unit filename="include\jar\core\Logger.hpp" />
 		<Unit filename="include\jar\core\Lua.hpp" />
 		<Unit filename="include\jar\core\LuaLogger.hpp" />
-		<Unit filename="include\jar\core\Singleton.hpp" />
 		<Unit filename="include\jar\core\Time.hpp" />
 		<Unit filename="include\jar\core\Updatable.hpp" />
 		<Unit filename="include\jar\core\VoidLogger.hpp" />
@@ -134,13 +146,14 @@
 		<Unit filename="src\jar\core\CoutLogger.cpp" />
 		<Unit filename="src\jar\core\FileLogger.cpp" />
 		<Unit filename="src\jar\core\FileSystem.cpp" />
+		<Unit filename="src\jar\core\GetLuabindInfo.cpp" />
 		<Unit filename="src\jar\core\Helpers.cpp" />
 		<Unit filename="src\jar\core\Logger.cpp" />
 		<Unit filename="src\jar\core\Lua.cpp" />
 		<Unit filename="src\jar\core\LuaLogger.cpp" />
 		<Unit filename="src\jar\core\Time.cpp" />
 		<Unit filename="src\jar\core\Updatable.cpp" />
-		<Unit filename="src\jar\luabind\Core.cpp" />
+		<Unit filename="src\jar\luabind\LBCore.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

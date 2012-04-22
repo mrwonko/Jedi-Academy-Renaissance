@@ -109,7 +109,7 @@ g_CVarManager:RegisterCVar{
 }
 
 g_Window = jar.RenderWindow(g_CVarManager:GetCVarValue("r_width"), g_CVarManager:GetCVarValue("r_height"), "Space Danger by Mr. Wonko - LD20", (not g_CVarManager:GetCVarValue("r_borderless")), g_CVarManager:GetCVarValue("r_fullscreen"))
-g_Window:EnableKeyRepeat(false) --no automatic key repeat (fast fire would be too easy)
+g_Window:SetKeyRepeatEnabled(false) --no automatic key repeat (fast fire would be too easy)
 --g_Window:ShowMouseCursor(false)
 
 g_CCommandManager:RegisterCommand
@@ -129,7 +129,7 @@ g_FontManager = FontManager:New()
 g_ImageManager = ImageManager:New()
 g_SoundManager = SoundManager:New()
 
-g_Console = Console:New(g_Window:GetWidth(), g_Window:GetHeight()/2, g_InstructionInterpreter, g_FontManager:GetFont("lucida8pt", true))
+g_Console = Console:New(g_Window:GetSize().X, g_Window:GetSize().Y/2, g_InstructionInterpreter, g_FontManager:GetFont("lucida8pt", true))
 -- commented out for now so I can do debug output via print in Console:Print
 g_Console:BindPrint()
 

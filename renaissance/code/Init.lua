@@ -126,10 +126,7 @@ local files = jar.fs.GetFilesInDirectory("code/init")
 for filename in files:items() do
 	if string.lower(string.sub(filename, -4)) == ".lua" then
 		jar.Logger.GetDefaultLogger():Info("Executing code/init/" .. filename, 2)
-		local success, err = pcall(dofile, "code/init/" .. filename)
-		if not success then
-			jar.Logger.GetDefaultLogger():Warning(err)
-		end
+		dofile("code/init/" .. filename) -- I assume that proper initialization is vital and thus let errors fall through (will be caught and reported in Bootstrap.lua, followed by program exit)
 	end
 end
 

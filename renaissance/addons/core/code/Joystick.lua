@@ -36,7 +36,7 @@ function Joystick:New(info)
 	return obj
 end
 
-function Joystick:SetFromIDJ(idj) -- IDJ = jar.InputDeviceJoystick
+function Joystick:SetFromIDJ(idj) -- IDJ = jar.InputDeviceJoystick FIXME: renamed from Joystick to Controller - rename in lua everywhere, too!
 	if self.GUID ~= "" then
 		assert(self.GUID == idj:GetUniqueID())
 	else
@@ -58,7 +58,7 @@ function Joystick:ToSaveString(functionName)
 	return (functionname or "Joystick") .. "\n\
 {\n\
 \tname = \"" .. Escape(self.name) .. "\",\n\
-\tGUID = " .. Escape(self.GUID) .. ",\n\
+\tGUID = \"" .. Escape(self.GUID) .. "\",\n\
 \tindex = " .. self.index .. ",\n\
 \tsensitivity = " .. self.sensitivity .. ",\n\
 }\n"

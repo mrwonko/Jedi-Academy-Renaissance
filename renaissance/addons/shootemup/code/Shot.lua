@@ -38,10 +38,10 @@ function Shot:New(info, silent)
 	if obj.image then
 		obj.image:SetSmooth(false)
 		obj.sprite = jar.Sprite(obj.image)
+		obj.sprite:SetOrigin(obj.image:GetSize()/2)
 		if obj.dir < 0 then
-			obj.sprite:FlipX(true)
+			obj.sprite:Scale(-1, 1) -- flip horizontally (along origin)
 		end
-		obj.sprite:SetOrigin(obj.image:GetWidth()/2, obj.image:GetHeight()/2)
 		obj.sprite:Scale(obj.scale, obj.scale)
 	else
 		error("no image set!", 2)
@@ -65,7 +65,7 @@ end
 function Shot:Update(deltaT)
 	self.sprite:Move(self.speed*deltaT*self.dir, 0)
 	local pos = self.sprite:GetPosition().x
-	if pos > self.image:GetWidth()/2+200 or pos < -self.image:GetWidth()/2 then
+	if pos > self.image:GetSize().X/2+200 or pos < -self.image:GetSize().X/2 then
 		self.dead = true
 	end
 	if self.shotsound and self.shotsound:GetStatus() == jar.Sound.Stopped then
