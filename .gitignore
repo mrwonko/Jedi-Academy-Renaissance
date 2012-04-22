@@ -14,3 +14,15 @@
 */ipch/
 */obj/
 changelog.txt
+
+CMakeCache.txt
+CMakeFiles/
+Makefile
+*.cbp
+*.cmake
+
+renaissance/_old_bin/
+renaissance/_old_bin_msvc/
+renaissance/.idea/
+renaissance/config/*
+dependencies/pluto-jar/test.plh
