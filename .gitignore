@@ -11,8 +11,8 @@
 *.suo
 *.vcxproj.user
 *.iml
-*/ipch/
-*/obj/
+ipch/
+obj/
 changelog.txt
 
 CMakeCache.txt
@@ -26,3 +26,5 @@ renaissance/_old_bin_msvc/
 renaissance/.idea/
 renaissance/config/*
 dependencies/pluto-jar/test.plh
+
+renaissance/addons/ibitolua_tests/scripts/
