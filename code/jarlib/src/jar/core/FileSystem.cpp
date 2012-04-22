@@ -1,25 +1,3 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #include "jar/core/FileSystem.hpp"
 #include "jar/Core.hpp"
 #include "jar/core/CLArguments.hpp"
@@ -36,18 +14,18 @@ namespace fs
 
 const bool Init(char* argv0)
 {
-    return PHYSFS_init(argv0);
+    return PHYSFS_init(argv0) != 0;
 }
 
 const bool Deinit()
 {
-    return PHYSFS_deinit();
+    return PHYSFS_deinit() != 0;
 }
 
 const bool SetWriteDir(const std::string& writedir)
 {
     //FIXME: does not work if directory has special characters, especially 'é' (Salathé)
-    return PHYSFS_setWriteDir((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + writedir).c_str());
+    return PHYSFS_setWriteDir((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + writedir).c_str()) != 0;
 }
 
 const std::string GetLastError()
@@ -73,17 +51,17 @@ PHYSFS_File* OpenAppend(const std::string& filename)
 
 const bool Close(PHYSFS_File* file)
 {
-    return PHYSFS_close(file);
+    return PHYSFS_close(file) != 0;
 }
 
 const bool ReadFile(const std::string& filename, std::string& output)
 {
     PHYSFS_File* file = OpenRead(filename);
-    if(not file)
+    if(!file)
     {
         return false;
     }
-    if(not GetCurrentFileContent(file, output))
+    if(!GetCurrentFileContent(file, output))
     {
         assert(Close(file));
         return false;
@@ -96,14 +74,15 @@ const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
 {
     if(PHYSFS_fileLength(file) == 0) return true;
 
-    char buf[1024];
-    int status;
+	static const unsigned int BUF_LEN = 1024;
+    char buf[BUF_LEN];
+    PHYSFS_sint64 status;
     //PHYSFS_read returns the read characters.
     while(true)
     {
-        status = PHYSFS_read(file, &buf, sizeof(char), sizeof(buf));
+        status = PHYSFS_read(file, &buf, sizeof(char), BUF_LEN);
         output += std::string(buf, status);
-        if(status < (int)sizeof(buf)) break; //eof reached
+        if(status < BUF_LEN) break; //eof reached
     }
     //-1 on error
     if(status == -1)
@@ -114,10 +93,12 @@ const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
     //if no error was set, the reason for status == 0 should be EOF
     if(!PHYSFS_eof(file))
     {
+		const char* error = PHYSFS_getLastError();
+		assert(error);
 #ifdef _DEBUG
-        Logger::GetDefaultLogger().Warning(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+PHYSFS_getLastError());
+			Logger::GetDefaultLogger().Warning(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+error);
 #else
-        Logger::GetDefaultLogger().Info(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+PHYSFS_getLastError(), 1);
+			Logger::GetDefaultLogger().Info(std::string("PHYSFS_read(): Nothing read, but eof not reached and error not set, either; PhysFS says: ")+error, 1);
 #endif
     }
     return true;
@@ -125,32 +106,32 @@ const bool GetCurrentFileContent(PHYSFS_File* file, std::string& output)
 
 const bool Mount(const std::string& filename, const bool append)
 {
-    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str(), NULL, append);
+    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str(), NULL, append) != 0;
 }
 
 const bool Mount(const std::string& filename, const std::string& mountpoint, const bool append)
 {
-    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str(), mountpoint.c_str(), append);
+    return PHYSFS_mount((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str(), mountpoint.c_str(), append) != 0;
 }
 
 const bool Unmount(const std::string& filename)
 {
-    return PHYSFS_removeFromSearchPath((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str());
+    return PHYSFS_removeFromSearchPath((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str()) != 0;
 }
 
 const bool ReadInt(PHYSFS_File* file, int& out_num)
 {
-    return PHYSFS_readSLE32(file, &out_num);
+    return PHYSFS_readSLE32(file, &out_num) != 0;
 }
 
 const bool ReadUnsignedInt(PHYSFS_File* file, unsigned int& out_num)
 {
-    return PHYSFS_readULE32(file, &out_num);
+    return PHYSFS_readULE32(file, &out_num) != 0;
 }
 
 const bool ReadFloat(PHYSFS_File* file, float& out_num)
 {
-    return PHYSFS_readSLE32(file, (PHYSFS_sint32*)&out_num); //TODO: check this works.
+    return PHYSFS_readSLE32(file, (PHYSFS_sint32*)&out_num) != 0; //TODO: verify this works.
 }
 
 const bool ReadChar(PHYSFS_File* file, char& output)
@@ -219,7 +200,7 @@ const int Read(PHYSFS_File* file, void* buffer, unsigned int objSize, unsigned i
 
 const bool EndOfFile(PHYSFS_File* file)
 {
-    return PHYSFS_eof(file);
+    return PHYSFS_eof(file) != 0;
 }
 
 const bool WriteString(PHYSFS_File* file, const std::string& str)
@@ -229,7 +210,7 @@ const bool WriteString(PHYSFS_File* file, const std::string& str)
 
 const bool Seek(PHYSFS_File* file, const int position)
 {
-    return PHYSFS_seek(file, position);
+    return PHYSFS_seek(file, position) != 0;
 }
 
 const int Tell(PHYSFS_File* file)
@@ -266,7 +247,7 @@ namespace
         }
 
         //is this a file/directory and do we want that?
-        if(PHYSFS_isDirectory((dir+filename).c_str()) == onlyFiles)
+        if((PHYSFS_isDirectory((dir+filename).c_str()) != 0) == onlyFiles)
         {
             //it's a file and we want directories or vice versa - abort
             return;

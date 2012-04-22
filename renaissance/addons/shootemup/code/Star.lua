@@ -18,7 +18,7 @@ function Star:New()
 end
 
 function Star:IsDead()
-	return self.sprite:GetPosition().x < -4
+	return self.sprite:GetPosition().X < -4
 end
 
 function Star:Update(deltaX)

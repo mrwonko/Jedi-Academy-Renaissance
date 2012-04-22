@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\jar\Core.hpp" />
+    <ClInclude Include="include\jar\core\API.hpp" />
+    <ClInclude Include="include\jar\core\CLArguments.hpp" />
+    <ClInclude Include="include\jar\core\Component.hpp" />
+    <ClInclude Include="include\jar\core\CoreImpl.hpp" />
+    <ClInclude Include="include\jar\core\CoutAndFileLogger.hpp" />
+    <ClInclude Include="include\jar\core\CoutLogger.hpp" />
+    <ClInclude Include="include\jar\core\FileLogger.hpp" />
+    <ClInclude Include="include\jar\core\FileSystem.hpp" />
+    <ClInclude Include="include\jar\core\GetLuabindInfo.hpp" />
+    <ClInclude Include="include\jar\core\Helpers.hpp" />
+    <ClInclude Include="include\jar\core\Logger.hpp" />
+    <ClInclude Include="include\jar\core\Lua.hpp" />
+    <ClInclude Include="include\jar\core\LuaLogger.hpp" />
+    <ClInclude Include="include\jar\core\Time.hpp" />
+    <ClInclude Include="include\jar\core\Updatable.hpp" />
+    <ClInclude Include="include\jar\core\VoidLogger.hpp" />
+    <ClInclude Include="include\jar\Jar.hpp" />
+    <ClInclude Include="include\jar\luabind\Core.hpp" />
+    <ClInclude Include="include\jar\OS.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\jar\Core.cpp" />
+    <ClCompile Include="src\jar\core\CLArguments.cpp" />
+    <ClCompile Include="src\jar\core\Component.cpp" />
+    <ClCompile Include="src\jar\core\CoreImpl.cpp" />
+    <ClCompile Include="src\jar\core\CoutAndFileLogger.cpp" />
+    <ClCompile Include="src\jar\core\CoutLogger.cpp" />
+    <ClCompile Include="src\jar\core\FileLogger.cpp" />
+    <ClCompile Include="src\jar\core\FileSystem.cpp" />
+    <ClCompile Include="src\jar\core\GetLuabindInfo.cpp" />
+    <ClCompile Include="src\jar\core\Helpers.cpp" />
+    <ClCompile Include="src\jar\core\Logger.cpp" />
+    <ClCompile Include="src\jar\core\Lua.cpp" />
+    <ClCompile Include="src\jar\core\LuaLogger.cpp" />
+    <ClCompile Include="src\jar\core\Time.cpp" />
+    <ClCompile Include="src\jar\core\Updatable.cpp" />
+    <ClCompile Include="src\jar\luabind\LBCore.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}</ProjectGuid>
+    <RootNamespace>jarcore</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Jedi Academy Renaissance.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Jedi Academy Renaissance.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)../renaissance/bin_msvc/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(ProjectDir)obj\msvc\$(ProjectName)_$(Configuration)\</IntDir>
+    <TargetExt>.dll</TargetExt>
+    <TargetName>jar-core-d</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)../renaissance/bin_msvc/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(ProjectDir)obj\msvc\$(ProjectName)_$(Configuration)\</IntDir>
+    <TargetExt>.dll</TargetExt>
+    <TargetName>jar-core</TargetName>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>JAR_CORE_LIBRARY_BUILD;SFML_DYNAMIC;MSVC_DLL_STATIC_MEMBER_EXPORTS;_DEBUG;LUA_BUILD_AS_DLL;LUABIND_DYNAMIC_LINK;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>jar_pluto_d.lib;sfml-system-d.lib;physfs-d.lib;jar_lua_d.lib;jar_luabind_d.lib;zlibd.lib;jar_minizip_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(ProjectDir)lib\msvc\$(TargetName).lib</ImportLibrary>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)../renaissance/bin_msvc"</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>JAR_CORE_LIBRARY_BUILD;SFML_DYNAMIC;MSVC_DLL_STATIC_MEMBER_EXPORTS;LUA_BUILD_AS_DLL;LUABIND_DYNAMIC_LINK;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>jar_pluto.lib;sfml-system.lib;physfs.lib;jar_lua.lib;jar_luabind.lib;zlib.lib;jar_minizip.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ImportLibrary>$(ProjectDir)lib\msvc\$(TargetName).lib</ImportLibrary>
+    </Link>
+    <CustomBuildStep>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)../renaissance/bin_msvc"</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{aa9e40e6-0174-43a9-98f5-b18dbad3a93e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar">
+      <UniqueIdentifier>{1e3a27ce-82f2-4ec5-815d-c6eefb4651db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{f3dc468e-c93b-4e16-8aad-34a85b66e413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar">
+      <UniqueIdentifier>{5b167733-9661-473b-973c-f773bf8cac08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar\luabind">
+      <UniqueIdentifier>{c6441366-53b7-444f-b7df-817198bae42d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\jar\graphics">
+      <UniqueIdentifier>{7b089f9f-716b-430a-8535-a7364000204f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\luabind">
+      <UniqueIdentifier>{5baa4685-0343-4592-a4b2-7e3fdd6fc761}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\graphics">
+      <UniqueIdentifier>{f7ea2d8f-49ef-4792-97b7-13aea43ddebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\jar\graphics\luabind">
+      <UniqueIdentifier>{896c82a7-0ff2-48ff-abcb-cb99ae27a811}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\jar\luabind\SFMLGraphics.hpp">
+      <Filter>Header Files\jar\luabind</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\Graphics.hpp">
+      <Filter>Header Files\jar</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\graphics\API.hpp">
+      <Filter>Header Files\jar\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\graphics\Font.hpp">
+      <Filter>Header Files\jar\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\graphics\GraphicsImpl.hpp">
+      <Filter>Header Files\jar\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\graphics\RenderWindow.hpp">
+      <Filter>Header Files\jar\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\jar\graphics\Text.hpp">
+      <Filter>Header Files\jar\graphics</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\jar\Graphics.cpp">
+      <Filter>Source Files\jar</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\Font.cpp">
+      <Filter>Source Files\jar\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\GraphicsImpl.cpp">
+      <Filter>Source Files\jar\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\RenderWindow.cpp">
+      <Filter>Source Files\jar\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\Text.cpp">
+      <Filter>Source Files\jar\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\luabind\LBSFMLGraphics.cpp">
+      <Filter>Source Files\jar\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\luabind\LBFont.cpp">
+      <Filter>Source Files\jar\graphics\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\luabind\LBRenderWindow.cpp">
+      <Filter>Source Files\jar\graphics\luabind</Filter>
+    </ClCompile>
+    <ClCompile Include="src\jar\graphics\luabind\LBText.cpp">
+      <Filter>Source Files\jar\graphics\luabind</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

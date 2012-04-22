@@ -1,25 +1,3 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #ifndef JAR_INPUT_INPUTIMPL_HPP
 #define JAR_INPUT_INPUTIMPL_HPP
 
@@ -31,7 +9,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #endif
 #include <windows.h>
 
-//if you change this, also change it in WinJoystickDirectInput.hpp
+//if you change this, also change it in WinControllerDirectInput.hpp
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
@@ -41,7 +19,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <vector>
 #include <cassert>
 
-class lua_State;
+struct lua_State;
 
 namespace jar {
 
@@ -53,8 +31,8 @@ namespace Windows
 {
     class WinKeyboard;
     class WinMouse;
-    class WinJoystickXInput;
-    class WinJoystickDirectInput;
+    class WinControllerXInput;
+    class WinControllerDirectInput;
 }
 #endif
 
@@ -87,10 +65,10 @@ class InputImpl : public Component
         EventManager* mEventManager;
 #ifdef _WIN32
         //XInput
-        std::vector<Windows::WinJoystickXInput*> mXInputJoysticks;
+        std::vector<Windows::WinControllerXInput*> mXInputJoysticks;
         //DirectInput
         LPDIRECTINPUT8 mDirectInput;
-        std::vector<Windows::WinJoystickDirectInput*> mDirectInputJoysticks;
+        std::vector<Windows::WinControllerDirectInput*> mDirectInputJoysticks;
 
         bool mNoWindowExists;
 #else

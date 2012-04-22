@@ -1,25 +1,3 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #include "jar/core/Helpers.hpp"
 #include "jar/Core.hpp"
 #include "jar/core/CLArguments.hpp"
@@ -27,10 +5,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <string>
 #include <cctype>
 #include <algorithm>
-#include <cctype>
-
-//TODO: delete
-#include <iostream>
 
 #if defined(_WIN32)
   #ifndef WIN32_LEAN_AND_MEAN
@@ -142,7 +116,7 @@ namespace jar
 
     std::string& Helpers::ToLower(std::string& text)
     {
-        std::transform(text.begin(), text.end(), text.begin(), (int (*)(int))std::tolower);
+        std::transform(text.begin(), text.end(), text.begin(), (int (*)(int))std::tolower); //my compiler confuses cctype's tolower with the template one from std locale otherwise
         return text;
     }
 
@@ -193,7 +167,7 @@ namespace jar
     {
         if(!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) return false;
         std::string name = std::string(ffd.cFileName);
-        if(name.length() == 0 or name[0] == '.') return false;
+        if(name.length() == 0 || name[0] == '.') return false;
         return true;
     }
 
@@ -233,48 +207,43 @@ namespace jar
     }
 #endif
 
-    namespace
+    const std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
     {
-        std::vector<std::string> g_tempVec;
-    }
-
-    std::vector<std::string>& Helpers::GetFilesInDirectory(std::string directoryPath)
-    {
+        std::vector<std::string> results;
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
-        g_tempVec.clear();
 #if defined(_WIN32)
-        g_tempVec = GetStuffInDirectory(directoryPath, &IsFile);
+        results = GetStuffInDirectory(directoryPath, &IsFile);
 #elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
         if(int(dir = opendir(directoryPath.c_str())) == -1)
         {
-          return g_tempVec;
+          return results;
         }
         dirent* entry;
         while( (entry = readdir(dir)) )
         {
           if(entry->d_type == DT_REG)
           {
-            g_tempVec.push_back(std::string(entry->d_name));
+            results.push_back(std::string(entry->d_name));
           }
         }
 #else
   #warning Helpers::GetFilesInDirectory() not implemented for this platform - stuff will break.
 #endif
-        return g_tempVec;
+        return results;
     }
 
-    std::vector<std::string>& Helpers::GetDirectoriesInDirectory(std::string directoryPath)
+    const std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
     {
+        std::vector<std::string> results;
         directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
-        g_tempVec.clear();
 #if defined(_WIN32)
-        g_tempVec = GetStuffInDirectory(directoryPath, &IsDirectory);
+        results = GetStuffInDirectory(directoryPath, &IsDirectory);
 #elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
         if(int(dir = opendir(directoryPath.c_str())) == -1)
         {
-          return g_tempVec;
+          return results;
         }
         dirent* entry;
         while( (entry = readdir(dir)) )
@@ -286,13 +255,13 @@ namespace jar
             {
               continue;
             }
-            g_tempVec.push_back(name);
+            results.push_back(name);
           }
         }
 #else
   #warning Helpers::GetFilesInDirectory() not implemented for this platform - stuff will break.
 #endif
-        return g_tempVec;
+        return results;
     }
 
     const bool Helpers::CaseInsensitiveStringLessThan(std::string str1, std::string str2)

@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "renaissance", "renaissance\renaissance.vcxproj", "{34D01CC4-39E0-143E-1500-0A0EBE204896}"
+	ProjectSection(ProjectDependencies) = postProject
+		{66C97324-4E5A-4B9F-BC57-3791726BBC96} = {66C97324-4E5A-4B9F-BC57-3791726BBC96}
+		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E} = {7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0} = {9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}
+		{568D90E9-4AE0-4136-A3C3-B4D5448B0BC3} = {568D90E9-4AE0-4136-A3C3-B4D5448B0BC3}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-audio", "jarlib\jar-audio.vcxproj", "{568D90E9-4AE0-4136-A3C3-B4D5448B0BC3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0} = {9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-core", "jarlib\jar-core.vcxproj", "{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-graphics", "jarlib\jar-graphics.vcxproj", "{66C97324-4E5A-4B9F-BC57-3791726BBC96}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E} = {7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0} = {9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-input", "jarlib\jar-input.vcxproj", "{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0} = {9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-lua", "..\dependencies\lua-5.1.4-jar\jar-lua.vcxproj", "{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-pluto", "..\dependencies\pluto-jar\pluto-jar.vcxproj", "{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jar-minizip", "..\dependencies\minizip-jar\jar-minizip.vcxproj", "{0C415434-33D8-3E80-8981-572DD644A5E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{34D01CC4-39E0-143E-1500-0A0EBE204896}.Debug|Win32.ActiveCfg = Debug|Win32
+		{34D01CC4-39E0-143E-1500-0A0EBE204896}.Debug|Win32.Build.0 = Debug|Win32
+		{34D01CC4-39E0-143E-1500-0A0EBE204896}.Release|Win32.ActiveCfg = Release|Win32
+		{34D01CC4-39E0-143E-1500-0A0EBE204896}.Release|Win32.Build.0 = Release|Win32
+		{568D90E9-4AE0-4136-A3C3-B4D5448B0BC3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{568D90E9-4AE0-4136-A3C3-B4D5448B0BC3}.Debug|Win32.Build.0 = Debug|Win32
+		{568D90E9-4AE0-4136-A3C3-B4D5448B0BC3}.Release|Win32.ActiveCfg = Release|Win32
+		{568D90E9-4AE0-4136-A3C3-B4D5448B0BC3}.Release|Win32.Build.0 = Release|Win32
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}.Debug|Win32.Build.0 = Debug|Win32
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}.Release|Win32.ActiveCfg = Release|Win32
+		{9E8708C4-5CFE-47D7-9222-995DBE9D8CE0}.Release|Win32.Build.0 = Release|Win32
+		{66C97324-4E5A-4B9F-BC57-3791726BBC96}.Debug|Win32.ActiveCfg = Debug|Win32
+		{66C97324-4E5A-4B9F-BC57-3791726BBC96}.Debug|Win32.Build.0 = Debug|Win32
+		{66C97324-4E5A-4B9F-BC57-3791726BBC96}.Release|Win32.ActiveCfg = Release|Win32
+		{66C97324-4E5A-4B9F-BC57-3791726BBC96}.Release|Win32.Build.0 = Release|Win32
+		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}.Debug|Win32.Build.0 = Debug|Win32
+		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}.Release|Win32.ActiveCfg = Release|Win32
+		{7BD88FAA-91AB-4489-A595-6A5C01B3CD0E}.Release|Win32.Build.0 = Release|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Debug|Win32.Build.0 = Debug|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Release|Win32.ActiveCfg = Release|Win32
+		{DC99BF86-B3FD-1C29-3EC1-A1186F7BCAB8}.Release|Win32.Build.0 = Release|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Debug|Win32.Build.0 = Debug|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Release|Win32.ActiveCfg = Release|Win32
+		{A6C34E02-DB6F-FBD7-FA4C-555E56FAB6BE}.Release|Win32.Build.0 = Release|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Debug|Win32.Build.0 = Debug|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Release|Win32.ActiveCfg = Release|Win32
+		{0C415434-33D8-3E80-8981-572DD644A5E7}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

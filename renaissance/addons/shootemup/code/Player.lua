@@ -25,8 +25,9 @@ function Player:New()
 			--ShotLaserBlue, --todo: delete this.
 		}
 	}
-	obj.sprite:Resize(10, 10)
-	obj.sprite:SetOrigin(0, playerimg:GetHeight()/2)
+	--TODO: replace outdated Resize code
+	--obj.sprite:Resize(10, 10)
+	obj.sprite:SetOrigin(0, playerimg:GetSize().Y/2)
 	obj.sprite:SetPosition(0, 50)
 	
 	setmetatable(obj, self)
@@ -68,18 +69,18 @@ end
 function Player:Update(deltaT)
 	if KeyManager:IsKeyDown(GetKey("up") or jar.Key.Up) then
 		self:Move(0, -self.movespeed*deltaT)
-		if self:GetPosition().y < 5 then self:SetY(5) end
+		if self:GetPosition().Y < 5 then self:SetY(5) end
 	end
 	if KeyManager:IsKeyDown(GetKey("down") or jar.Key.Down) then
 		self:Move(0, self.movespeed*deltaT)
-		if self:GetPosition().y > 95 then self:SetY(95) end
+		if self:GetPosition().Y > 95 then self:SetY(95) end
 	end
 end
 
 function Player:OnKeyDown(key)
 	if key == (GetKey("shoot") or jar.Key.Space) then
-		local pos = jar.Vector2f(self.sprite:GetPosition().x, self.sprite:GetPosition().y)
-		pos.x = pos.x + 10
+		local pos = jar.Vector2f(self.sprite:GetPosition().X, self.sprite:GetPosition().Y)
+		pos.X = pos.X + 10
 		local shot = self.availableWeapons[self.currentWeapon]:New{position = pos, dir=1,}
 		table.insert(g_Gamefield.shots, shot)
 		return true

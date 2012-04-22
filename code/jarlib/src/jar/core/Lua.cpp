@@ -1,28 +1,10 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #include "jar/core/Lua.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp> //includes both functions and classes. (function.hpp + class.hpp)
+extern "C"
+{
+#include <pluto.h> //must be after lua.hpp
+}
 #include <sstream>
 
 namespace jar
@@ -42,7 +24,7 @@ Lua::~Lua()
     Deinit();
 }
 
-static int add_file_and_line_to_error(lua_State* L)
+JARCOREAPI int add_file_and_line_to_error(lua_State* L)
 {
    lua_Debug d;
    lua_getstack(L, 1, &d);
@@ -62,6 +44,52 @@ static int add_file_and_line_to_error(lua_State* L)
 }
 
 
+JARCOREAPI int add_stacktrace_to_error(lua_State* L)
+{
+    if(!lua_isstring(L, 0))
+	{
+		return 1;
+	}
+    unsigned int level = 0;
+    lua_Debug d;
+    // as long as there's another stack level and retrieving information about
+    while(lua_getstack(L, ++level, &d))
+    {
+		lua_getinfo(L, "Sln", &d);
+        if(level == 1)
+        {
+            lua_pushliteral(L, "\nStack trace:");
+        }
+		lua_pushfstring(L, "%s:", d.short_src);
+		if (d.currentline > 0)
+		{
+			lua_pushfstring(L, "%d:", d.currentline);
+		}
+		if (*d.namewhat != '\0')  /* is there a name? */
+		{
+			lua_pushfstring(L, " in function " LUA_QS, d.name);
+		}
+		else
+		{
+			if (*d.what == 'm')  /* main? */
+			{
+				lua_pushfstring(L, " in main chunk");
+			}
+			else if (*d.what == 'C' || *d.what == 't')
+			{
+				lua_pushliteral(L, " ?");  /* C function or tail call */
+			}
+			else
+			{
+				lua_pushfstring(L, " in function <%s:%d>", d.short_src, d.linedefined);
+			}
+		}
+    }
+    lua_concat(L, lua_gettop(L));
+    return 1;
+}
+
+
 const bool Lua::Init()
 {
     //try to open the lua state
@@ -76,11 +104,17 @@ const bool Lua::Init()
     //luabind::open may only be called for the main thread. Otherwise it throws an exception.
     mIsMainThread = lua_pushthread(mState) == 1;
     lua_pop(mState, 1);
-    if(mIsMainThread)
+    if(!mIsMainThread)
     {
-        luabind::open(mState);
-        luabind::set_pcall_callback(&add_file_and_line_to_error);
+        mLastError = "Not main Lua state!";
+        return false;
     }
+    luabind::open(mState);
+	// only used when luabind calls code
+    luabind::set_pcall_callback(&add_file_and_line_to_error);
+    //luabind::set_pcall_callback(&add_stacktrace_to_error);
+	//bind pluto.persist/pluto.unpersist
+	luaopen_jar_pluto(mState);
     return true;
 }
 

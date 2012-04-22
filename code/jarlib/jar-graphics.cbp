@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug Win32">
-				<Option output="lib/libjar-graphics-d" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+				<Option output="lib\libjar-graphics-d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -21,16 +21,16 @@
 					<Add option="-enable-auto-import" />
 					<Add library="jar-core-d" />
 					<Add library="jar-input-d" />
-					<Add library="lua" />
-					<Add library="luabindd" />
+					<Add library="jar_lua_d" />
+					<Add library="jar_luabind_d" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release Win32">
-				<Option output="lib/libjar-graphics" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+				<Option output="lib\libjar-graphics" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -43,16 +43,16 @@
 					<Add option="-enable-auto-import" />
 					<Add library="jar-core" />
 					<Add library="jar-input" />
-					<Add library="lua" />
-					<Add library="luabind" />
+					<Add library="jar_lua" />
+					<Add library="jar_luabind" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cmd /c copy &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin&quot;' />
 				</ExtraCommands>
 			</Target>
 			<Target title="Debug Linux">
-				<Option output="lib/libjar-graphics-d" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+				<Option output="lib\libjar-graphics-d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -65,16 +65,16 @@
 				<Linker>
 					<Add library="jar-core-d" />
 					<Add library="jar-input-d" />
-					<Add library="lua5.1" />
-					<Add library="luabind" />
+					<Add library="jar_lua_d" />
+					<Add library="jar_luabind_d" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin/&quot;' />
 				</ExtraCommands>
 			</Target>
 			<Target title="Release Linux">
-				<Option output="lib/libjar-graphics" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+				<Option output="lib\libjar-graphics" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
@@ -87,8 +87,8 @@
 					<Add option="-s" />
 					<Add library="jar-core" />
 					<Add library="jar-input" />
-					<Add library="lua5.1" />
-					<Add library="luabind" />
+					<Add library="jar_lua" />
+					<Add library="jar_luabind" />
 				</Linker>
 				<ExtraCommands>
 					<Add after='cp &quot;$(PROJECT_DIR)$(TARGET_OUTPUT_FILE)&quot; &quot;../../renaissance/bin/&quot;' />
@@ -99,31 +99,34 @@
 			<Add option="-DJAR_GRAPHICS_LIBRARY_BUILD" />
 			<Add option="-DLUABIND_DYNAMIC_LINK" />
 			<Add option="-DSFML_DYNAMIC" />
+			<Add option="-DLUA_BUILD_AS_DLL" />
 			<Add directory="include" />
+			<Add directory="..\..\dependencies\lua-5.1.4-jar\include" />
 		</Compiler>
 		<Linker>
 			<Add library="sfml-graphics" />
 			<Add library="sfml-window" />
 			<Add library="sfml-system" />
 			<Add directory="lib" />
+			<Add directory="..\..\dependencies\lua-5.1.4-jar\lib" />
 		</Linker>
-		<Unit filename="include/jar/Graphics.hpp" />
-		<Unit filename="include/jar/OS.hpp" />
-		<Unit filename="include/jar/graphics/API.hpp" />
-		<Unit filename="include/jar/graphics/Font.hpp" />
-		<Unit filename="include/jar/graphics/GraphicsImpl.hpp" />
-		<Unit filename="include/jar/graphics/RenderWindow.hpp" />
-		<Unit filename="include/jar/graphics/Text.hpp" />
-		<Unit filename="include/jar/luabind/SFMLGraphics.hpp" />
-		<Unit filename="src/jar/Graphics.cpp" />
-		<Unit filename="src/jar/graphics/Font.cpp" />
-		<Unit filename="src/jar/graphics/GraphicsImpl.cpp" />
-		<Unit filename="src/jar/graphics/RenderWindow.cpp" />
-		<Unit filename="src/jar/graphics/Text.cpp" />
-		<Unit filename="src/jar/graphics/luabind/Font.cpp" />
-		<Unit filename="src/jar/graphics/luabind/RenderWindow.cpp" />
-		<Unit filename="src/jar/graphics/luabind/Text.cpp" />
-		<Unit filename="src/jar/luabind/SFMLGraphics.cpp" />
+		<Unit filename="include\jar\Graphics.hpp" />
+		<Unit filename="include\jar\OS.hpp" />
+		<Unit filename="include\jar\graphics\API.hpp" />
+		<Unit filename="include\jar\graphics\Font.hpp" />
+		<Unit filename="include\jar\graphics\GraphicsImpl.hpp" />
+		<Unit filename="include\jar\graphics\RenderWindow.hpp" />
+		<Unit filename="include\jar\graphics\Text.hpp" />
+		<Unit filename="include\jar\luabind\SFMLGraphics.hpp" />
+		<Unit filename="src\jar\Graphics.cpp" />
+		<Unit filename="src\jar\graphics\Font.cpp" />
+		<Unit filename="src\jar\graphics\GraphicsImpl.cpp" />
+		<Unit filename="src\jar\graphics\RenderWindow.cpp" />
+		<Unit filename="src\jar\graphics\Text.cpp" />
+		<Unit filename="src\jar\graphics\luabind\LBFont.cpp" />
+		<Unit filename="src\jar\graphics\luabind\LBRenderWindow.cpp" />
+		<Unit filename="src\jar\graphics\luabind\LBText.cpp" />
+		<Unit filename="src\jar\luabind\LBSFMLGraphics.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

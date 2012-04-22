@@ -22,8 +22,9 @@ local moveIn = 3000
 local startIn = 0
 
 function IntroState:OnStart()
-	spr:Resize(g_Window:GetWidth()*2, g_Window:GetWidth())
-	spr:SetPosition(0, -(g_Window:GetWidth()-g_Window:GetHeight()) / 2)
+	--TODO: replace outdated Resize code
+	--spr:Resize(g_Window:GetSize().X*2, g_Window:GetSize().X)
+	spr:SetPosition(0, -(g_Window:GetSize().X-g_Window:GetSize().Y) / 2)
 	moveIn = 3000
 	startIn = 0
 end
@@ -33,8 +34,8 @@ function IntroState:Update(deltaT)
 		moveIn = moveIn - deltaT
 	elseif startIn == 0 then
 		spr:Move(-0.2*deltaT, 0)
-		if spr:GetPosition().x < -g_Window:GetWidth() then
-			spr:SetX(-g_Window:GetWidth())
+		if spr:GetPosition().X < -g_Window:GetSize().X then
+			spr:SetX(-g_Window:GetSize().X)
 			startIn = 1000
 		end
 	elseif startIn > 0 then

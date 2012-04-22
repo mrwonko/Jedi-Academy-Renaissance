@@ -1,30 +1,9 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #ifndef JAR_GRAPHICS_FONT_HPP
 #define JAR_GRAPHICS_FONT_HPP
 
 #include "jar/graphics/API.hpp"
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 struct lua_State;
 
@@ -97,7 +76,7 @@ class JARGRAPHICSAPI Font
     private:
 
         FontData mFontData;
-        sf::Texture* mTexture; //pointer so I can get away with a forward declaration
+        boost::shared_ptr<sf::Texture> mTexture; //since this is created in vram copying & assignment would usually be rather slow, I suppose
         unsigned int mTabWidth; ///< In multiples of space width, default 8
 };
 

@@ -15,15 +15,16 @@ true)
 
 function EnemyShoot1:New(info)
 	local obj = Enemy.New(self, info)
-	obj.sprite:Resize(obj.size, obj.size)
+	--TODO: replace outdated Resize code
+	--obj.sprite:Resize(obj.size, obj.size)
 	return obj
 end
 
 function EnemyShoot1:Move(deltaT)
 	self.sprite:Move(self.movedir*deltaT)
-	if self.sprite:GetPosition().y > 100-self.size/2 then
-		self.movedir = jar.Vector2f(self.movedir.x, -math.abs(self.movedir.y))
-	elseif self.sprite:GetPosition().y < self.size/2 then
-		self.movedir = jar.Vector2f(self.movedir.x, math.abs(self.movedir.y))
+	if self.sprite:GetPosition().Y > 100-self.size/2 then
+		self.movedir = jar.Vector2f(self.movedir.X, -math.abs(self.movedir.Y))
+	elseif self.sprite:GetPosition().Y < self.size/2 then
+		self.movedir = jar.Vector2f(self.movedir.X, math.abs(self.movedir.Y))
 	end
 end

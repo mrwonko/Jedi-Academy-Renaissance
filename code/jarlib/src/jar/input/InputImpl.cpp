@@ -1,25 +1,3 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #include "jar/input/InputImpl.hpp"
 #include "jar/input/InputDeviceManager.hpp"
 #include "jar/input/EventManager.hpp"
@@ -28,11 +6,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "jar/core/Helpers.hpp"
 #include "jar/core/Lua.hpp"
 #include "jar/Core.hpp"
-#include "jar/input/InputDeviceJoystick.hpp"
+#include "jar/input/InputDeviceController.hpp"
 
 #ifdef _WIN32
-#include "jar/input/Windows/WinJoystickXInput.hpp"
-#include "jar/input/Windows/WinJoystickDirectInput.hpp"
+#include "jar/input/Windows/WinControllerXInput.hpp"
+#include "jar/input/Windows/WinControllerDirectInput.hpp"
 
 //for IsXInputDevice
 #include <wbemidl.h>
@@ -100,7 +78,7 @@ const bool InputImpl::Init()
 
     Logger::GetDefaultLogger().Info("Exposing Event System to Lua...", 2);
     lua_State* L = Core::GetSingleton().GetLua().GetState();
-    InputDeviceJoystick::Luabind(L);
+    InputDeviceController::Luabind(L);
     InputDeviceManager::Luabind(L);
     Event::Luabind(L);
     InputImpl::Luabind(L);
@@ -278,7 +256,7 @@ namespace
     struct DirectInputEnumInfo
     {
         DirectInputEnumInfo(unsigned int& numJoysticks,
-                            std::vector<Windows::WinJoystickDirectInput*>& joyVec,
+                            std::vector<Windows::WinControllerDirectInput*>& joyVec,
                             InputDeviceManager& manager,
                             LPDIRECTINPUT8 dinput
                             ) :
@@ -289,13 +267,13 @@ namespace
         {}
 
         unsigned int& NumJoysticks;
-        std::vector<Windows::WinJoystickDirectInput*>& JoyVec;
+        std::vector<Windows::WinControllerDirectInput*>& JoyVec;
         InputDeviceManager& DeviceManager;
         LPDIRECTINPUT8 DirectInput;
     };
 
     // the __stdcall is very important, and took me ages to figure out...
-    static __stdcall BOOL ForEachDirectInputDevice(LPCDIDEVICEINSTANCE device, LPVOID voidptr)
+    static BOOL __stdcall ForEachDirectInputDevice(LPCDIDEVICEINSTANCE device, LPVOID voidptr)
     {
         //XInput devices are handled separately, so let's ignore them.
         if( IsXInputDevice(&device->guidProduct) )
@@ -307,7 +285,7 @@ namespace
 
         DirectInputEnumInfo* info = static_cast<DirectInputEnumInfo* >(voidptr);
 
-        Windows::WinJoystickDirectInput* joy = new Windows::WinJoystickDirectInput(info->NumJoysticks);
+        Windows::WinControllerDirectInput* joy = new Windows::WinControllerDirectInput(info->NumJoysticks);
         if(!joy->Init(info->DirectInput, device))
         {
             delete joy;
@@ -340,7 +318,7 @@ const bool InputImpl::InitJoysticks()
         if(XInputGetState(i, &state) == ERROR_SUCCESS)
         {
             //controller connected
-            Windows::WinJoystickXInput* joy = new Windows::WinJoystickXInput(numJoysticks);
+            Windows::WinControllerXInput* joy = new Windows::WinControllerXInput(numJoysticks);
             if(!joy->Init(i))
             {
                 delete joy;
@@ -410,7 +388,7 @@ const bool InputImpl::DeinitJoysticks()
     //  deinit XInput
 
     XInputEnable(FALSE);
-    for(std::vector<Windows::WinJoystickXInput*>::iterator it = mXInputJoysticks.begin(); it != mXInputJoysticks.end(); ++it)
+    for(std::vector<Windows::WinControllerXInput*>::iterator it = mXInputJoysticks.begin(); it != mXInputJoysticks.end(); ++it)
     {
         mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(*it); //failure means it hasn't been added yet - that's ok.
         if(!(*it)->Deinit())
@@ -424,7 +402,7 @@ const bool InputImpl::DeinitJoysticks()
     //  deinit DirectInput
 
     //release joysticks
-    for(std::vector<Windows::WinJoystickDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
+    for(std::vector<Windows::WinControllerDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
     {
         mInputDeviceManager && mInputDeviceManager->RemoveInputDevice(*it); //failure means it hasn't been added yet - that's ok.
         if(!(*it)->Deinit())
@@ -456,7 +434,7 @@ namespace
         bool Success;
     };
 
-    static __stdcall BOOL EnumThreadWndProc(HWND hwnd, LPARAM lParam)
+    static BOOL __stdcall EnumThreadWndProc(HWND hwnd, LPARAM lParam)
     {
         EnumThreadWindowsInfo* info = (EnumThreadWindowsInfo*)lParam;
         info->Hwnd = hwnd;
@@ -483,7 +461,7 @@ void InputImpl::OnWindowCreated()
         char title[128];
         GetWindowText(info.Hwnd, title, sizeof(title));
         Logger::GetDefaultLogger().Info(std::string("First window created is called \"")+title+"\".", 5);
-        for(std::vector<Windows::WinJoystickDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
+        for(std::vector<Windows::WinControllerDirectInput*>::iterator it = mDirectInputJoysticks.begin(); it != mDirectInputJoysticks.end(); ++it)
         {
             (*it)->OnFirstWindowCreated(info.Hwnd);
         }

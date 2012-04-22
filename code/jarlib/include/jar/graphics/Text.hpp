@@ -1,31 +1,12 @@
-/*
-===========================================================================
-Copyright (C) 2010 Willi Schinmeyer
-
-This file is part of the Jedi Academy: Renaissance source code.
-
-Jedi Academy: Renaissance source code is free software; you can redistribute it
-and/or modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of the License,
-or (at your option) any later version.
-
-Jedi Academy: Renaissance source code is distributed in the hope that it will be
-useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with Jedi Academy: Renaissance source code; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-===========================================================================
-*/
-
 #ifndef JAR_GRAPHICS_TEXT_HPP
 #define JAR_GRAPHICS_TEXT_HPP
 
 #include "jar/graphics/API.hpp"
 #include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Transformable.hpp>
+#include <SFML/Graphics/Vertex.hpp>
 #include <string>
+#include <vector>
 
 struct lua_State;
 
@@ -33,7 +14,7 @@ namespace jar {
 
 class Font;
 
-class JARGRAPHICSAPI Text : public sf::Drawable
+class JARGRAPHICSAPI Text : public sf::Drawable, public sf::Transformable
 {
     public:
         /** \note don't use, just here so autopointers work **/
@@ -69,7 +50,9 @@ class JARGRAPHICSAPI Text : public sf::Drawable
         /** \brief Gets the height of the text, in pixels **/
         const float GetHeight() const;
 
-        virtual void Render(sf::RenderTarget& target, sf::Renderer& renderer) const;
+        const sf::Vector2f GetSize() const { return sf::Vector2f(GetHeight(), GetWidth()); }
+
+        virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
         static void BindToLua(lua_State* L);
     protected:
@@ -77,6 +60,11 @@ class JARGRAPHICSAPI Text : public sf::Drawable
         std::string mText;
         const Font* mFont;
         float mFontSize;
+
+        std::vector<sf::Vertex> mVertices;
+        unsigned int mNumLines;
+        unsigned int mWidth;
+        void UpdateCache();
 };
 
 } // namespace jar

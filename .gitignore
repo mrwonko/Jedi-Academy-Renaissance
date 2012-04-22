@@ -6,4 +6,11 @@
 *.depend
 *.html
 *.so
+*.opensdf
+*.sdf
+*.suo
+*.vcxproj.user
+*.iml
+*/ipch/
+*/obj/
 changelog.txt

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <IncludePath>$(SolutionDir)jarlib\include;$(SolutionDir)..\dependencies\minizip-jar;$(SolutionDir)..\dependencies\lua-5.1.4-jar\include;$(SolutionDir)..\dependencies\pluto-jar;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LibraryPath>$(SolutionDir)..\dependencies\minizip-jar\lib\msvc;$(SolutionDir)jarlib\lib\msvc;$(SolutionDir)..\dependencies\lua-5.1.4-jar\lib\msvc;$(SolutionDir)..\dependencies\pluto-jar\lib\msvc;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup />
+  <ItemGroup />
+</Project>

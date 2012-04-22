@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="Luabind">
+		<Project filename="luabind.cbp" active="1" />
+		<Project filename="test/test_abstract_base.cbp" />
+		<Project filename="test/test_adopt.cbp" />
+		<Project filename="test/test_adopt_wrapper.cbp" />
+		<Project filename="test/test_attributes.cbp" />
+		<Project filename="test/test_automatic_smart_ptr.cbp" />
+		<Project filename="test/test_back_reference.cbp" />
+		<Project filename="test/test_builtin_converters.cbp" />
+		<Project filename="test/test_class_info.cbp" />
+		<Project filename="test/test_collapse_converter.cbp" />
+		<Project filename="test/test_const.cbp" />
+		<Project filename="test/test_construction.cbp" />
+		<Project filename="test/test_create_in_thread.cbp" />
+		<Project filename="test/test_def_from_base.cbp" />
+		<Project filename="test/test_dynamic_type.cbp" />
+		<Project filename="test/test_exception_handlers.cbp" />
+		<Project filename="test/test_exceptions.cbp" />
+		<Project filename="test/test_extend_class_in_lua.cbp" />
+		<Project filename="test/test_free_functions.cbp" />
+		<Project filename="test/test_function_introspection.cbp" />
+		<Project filename="test/test_held_type.cbp" />
+		<Project filename="test/test_implicit_cast.cbp" />
+		<Project filename="test/test_implicit_raw.cbp" />
+		<Project filename="test/test_iterator.cbp" />
+		<Project filename="test/test_lua_classes.cbp" />
+		<Project filename="test/test_null_pointer.cbp" />
+		<Project filename="test/test_object.cbp" />
+		<Project filename="test/test_object_identity.cbp" />
+		<Project filename="test/test_operators.cbp" />
+		<Project filename="test/test_package_preload.cbp" />
+		<Project filename="test/test_policies.cbp" />
+		<Project filename="test/test_private_destructors.cbp" />
+		<Project filename="test/test_properties.cbp" />
+		<Project filename="test/test_scope.cbp" />
+		<Project filename="test/test_separation.cbp" />
+		<Project filename="test/test_set_instance_value.cbp" />
+		<Project filename="test/test_shadow.cbp" />
+		<Project filename="test/test_shared_ptr.cbp" />
+		<Project filename="test/test_simple_class.cbp" />
+		<Project filename="test/test_smart_ptr_attributes.cbp" />
+		<Project filename="test/test_super_leak.cbp" />
+		<Project filename="test/test_table.cbp" />
+		<Project filename="test/test_tag_function.cbp" />
+		<Project filename="test/test_typetraits.cbp" />
+		<Project filename="test/test_unsigned_int.cbp" />
+		<Project filename="test/test_user_defined_converter.cbp" />
+		<Project filename="test/test_value_wrapper.cbp" />
+		<Project filename="test/test_vector_of_object.cbp" />
+		<Project filename="test/test_virtual_inheritance.cbp" />
+		<Project filename="test/test_yield.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

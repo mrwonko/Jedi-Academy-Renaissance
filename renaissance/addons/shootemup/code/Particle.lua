@@ -26,8 +26,10 @@ function Particle:New(info)
 	--init
 	obj.sprite = jar.Sprite(obj.image)
 	obj.sprite:SetPosition(obj.position)
+	--TODO: fix outdated code - there is no GetSize()! (Use GetGlobalBounds())
 	obj.sprite:SetOrigin(obj.sprite:GetSize()/2)
-	obj.sprite:Resize(obj.size, obj.size)
+	--TODO: replace outdated Resize code
+	--obj.sprite:Resize(obj.size, obj.size)
 	obj.sprite:Rotate(obj.angle*180/math.pi)
 	obj.position = nil --I use sprite's position
 	obj.lifetime = obj.totalLifetime
