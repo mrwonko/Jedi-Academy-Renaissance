@@ -22,7 +22,7 @@ set(ZLIB_SEARCH_DIRS
 		PATH_SUFFIXES "include"
 		HINTS ${ZLIB_HINTS}
 		PATHS ${ZLIB_SEARCH_DIRS})
-	find_library(ZLIB_LIBRARY zdll zlib zlib1
+	find_library(ZLIB_LIBRARY zdll zlib zlib1 z
 		PATH_SUFFIXES "lib"
 		HINTS ${ZLIB_HINTS}
 		PATHS ${ZLIB_SEARCH_DIRS})
