@@ -9,7 +9,8 @@ else(${CMAKE_BUILD_TYPE} MATCHES Debug)
 endif(${CMAKE_BUILD_TYPE} MATCHES Debug)
 
 # add cmake_modules to module search path, for find_package()
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
+# I force CMAKE_ROOT/Modules into the module search path because it's missing in my cmake at uni - maybe that's a local problem though?
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH} "${CMAKE_ROOT}/Modules")
 
 function(find_zlib)
 set(ZLIB_HINTS
@@ -22,7 +23,7 @@ set(ZLIB_SEARCH_DIRS
 		PATH_SUFFIXES "include"
 		HINTS ${ZLIB_HINTS}
 		PATHS ${ZLIB_SEARCH_DIRS})
-	find_library(ZLIB_LIBRARY zdll zlib zlib1
+	find_library(ZLIB_LIBRARY zdll zlib zlib1 z
 		PATH_SUFFIXES "lib"
 		HINTS ${ZLIB_HINTS}
 		PATHS ${ZLIB_SEARCH_DIRS})
