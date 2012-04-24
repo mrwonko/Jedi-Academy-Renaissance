@@ -106,7 +106,7 @@ while running do
 	
 	local frametime = jar.GetTime()
 	assert(frametime >= lastFrametime)
-	if frametime == lastFrametime == 0 then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
+	if frametime == lastFrametime then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
 		jar.Sleep(1)
 		frametime = jar.GetTime()
 	end
