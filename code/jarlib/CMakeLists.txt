@@ -33,7 +33,7 @@ include_directories("${ZLIB_INCLUDE_DIR}")
 
 # find PhysicsFS
 find_package(PhysFS REQUIRED)
-include_directories("${PhysFS_INCLUDE_DIR}")
+include_directories("${PHYSFS_INCLUDE_DIR}")
 
 # Debug/Release differences
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
@@ -171,7 +171,7 @@ set(JARLIB_CORE_LIBRARIES
 	${ZLIB_LIBRARY}
 	${JAR_LUA_NAME} ${JAR_LUABIND_NAME} ${JAR_PLUTO_NAME} ${JAR_MINIZIP_NAME}
 	${SFML_SYSTEM}
-	${PhysFS_LIBRARY}
+	${PHYSFS_LIBRARY}
 	)
 set(JARLIB_INPUT_LIBRARIES
 	${SFML_WINDOW} ${SFML_SYSTEM}
