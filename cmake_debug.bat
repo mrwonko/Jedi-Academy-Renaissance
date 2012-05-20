@@ -1,1 +1,1 @@
-cmake -D CMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" .
+cmake -D CMAKE_BUILD_TYPE=Debug -G "Visual Studio 10" %* .
