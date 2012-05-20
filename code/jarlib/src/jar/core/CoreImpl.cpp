@@ -57,13 +57,13 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
         Deinit();
         return false;
     }
-#ifdef DEBUG
     if(!mLua->OpenDebugLibrary())
     {
         Logger::GetDefaultLogger().Error("Could not open Lua debug library: "+mLua->GetLastError());
         Deinit();
         return false;
     }
+#ifdef DEBUG
     luabind::globals(mLua->GetState())["DEBUG"] = true;
 #endif
     Logger::GetDefaultLogger().Info("Initialized Lua", 1);
