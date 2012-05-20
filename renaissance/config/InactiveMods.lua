@@ -4,4 +4,5 @@ inactiveMods =
 	"ibitolua_tests/",
 	"shootemup/",
 	"docugen/",
+	"testsuite/",
 }
