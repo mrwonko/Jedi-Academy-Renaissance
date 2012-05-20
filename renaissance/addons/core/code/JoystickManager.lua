@@ -69,11 +69,11 @@ local function JoystickManager_ProcessAvailableJoysticks(self)
 	for idj in jar.Input.GetSingleton():GetInputDeviceManager():GetAllControllers() do
 		print("Connected joystick: \"" .. idj:GetUniqueID() .. "\".")
 		if connectedIDJs[idj:GetUniqueID()] then
-			if DEBUG then
-				error("Duplicate Joystick GUID \"" .. idj:GetUniqueID() .. "\"!")
-			else
+			--if DEBUG then
+			--	error("Duplicate Joystick GUID \"" .. idj:GetUniqueID() .. "\"!")
+			--else
 				jar.Logger.GetDefaultLogger():Warning("Duplicate Joystick GUID \"" .. idj:GetUniqueID() .. "\"! Disabling duplicate joystick.")
-			end
+			--end
 		else
 			connectedIDJs[idj:GetUniqueID()] = idj
 		end
