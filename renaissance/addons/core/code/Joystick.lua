@@ -66,5 +66,5 @@ end
 
 -- Applies sensitivy. Dead zone cannot be done here since it depends on two axes - now this is really confusing. I'll need to know which axes belong together? TODO: Need more research.
 function Joystick:ApplySensitivity(value)
-	return value * sensitivity;
+	return value * self.sensitivity;
 end

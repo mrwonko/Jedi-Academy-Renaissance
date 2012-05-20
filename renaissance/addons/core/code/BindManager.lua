@@ -117,11 +117,11 @@ local function JoyAxisToString(joyIndex, axis, amount)
 	if amount < 0 then
 		sign = "-"
 	end
-	return "joy"..joyIndex.."_axis"..(axis+1) .. sign
+	return "joy".. joyIndex + 1 .."_axis"..(axis+1) .. sign
 end
 
 local function JoyButtonToString(joyIndex, button)
-	return "joy"..joyIndex.."_button"..(button+1)
+	return "joy".. joyIndex + 1 .."_button"..(button+1)
 end
 
 local function MouseButtonToString(button)
@@ -259,23 +259,23 @@ function BindManager:OnEvent(event)
 		self.lastMousePos.X = event.MouseMove.X
 		self.lastMousePos.Y = event.MouseMove.Y
 		return true
-	-- Joystick
+	-- Controller
 	elseif event.Type == jar.Event.ControllerButtonPressed then
-		return ExecuteBind(JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Joystick:GetUniqueID()), event.ControllerButton.Button))
+		return ExecuteBind(JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Controller:GetUniqueID()), event.ControllerButton.Button))
 	elseif event.Type == jar.Event.ControllerButtonReleased then
-		local button = JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Joystick:GetUniqueID()), event.ControllerButton.Button)
+		local button = JoyButtonToString(JoystickManager:GetIndex(event.ControllerButton.Controller:GetUniqueID()), event.ControllerButton.Button)
 		if self.binds[button] then
 			self.interpreter:Interpret(ToMinus(self.binds[button]))
 			return true
 		end
 		return false
 	elseif event.Type == jar.Event.ControllerAxisMoved then
-		local joystick = JoystickManager.joysticksByGUID[event.ControllerAxis.Joystick:GetUniqueID()]
-		if not joystick then
+		local controller = JoystickManager.joysticksByGUID[event.ControllerAxis.Controller:GetUniqueID()]
+		if not controller then
 			return false
 		end
-		local amount = joystick:ApplySensitivity(event.ControllerAxis.Position)
-		return ExecuteAxisBind(JoyAxisToString(joystick.index, event.ControllerAxis.Axis, amount), amount)
+		local amount = controller:ApplySensitivity(event.ControllerAxis.Position)
+		return ExecuteAxisBind(JoyAxisToString(controller.index, event.ControllerAxis.Axis, amount), amount)
 	end
 	return false
 end
