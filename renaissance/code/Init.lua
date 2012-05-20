@@ -122,11 +122,12 @@ jar.fs.Unmount = nil
 jar.Logger.GetDefaultLogger():Info("", 1)
 jar.Logger.GetDefaultLogger():Info("== Executing lua files in code/init/ ==", 1)
 
+-- run files in code/init - only once, though: I use require so they may require() each other.
 local files = jar.fs.GetFilesInDirectory("code/init")
 for filename in files:items() do
 	if string.lower(string.sub(filename, -4)) == ".lua" then
 		jar.Logger.GetDefaultLogger():Info("Executing code/init/" .. filename, 2)
-		dofile("code/init/" .. filename) -- I assume that proper initialization is vital and thus let errors fall through (will be caught and reported in Bootstrap.lua, followed by program exit)
+		require("code/init/" .. filename) -- I assume that proper initialization is vital and thus let errors fall through (will be caught and reported in Bootstrap.lua, followed by program exit)
 	end
 end
 
