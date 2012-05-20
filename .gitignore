@@ -9,7 +9,10 @@
 *.opensdf
 *.sdf
 *.suo
+*.vcxproj
 *.vcxproj.user
+*.vcxproj.filters
+*.sln
 *.iml
 ipch/
 obj/
