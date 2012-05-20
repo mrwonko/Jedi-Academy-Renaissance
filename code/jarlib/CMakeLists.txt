@@ -33,7 +33,7 @@ include_directories("${ZLIB_INCLUDE_DIR}")
 
 # find PhysicsFS
 find_package(PhysFS REQUIRED)
-include_directories("${PhysFS_INCLUDE_DIR}")
+include_directories("${PHYSFS_INCLUDE_DIR}")
 
 # Debug/Release differences
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
