@@ -30,15 +30,33 @@ now		I		also
 added	support	for
 tabstops.]], testFont, nil, g_TestWindow:GetSize().X-20), "\n")
 
+-- test: deriving from a C++ class (drawable)
 
-local testText = jar.Text(testFont)
-testText:SetText(wrappedText)
-testText:SetPosition(10, 10)
-local textBox = jar.RectangleShape(jar.Vector2f(g_TestWindow:GetSize().X-20, g_TestWindow:GetSize().Y-20))
-textBox:SetPosition(10, 10)
-textBox:SetFillColor(jar.Color.Transparent)
-textBox:SetOutlineThickness(1)
-textBox:SetOutlineColor(jar.Color.Yellow)
+class "TextTest" (jar.Drawable)
+
+function TextTest:__init()
+	-- important: call base class constructor!
+	jar.Drawable.__init(self)
+	
+	local testText = jar.Text(testFont)
+	testText:SetText(wrappedText)
+	testText:SetPosition(10, 10)
+	local textBox = jar.RectangleShape(jar.Vector2f(g_TestWindow:GetSize().X-20, g_TestWindow:GetSize().Y-20))
+	textBox:SetPosition(10, 10)
+	textBox:SetFillColor(jar.Color.Transparent)
+	textBox:SetOutlineThickness(1)
+	textBox:SetOutlineColor(jar.Color.Yellow)
+	
+	self.testText = testText
+	self.textBox = textBox
+end
+
+function TextTest:Draw(target, states)
+	target:Draw(self.textBox)
+	target:Draw(self.testText)
+end
+
+local testText = TextTest()
 
 --testText:SetFontSize(8)
 
@@ -140,7 +158,6 @@ while running do
 	
 	--g_TestWindow:Draw(testSprite)
 	g_TestWindow:Draw(aLittleCircle)
-	g_TestWindow:Draw(textBox)
 	g_TestWindow:Draw(testText)
 	
 	--console last since it's an overlay

@@ -9,11 +9,13 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/View.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/out_value_policy.hpp>
+#include <luabind/wrapper_base.hpp>
 
 namespace jar
 {
@@ -47,6 +49,35 @@ namespace
     {
         t.setPosition(t.getPosition().x, y);
     }
+
+	struct sfDrawableHelper : sf::Drawable
+	{
+		sfDrawableHelper() {}
+
+		// workaround for inability to get pointers to protected members
+		virtual void draw2(sf::RenderTarget& target, const sf::RenderStates& states) const
+		{
+		}
+
+	protected:
+		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
+		{
+			draw2(target, states);
+		}
+	};
+
+	struct sfDrawableWrapper : sfDrawableHelper, luabind::wrap_base
+	{
+		virtual void draw2(sf::RenderTarget& target, const sf::RenderStates& states) const
+		{
+			call<void>("Draw", boost::ref(target), states);
+		}
+
+		static void default_draw2(sfDrawableWrapper* ptr, sf::RenderTarget& target, const sf::RenderStates& states)
+		{
+			return ptr->draw2(target, states);
+		}
+	};
 }
 
 /*
@@ -177,7 +208,14 @@ void BindSFMLGraphics(lua_State* L)
             .def("Scale", (void(sf::Transformable::*)(const sf::Vector2f&))&sf::Transformable::scale)
             .def("Rotate", &sf::Transformable::rotate),
 
-        luabind::class_<sf::Drawable>("Drawable"),
+		// only used as parameter in drawable, opaque
+        luabind::class_<sf::RenderStates>("RenderStates"),
+
+        luabind::class_<sf::Drawable>("_Drawable"),
+
+		luabind::class_<sfDrawableHelper, luabind::bases<sf::Drawable>, sfDrawableWrapper>("Drawable")
+		.def(luabind::constructor<>())
+		.def("Draw", &sfDrawableHelper::draw2, &sfDrawableWrapper::default_draw2),
 
         luabind::class_<sf::Shape, luabind::bases<sf::Drawable, sf::Transformable> >("Shape")
             .def("SetFillColor", &sf::Shape::setFillColor)

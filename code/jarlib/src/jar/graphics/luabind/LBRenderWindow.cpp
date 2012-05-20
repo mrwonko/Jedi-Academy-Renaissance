@@ -27,9 +27,9 @@ namespace
         sf::Mouse::setPosition(position, window);
     }
 
-    void RenderWindowDraw(RenderWindow& window, const sf::Drawable& drawable)
+    void RenderTargetDraw(sf::RenderTarget& target, const sf::Drawable& drawable)
     {
-        window.draw(drawable);
+        target.draw(drawable);
     }
 }
 
@@ -37,24 +37,28 @@ void RenderWindow::Luabind(lua_State* L)
 {
     luabind::module(L, "jar")
     [
-        luabind::class_<RenderWindow>("RenderWindow")
+        luabind::class_<sf::RenderTarget>("RenderTarget")
+            .def("SetView", &sf::RenderTarget::setView)
+            .def("GetView", &sf::RenderTarget::getView)
+            .def("GetDefaultView", &sf::RenderTarget::getDefaultView)
+            .def("GetSize", &sf::RenderTarget::getSize)
+			.def("Draw", &RenderTargetDraw)
+			.def("Draw", (void(sf::RenderTarget::*)(const sf::Drawable&, const sf::RenderStates&))&sf::RenderTarget::draw),
+
+        luabind::class_<RenderWindow, sf::RenderTarget>("RenderWindow")
             .def(luabind::constructor<const unsigned int, const unsigned int, const std::string&, const bool, const bool>())
             .def("Clear", &jar::RenderWindow::clear)
-            .def("Draw", RenderWindowDraw)
-            .def("SetView", &jar::RenderWindow::setView)
-            .def("GetView", &jar::RenderWindow::getView)
-            .def("GetDefaultView", &jar::RenderWindow::getDefaultView)
             //NOTE: no longer exists in SFML 2.0 - now there are SaveGLStates() and RestoreGLStates() - need to know what they do first.
             //.def("PreserveOpenGLStates", &jar::RenderWindow::PreserveOpenGLStates)
 
 
             //NOTE: this either does not yet exist in 2.0 or I just haven't found it - ok found it, it's Image::CopyFromScreen() or sth
             //.def("Capture", &RenderWindow::Capture)
-
+			
+            .def("SetSize", &sf::RenderWindow::setSize)
             .def("Close", &jar::RenderWindow::close)
             .def("Display", &jar::RenderWindow::display)
             .def("SetKeyRepeatEnabled", &jar::RenderWindow::setKeyRepeatEnabled) //todo: create jar.Keyboard for this?
-            .def("GetSize", &jar::RenderWindow::getSize)
             //maybe later...?
             //.def("GetSettings", &jar::RenderWindow::GetSettings)
             .def("SetActive", &jar::RenderWindow::setActive)
@@ -63,7 +67,6 @@ void RenderWindow::Luabind(lua_State* L)
             .def("SetFramerateLimit", &jar::RenderWindow::setFramerateLimit)
             .def("SetIcon", &RenderWindowSetIcon)
             .def("SetPosition", &jar::RenderWindow::setPosition)
-            .def("SetSize", &jar::RenderWindow::setSize)
             .def("SetMouseCursorVisible", &jar::RenderWindow::setMouseCursorVisible)
             //NOTE: this either does not yet exist in 2.0 or I just haven't found it
             //.def("UseVerticalSync", &jar::RenderWindow::UseVerticalSync)
