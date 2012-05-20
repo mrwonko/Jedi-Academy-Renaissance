@@ -14,12 +14,19 @@
 *.vcxproj.filters
 *.sln
 *.iml
+*.dir/
+Debug/
+lib/
+Release/
 ipch/
 obj/
 changelog.txt
 
+log.txt
+
 CMakeCache.txt
 CMakeFiles/
+install_manifest.txt
 Makefile
 *.cbp
 *.cmake
