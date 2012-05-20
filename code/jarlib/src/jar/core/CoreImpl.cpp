@@ -63,7 +63,7 @@ const bool CoreImpl::Init(int argc, char** argv, const std::string& rootPath)
         Deinit();
         return false;
     }
-#ifdef DEBUG
+#ifdef _DEBUG
     luabind::globals(mLua->GetState())["DEBUG"] = true;
 #endif
     Logger::GetDefaultLogger().Info("Initialized Lua", 1);

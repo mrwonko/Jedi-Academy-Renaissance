@@ -12,7 +12,7 @@ namespace
     //returns a lua table containing information on the luabind function on the stack top
     luabind::object GetLuabindFunctionInfo(lua_State* L)
     {
-#ifdef DEBUG
+#ifdef _DEBUG
         int stacktop = lua_gettop(L);
 #endif
         //retrieve luabind function object containing the information we want
@@ -49,7 +49,7 @@ namespace
         }
         info["overloads"] = overloads;
 
-#ifdef DEBUG
+#ifdef _DEBUG
         assert(stacktop == lua_gettop(L));
 #endif
 
@@ -107,7 +107,7 @@ int GetLuabindInfo (lua_State* L)
             //iterate through table (in no particular order) - pops key, pushes next key/value pair returning 1 (or 0 and pushing nothing once done)
             while(lua_next(L, index) != 0)
             {
-#ifdef DEBUG
+#ifdef _DEBUG
                 int stacksize = lua_gettop(L);
 #endif
                 //stack: crep default table, key, value
@@ -133,7 +133,7 @@ int GetLuabindInfo (lua_State* L)
                     //stack: crep default table, key
                 }
 
-#ifdef DEBUG
+#ifdef _DEBUG
                 assert(stacksize - 1 == lua_gettop(L));
 #endif
             }
@@ -186,7 +186,7 @@ int GetLuabindInfo (lua_State* L)
                     {
                         luabind::object funcInfo = GetLuabindFunctionInfo(L);
                         methods[++counterM] = funcInfo;
-#ifdef DEBUG
+#ifdef _DEBUG
                         std::string keyName(lua_tostring(L, -2));
                         assert(keyName == funcInfo["name"]);
 #endif

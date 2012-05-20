@@ -28,7 +28,7 @@ class JARCOREAPI Lua
         **/
         lua_State* GetState() const
         {
-#ifdef DEBUG
+#ifdef _DEBUG
             assert(mState);
 #endif
             return mState;

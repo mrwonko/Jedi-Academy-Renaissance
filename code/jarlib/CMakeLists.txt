@@ -37,7 +37,7 @@ include_directories("${PHYSFS_INCLUDE_DIR}")
 
 # Debug/Release differences
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-	add_definitions(-DDEBUG)
+	add_definitions(-D_DEBUG)
 	set(JARLIB_CORE_NAME "jarlib_core_d")
 	set(JARLIB_INPUT_NAME "jarlib_input_d")
 	set(JARLIB_GRAPHICS_NAME "jarlib_graphics_d")
