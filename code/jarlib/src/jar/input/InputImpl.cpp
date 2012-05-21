@@ -20,6 +20,7 @@
 // simpler and less silly.
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
+#endif //SAFE_RELEASE
 
 //this is only available on msvc, I believe
 #ifndef _MSC_VER
@@ -28,11 +29,9 @@
 #define __uuidof(p) &IID_##p // ## is concatenation
 #endif
 
-#endif
+#endif // _MSC_VER
 
-#endif
-
-#endif
+#endif // _WIN32
 
 namespace jar {
 
