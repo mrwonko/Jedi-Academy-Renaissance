@@ -11,6 +11,7 @@
 #ifdef _WIN32
 #include "jar/input/Windows/WinControllerXInput.hpp"
 #include "jar/input/Windows/WinControllerDirectInput.hpp"
+#include <set>
 
 //for IsXInputDevice
 #include <wbemidl.h>
@@ -92,163 +93,168 @@ const bool InputImpl::Init()
 
 namespace
 {
+	// caches the VID/PID of all XInput devices on construction
+	class XInputDeviceCache
+	{
+		std::set<DWORD> mXInputDevices;
+	public:
+		XInputDeviceCache()
+		{
+			// Evil code from MS's site.  If only they'd just made a way to get
+			// an XInput device's GUID directly in the first place...
+
+			// CoInit if needed
+			HRESULT hr = CoInitialize(NULL); //requires Ole32.lib
+			bool bCleanupCOM = SUCCEEDED(hr);
+
+			// Create WMI
+			#ifdef _MSC_VER
+			REFCLSID theWbemLocatorUUID = __uuidof(WbemLocator);
+			REFCLSID theIWbemLocatorUUID = __uuidof(IWbemLocator);
+			#else
+			//TODO: verify this works on every computer! But I guess the UUID is supposed to be unique.
+			//UUIDs read using msvc
+			GUID theWbemLocatorUUID;
+			theWbemLocatorUUID.Data1 = 1167128593UL;
+			theWbemLocatorUUID.Data2 = 7482;
+			theWbemLocatorUUID.Data3 = 4560;
+			theWbemLocatorUUID.Data4[0] = 137;
+			theWbemLocatorUUID.Data4[1] = 31;
+			theWbemLocatorUUID.Data4[2] = 0;
+			theWbemLocatorUUID.Data4[3] = 170;
+			theWbemLocatorUUID.Data4[4] = 0;
+			theWbemLocatorUUID.Data4[5] = 75;
+			theWbemLocatorUUID.Data4[6] = 46;
+			theWbemLocatorUUID.Data4[7] = 36;
+			GUID theIWbemLocatorUUID;
+			theIWbemLocatorUUID.Data1 = 3692209799UL;
+			theIWbemLocatorUUID.Data2 = 29567;
+			theIWbemLocatorUUID.Data3 = 4559;
+			theIWbemLocatorUUID.Data4[0] = 136;
+			theIWbemLocatorUUID.Data4[1] = 77;
+			theIWbemLocatorUUID.Data4[2] = 0;
+			theIWbemLocatorUUID.Data4[3] = 170;
+			theIWbemLocatorUUID.Data4[4] = 0;
+			theIWbemLocatorUUID.Data4[5] = 75;
+			theIWbemLocatorUUID.Data4[6] = 46;
+			theIWbemLocatorUUID.Data4[7] = 36;
+			#endif
+
+			IWbemLocator* pIWbemLocator  = NULL;
+			hr = CoCreateInstance( theWbemLocatorUUID,
+								   NULL,
+								   CLSCTX_INPROC_SERVER,
+								   theIWbemLocatorUUID,
+								   (LPVOID*) &pIWbemLocator);
+			if( FAILED(hr) || pIWbemLocator == NULL )
+			{
+				Logger::GetDefaultLogger().Warning(hr == REGDB_E_CLASSNOTREG ? "IsXInputDevice(): CoCreateInstance() failed! Bad GUID! (Please report this, it's a bug.)" : "IsXInputDevice(): CoCreateInstance() failed!");
+				goto LCleanup;
+			}
+
+			BSTR bstrNamespace = SysAllocString( L"\\\\.\\root\\cimv2" );if( bstrNamespace == NULL ) goto LCleanup; //requires Oleaut32.lib
+			BSTR bstrClassName = SysAllocString( L"Win32_PNPEntity" );   if( bstrClassName == NULL ) goto LCleanup;
+			BSTR bstrDeviceID  = SysAllocString( L"DeviceID" );          if( bstrDeviceID == NULL )  goto LCleanup;
+
+			// Connect to WMI
+			IWbemServices* pIWbemServices = NULL;
+			hr = pIWbemLocator->ConnectServer( bstrNamespace, NULL, NULL, 0L,
+											   0L, NULL, NULL, &pIWbemServices );
+			if( FAILED(hr) || pIWbemServices == NULL )
+			{
+				Logger::GetDefaultLogger().Warning("IsXInputDevice(): ConnectServer() failed!");
+				goto LCleanup;
+			}
+
+			// Switch security level to IMPERSONATE.
+			CoSetProxyBlanket( pIWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL,
+							   RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE );
+			
+			IEnumWbemClassObject* pEnumDevices = NULL;
+			hr = pIWbemServices->CreateInstanceEnum( bstrClassName, 0, NULL, &pEnumDevices );
+			if( FAILED(hr) || pEnumDevices == NULL )
+			{
+				Logger::GetDefaultLogger().Warning("IsXInputDevice(): CreateInstanceEnum() failed!");
+				goto LCleanup;
+			}
+
+			// Loop over all devices
+			IWbemClassObject* pDevices[20] = {0};
+			while(true)
+			{
+				// Get 20 at a time
+				DWORD uReturned = 0;
+				hr = pEnumDevices->Next( 10000, 20, pDevices, &uReturned );
+				if( FAILED(hr) )
+				{
+					Logger::GetDefaultLogger().Warning("IsXInputDevice(): EnumDevices->Next() failed!");
+					goto LCleanup;
+				}
+				if( uReturned == 0 )
+					break;
+
+				for(UINT iDevice=0; iDevice < uReturned; iDevice++ )
+				{
+					// For each device, get its device ID
+					VARIANT var;
+					hr = pDevices[iDevice]->Get( bstrDeviceID, 0L, &var, NULL, NULL );
+					if( SUCCEEDED( hr ) && var.vt == VT_BSTR && var.bstrVal != NULL )
+					{
+						// Check if the device ID contains "IG_".  If it does, then it's an XInput device
+							// This information can not be found from DirectInput
+						if( wcsstr( var.bstrVal, L"IG_" ) )
+						{
+							// If it does, then get the VID/PID from var.bstrVal
+							DWORD dwPid = 0, dwVid = 0;
+							WCHAR* strVid = wcsstr( var.bstrVal, L"VID_" );
+							if (strVid) {
+								dwVid = wcstoul(strVid+4, 0, 16);
+							}
+							WCHAR* strPid = wcsstr( var.bstrVal, L"PID_" );
+							if (strPid) {
+								dwPid = wcstoul(strPid+4, 0, 16);
+							}
+
+							// Insert VID/PID into cache
+							mXInputDevices.insert(MAKELONG( dwVid, dwPid ));
+						}
+					}
+					SAFE_RELEASE( pDevices[iDevice] );
+				}
+			}
+
+		LCleanup:
+			if(bstrNamespace)
+				SysFreeString(bstrNamespace);
+			if(bstrDeviceID)
+				SysFreeString(bstrDeviceID);
+			if(bstrClassName)
+				SysFreeString(bstrClassName);
+			for(UINT iDevice=0; iDevice<20; iDevice++ )
+				SAFE_RELEASE( pDevices[iDevice] );
+			SAFE_RELEASE( pEnumDevices );
+			SAFE_RELEASE( pIWbemLocator );
+			SAFE_RELEASE( pIWbemServices );
+
+			if( bCleanupCOM )
+				CoUninitialize();
+		}
+
+		const bool IsXInputDevice(const GUID* pGuidProductFromDirectInput)
+		{
+			return mXInputDevices.find(pGuidProductFromDirectInput->Data1) != mXInputDevices.end();
+		}
+
+		static XInputDeviceCache& GetCache()
+		{
+			static XInputDeviceCache cache;
+			return cache;
+		}
+	};
+
     //DirectInput device enumeration callback
 
     // from http://pcsx2.googlecode.com/svn/trunk/plugins/LilyPad/DirectInput.cpp / http://stackoverflow.com/questions/4554113/finding-out-whether-a-directinput-device-supports-xinput-with-mingw-gcc
-
-    // Evil code from MS's site.  If only they'd just made a way to get
-    // an XInput device's GUID directly in the first place...
-    static BOOL IsXInputDevice( const GUID* pGuidProductFromDirectInput )
-    {
-        IWbemLocator*           pIWbemLocator  = NULL;
-        IEnumWbemClassObject*   pEnumDevices   = NULL;
-        IWbemClassObject*       pDevices[20]   = {0};
-        IWbemServices*          pIWbemServices = NULL;
-        BSTR                    bstrNamespace  = NULL;
-        BSTR                    bstrDeviceID   = NULL;
-        BSTR                    bstrClassName  = NULL;
-        DWORD                   uReturned      = 0;
-        bool                    bIsXinputDevice= false;
-        UINT                    iDevice        = 0;
-        VARIANT                 var;
-        HRESULT                 hr;
-
-        // CoInit if needed
-        hr = CoInitialize(NULL); //requires Ole32.lib
-        bool bCleanupCOM = SUCCEEDED(hr);
-
-        // Create WMI
-        #ifdef _MSC_VER
-        REFCLSID theWbemLocatorUUID = __uuidof(WbemLocator);
-        REFCLSID theIWbemLocatorUUID = __uuidof(IWbemLocator);
-        #else
-        //TODO: verify this works on every computer! But I guess the UUID is supposed to be unique.
-        //UUIDs read using msvc
-        GUID theWbemLocatorUUID;
-        theWbemLocatorUUID.Data1 = 1167128593UL;
-        theWbemLocatorUUID.Data2 = 7482;
-        theWbemLocatorUUID.Data3 = 4560;
-        theWbemLocatorUUID.Data4[0] = 137;
-        theWbemLocatorUUID.Data4[1] = 31;
-        theWbemLocatorUUID.Data4[2] = 0;
-        theWbemLocatorUUID.Data4[3] = 170;
-        theWbemLocatorUUID.Data4[4] = 0;
-        theWbemLocatorUUID.Data4[5] = 75;
-        theWbemLocatorUUID.Data4[6] = 46;
-        theWbemLocatorUUID.Data4[7] = 36;
-        GUID theIWbemLocatorUUID;
-        theIWbemLocatorUUID.Data1 = 3692209799UL;
-        theIWbemLocatorUUID.Data2 = 29567;
-        theIWbemLocatorUUID.Data3 = 4559;
-        theIWbemLocatorUUID.Data4[0] = 136;
-        theIWbemLocatorUUID.Data4[1] = 77;
-        theIWbemLocatorUUID.Data4[2] = 0;
-        theIWbemLocatorUUID.Data4[3] = 170;
-        theIWbemLocatorUUID.Data4[4] = 0;
-        theIWbemLocatorUUID.Data4[5] = 75;
-        theIWbemLocatorUUID.Data4[6] = 46;
-        theIWbemLocatorUUID.Data4[7] = 36;
-        #endif
-        hr = CoCreateInstance( theWbemLocatorUUID,
-                               NULL,
-                               CLSCTX_INPROC_SERVER,
-                               theIWbemLocatorUUID,
-                               (LPVOID*) &pIWbemLocator);
-        if( FAILED(hr) || pIWbemLocator == NULL )
-        {
-            Logger::GetDefaultLogger().Warning(hr == REGDB_E_CLASSNOTREG ? "IsXInputDevice(): CoCreateInstance() failed! Bad GUID! (Please report this, it's a bug.)" : "IsXInputDevice(): CoCreateInstance() failed!");
-            goto LCleanup;
-        }
-
-        bstrNamespace = SysAllocString( L"\\\\.\\root\\cimv2" );if( bstrNamespace == NULL ) goto LCleanup; //requires Oleaut32.lib
-        bstrClassName = SysAllocString( L"Win32_PNPEntity" );   if( bstrClassName == NULL ) goto LCleanup;
-        bstrDeviceID  = SysAllocString( L"DeviceID" );          if( bstrDeviceID == NULL )  goto LCleanup;
-
-        // Connect to WMI
-        hr = pIWbemLocator->ConnectServer( bstrNamespace, NULL, NULL, 0L,
-                                           0L, NULL, NULL, &pIWbemServices );
-        if( FAILED(hr) || pIWbemServices == NULL )
-        {
-            Logger::GetDefaultLogger().Warning("IsXInputDevice(): ConnectServer() failed!");
-            goto LCleanup;
-        }
-
-        // Switch security level to IMPERSONATE.
-        CoSetProxyBlanket( pIWbemServices, RPC_C_AUTHN_WINNT, RPC_C_AUTHZ_NONE, NULL,
-                           RPC_C_AUTHN_LEVEL_CALL, RPC_C_IMP_LEVEL_IMPERSONATE, NULL, EOAC_NONE );
-
-        hr = pIWbemServices->CreateInstanceEnum( bstrClassName, 0, NULL, &pEnumDevices );
-        if( FAILED(hr) || pEnumDevices == NULL )
-        {
-            Logger::GetDefaultLogger().Warning("IsXInputDevice(): CreateInstanceEnum() failed!");
-            goto LCleanup;
-        }
-
-        // Loop over all devices
-        for( ;; )
-        {
-            // Get 20 at a time
-            hr = pEnumDevices->Next( 10000, 20, pDevices, &uReturned );
-            if( FAILED(hr) )
-            {
-                Logger::GetDefaultLogger().Warning("IsXInputDevice(): EnumDevices->Next() failed!");
-                goto LCleanup;
-            }
-            if( uReturned == 0 )
-                break;
-
-            for( iDevice=0; iDevice<uReturned; iDevice++ )
-            {
-                // For each device, get its device ID
-                hr = pDevices[iDevice]->Get( bstrDeviceID, 0L, &var, NULL, NULL );
-                if( SUCCEEDED( hr ) && var.vt == VT_BSTR && var.bstrVal != NULL )
-                {
-                    // Check if the device ID contains "IG_".  If it does, then it's an XInput device
-                        // This information can not be found from DirectInput
-                    if( wcsstr( var.bstrVal, L"IG_" ) )
-                    {
-                        // If it does, then get the VID/PID from var.bstrVal
-                        DWORD dwPid = 0, dwVid = 0;
-                        WCHAR* strVid = wcsstr( var.bstrVal, L"VID_" );
-                        if (strVid) {
-                            dwVid = wcstoul(strVid+4, 0, 16);
-                        }
-                        WCHAR* strPid = wcsstr( var.bstrVal, L"PID_" );
-                        if (strPid) {
-                            dwPid = wcstoul(strPid+4, 0, 16);
-                        }
-
-                        // Compare the VID/PID to the DInput device
-                        DWORD dwVidPid = MAKELONG( dwVid, dwPid );
-                        if( dwVidPid == pGuidProductFromDirectInput->Data1 )
-                        {
-                            bIsXinputDevice = true;
-                            goto LCleanup;
-                        }
-                    }
-                }
-                SAFE_RELEASE( pDevices[iDevice] );
-            }
-        }
-
-    LCleanup:
-        if(bstrNamespace)
-            SysFreeString(bstrNamespace);
-        if(bstrDeviceID)
-            SysFreeString(bstrDeviceID);
-        if(bstrClassName)
-            SysFreeString(bstrClassName);
-        for( iDevice=0; iDevice<20; iDevice++ )
-            SAFE_RELEASE( pDevices[iDevice] );
-        SAFE_RELEASE( pEnumDevices );
-        SAFE_RELEASE( pIWbemLocator );
-        SAFE_RELEASE( pIWbemServices );
-
-        if( bCleanupCOM )
-            CoUninitialize();
-
-        return bIsXinputDevice;
-    }
 
 
     //data required by the enum function
@@ -275,7 +281,7 @@ namespace
     static BOOL __stdcall ForEachDirectInputDevice(LPCDIDEVICEINSTANCE device, LPVOID voidptr)
     {
         //XInput devices are handled separately, so let's ignore them.
-        if( IsXInputDevice(&device->guidProduct) )
+		if( XInputDeviceCache::GetCache().IsXInputDevice(&device->guidProduct) )
         {
             //continue enumeration
             Logger::GetDefaultLogger().Info("Input Device \""+std::string(device->tszProductName)+"\" is also an XInput device, discarding as DirectInput!", 5);
