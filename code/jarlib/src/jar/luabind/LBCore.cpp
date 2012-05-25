@@ -67,11 +67,6 @@ namespace
 		}
 		return result;
 	}
-	template<typename T> luabind::object TestTemplate(const std::string& argument, lua_State* L)
-	{
-		luabind::object result = luabind::newtable(L);
-		return result;
-	}
 }
 
 void BindCore(lua_State* L)
