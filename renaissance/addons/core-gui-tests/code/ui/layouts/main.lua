@@ -1,3 +1,6 @@
+-- main menu layout:
+-- title on top, buttons below
+
 local margin = width * 0.05
 local titleHeight = 100
 local menuWidth = 400
@@ -11,9 +14,9 @@ Layout
 		name = "title",
 		position = { margin, margin },
 		size = { width - 2 * margin, titleHeight },
-		-- style "class" could go here (e.g.: border, bg color)
+		-- style "class" could go here (e.g.: border, bg color, bg image)
 	},
-	-- below: main menu button list (400 px wide)
+	-- main menu buttons
 	VerticalLayout
 	{
 		name = "mainmenu",

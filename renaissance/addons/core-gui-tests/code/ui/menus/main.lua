@@ -1,3 +1,5 @@
+-- main menu controls - title text, buttons and where they go
+
 Menu
 {
 	name = "main",
@@ -14,11 +16,17 @@ Menu
 		text = "Buttön!",
 		container = "mainmenu",
 		order = 100,
+		OnClick = function(self, menu)
+			print("Buttön has been pressed!")
+		end,
 	},
 	Button
 	{
 		text = "Quit!",
 		container = "mainmenu",
 		order = 200,
+		OnClick = function(self, menu)
+			EndGame()
+		end,
 	},
 }
