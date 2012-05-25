@@ -133,7 +133,9 @@ while running do
 	
 	g_InstructionInterpreter:Update(deltaT)
 	
+	local startTime = jar.GetTime()
 	jar.Core.GetSingleton():Update(deltaT)
+	print("Core Update: " .. jar.GetTime() - startTime .. "ms")
 	
 	aLittleCircle:SetX(x)
 	

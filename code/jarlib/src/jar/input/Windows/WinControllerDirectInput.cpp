@@ -229,7 +229,7 @@ namespace
 const bool WinControllerDirectInput::Init(LPDIRECTINPUT8 directInput, LPCDIDEVICEINSTANCE deviceInfo)
 {
     mName = deviceInfo->tszProductName;
-    mGUID = deviceInfo->guidProduct;
+    mGUID = deviceInfo->guidInstance;
 
     HRESULT result;
 

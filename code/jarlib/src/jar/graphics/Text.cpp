@@ -98,6 +98,9 @@ void Text::UpdateCache()
     //trivial case
     if(mText == "") return;
 
+	//push_back would take forever for long texts otherwise, this is a little pessimistic though. I fix that below.
+	mVertices.reserve(mText.length() * 4);
+
     const Font::FontData& data = mFont->GetFontData();
 
 	const sf::Vector2u textureSize = mFont->GetTexture().getSize();
@@ -160,6 +163,9 @@ void Text::UpdateCache()
         posX += info.mHorizAdvance;
     }
     mWidth = mFont->GetWidth(mText);
+
+	//resize mVertices down to as little as is actually required, in case mText.length() is horribly off
+	std::vector<sf::Vertex>(mVertices).swap(mVertices);
 }
 
 const float Text::GetWidth() const

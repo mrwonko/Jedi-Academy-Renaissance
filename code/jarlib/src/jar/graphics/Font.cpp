@@ -58,7 +58,8 @@ const unsigned int Font::GetWidth(const std::string& str) const
     unsigned long width = 0;
     unsigned long curWidth = 0;
     unsigned int tabWidth = mFontData.mGlyphs[' '].mHorizAdvance * mTabWidth;
-    for(std::string::const_iterator it = str.begin(); it != str.end(); ++it)
+	std::string::const_iterator end = str.end();
+    for(std::string::const_iterator it = str.begin(); it != end; ++it)
     {
         if(*it == '\n')
         {
@@ -75,7 +76,7 @@ const unsigned int Font::GetWidth(const std::string& str) const
         if(*it == '^')
         {
             std::string::const_iterator next = it + 1;
-            if(next != str.end() && (*next >= '0') && (*next <= '7'))
+            if(next != end && (*next >= '0') && (*next <= '7'))
             {
                 ++it; //skip this and the next one
                 //cppcheck false positive here - it cannot be incremented past the end because next already checks for ==str.end()
