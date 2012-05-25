@@ -207,15 +207,15 @@ namespace jar
     }
 #endif
 
-    const std::vector<std::string> Helpers::GetFilesInDirectory(std::string directoryPath)
+    const std::vector<std::string> Helpers::GetFilesInDirectory(const std::string& directoryPath)
     {
         std::vector<std::string> results;
-        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
+        const std::string fullDirectoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
 #if defined(_WIN32)
-        results = GetStuffInDirectory(directoryPath, &IsFile);
+        results = GetStuffInDirectory(fullDirectoryPath, &IsFile);
 #elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
-        if(int(dir = opendir(directoryPath.c_str())) == -1)
+        if(int(dir = opendir(fullDirectoryPath.c_str())) == -1)
         {
           return results;
         }
@@ -233,15 +233,15 @@ namespace jar
         return results;
     }
 
-    const std::vector<std::string> Helpers::GetDirectoriesInDirectory(std::string directoryPath)
+    const std::vector<std::string> Helpers::GetDirectoriesInDirectory(const std::string& directoryPath)
     {
         std::vector<std::string> results;
-        directoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
+        const std::string fullDirectoryPath = CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + directoryPath;
 #if defined(_WIN32)
-        results = GetStuffInDirectory(directoryPath, &IsDirectory);
+        results = GetStuffInDirectory(fullDirectoryPath, &IsDirectory);
 #elif defined(_DIRENT_HAVE_D_TYPE)
         DIR* dir;
-        if(int(dir = opendir(directoryPath.c_str())) == -1)
+        if(int(dir = opendir(fullDirectoryPath.c_str())) == -1)
         {
           return results;
         }

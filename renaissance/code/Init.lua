@@ -81,8 +81,7 @@ if not g_CVarManager:GetCVarValue("fs_noBase") then
 
 	jar.Logger.GetDefaultLogger():Info("Mounting base assets", 3)
 	-- then mount the pk3 archives in base. I don't apply my mod code to them because I'm lazy and because the filenames wouldn't be GUIDs anymore.
-	local files = jar.GetFilesInDirectory("../base/")
-	for filename in files:items() do
+	for _, filename in ipairs(jar.GetFilesInDirectory("../base/")) do
 		if string.lower(string.sub(filename, -4)) == ".pk3" then
 			if not noBaseMods or string.match(string.lower(filename), "assets%d%.pk3") then
 				if jar.fs.Mount("../Base/" .. filename, false) then
@@ -123,8 +122,7 @@ jar.Logger.GetDefaultLogger():Info("", 1)
 jar.Logger.GetDefaultLogger():Info("== Executing lua files in code/init/ ==", 1)
 
 -- run files in code/init - only once, though: I use require so they may require() each other.
-local files = jar.fs.GetFilesInDirectory("code/init")
-for filename in files:items() do
+for _, filename in ipairs(jar.fs.GetFilesInDirectory("code/init")) do
 	if string.lower(string.sub(filename, -4)) == ".lua" then
 		jar.Logger.GetDefaultLogger():Info("Executing code/init/" .. filename, 2)
 		require("code/init/" .. filename) -- I assume that proper initialization is vital and thus let errors fall through (will be caught and reported in Bootstrap.lua, followed by program exit)
