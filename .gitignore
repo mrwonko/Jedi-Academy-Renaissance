@@ -15,6 +15,7 @@
 *.sln
 *.iml
 *.dir/
+*.pdb
 Debug/
 lib/
 Release/
