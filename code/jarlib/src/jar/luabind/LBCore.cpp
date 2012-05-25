@@ -68,6 +68,25 @@ namespace
     {
         return vec;
     }
+
+	// For functions accepting one string as the argument and returning a string vector, turns that into a lua table
+	template<const std::vector<std::string> (*function)(const std::string&)> luabind::object StringVectorAsTable(const std::string& argument, lua_State* L)
+	{
+		luabind::object result = luabind::newtable(L);
+		std::vector<std::string> vec = function(argument);
+		std::vector<std::string>::iterator end = vec.end();
+		unsigned int index = 0;
+		for(std::vector<std::string>::iterator it = vec.begin(); it != end; ++it)
+		{
+			result[++index] = *it;
+		}
+		return result;
+	}
+	template<typename T> luabind::object TestTemplate(const std::string& argument, lua_State* L)
+	{
+		luabind::object result = luabind::newtable(L);
+		return result;
+	}
 }
 
 void BindCore(lua_State* L)
@@ -124,8 +143,8 @@ void BindCore(lua_State* L)
             luabind::def("Sleep", &Sleep),
             luabind::def("GetTime", &GetTime),
 
-            luabind::def("GetFilesInDirectory", &Helpers::GetFilesInDirectory),
-            luabind::def("GetDirectoriesInDirectory", &Helpers::GetDirectoriesInDirectory),
+            luabind::def("GetFilesInDirectory", &StringVectorAsTable<Helpers::GetFilesInDirectory>),
+            luabind::def("GetDirectoriesInDirectory", &StringVectorAsTable<Helpers::GetDirectoriesInDirectory>),
 
             luabind::class_<Core>("Core")
                 .def("Update", &Core::Update)
@@ -144,8 +163,8 @@ void BindCore(lua_State* L)
                 luabind::def("OpenRead", &fs::OpenRead),
                 luabind::def("OpenWrite", &fs::OpenWrite),
                 luabind::def("Unmount", &fs::Unmount),
-                luabind::def("GetFilesInDirectory", &fs::GetFilesInDirectory),
-                luabind::def("GetDirectoriesInDirectory", &fs::GetDirectoriesInDirectory),
+                luabind::def("GetFilesInDirectory", &StringVectorAsTable<fs::GetFilesInDirectory>),
+                luabind::def("GetDirectoriesInDirectory", &StringVectorAsTable<fs::GetDirectoriesInDirectory>),
 
                 luabind::class_<PHYSFS_File>("File")
                     .def("Close", &fs::Close)

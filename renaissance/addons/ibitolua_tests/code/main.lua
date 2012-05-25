@@ -34,10 +34,8 @@ if true then
 	local scriptpath = "scripts/tests/"
 	local total = 0
 	local successful = 0
-	local dirs = jar.fs.GetDirectoriesInDirectory(scriptpath)
-	for dirname in dirs:items() do
-		local files = jar.fs.GetFilesInDirectory(scriptpath .. dirname)
-		for filename in files:items() do
+	for _, dirname in ipairs(jar.fs.GetDirectoriesInDirectory(scriptpath)) do
+		for _, filename in ipairs(jar.fs.GetFilesInDirectory(scriptpath .. dirname)) do
 			if filename:sub(-4):lower() == ".ibi" then
 				local fullname = scriptpath .. dirname .. "/" .. filename
 				local code, errorMessage = IbiToLua(fullname)

@@ -21,8 +21,7 @@ local function AddAvailableMods(self)
 	--mods are in ./addons/, either directories or .pk3 or .zip (some people can't/won't rename)
 	
 	--get files in ./addons/
-	local files = jar.GetFilesInDirectory(g_addonDir)
-	for filename in files:items() do
+	for _, filename in ipairs(jar.GetFilesInDirectory(g_addonDir)) do
 		assert(filename ~= nil and filename ~= "")
 		--only zip/pk3 files are interesting
 		if filename:sub(-4) == ".zip" or filename:sub(-4) == ".pk3" then
@@ -39,8 +38,7 @@ local function AddAvailableMods(self)
 	end
 	
 	--get directories in ./addons/
-	local dirs = jar.GetDirectoriesInDirectory(g_addonDir)
-	for filename in dirs:items() do
+	for _, filename in ipairs(jar.GetDirectoriesInDirectory(g_addonDir)) do
 		assert(filename ~= nil and filename ~= "")
 		--get their info & insert them
 		local success, ret = pcall(Mod.New, Mod, filename .. "/")
