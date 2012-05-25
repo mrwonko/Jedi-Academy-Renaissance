@@ -54,21 +54,6 @@ namespace
         return MyUnzFile(unzOpen((CLArguments::GetSingleton().GetWorkingDirectory() + Core::GetSingleton().GetRootPath() + filename).c_str()));
     }
 
-    //  Helpers for the STL
-
-    /** luabind doesn't recognize the return value of std::vector<std::string>::at as a string, thus I need this helper function.
-        That's all right since I need to change it to return nil on invalid indices anyway. **/
-    void StringVectorAt(const std::vector<std::string>& vec, unsigned int index, lua_State* L)
-    {
-        if(index >= vec.size()) return;
-        lua_pushstring(L, vec[index].c_str());
-    }
-
-    const std::vector<std::string>& StringVectorIter(const std::vector<std::string>& vec)
-    {
-        return vec;
-    }
-
 	// For functions accepting one string as the argument and returning a string vector, turns that into a lua table
 	template<const std::vector<std::string> (*function)(const std::string&)> luabind::object StringVectorAsTable(const std::string& argument, lua_State* L)
 	{
@@ -80,11 +65,6 @@ namespace
 		{
 			result[++index] = *it;
 		}
-		return result;
-	}
-	template<typename T> luabind::object TestTemplate(const std::string& argument, lua_State* L)
-	{
-		luabind::object result = luabind::newtable(L);
 		return result;
 	}
 }
@@ -107,17 +87,6 @@ void BindCore(lua_State* L)
                 .def("LocateFile", &unzLocateFile)
                 .def("GetCurrentFileContent", &GetCurrentUnzFileContent),
             luabind::def("Open", &MyUnzOpen)
-        ],
-
-        // std - C++ Standard Template Library
-
-        luabind::namespace_("std")
-        [
-            luabind::class_<std::vector<std::string> >("stringvector")
-                .def("at", &StringVectorAt)
-                .def("__len", &std::vector<std::string>::size)
-                .def("size", &std::vector<std::string>::size)
-                .def("items", &StringVectorIter, luabind::return_stl_iterator)
         ],
 
         // jar - Jedi Academy: Renaissance
