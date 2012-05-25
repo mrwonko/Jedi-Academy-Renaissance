@@ -16,6 +16,8 @@
 *.iml
 *.dir/
 *.pdb
+*.psess
+*.vsp
 Debug/
 lib/
 Release/
