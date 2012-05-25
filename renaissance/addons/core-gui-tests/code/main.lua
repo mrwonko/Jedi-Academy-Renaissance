@@ -18,6 +18,6 @@ end
 require("LayoutManager.lua")
 
 g_layoutManager = LayoutManager:New()
-for filename in jar.fs.GetFilesInDirectory("code/ui/layouts"):items() do
+for _, filename in ipairs(jar.fs.GetFilesInDirectory("code/ui/layouts")) do
 	g_layoutManager:ParseFile("code/ui/layouts/" .. filename)
 end
