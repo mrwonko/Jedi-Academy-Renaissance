@@ -27,7 +27,9 @@ local singleOp =
 	[Expression.Type.Variable] = true,
 }
 
-local function IsExpression(val)
+-- whether a given object is an expression
+-- static function
+function IsExpression(val)
 	return getmetatable(val) == Expression
 end
 

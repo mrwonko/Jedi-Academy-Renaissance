@@ -24,9 +24,3 @@ Layout
 		size = { menuWidth, height - 3 * margin - titleHeight },
 	},
 }
-
--- duplicate testing
-Layout
-{
-	name = "main",
-}
