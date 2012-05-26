@@ -131,8 +131,6 @@ end
 -- Renders this element to the given rendertarget
 -- To possibly be further specialised by derived classes
 function LayoutElement:Draw(target, states)
-	-- 
-	-- change states according to position
 	local function DrawChildren()
 		if not self.childElements then return end
 		for _, child in ipairs(self.childElements) do
@@ -146,6 +144,13 @@ function LayoutElement:Draw(target, states)
 		end
 	end
 	
+	-- change states according to position
+	-- If we were inheriting from jar.Drawable2D, states would be passed by value, but as it is we get a reference, so we need to remember the previous state.
+	local prevTransform = jar.Transform2D(states.Transform)
+	states.Transform:Translate(self.position)
+	
 	DrawChildren()
 	DrawControls()
+	
+	states.Transform = prevTransform
 end
