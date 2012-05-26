@@ -129,28 +129,45 @@ function LayoutElement:ChangeSize(width, height)
 end
 
 -- Renders this element to the given rendertarget
--- To possibly be further specialised by derived classes
-function LayoutElement:Draw(target, states)
+function LayoutElement:Draw(target, offset)
+	if not self.position or not self.size then error("Layout Element's size not initialized (call ChangeSize())!") end
+	offset = offset or jar.Vector2f(0, 0)
+	offset = offset + self.position
+	
 	local function DrawChildren()
 		if not self.childElements then return end
 		for _, child in ipairs(self.childElements) do
-			child:Draw(target, states)
+			child:Draw(target, offset)
 		end
 	end
 	local function DrawControls()
 		if not self.controls then return end
 		for _, control in pairs(self.controls) do
-			control:Draw(target, states)
+			control:Draw(target)
 		end
 	end
 	
-	-- change states according to position
-	-- If we were inheriting from jar.Drawable2D, states would be passed by value, but as it is we get a reference, so we need to remember the previous state.
-	local prevTransform = jar.Transform2D(states.Transform)
-	states.Transform:Translate(self.position)
+	-- change view so 0, 0 is this element's absolute position
+	local view = target:GetView()
+	view:SetCenter(self.size / 2)
+	view:SetSize(self.size)
+	
+	local targetSize = target:GetSize()
+	local viewport = view:GetViewport()
+	viewport.left = offset.X / targetSize.X
+	viewport.top = offset.Y / targetSize.Y
+	viewport.width = self.size.X / targetSize.X
+	viewport.height = self.size.Y / targetSize.Y
+	
+	view:SetViewport(viewport)
+	target:SetView(view)
+	
+	--TODO: DELETEME (viewport test code)
+	testRect:SetFillColor(color)
+	target:Draw(testRect)
+	color.R = color.R + 64
+	color.G = color.G - 64
 	
 	DrawChildren()
 	DrawControls()
-	
-	states.Transform = prevTransform
 end

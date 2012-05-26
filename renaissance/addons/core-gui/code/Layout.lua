@@ -15,9 +15,12 @@ end
 
 
 function Layout:Draw(target, states)
+	if not self.elements then error("Trying to draw uninitialized Layout (call FromTable() first)!") end
+	local prevView = target:GetView()
 	for _, element in ipairs(self.elements) do
-		element:Draw(target, states)
+		element:Draw(target)
 	end
+	target:SetView(prevView)
 end
 
 -- sets the properties from a given table
@@ -37,3 +40,9 @@ function Layout:FromTable(t)
 	end
 end
 
+function Layout:ChangeSize(width, height)
+	if not self.elements then error("Trying to change size of uninitialized Layout (call FromTable() first)!") end
+	for _, obj in ipairs(self.elements) do
+		obj:ChangeSize(width, height)
+	end
+end
