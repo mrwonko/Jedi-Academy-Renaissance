@@ -9,6 +9,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>
+#include <luabind/copy_policy.hpp>
 
 namespace jar
 {
@@ -39,9 +40,9 @@ void RenderWindow::Luabind(lua_State* L)
     [
         luabind::class_<sf::RenderTarget>("RenderTarget")
             .def("SetView", &sf::RenderTarget::setView)
-            .def("GetView", &sf::RenderTarget::getView)
-            .def("GetDefaultView", &sf::RenderTarget::getDefaultView)
-            .def("GetSize", &sf::RenderTarget::getSize)
+            .def("GetView", &sf::RenderTarget::getView, luabind::copy(luabind::result))
+            .def("GetDefaultView", &sf::RenderTarget::getDefaultView, luabind::copy(luabind::result))
+            .def("GetSize", &sf::RenderTarget::getSize, luabind::copy(luabind::result))
 			.def("Draw", &RenderTargetDraw)
 			.def("Draw", (void(sf::RenderTarget::*)(const sf::Drawable&, const sf::RenderStates&))&sf::RenderTarget::draw),
 

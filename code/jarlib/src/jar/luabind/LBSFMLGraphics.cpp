@@ -16,6 +16,7 @@
 #include <luabind/operator.hpp>
 #include <luabind/out_value_policy.hpp>
 #include <luabind/return_reference_to_policy.hpp>
+#include <luabind/copy_policy.hpp>
 #include <luabind/wrapper_base.hpp>
 
 namespace jar
@@ -184,10 +185,11 @@ void BindSFMLGraphics(lua_State* L)
             .def("SetSize", (void(sf::View::*)(float, float))&sf::View::setSize)
             .def("Move", (void(sf::View::*)(const sf::Vector2f&))&sf::View::move)
             .def("Move", (void(sf::View::*)(float, float))&sf::View::move)
-            .def("GetCenter", &sf::View::getCenter)
-            .def("GetSize", &sf::View::getSize)
+            .def("GetCenter", &sf::View::getCenter, luabind::copy(luabind::result))
+            .def("GetSize", &sf::View::getSize, luabind::copy(luabind::result))
             .def("Zoom", &sf::View::zoom)
-            .def("SetViewport", &sf::View::setViewport),
+            .def("SetViewport", &sf::View::setViewport)
+			.def("GetViewport", &sf::View::getViewport, luabind::copy(luabind::result)),
 
         luabind::class_<sf::Transformable>("Transformable2D")
             .def("SetPosition", (void(sf::Transformable::*)(float, float))&sf::Transformable::setPosition)
@@ -199,10 +201,10 @@ void BindSFMLGraphics(lua_State* L)
             .def("SetOrigin", (void(sf::Transformable::*)(float, float))&sf::Transformable::setOrigin)
             .def("SetOrigin", (void(sf::Transformable::*)(const sf::Vector2f&))&sf::Transformable::setOrigin)
             .def("SetRotation", &sf::Transformable::setRotation)
-            .def("GetPosition", &sf::Transformable::getPosition)
-            .def("GetScale", &sf::Transformable::getScale)
-            .def("GetOrigin", &sf::Transformable::getOrigin)
-            .def("GetRotation", &sf::Transformable::getRotation)
+            .def("GetPosition", &sf::Transformable::getPosition, luabind::copy(luabind::result))
+            .def("GetScale", &sf::Transformable::getScale, luabind::copy(luabind::result))
+            .def("GetOrigin", &sf::Transformable::getOrigin, luabind::copy(luabind::result))
+            .def("GetRotation", &sf::Transformable::getRotation, luabind::copy(luabind::result))
             .def("Move", (void(sf::Transformable::*)(float, float))&sf::Transformable::move)
             .def("Move", (void(sf::Transformable::*)(const sf::Vector2f&))&sf::Transformable::move)
             .def("Scale", (void(sf::Transformable::*)(float, float))&sf::Transformable::scale)
@@ -229,9 +231,9 @@ void BindSFMLGraphics(lua_State* L)
             .def("SetFillColor", &sf::Shape::setFillColor)
             .def("SetOutlineColor", &sf::Shape::setOutlineColor)
             .def("SetOutlineThickness", &sf::Shape::setOutlineThickness)
-            .def("GetFillColor", &sf::Shape::getFillColor)
-            .def("GetOutlineColor", &sf::Shape::getOutlineColor)
-            .def("GetOutlineThickness", &sf::Shape::getOutlineThickness),
+            .def("GetFillColor", &sf::Shape::getFillColor, luabind::copy(luabind::result))
+            .def("GetOutlineColor", &sf::Shape::getOutlineColor, luabind::copy(luabind::result))
+            .def("GetOutlineThickness", &sf::Shape::getOutlineThickness, luabind::copy(luabind::result)),
 
         luabind::class_<sf::CircleShape, sf::Shape>("CircleShape")
             .def(luabind::constructor<float>())
@@ -242,7 +244,7 @@ void BindSFMLGraphics(lua_State* L)
         luabind::class_<sf::RectangleShape, sf::Shape>("RectangleShape")
             .def(luabind::constructor<sf::Vector2f>())
             .def("SetSize", &sf::RectangleShape::setSize)
-            .def("GetSize", &sf::RectangleShape::getSize),
+            .def("GetSize", &sf::RectangleShape::getSize, luabind::copy(luabind::result)),
 
         luabind::class_<sf::Texture>("Texture")
             .def(luabind::constructor<>())
@@ -256,8 +258,8 @@ void BindSFMLGraphics(lua_State* L)
             .def("SetTexture", &sf::Sprite::setTexture)
             .def("GetTexture", &sf::Sprite::getTexture)
             .def("SetTextureRect", &sf::Sprite::setTextureRect)
-            .def("GetTextureRect", &sf::Sprite::getTextureRect)
-            .def("GetGlobalBounds", &sf::Sprite::getGlobalBounds)
+            .def("GetTextureRect", &sf::Sprite::getTextureRect, luabind::copy(luabind::result))
+            .def("GetGlobalBounds", &sf::Sprite::getGlobalBounds, luabind::copy(luabind::result))
             .def("SetColor", &sf::Sprite::setColor)
             .def("GetColor", &sf::Sprite::getColor)
 
