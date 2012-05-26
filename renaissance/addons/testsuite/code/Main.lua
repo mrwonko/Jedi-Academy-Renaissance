@@ -30,13 +30,13 @@ now		I		also
 added	support	for
 tabstops.]], testFont, nil, g_TestWindow:GetSize().X-20), "\n")
 
--- test: deriving from a C++ class (drawable)
+-- test: deriving from a C++ class (Drawable2D)
 
-class "TextTest" (jar.Drawable)
+class "TextTest" (jar.Drawable2D)
 
 function TextTest:__init()
 	-- important: call base class constructor!
-	jar.Drawable.__init(self)
+	jar.Drawable2D.__init(self)
 	
 	local testText = jar.Text(testFont)
 	testText:SetText(wrappedText)

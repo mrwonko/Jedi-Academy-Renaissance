@@ -15,6 +15,7 @@
 #include <luabind/luabind.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/out_value_policy.hpp>
+#include <luabind/return_reference_to_policy.hpp>
 #include <luabind/wrapper_base.hpp>
 
 namespace jar
@@ -208,14 +209,21 @@ void BindSFMLGraphics(lua_State* L)
             .def("Scale", (void(sf::Transformable::*)(const sf::Vector2f&))&sf::Transformable::scale)
             .def("Rotate", &sf::Transformable::rotate),
 
+		luabind::class_<sf::Transform>("Transform2D")
+			.def(luabind::constructor<>())
+			.def("Translate", (sf::Transform& (sf::Transform::*) (float, float)) &sf::Transform::translate, luabind::return_reference_to(_1))
+			.def("Translate", (sf::Transform& (sf::Transform::*) (const sf::Vector2f&)) &sf::Transform::translate, luabind::return_reference_to(_1))
+			.def("Rotate", (sf::Transform& (sf::Transform::*) (float)) &sf::Transform::rotate, luabind::return_reference_to(_1)),
+
 		// only used as parameter in drawable, opaque
-        luabind::class_<sf::RenderStates>("RenderStates"),
+        luabind::class_<sf::RenderStates>("RenderStates")
+			.def_readwrite("Transform", &sf::RenderStates::transform),
 
-        luabind::class_<sf::Drawable>("_Drawable"),
+        luabind::class_<sf::Drawable>("_Drawable2D"),
 
-		luabind::class_<sfDrawableHelper, luabind::bases<sf::Drawable>, sfDrawableWrapper>("Drawable")
-		.def(luabind::constructor<>())
-		.def("Draw", &sfDrawableHelper::draw2, &sfDrawableWrapper::default_draw2),
+		luabind::class_<sfDrawableHelper, luabind::bases<sf::Drawable>, sfDrawableWrapper>("Drawable2D")
+			.def(luabind::constructor<>())
+			.def("Draw", &sfDrawableHelper::draw2, &sfDrawableWrapper::default_draw2),
 
         luabind::class_<sf::Shape, luabind::bases<sf::Drawable, sf::Transformable> >("Shape")
             .def("SetFillColor", &sf::Shape::setFillColor)
