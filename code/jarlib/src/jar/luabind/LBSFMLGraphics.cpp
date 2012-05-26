@@ -211,6 +211,7 @@ void BindSFMLGraphics(lua_State* L)
 
 		luabind::class_<sf::Transform>("Transform2D")
 			.def(luabind::constructor<>())
+			.def(luabind::constructor<const sf::Transform&>())
 			.def("Translate", (sf::Transform& (sf::Transform::*) (float, float)) &sf::Transform::translate, luabind::return_reference_to(_1))
 			.def("Translate", (sf::Transform& (sf::Transform::*) (const sf::Vector2f&)) &sf::Transform::translate, luabind::return_reference_to(_1))
 			.def("Rotate", (sf::Transform& (sf::Transform::*) (float)) &sf::Transform::rotate, luabind::return_reference_to(_1)),
