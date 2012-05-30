@@ -18,9 +18,8 @@ end
 require("LayoutManager.lua")
 
 g_layoutManager = LayoutManager:New()
-for _, filename in ipairs(jar.fs.GetFilesInDirectory("code/ui/layouts")) do
-	g_layoutManager:ParseFile("code/ui/layouts/" .. filename)
-end
+g_layoutManager:ParseLayouts()
+
 
 local layout = g_layoutManager.layouts.main
 if not layout then error("No \"main\" layout available! Cannot test.") end

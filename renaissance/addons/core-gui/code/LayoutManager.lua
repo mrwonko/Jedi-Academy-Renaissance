@@ -57,3 +57,9 @@ function LayoutManager:ParseFile(filename)
 		return false
 	end
 end
+
+function LayoutManager:ParseLayouts()
+	for _, filename in ipairs(jar.fs.GetFilesInDirectory("code/ui/layouts")) do
+		g_layoutManager:ParseFile("code/ui/layouts/" .. filename)
+	end
+end
