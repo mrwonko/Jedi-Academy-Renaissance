@@ -61,7 +61,7 @@ function Mod:New(filename)
 	
 	--there is a modinfo.lua and we have its content. try compiling it.
 	
-	code, err = loadstring(code)
+	code, err = loadstring(code, "@" .. filename .. (filename:sub(-1) == "/" and "" or "/") .. "modinfo.lua")
 	if not code then --don't continue if modinfo.lua contained errors since it may contain critical information.
 		error(filename .." not loaded due to an error in its modinfo.lua: " .. err, 2)
 	end
