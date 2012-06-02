@@ -666,6 +666,19 @@ void luaV_execute (lua_State *L, int nexeccalls) {
         pc++;
         continue;
       }
+ case OP_TESTNIL: {
+ if (!ttisnil(ra+1)) {
+ setobjs2s(L, ra, ra+1);
+ dojump(L, pc, GETARG_sBx(i));
+ }
+ continue;
+ }
+ case OP_TFORCALL: {
+ setobjs2s(L, ra+2, ra-1);
+ setobjs2s(L, ra+1, ra-2);
+ setobjs2s(L, ra, ra-3);
+ /* FALLS THROUGH */
+ }
       case OP_CALL: {
         int b = GETARG_B(i);
         int nresults = GETARG_C(i) - 1;
@@ -761,6 +774,7 @@ void luaV_execute (lua_State *L, int nexeccalls) {
         dojump(L, pc, GETARG_sBx(i));
         continue;
       }
+#ifdef LUA_COMPAT_TFORLOOP
       case OP_TFORLOOP: {
         StkId cb = ra + 3;  /* call base */
         setobjs2s(L, cb+2, ra+2);
@@ -777,6 +791,7 @@ void luaV_execute (lua_State *L, int nexeccalls) {
         pc++;
         continue;
       }
+#endif
       case OP_SETLIST: {
         int n = GETARG_B(i);
         int c = GETARG_C(i);

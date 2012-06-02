@@ -320,7 +320,12 @@
 */
 #define LUAI_GCMUL	200 /* GC runs 'twice the speed' of memory allocation */
 
-
+/*
+@@ LUA_COMPAT_TFORLOOP controls VM compatibility with 5.1 for..in loops
+** CHANGE it (undefine it) if you don't care about being able to run
+** precompiled 5.1 scripts
+*/
+#define LUA_COMPAT_TFORLOOP
 
 /*
 @@ LUA_COMPAT_GETN controls compatibility with old getn behavior.
