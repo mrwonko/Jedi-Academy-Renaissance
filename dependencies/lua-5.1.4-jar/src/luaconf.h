@@ -783,6 +783,11 @@ union luai_Cast { double l_d; long l_l; };
 ** without modifying the main part of the file.
 */
 
+#undef LUA_COMPAT_VARARG
+#undef LUA_COMPAT_MOD
+#undef LUA_COMPAT_LSTR
+#undef LUA_COMPAT_GFIND
+#undef LUA_COMPAT_OPENLIB
 
 
 #endif
