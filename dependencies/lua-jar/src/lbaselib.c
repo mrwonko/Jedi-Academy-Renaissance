@@ -158,6 +158,15 @@ static int luaB_setfenv (lua_State *L) {
 }
 
 
+static int luaB_rawlen (lua_State *L) {
+ int t = lua_type(L, 1);
+ luaL_argcheck(L, t == LUA_TTABLE || t == LUA_TSTRING, 1,
+ "table or string expected");
+ lua_pushinteger(L, lua_objlen(L, 1));
+ return 1;
+}
+
+
 static int luaB_rawequal (lua_State *L) {
   luaL_checkany(L, 1);
   luaL_checkany(L, 2);
@@ -458,6 +467,7 @@ static const luaL_Reg base_funcs[] = {
   {"next", luaB_next},
   {"pcall", luaB_pcall},
   {"print", luaB_print},
+ {"rawlen", luaB_rawlen},
   {"rawequal", luaB_rawequal},
   {"rawget", luaB_rawget},
   {"rawset", luaB_rawset},

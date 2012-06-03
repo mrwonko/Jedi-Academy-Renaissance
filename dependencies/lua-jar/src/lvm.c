@@ -598,7 +598,14 @@ void luaV_execute (lua_State *L, int nexeccalls) {
         const TValue *rb = RB(i);
         switch (ttype(rb)) {
           case LUA_TTABLE: {
-            setnvalue(ra, cast_num(luaH_getn(hvalue(rb))));
+            Table *h = hvalue(rb);
+            /* const TValue *tm = luaT_gettmbyobj(L, rb, TM_LEN); */
+            const TValue *tm = fasttm(L, h->metatable, TM_LEN);
+            if (tm == NULL) /* || ttisnil(tm)) */ {
+              setnvalue(ra, cast_num(luaH_getn(h)));
+            } else {
+              Protect(callTMres(L, ra, tm, rb, luaO_nilobject));
+            }
             break;
           }
           case LUA_TSTRING: {
