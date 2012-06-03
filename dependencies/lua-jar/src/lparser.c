@@ -1072,6 +1072,7 @@ static void forbody (LexState *ls, int base, int line, int nvars, int isnum) {
   luaK_reserveregs(fs, nvars);
   block(ls);
   leaveblock(fs);  /* end of scope for declared variables */
+  luaK_patchtohere(fs, prep);
   if (isnum) {
     luaK_patchlist(fs, luaK_codeAsBx(fs, OP_FORLOOP, base, NO_JUMP), prep + 1);
     luaK_fixline(fs, line); /* pretend that `OP_FOR' starts the loop */
