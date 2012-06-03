@@ -10,7 +10,7 @@ function loadfile(filename)
 	
 	local file = jar.fs.OpenRead(filename)
 	
-	if file == 0 or file == nil or not file then
+	if file == 0 or not file then
 		return nil, "Could not open " .. filename .. "! " .. jar.fs.GetLastError()
 	end
 	local success, content = file:GetContent()
