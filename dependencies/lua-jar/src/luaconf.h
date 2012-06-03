@@ -788,6 +788,7 @@ union luai_Cast { double l_d; long l_l; };
 #undef LUA_COMPAT_LSTR
 #undef LUA_COMPAT_GFIND
 #undef LUA_COMPAT_OPENLIB
+#undef LUA_COMPAT_TFORLOOP
 
 
 #endif

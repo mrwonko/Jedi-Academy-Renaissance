@@ -232,7 +232,7 @@ OP_TFORCALL/* A B C R(A), ..., R(A+C-2) := R(A-3)(R(A-2), R(A-1)); */
       and can be 0: OP_CALL then sets `top' to last_result+1, so
       next open instruction (OP_CALL, OP_RETURN, OP_SETLIST) may use `top'.
 
- (*) In OP_TFORCALL, B must be 3 and C may not be 0.
+  (*) In OP_TFORCALL, B must be 3 and C may not be 0.
 
   (*) In OP_VARARG, if (B == 0) then use actual number of varargs and
       set top (like in OP_CALL with C == 0).

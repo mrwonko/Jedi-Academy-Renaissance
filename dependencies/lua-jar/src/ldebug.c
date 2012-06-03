@@ -427,11 +427,11 @@ static Instruction symbexec (const Proto *pt, int lastpc, int reg) {
           pc += b;  /* do the jump */
         break;
       }
- case OP_TFORCALL:
- check(a >= b);
- check(b == 3);
- check(c >= 1);
- /* go through */
+      case OP_TFORCALL:
+        check(a >= b);
+        check(b == 3);
+        check(c >= 1);
+        /* go through */
       case OP_CALL:
       case OP_TAILCALL: {
         if (b != 0) {
