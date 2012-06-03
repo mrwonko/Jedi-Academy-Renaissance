@@ -43,7 +43,7 @@ include_directories("dependencies/minizip-jar" "dependencies/lua-5.1.4-jar/inclu
 
 # add subdirectories - parameters: source dir, binary dir
 add_subdirectory("dependencies/minizip-jar")
-add_subdirectory("dependencies/lua-5.1.4-jar")
+add_subdirectory("dependencies/lua-jar")
 add_subdirectory("dependencies/luabind-jar")
 add_subdirectory("dependencies/pluto-jar")
 add_subdirectory("code/jarlib")
