@@ -1,23 +1,37 @@
 require("LayoutElement.lua")
 
 -- inherits from Drawable2D, i.e. can be drawn to a Window
-class "Layout" (jar.Drawable2D)
+Layout = {}
+local Layout = Layout
 
--- to have the same interface as my Lua classes
-function Layout.New()
-	return Layout()
+function Layout:New()
+	local obj = setmetatable({}, self)
+	self.__index = self
+	return obj
 end
 
--- Constructor
-function Layout:__init()
-	jar.Drawable2D.__init(self)
+-- Create a new instance of a given layout
+function Layout:NewInstance()
+	assert(self ~= Layout)
+	assert(type(self.elementsByName) == "table")
+	local obj = setmetatable({}, {__index = self})
+	
+	local elementsByName = self.elementsByName
+	local newElementsByName = {}
+	obj.elementsByName = newElementsByName
+	for name, element in pairs(elementsByName) do
+		element = element:New()
+		newElementsByName[name] = element
+		element.controls = {}
+	end
+	
+	return obj
 end
 
-
-function Layout:Draw(target, states)
-	if not self.elements then error("Trying to draw uninitialized Layout (call FromTable() first)!") end
+function Layout:Draw(target)
+	if not self.elementsByName then error("Trying to draw uninitialized Layout (call FromTable() first)!") end
 	local prevView = target:GetView()
-	for _, element in ipairs(self.elements) do
+	for _, element in pairs(self.elementsByName) do
 		element:Draw(target)
 	end
 	target:SetView(prevView)
@@ -27,22 +41,26 @@ end
 -- raises an error when something crucial is missing
 function Layout:FromTable(t)
 	-- name
-	if type(t.name) ~= "string" then error("No name string supplied!") end
+	if type(t.name) ~= "string" then error("No name string supplied!", 3) end
 	self.name = t.name
 	
 	-- LayoutElements
-	self.elements = {}
+	local elements = {}
+	self.elementsByName = elements
 	-- this is only possibly because the layout element functions raise an error instead of returning nil when they fail - otherwise there'd be gaps in the array.
 	for _, obj in ipairs(t) do
 		if IsLayoutElement(obj) then
-			table.insert(self.elements, obj)
+			if elements[obj.name] then
+				jar.Logger.GetDefaultLogger():Warning("Duplicate LayoutElement \"" .. obj.name .. "\" in Layout \"" .. self.name .. "\"! Discarding latter.")
+			end
+			elements[obj.name] = obj
 		end
 	end
 end
 
 function Layout:ChangeSize(width, height)
-	if not self.elements then error("Trying to change size of uninitialized Layout (call FromTable() first)!") end
-	for _, obj in ipairs(self.elements) do
+	if not self.elementsByName then error("Trying to change size of uninitialized Layout (call FromTable() first)!") end
+	for _, obj in pairs(self.elementsByName) do
 		obj:ChangeSize(width, height)
 	end
 end

@@ -6,9 +6,10 @@ MenuControl =
 	-- to be set by derived classes - name used in Menu definition files
 	classname = nil,
 	
-	-- will be available when rendered - jar.Vector2f
-	position = nil,
+	-- to be set by deriving classes in FromTable()
+	size = jar.Vector2f(0, 0),
 }
+local MenuControl = MenuControl
 
 -- Whether a given object is a MenuControl (or derived from it)
 function IsMenuControl(obj)
@@ -63,14 +64,16 @@ function MenuControl:FromTable(t)
 	self.text = t.text
 	if type(t.order) ~= "number" then error("MenuControl has no order number!") end
 	if type(t.container) ~= "string" then error("MenuControl has no container string!") end
+	self.order = t.order
+	self.container = t.container
 end
 
 -- Renders this control to the given rendertarget
--- Should only draw stuff in the area from (0,0) to GetSize()
+-- Where to draw is determined by SetPosition(), size should be limited by what GetSize() returns
 -- to be implemented by derived classes
 function MenuControl:Draw(target)
 end
 
--- Returns the size of this control (in pixels) as a jar.Vector2f
-function MenuControl:GetSize()
+-- To be implemented by derived classes
+function MenuControl:SetPosition(pos)
 end

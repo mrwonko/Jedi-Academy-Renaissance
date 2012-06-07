@@ -13,6 +13,7 @@ LayoutElement.AddAvailableToFEnv(layoutFEnv)
 
 
 LayoutManager = {}
+local LayoutManager = LayoutManager
 
 function LayoutManager:New()
 	local obj =
@@ -36,7 +37,8 @@ function LayoutManager:ParseFile(filename)
 	
 	-- add Layout function
 	function fEnv.Layout(t)
-		local layout = Layout:New(t)
+		if type(t) ~= "table" then error("No table supplied to Layout()!", 2) end
+		local layout = Layout:New()
 		layout.filename = filename
 		layout:FromTable(t)
 		-- is there already a layout of this name?
@@ -60,6 +62,14 @@ end
 
 function LayoutManager:ParseLayouts()
 	for _, filename in ipairs(jar.fs.GetFilesInDirectory("code/ui/layouts")) do
-		g_layoutManager:ParseFile("code/ui/layouts/" .. filename)
+		self:ParseFile("code/ui/layouts/" .. filename)
 	end
+end
+
+function LayoutManager.GetWidthVar()
+	return layoutFEnv.width
+end
+
+function LayoutManager.GetHeightVar()
+	return layoutFEnv.height
 end

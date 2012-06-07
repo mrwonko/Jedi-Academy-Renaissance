@@ -19,6 +19,7 @@ LayoutElement =
 	-- All the UIControls (Buttons etc.) go here (array)
 	controls = nil,
 }
+local LayoutElement = LayoutElement
 
 -- Whether a given object is a LayoutElement (or derived from it)
 function IsLayoutElement(obj)
@@ -115,7 +116,7 @@ function LayoutElement:GetChildElements(t)
 end
 
 -- Called whenever the parent's size changes
--- To be further specialized by derived classes to reposition the Controls
+-- Deriving classes may use onSizeChange() to respond to changes made here
 function LayoutElement:ChangeSize(width, height)
 	local vars = { width = width, height = height }
 	self.position = jar.Vector2f(self.position_expression[1]:Evaluate(vars), self.position_expression[2]:Evaluate(vars))
@@ -125,6 +126,7 @@ function LayoutElement:ChangeSize(width, height)
 		for _, child in ipairs(self.childElements) do
 			child:ChangeSize(newSize.X, newSize.Y)
 		end
+		if self.OnSizeChange then self:OnSizeChange() end
 	end
 end
 
@@ -151,6 +153,7 @@ function LayoutElement:Draw(target, offset)
 	local view = target:GetView()
 	view:SetCenter(self.size / 2)
 	view:SetSize(self.size)
+	--view:SetSize(self.size - jar.Vector2f(1, 0)) --rounding error, but this is for a specific case
 	
 	local targetSize = target:GetSize()
 	local viewport = view:GetViewport()
@@ -158,6 +161,9 @@ function LayoutElement:Draw(target, offset)
 	viewport.top = offset.Y / targetSize.Y
 	viewport.width = self.size.X / targetSize.X
 	viewport.height = self.size.Y / targetSize.Y
+	-- fix rounding errors
+	if viewport.width * targetSize.X < self.size.X then viewport.width = (self.size.X + 1) / targetSize.X end
+	if viewport.height * targetSize.Y < self.size.Y then viewport.height = (self.size.Y + 1) / targetSize.Y end
 	
 	view:SetViewport(viewport)
 	target:SetView(view)

@@ -2,6 +2,8 @@
 
 require("Expression.lua")
 
+print("\n= Testing Expressions =\n")
+
 local two = Expression:New(Expression.Type.Constant, 2)
 local test = 4 + two * 5
 print("4 + 2 * 5 = " .. test:Evaluate())
@@ -14,17 +16,25 @@ for _, i in ipairs{1, 2, 5} do
 end
 
 
--- Test layouts
+-- Test layouts/menus
+print("\n= Testing Menus =\n")
+
 require("LayoutManager.lua")
+require("MenuManager.lua")
 
 g_layoutManager = LayoutManager:New()
+local g_layoutManager = g_layoutManager
 g_layoutManager:ParseLayouts()
 
+g_menuManager = MenuManager:New(g_layoutManager)
+local g_menuManager = g_menuManager
+g_menuManager:ParseMenus()
 
-local layout = g_layoutManager.layouts.main
-if not layout then error("No \"main\" layout available! Cannot test.") end
 
-layout:ChangeSize(800, 600)
+local menu = g_menuManager.menus["main"]
+if not menu then error("No \"main\" menu available! Cannot test.") end
+
+menu:ChangeSize(800, 600)
 local window = jar.RenderWindow(800, 600, "Test Window", true, false) -- border, fullscreen
 
 local lastFrametime = jar.GetTime()
@@ -59,9 +69,13 @@ while running do
 		end
 	end
 	
-	color = jar.Color(0, 255, 0)
+	color = jar.Color(0, 255, 0) --DELETEME : test
 	
 	window:Clear(jar.Color.Black)
-	window:Draw(layout)
+	if true then
+	window:Draw(menu)
+	else
+	menu:Draw(window)
+	end
 	window:Display()
 end
