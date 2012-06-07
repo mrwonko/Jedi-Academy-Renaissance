@@ -1689,6 +1689,6 @@ static luaL_reg pluto_reg[] = {
 #include "pluto_api.h"
 
 int PLUTO_API luaopen_jar_pluto(lua_State *L) {
-	luaL_openlib(L, "pluto", pluto_reg, 0);
+	luaL_register(L, "pluto", pluto_reg);
 	return 1;
 }

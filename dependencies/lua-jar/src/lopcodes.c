@@ -56,11 +56,15 @@ const char *const luaP_opnames[NUM_OPCODES+1] = {
   "RETURN",
   "FORLOOP",
   "FORPREP",
+#ifdef LUA_COMPAT_TFORLOOP
   "TFORLOOP",
+#endif
   "SETLIST",
   "CLOSE",
   "CLOSURE",
   "VARARG",
+  "TESTNIL",
+  "TFORCALL",
   NULL
 };
 
@@ -111,10 +115,14 @@ const lu_byte luaP_opmodes[NUM_OPCODES] = {
  ,opmode(0, 0, OpArgU, OpArgN, iABC)		/* OP_RETURN */
  ,opmode(0, 1, OpArgR, OpArgN, iAsBx)		/* OP_FORLOOP */
  ,opmode(0, 1, OpArgR, OpArgN, iAsBx)		/* OP_FORPREP */
+#ifdef LUA_COMPAT_TFORLOOP
  ,opmode(1, 0, OpArgN, OpArgU, iABC)		/* OP_TFORLOOP */
+#endif
  ,opmode(0, 0, OpArgU, OpArgU, iABC)		/* OP_SETLIST */
  ,opmode(0, 0, OpArgN, OpArgN, iABC)		/* OP_CLOSE */
  ,opmode(0, 1, OpArgU, OpArgN, iABx)		/* OP_CLOSURE */
  ,opmode(0, 1, OpArgU, OpArgN, iABC)		/* OP_VARARG */
+ ,opmode(0, 1, OpArgR, OpArgN, iAsBx)		/* OP_TESTNIL */
+ ,opmode(0, 1, OpArgU, OpArgU, iABC)		/* OP_TFORCALL */
 };
 

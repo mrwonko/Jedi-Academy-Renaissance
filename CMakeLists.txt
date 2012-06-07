@@ -39,11 +39,11 @@ project(JediAcademyRenaissance)
 set(JAR_BINARY_DIR "${JediAcademyRenaissance_SOURCE_DIR}/renaissance/bin")
 
 # add local include directories
-include_directories("dependencies/minizip-jar" "dependencies/lua-5.1.4-jar/include" "dependencies/luabind-jar" "dependencies/pluto-jar" "code/jarlib/include")
+include_directories("dependencies/minizip-jar" "dependencies/lua-jar/include" "dependencies/luabind-jar" "dependencies/pluto-jar" "code/jarlib/include")
 
 # add subdirectories - parameters: source dir, binary dir
 add_subdirectory("dependencies/minizip-jar")
-add_subdirectory("dependencies/lua-5.1.4-jar")
+add_subdirectory("dependencies/lua-jar")
 add_subdirectory("dependencies/luabind-jar")
 add_subdirectory("dependencies/pluto-jar")
 add_subdirectory("code/jarlib")
