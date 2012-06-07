@@ -85,5 +85,5 @@ end
 
 local success, err = xpcall(loadfile("code/Init.lua"), AddTracebackToError)
 if not success then
-	error(err)
+	jar.Logger.GetDefaultLogger():Error(err)
 end
