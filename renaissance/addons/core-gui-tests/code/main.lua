@@ -29,12 +29,9 @@ g_layoutManager:ParseLayouts()
 g_menuManager = MenuManager:New(g_layoutManager)
 local g_menuManager = g_menuManager
 g_menuManager:ParseMenus()
+g_menuManager:SetScreenSize(800, 600)
+g_menuManager:OpenMenu("main")
 
-
-local menu = g_menuManager.menus["main"]
-if not menu then error("No \"main\" menu available! Cannot test.") end
-
-menu:ChangeSize(800, 600)
 local window = jar.RenderWindow(800, 600, "Test Window", true, false) -- border, fullscreen
 
 local lastFrametime = jar.GetTime()
@@ -73,6 +70,8 @@ while running do
 	
 	window:Clear(jar.Color.Black)
 	if true then
+		g_menuManager:DrawCurrentMenu(window)
+	elseif true then
 	window:Draw(menu)
 	else
 	menu:Draw(window)

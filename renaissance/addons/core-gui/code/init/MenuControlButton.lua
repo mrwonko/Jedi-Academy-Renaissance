@@ -30,7 +30,11 @@ MenuControl.Register(MenuControlButton)
 -- FromTable does not need further specialization
 function MenuControlButton:FromTable(t)
 	MenuControl.FromTable(self, t)
+	
 	if not self.text then error("No text string set!", 3) end
+	if t.OnClick and type(t.OnClick) ~= "function") then error("OnClick must be a function!", 3) end
+	self.OnClick = t.OnClick
+	
 	self.drawableText = jar.Text(font)
 	self.drawableText:SetText(self.text)
 	local size = jar.Vector2f(self.drawableText:GetWidth(), self.drawableText:GetHeight())

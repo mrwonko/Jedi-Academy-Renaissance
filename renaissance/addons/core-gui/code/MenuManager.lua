@@ -1,3 +1,6 @@
+-- == Menu Manager ==
+--  keeps track of existing menus and the current menu stack
+
 require("Menu.lua")
 require("MenuControl.lua")
 
@@ -16,6 +19,7 @@ function MenuManager:New(layoutManager)
 	local obj =
 	{
 		menus = {}, -- available menus by name
+		menuStack = {size = 0}, -- open menus
 	}
 	self.__index = self
 	self.layoutManager = layoutManager
@@ -64,5 +68,50 @@ end
 function MenuManager:ParseMenus()
 	for _, filename in ipairs(jar.fs.GetFilesInDirectory("code/ui/menus")) do
 		self:ParseFile("code/ui/menus/" .. filename)
+	end
+end
+
+function MenuManager:SetScreenSize(width, height)
+	for _, menu in pairs(self.menus) do
+		menu:ChangeSize(width, height)
+	end
+end
+
+function MenuManager:OpenMenu(name)
+	local menu = self.menus[name]
+	if not menu then error("No menu \"" .. name .. "\" available!", 2) end
+	local stack = self.menuStack
+	stack.size = stack.size + 1
+	stack[stack.size] = menu
+end
+
+function MenuManager:CloseMenu()
+	local stack = self.menuStack
+	stack[stack.size] = nil
+	stack.size = stack.size - 1
+end
+
+function MenuManager:CloseAllMenus()
+	local stack = self.menuStack
+	for i = 1, stack.size do
+		stack[i] = nil
+	end
+	stack.size = 0
+end
+
+function MenuManager:IsMenuOpen()
+	return self.menuStack.size > 0
+end
+
+function MenuManager:GetCurrentMenu()
+	local stack = self.menuStack
+	return stack[stack.size]
+end
+
+function MenuManager:DrawCurrentMenu(target)
+	local stack = self.menuStack
+	local menu = stack[stack.size]
+	if menu then
+		target:Draw(menu)
 	end
 end
