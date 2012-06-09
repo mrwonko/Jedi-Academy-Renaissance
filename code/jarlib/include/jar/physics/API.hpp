@@ -1,0 +1,12 @@
+#ifndef JAR_PHYSICS_API_HPP
+#define JAR_PHYSICS_API_HPP
+
+#include "jar/OS.hpp"
+
+#ifdef JAR_PHYSICS_LIBRARY_BUILD
+#define JARPHYSICSAPI JAR_DLLEXPORT
+#else
+#define JARPHYSICSAPI JAR_DLLIMPORT
+#endif
+
+#endif

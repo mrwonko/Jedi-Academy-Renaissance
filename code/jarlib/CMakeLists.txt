@@ -35,6 +35,16 @@ include_directories("${ZLIB_INCLUDE_DIR}")
 find_package(PhysFS REQUIRED)
 include_directories("${PHYSFS_INCLUDE_DIR}")
 
+# find Bullet Physics
+if(NOT BULLET_ROOT)
+	set(BULLET_ROOT "$ENV{BULLET_ROOT}")
+endif(NOT BULLET_ROOT)
+find_package(Bullet)
+if(NOT BULLET_FOUND)
+	message(FATAL_ERROR "Could not find Bullet Physics - install it and/or set BULLET_ROOT accordingly.")
+endif(NOT BULLET_FOUND)
+include_directories("${BULLET_INCLUDE_DIRS}")
+
 # Debug/Release differences
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
 	add_definitions(-D_DEBUG)
@@ -42,6 +52,7 @@ if(${CMAKE_BUILD_TYPE} MATCHES Debug)
 	set(JARLIB_INPUT_NAME "jarlib_input_d")
 	set(JARLIB_GRAPHICS_NAME "jarlib_graphics_d")
 	set(JARLIB_AUDIO_NAME "jarlib_audio_d")
+	set(JARLIB_PHYSICS_NAME "jarlib_physics_d")
 	set(SFML_GRAPHICS "${SFML_GRAPHICS_LIBRARY_DEBUG}")
 	set(SFML_AUDIO "${SFML_AUDIO_LIBRARY_DEBUG}")
 	set(SFML_WINDOW "${SFML_WINDOW_LIBRARY_DEBUG}")
@@ -51,6 +62,7 @@ else(${CMAKE_BUILD_TYPE} MATCHES Debug)
 	set(JARLIB_INPUT_NAME "jarlib_input")
 	set(JARLIB_GRAPHICS_NAME "jarlib_graphics")
 	set(JARLIB_AUDIO_NAME "jarlib_audio")
+	set(JARLIB_PHYSICS_NAME "jarlib_physics")
 	set(SFML_GRAPHICS "${SFML_GRAPHICS_LIBRARY_RELEASE}")
 	set(SFML_AUDIO "${SFML_AUDIO_LIBRARY_RELEASE}")
 	set(SFML_WINDOW "${SFML_WINDOW_LIBRARY_RELEASE}")
@@ -135,6 +147,9 @@ set(JARLIB_INPUT_FILES
 	"include/jar/OS.hpp"
 	)
 set(JARLIB_GRAPHICS_FILES
+	"src/jar/graphics/g2Animation.cpp"
+	"src/jar/graphics/g2CompBone.cpp"
+	"src/jar/graphics/g2Model.cpp"
 	"src/jar/graphics/luabind/LBFont.cpp"
 	"src/jar/graphics/luabind/LBRenderWindow.cpp"
 	"src/jar/graphics/luabind/LBText.cpp"
@@ -145,6 +160,9 @@ set(JARLIB_GRAPHICS_FILES
 	"src/jar/luabind/LBSFMLGraphics.cpp"
 	"src/jar/Graphics.cpp"
 	
+	"include/jar/graphics/g2Animation.hpp"
+	"include/jar/graphics/g2CompBone.hpp"
+	"include/jar/graphics/g2Model.hpp"
 	"include/jar/graphics/API.hpp"
 	"include/jar/graphics/Font.hpp"
 	"include/jar/graphics/GraphicsImpl.hpp"
@@ -165,6 +183,15 @@ set(JARLIB_AUDIO_FILES
 	"include/jar/OS.hpp"
 	"include/jar/Audio.hpp"
 	)
+set(JARLIB_PHYSICS_FILES
+	"src/jar/physics/PhysicsImpl.cpp"
+	"src/jar/Physics.cpp"
+	
+	"include/jar/physics/API.hpp"
+	"include/jar/physics/PhysicsImpl.hpp"
+	"include/jar/OS.hpp"
+	"include/jar/Physics.hpp"
+	)
 
 # libraries
 set(JARLIB_CORE_LIBRARIES
@@ -180,6 +207,7 @@ set(JARLIB_INPUT_LIBRARIES
 	)
 set(JARLIB_GRAPHICS_LIBRARIES
 	${SFML_GRAPHICS} ${SFML_WINDOW} ${SFML_SYSTEM}
+	${BULLET_MATH_LIBRARY}
 	${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME}
 	${JAR_LUA_NAME} ${JAR_LUABIND_NAME}
 	)
@@ -188,12 +216,18 @@ set(JARLIB_AUDIO_LIBRARIES
 	${JARLIB_CORE_NAME}
 	${JAR_LUA_NAME} ${JAR_LUABIND_NAME}
 	)
+set(JARLIB_PHYSICS_LIBRARIES
+	${JARLIB_CORE_NAME}
+	${BULLET_DYNAMICS_LIBRARY} ${BULLET_COLLISION_LIBRARY} ${BULLET_MATH_LIBRARY}
+	${JAR_LUA_NAME} ${JAR_LUABIND_NAME}
+	)
 
 # defines
 set(JARLIB_CORE_DEFINES "-DJAR_CORE_LIBRARY_BUILD")
 set(JARLIB_INPUT_DEFINES "-DJAR_INPUT_LIBRARY_BUILD")
 set(JARLIB_GRAPHICS_DEFINES "-DJAR_GRAPHICS_LIBRARY_BUILD")
 set(JARLIB_AUDIO_DEFINES "-DJAR_AUDIO_LIBRARY_BUILD")
+set(JARLIB_PHYSICS_DEFINES "-DJAR_PHYSICS_LIBRARY_BUILD")
 
 # add OS-specific files / libraries
 if(WIN32)
@@ -261,25 +295,28 @@ add_library(${JARLIB_CORE_NAME} SHARED ${JARLIB_CORE_FILES})
 add_library(${JARLIB_INPUT_NAME} SHARED ${JARLIB_INPUT_FILES})
 add_library(${JARLIB_GRAPHICS_NAME} SHARED ${JARLIB_GRAPHICS_FILES})
 add_library(${JARLIB_AUDIO_NAME} SHARED ${JARLIB_AUDIO_FILES})
+add_library(${JARLIB_PHYSICS_NAME} SHARED ${JARLIB_PHYSICS_FILES})
 
 target_link_libraries(${JARLIB_CORE_NAME} ${JARLIB_CORE_LIBRARIES})
 target_link_libraries(${JARLIB_INPUT_NAME} ${JARLIB_INPUT_LIBRARIES})
 target_link_libraries(${JARLIB_GRAPHICS_NAME} ${JARLIB_GRAPHICS_LIBRARIES})
 target_link_libraries(${JARLIB_AUDIO_NAME} ${JARLIB_AUDIO_LIBRARIES})
+target_link_libraries(${JARLIB_PHYSICS_NAME} ${JARLIB_PHYSICS_LIBRARIES})
 
 set_target_properties(${JARLIB_CORE_NAME} PROPERTIES COMPILE_FLAGS ${JARLIB_CORE_DEFINES})
 set_target_properties(${JARLIB_INPUT_NAME} PROPERTIES COMPILE_FLAGS ${JARLIB_INPUT_DEFINES})
 set_target_properties(${JARLIB_GRAPHICS_NAME} PROPERTIES COMPILE_FLAGS ${JARLIB_GRAPHICS_DEFINES})
 set_target_properties(${JARLIB_AUDIO_NAME} PROPERTIES COMPILE_FLAGS ${JARLIB_AUDIO_DEFINES})
+set_target_properties(${JARLIB_PHYSICS_NAME} PROPERTIES COMPILE_FLAGS ${JARLIB_PHYSICS_DEFINES})
 
 if(WIN32)
-	install(TARGETS ${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME} ${JARLIB_GRAPHICS_NAME} ${JARLIB_AUDIO_NAME}
+	install(TARGETS ${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME} ${JARLIB_GRAPHICS_NAME} ${JARLIB_AUDIO_NAME} ${JARLIB_PHYSICS_NAME}
 		ARCHIVE DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/lib"
 		RUNTIME DESTINATION "${JAR_BINARY_DIR}")
 else(WIN32)
-	install(TARGETS ${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME} ${JARLIB_GRAPHICS_NAME} ${JARLIB_AUDIO_NAME}
+	install(TARGETS ${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME} ${JARLIB_GRAPHICS_NAME} ${JARLIB_AUDIO_NAME} ${JARLIB_PHYSICS_NAME}
 		LIBRARY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/lib")
-	install(TARGETS ${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME} ${JARLIB_GRAPHICS_NAME} ${JARLIB_AUDIO_NAME}
+	install(TARGETS ${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME} ${JARLIB_GRAPHICS_NAME} ${JARLIB_AUDIO_NAME} ${JARLIB_PHYSICS_NAME}
 		LIBRARY DESTINATION "${JAR_BINARY_DIR}")
 endif(WIN32)
 
@@ -287,3 +324,4 @@ message("${JARLIB_CORE_NAME} target generated.")
 message("${JARLIB_INPUT_NAME} target generated.")
 message("${JARLIB_GRAPHICS_NAME} target generated.")
 message("${JARLIB_AUDIO_NAME} target generated.")
+message("${JARLIB_PHYSICS_NAME} target generated.")
