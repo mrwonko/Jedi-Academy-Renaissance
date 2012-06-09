@@ -75,7 +75,7 @@ JARCOREAPI const bool ReadInt(fs::File file, int& out_num);
 JARCOREAPI const bool ReadUnsignedInt(fs::File file, unsigned int& out_num);
 
 /** \brief Reads a char from a given file.
-    \note Luabind treats chars as numbers, so you'll get a number when calling this in luabind. **/
+    \note Luabind treats chars as numbers, so you'll get a number when calling this in Lua. **/
 JARCOREAPI const bool ReadChar(fs::File file, char& output);
 
 /** \brief Reads a float from a given file.**/
