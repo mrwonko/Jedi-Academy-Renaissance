@@ -67,7 +67,7 @@ namespace g2
                 //     Upload Data
                 //  upload vertices
                 //bind buffer
-                glBindBuffer(GL_ARRAY_BUFFER, mRenderInfo->vertexVBOIndex);
+                glBindBuffer(GL_ARRAY_BUFFER, curSurface->vertexVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
@@ -91,7 +91,7 @@ namespace g2
         
                 //  upload triangles
                 //bind buffer
-                glBindBuffer(GL_ARRAY_BUFFER, mRenderInfo->triangleVBOIndex);
+                glBindBuffer(GL_ARRAY_BUFFER, curSurface->triangleVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
@@ -174,13 +174,13 @@ namespace g2
                 glBindBuffer(GL_ARRAY_BUFFER, curSurface->vertexVBOIndex);
                 
                 // coordinate
-                glVertexPointer(3, GL_FLOAT, sizeof(Vertex), offsetof(Vertex, coordinate));
+                glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, coordinate));
 
                 // normal
-                glNormalPointer(GL_FLOAT, sizeof(MyVertex), offsetof(Vertex, normal));
+                glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
                 // uv
-                glTexCoordPointer(2, GL_FLOAT, sizeof(MyVertex), offsetof(Vertex, uv));
+                glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 
                 // todo: bind skinning attributes
                 
