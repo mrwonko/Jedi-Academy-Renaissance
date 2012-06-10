@@ -1,29 +1,196 @@
 #include "jar/graphics/g2Model.hpp"
 #include "jar/core/Helpers.hpp"
+#include "jar/core/Logger.hpp"
 #include <cassert>
+#include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
+#include <cstddef> //offsetof
 
 namespace jar
 {
 namespace g2
 {
-
-    // == OpenGL Specific rendering information ==
-    struct ModelRenderInfo
-    {
-        GLuint vertexVBOIndex;
-        GLuint triangleVBOIndex;
-    };
-
     //
 
-    Model::Model() : mRenderInfo(new ModelRenderInfo)
+    Model::Model() : 
+        isUploaded(false)
     {
     }
     
     Model::~Model()
     {
-        delete mRenderInfo;
+        if(isUploaded)
+        {
+            DeleteFromGPU();
+        }
+    }
+
+    const bool Model::UploadToGPU()
+    {
+        // Check if there are leftover unhandled opengl errors
+        GLenum lastError = glGetError();
+        if(lastError != GL_NO_ERROR)
+        {
+            jar::Logger::GetDefaultLogger().Warning(std::string("g2::Model::UploadToGPU(): Unhandled previous OpenGL error:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+        }
+
+        // Abort if already uploaded
+        if(isUploaded)
+        {
+            jar::Logger::GetDefaultLogger().Error("g2::Model::UploadToGPU(): Trying to re-upload!");
+            return false;
+        }
+        
+        std::vector<LOD>::iterator end = mLODs.end();
+        for(std::vector<LOD>::iterator curLOD = mLODs.begin(); curLOD != end; ++curLOD)
+        {
+            std::vector<Surface>::iterator end = curLOD->surfaces.end();
+            for(std::vector<Surface>::iterator curSurface = curLOD->surfaces.begin(); curSurface != end; ++curSurface)
+            {
+                // Generate VBO buffers
+                glGenBuffers(1, &curSurface->triangleVBOIndex);
+                if((lastError = glGetError()) != GL_NO_ERROR)
+                {
+                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    return false;
+                }
+                glGenBuffers(1, &curSurface->vertexVBOIndex);
+                if((lastError = glGetError()) != GL_NO_ERROR)
+                {
+                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+
+                    isUploaded = true; // for deletion
+                    assert(DeleteFromGPU());
+                    return false;
+                }
+
+                //     Upload Data
+                //  upload vertices
+                //bind buffer
+                glBindBuffer(GL_ARRAY_BUFFER, mRenderInfo->vertexVBOIndex);
+                if((lastError = glGetError()) != GL_NO_ERROR)
+                {
+                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    isUploaded = true; // for deletion
+                    assert(DeleteFromGPU());
+                    return false;
+                }
+                //upload data
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Model::Vertex) * curSurface->vertices.size(), curSurface->vertices.data(), GL_STATIC_DRAW);
+                if((lastError = glGetError()) != GL_NO_ERROR)
+                {
+                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    isUploaded = true; // for deletion
+                    assert(DeleteFromGPU());
+                    return false;
+                }
+        
+                //  upload triangles
+                //bind buffer
+                glBindBuffer(GL_ARRAY_BUFFER, mRenderInfo->triangleVBOIndex);
+                if((lastError = glGetError()) != GL_NO_ERROR)
+                {
+                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    assert(glGetError() == GL_NO_ERROR);
+                    isUploaded = true; // for deletion
+                    assert(DeleteFromGPU());
+                    return false;
+                }
+                //upload data
+                glBufferData(GL_ARRAY_BUFFER, sizeof(Model::Vertex) * curSurface->vertices.size(), curSurface->vertices.data(), GL_STATIC_DRAW);
+                if((lastError = glGetError()) != GL_NO_ERROR)
+                {
+                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    assert(glGetError() == GL_NO_ERROR);
+                    isUploaded = true; // for deletion
+                    assert(DeleteFromGPU());
+                    return false;
+                }
+        
+                // unbind buffer
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
+        }
+
+
+        isUploaded = true;
+        return true;
+    }
+
+    const bool Model::DeleteFromGPU()
+    {
+        // if it's not on the gpu, we silently ignore
+        if(!isUploaded)
+        {
+            jar::Logger::GetDefaultLogger().Error("g2::Model::DeleteFromGPU() called on non-uploaded model!");
+            return false;
+        }
+
+        std::vector<LOD>::iterator end = mLODs.end();
+        for(std::vector<LOD>::iterator curLOD = mLODs.begin(); curLOD != end; ++curLOD)
+        {
+            std::vector<Surface>::iterator end = curLOD->surfaces.end();
+            for(std::vector<Surface>::iterator curSurface = curLOD->surfaces.begin(); curSurface != end; ++curSurface)
+            {
+                glDeleteBuffers(1, &curSurface->triangleVBOIndex);
+                assert(glGetError() == GL_NO_ERROR);
+                glDeleteBuffers(1, &curSurface->vertexVBOIndex);
+                assert(glGetError() == GL_NO_ERROR);
+                curSurface->triangleVBOIndex = 0;
+                curSurface->vertexVBOIndex = 0;
+            }
+        }
+
+        isUploaded = false;
+        return true;
+    }
+
+    const bool Model::Render()
+    {
+        if(!isUploaded)
+        {
+            jar::Logger::GetDefaultLogger().Error("g2::Model::Render() called on non-uploaded model!");
+            return false;
+        }
+        
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
+        
+        std::vector<LOD>::iterator end = mLODs.end();
+        for(std::vector<LOD>::iterator curLOD = mLODs.begin(); curLOD != end; ++curLOD)
+        {
+            std::vector<Surface>::iterator end = curLOD->surfaces.end();
+            for(std::vector<Surface>::iterator curSurface = curLOD->surfaces.begin(); curSurface != end; ++curSurface)
+            {
+                glBindBuffer(GL_ARRAY_BUFFER, curSurface->vertexVBOIndex);
+                
+                // coordinate
+                glVertexPointer(3, GL_FLOAT, sizeof(Vertex), offsetof(Vertex, coordinate));
+
+                // normal
+                glNormalPointer(GL_FLOAT, sizeof(MyVertex), offsetof(Vertex, normal));
+
+                // uv
+                glTexCoordPointer(2, GL_FLOAT, sizeof(MyVertex), offsetof(Vertex, uv));
+
+                // todo: bind skinning attributes
+                
+                glBindBuffer(GL_ARRAY_BUFFER, curSurface->triangleVBOIndex);
+
+                glDrawElements(GL_TRIANGLES, curSurface->triangles.size() * 3, GL_INT, 0);
+            }
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        return true;
     }
 
     // == File Format specific structures ==

@@ -5,14 +5,13 @@
 #include <vector>
 #include "jar/core/FileSystem.hpp"
 
+struct lua_State;
+
 namespace jar
 {
 
 namespace g2
 {
-    // forward declaration of implementation specific details
-    struct ModelRenderInfo;
-
     /** \brief Animatable, renderable Ghoul 2 Model (.glm)
     **/
     class Model
@@ -31,6 +30,8 @@ namespace g2
         /** \brief Renders this model. Requirement: Has been uploaded to the GPU.
         **/
         const bool Render();
+
+        static void Luabind(lua_State* L);
 
     private:
         struct SurfaceHierarchyEntry
@@ -64,6 +65,7 @@ namespace g2
 
         struct Surface
         {
+            Surface() : vertexVBOIndex(0), triangleVBOIndex(0) {}
             const bool LoadFromFile(fs::File& file, std::string& out_error);
 
             int index;
@@ -71,6 +73,9 @@ namespace g2
             std::vector<int> boneReferences;
             std::vector<Triangle> triangles;
             std::vector<Vertex> vertices;
+
+            unsigned int vertexVBOIndex;
+            unsigned int triangleVBOIndex;
         };
 
         struct LOD
@@ -86,7 +91,7 @@ namespace g2
         std::vector<SurfaceHierarchyEntry> mSurfaceHierarchy; //mHeader.numSurfaces entries
         std::vector<SurfaceHierarchyEntry*> mRootSurfaces;
         std::vector<LOD> mLODs; //mHeader.numLODs entries
-        ModelRenderInfo* mRenderInfo;
+        bool isUploaded;
     };
 }
 }
