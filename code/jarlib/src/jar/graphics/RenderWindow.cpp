@@ -4,6 +4,9 @@
 #include "jar/input/Event.hpp"
 #include "jar/input/EventManager.hpp"
 #include <SFML/Window/Event.hpp>
+#include "jar/core/Logger.hpp"
+#include "jar/core/Helpers.hpp"
+#include <GL/glew.h>
 
 namespace jar {
 
@@ -12,6 +15,13 @@ RenderWindow::RenderWindow(const unsigned int width, const unsigned int height, 
 {
     //ctor
     Input::GetSingleton().OnWindowCreated();
+
+    // Initialize GLEW
+    GLenum glewStatus = glewInit();
+    if(glewStatus != GLEW_OK)
+    {
+        Logger::GetDefaultLogger().Error(std::string("Could not initialize GLEW: ") + reinterpret_cast<const char*>(glewGetErrorString(glewStatus)));
+    }
 }
 
 RenderWindow::~RenderWindow()

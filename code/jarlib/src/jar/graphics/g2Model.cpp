@@ -60,7 +60,7 @@ namespace g2
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
 
                     isUploaded = true; // for deletion
-                    assert(DeleteFromGPU());
+                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
                     return false;
                 }
 
@@ -74,7 +74,7 @@ namespace g2
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     isUploaded = true; // for deletion
-                    assert(DeleteFromGPU());
+                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
                     return false;
                 }
                 //upload data
@@ -85,13 +85,16 @@ namespace g2
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     isUploaded = true; // for deletion
-                    assert(DeleteFromGPU());
+                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
                     return false;
                 }
         
+                // unbind buffer
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+        
                 //  upload triangles
                 //bind buffer
-                glBindBuffer(GL_ARRAY_BUFFER, curSurface->triangleVBOIndex);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->triangleVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
@@ -99,11 +102,11 @@ namespace g2
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     assert(glGetError() == GL_NO_ERROR);
                     isUploaded = true; // for deletion
-                    assert(DeleteFromGPU());
+                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
                     return false;
                 }
                 //upload data
-                glBufferData(GL_ARRAY_BUFFER, sizeof(Model::Vertex) * curSurface->vertices.size(), curSurface->vertices.data(), GL_STATIC_DRAW);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Model::Vertex) * curSurface->vertices.size(), curSurface->vertices.data(), GL_STATIC_DRAW);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
@@ -111,12 +114,12 @@ namespace g2
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     assert(glGetError() == GL_NO_ERROR);
                     isUploaded = true; // for deletion
-                    assert(DeleteFromGPU());
+                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
                     return false;
                 }
         
                 // unbind buffer
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             }
         }
 
@@ -134,6 +137,18 @@ namespace g2
             return false;
         }
 
+        GLenum err = glGetError();
+#ifdef _DEBUG
+        if(err != GL_NO_ERROR)
+        {
+            Logger::GetDefaultLogger().Warning(std::string("Model::DeleteFromGPU(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+        }
+#endif
+
+        bool success = true;
+
+        //glDeleteBuffer calls to 0 are silently ignored
+
         std::vector<LOD>::iterator end = mLODs.end();
         for(std::vector<LOD>::iterator curLOD = mLODs.begin(); curLOD != end; ++curLOD)
         {
@@ -141,16 +156,26 @@ namespace g2
             for(std::vector<Surface>::iterator curSurface = curLOD->surfaces.begin(); curSurface != end; ++curSurface)
             {
                 glDeleteBuffers(1, &curSurface->triangleVBOIndex);
-                assert(glGetError() == GL_NO_ERROR);
+                err = glGetError();
+                if(err != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Could not delete triangle VBO buffer: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    success = false;
+                }
                 glDeleteBuffers(1, &curSurface->vertexVBOIndex);
-                assert(glGetError() == GL_NO_ERROR);
+                err = glGetError();
+                if(err != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Could not delete vertex VBO buffer: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    success = false;
+                }
                 curSurface->triangleVBOIndex = 0;
                 curSurface->vertexVBOIndex = 0;
             }
         }
 
         isUploaded = false;
-        return true;
+        return success;
     }
 
     const bool Model::Render()
@@ -160,6 +185,14 @@ namespace g2
             jar::Logger::GetDefaultLogger().Error("g2::Model::Render() called on non-uploaded model!");
             return false;
         }
+
+        GLenum err = glGetError();
+#ifdef _DEBUG
+        if(err != GL_NO_ERROR)
+        {
+            Logger::GetDefaultLogger().Warning(std::string("Model::Render(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+        }
+#endif
         
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -172,24 +205,74 @@ namespace g2
             for(std::vector<Surface>::iterator curSurface = curLOD->surfaces.begin(); curSurface != end; ++curSurface)
             {
                 glBindBuffer(GL_ARRAY_BUFFER, curSurface->vertexVBOIndex);
-                
+#ifdef _DEBUG
+                if((err = glGetError()) != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): BindBuffer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    return false;
+                }
+#endif
+
                 // coordinate
                 glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, coordinate));
+#ifdef _DEBUG
+                if((err = glGetError()) != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): VertexPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    return false;
+                }
+#endif
 
                 // normal
                 glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+#ifdef _DEBUG
+                if((err = glGetError()) != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): NormalPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    return false;
+                }
+#endif
 
                 // uv
                 glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+#ifdef _DEBUG
+                if((err = glGetError()) != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): TexCoordPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    return false;
+                }
+#endif
 
                 // todo: bind skinning attributes
                 
-                glBindBuffer(GL_ARRAY_BUFFER, curSurface->triangleVBOIndex);
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->triangleVBOIndex);
+#ifdef _DEBUG
+                if((err = glGetError()) != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): BindBuffer (2) OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    return false;
+                }
+#endif
 
-                glDrawElements(GL_TRIANGLES, curSurface->triangles.size() * 3, GL_INT, 0);
+                glDrawElements(GL_TRIANGLES, curSurface->triangles.size() * 3, GL_UNSIGNED_INT, NULL);
+#ifdef _DEBUG
+                if((err = glGetError()) != GL_NO_ERROR)
+                {
+                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): DrawElements OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    return false;
+                }
+#endif
             }
         }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        if((err = glGetError()) != GL_NO_ERROR)
+        {
+            Logger::GetDefaultLogger().Error(std::string("Model::Render(): Unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+            return false;
+        }
+
         return true;
     }
 
@@ -219,7 +302,7 @@ namespace g2
         int ofsEnd; // = file size
     };
 
-    struct ModelSurfaceHierarchyOffsets
+    struct ModelSurfaceOffsets
     {
         const bool LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces);
 
@@ -284,7 +367,7 @@ namespace g2
         return true;
     }
 
-    const bool ModelSurfaceHierarchyOffsets::LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces)
+    const bool ModelSurfaceOffsets::LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces)
     {
         offsets.resize(numSurfaces);
         for(int i = 0; i < numSurfaces; ++i)
@@ -480,24 +563,40 @@ namespace g2
         return true;
     }
 
-
     const bool Model::LOD::LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces)
     {
         const int baseOffset = fs::Tell(file);
         int ofsEnd;
 
+
         if(!fs::ReadInt(file, ofsEnd))
         {
-            out_error = "Could not read LODs.";
+            out_error = "Could not read LOD's ofsEnd.";
+            return false;
+        }
+
+        ModelSurfaceOffsets surfaceOffsets;
+        if(!surfaceOffsets.LoadFromFile(file, out_error, numSurfaces))
+        {
             return false;
         }
 
         surfaces.resize(numSurfaces);
 
         std::vector<Surface>::iterator end = surfaces.end();
-        for(std::vector<Surface>::iterator it= surfaces.begin(); it != end; ++it)
+        for(int index = 0; index < numSurfaces; ++index)
         {
-            if(!it->LoadFromFile(file, out_error)) return false;
+            if(!fs::Seek(file, baseOffset + surfaceOffsets.offsets[index] + 4)) // 4 is the size of ofsEnd
+            {
+                out_error = "Could not seek surface " + Helpers::IntToString(index) + "!";
+                return false;
+            }
+            if(!surfaces[index].LoadFromFile(file, out_error)) return false;
+            if(surfaces[index].index != index)
+            {
+                out_error = "Surface index mismatch!";
+                return false;
+            }
         }
         if(!fs::Seek(file, baseOffset + ofsEnd))
         {
@@ -526,21 +625,19 @@ namespace g2
         mName = QuakeStringToString(header.name);
         mAnimName = QuakeStringToString(header.animName);
 
-        //  read hierarchy
-        //read offsets
-        if(!fs::Seek(file, header.ofsSurfHierarchy))
-        {
-            out_error = "Error seeking hierarchy offsets: " + fs::GetLastError();
-            return false;
-        }
-        ModelSurfaceHierarchyOffsets hierarchyOffsets;
+        //  read hierarchy - always directly after header, /not/ at header.ofsSurfHierarchy, that's the first entry's position!
+
+        int surfaceHierarchyBaseOffset = fs::Tell(file);
+
+        ModelSurfaceOffsets hierarchyOffsets;
+        //Logger::GetDefaultLogger().Log("There are " + Helpers::IntToString(header.numSurfaces) + " surfaces");
         if(!hierarchyOffsets.LoadFromFile(file, out_error, header.numSurfaces)) return false;
 
         //read hierarchy
         mSurfaceHierarchy.resize(header.numSurfaces);
         for(int index = 0; index < header.numSurfaces; ++index)
         {
-            if(!fs::Seek(file, header.ofsSurfHierarchy + hierarchyOffsets.offsets[index]))
+            if(!fs::Seek(file, surfaceHierarchyBaseOffset + hierarchyOffsets.offsets[index]))
             {
                 out_error = "Error seeking hierarchy offsets: " + fs::GetLastError();
                 return false;

@@ -3,13 +3,12 @@ require("CCommandManager.lua")
 require("WordWrap.lua")
 require("TextureManager.lua")
 
-local texMgr = TextureManager()
+local textureManager = TextureManager()
 
 local model = jar.g2.Model()
-local success, err = model:LoadFromFile("models/test/blaster_pistol_w.glm")
+local success, err = model:LoadFromFile("models/test/blaster_pistol_w.glm") -- sorry, can't include this due to copyrights - will make a custom test model in time.
 if not success then error(err) end
-local success, err = model:UploadToGPU()
-if not success then error(err) end
+if not model:UploadToGPU() then error("Can't upload to GPU") end
 
 print("==== Test Suite Start ====")
 print("")
@@ -183,6 +182,10 @@ while running do
 		jar.Sleep(5)
 	end
 end
+
+-- ensure model gets deleted before window (and OpenGL context with it)
+model = nil
+collectgarbage()
 
 g_CVarManager:SaveCVars()
 g_BindManager:Save()

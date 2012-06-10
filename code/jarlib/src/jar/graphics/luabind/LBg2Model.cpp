@@ -15,10 +15,10 @@ void Model::BindToLua(lua_State* L)
         [
             luabind::class_<Model>("Model")
                 .def(luabind::constructor<>())
-                .def("LoadFromFile", &LoadFromFile, luabind::pure_out_value(_3))
-                .def("UploadToGPU", &UploadToGPU)
-                .def("DeleteFromGPU", &DeleteFromGPU)
-                .def("Render", &Render)
+                .def("LoadFromFile", &Model::LoadFromFile, luabind::pure_out_value(_3))
+                .def("UploadToGPU", &Model::UploadToGPU)
+                .def("DeleteFromGPU", &Model::DeleteFromGPU)
+                .def("Render", &Model::Render)
         ]
     ];
 }
