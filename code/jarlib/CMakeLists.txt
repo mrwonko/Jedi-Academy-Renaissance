@@ -45,6 +45,22 @@ if(NOT BULLET_FOUND)
 endif(NOT BULLET_FOUND)
 include_directories("${BULLET_INCLUDE_DIRS}")
 
+# find OpenGL
+find_package(OpenGL REQUIRED)
+if(OPENGL_INCLUDE_DIR) #may be empty
+	include_directories("${OPENGL_INCLUDE_DIR}")
+endif(OPENGL_INCLUDE_DIR)
+
+# find GLEW
+if(NOT GLEW_ROOT_DIR)
+	set(GLEW_ROOT_DIR "$ENV{GLEW_ROOT}")
+endif(NOT GLEW_ROOT_DIR)
+find_package(GLEW)
+if(NOT GLEW_FOUND)
+	message(FATAL_ERROR "Could not find GLEW - install it and/or set GLEW_ROOT accordingly")
+endif(NOT GLEW_FOUND)
+include_directories("${GLEW_INCLUDE_PATH}")
+
 # Debug/Release differences
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
 	add_definitions(-D_DEBUG)
@@ -207,6 +223,7 @@ set(JARLIB_INPUT_LIBRARIES
 	)
 set(JARLIB_GRAPHICS_LIBRARIES
 	${SFML_GRAPHICS} ${SFML_WINDOW} ${SFML_SYSTEM}
+	${GLEW_LIBRARY} ${OPENGL_LIBRARIES}
 	${BULLET_MATH_LIBRARY}
 	${JARLIB_CORE_NAME} ${JARLIB_INPUT_NAME}
 	${JAR_LUA_NAME} ${JAR_LUABIND_NAME}
