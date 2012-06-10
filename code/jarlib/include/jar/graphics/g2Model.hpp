@@ -31,7 +31,7 @@ namespace g2
         **/
         const bool Render();
 
-        static void Luabind(lua_State* L);
+        static void BindToLua(lua_State* L);
 
     private:
         struct SurfaceHierarchyEntry
