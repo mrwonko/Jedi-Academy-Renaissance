@@ -1,6 +1,15 @@
 require("InstructionInterpreter.lua")
 require("CCommandManager.lua")
 require("WordWrap.lua")
+require("TextureManager.lua")
+
+local texMgr = TextureManager()
+
+local model = jar.g2.Model()
+local success, err = model:LoadFromFile("models/test/blaster_pistol_w.glm")
+if not success then error(err) end
+local success, err = model:UploadToGPU()
+if not success then error(err) end
 
 print("==== Test Suite Start ====")
 print("")
@@ -135,7 +144,7 @@ while running do
 	
 	local startTime = jar.GetTime()
 	jar.Core.GetSingleton():Update(deltaT)
-	print("Core Update: " .. jar.GetTime() - startTime .. "ms")
+	--print("Core Update: " .. jar.GetTime() - startTime .. "ms")
 	
 	aLittleCircle:SetX(x)
 	
@@ -161,6 +170,9 @@ while running do
 	--g_TestWindow:Draw(testSprite)
 	g_TestWindow:Draw(aLittleCircle)
 	g_TestWindow:Draw(testText)
+	
+	model:Render()
+	
 	
 	--console last since it's an overlay
 	g_Console:RenderTo(g_TestWindow)
