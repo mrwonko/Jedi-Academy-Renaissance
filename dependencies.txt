@@ -5,6 +5,8 @@ PhysicsFS (http://icculus.org/physfs/)
 zlib (http://zlib.net/)
 My luabind fork (http://github.com/mrwonko/luabind)
 boost (http://www.boost.org)
+OpenGL
+GLEW
 
 on Windows:
 Microsoft DirectX SDK (DirectInput)
