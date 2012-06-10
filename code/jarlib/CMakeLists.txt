@@ -166,6 +166,7 @@ set(JARLIB_GRAPHICS_FILES
 	"src/jar/graphics/g2Animation.cpp"
 	"src/jar/graphics/g2CompBone.cpp"
 	"src/jar/graphics/g2Model.cpp"
+	"src/jar/graphics/luabind/LBg2Model.cpp"
 	"src/jar/graphics/luabind/LBFont.cpp"
 	"src/jar/graphics/luabind/LBRenderWindow.cpp"
 	"src/jar/graphics/luabind/LBText.cpp"
