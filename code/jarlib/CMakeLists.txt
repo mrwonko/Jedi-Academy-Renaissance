@@ -174,6 +174,7 @@ set(JARLIB_GRAPHICS_FILES
 	"src/jar/graphics/GraphicsImpl.cpp"
 	"src/jar/graphics/RenderWindow.cpp"
 	"src/jar/graphics/Text.cpp"
+	"src/jar/graphics/TextureManager.cpp"
 	"src/jar/luabind/LBSFMLGraphics.cpp"
 	"src/jar/Graphics.cpp"
 	
@@ -185,6 +186,7 @@ set(JARLIB_GRAPHICS_FILES
 	"include/jar/graphics/GraphicsImpl.hpp"
 	"include/jar/graphics/RenderWindow.hpp"
 	"include/jar/graphics/Text.hpp"
+	"include/jar/graphics/TextureManager.hpp"
 	"include/jar/luabind/SFMLGraphics.hpp"
 	"include/jar/Graphics.hpp"
 	"include/jar/OS.hpp"

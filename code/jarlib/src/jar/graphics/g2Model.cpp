@@ -200,7 +200,7 @@ namespace g2
     // Note: Offsets are always relative to the address of the struct they appear in.
     struct ModelHeader
     {
-        const bool LoadFromFile(fs::File& file, std::string& out_error);
+        const bool LoadFromFile(fs::File file, std::string& out_error);
 
         char ident[4]; //"2LGM"
         int version;
@@ -221,7 +221,7 @@ namespace g2
 
     struct ModelSurfaceHierarchyOffsets
     {
-        const bool LoadFromFile(fs::File& file, std::string& out_error, const int numSurfaces);
+        const bool LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces);
 
         std::vector<int> offsets;
     };
@@ -242,20 +242,25 @@ namespace g2
 
     // == File Loading Functions ==
 
-    const bool ModelHeader::LoadFromFile(fs::File& file, std::string& out_error)
+    const bool ModelHeader::LoadFromFile(fs::File file, std::string& out_error)
     {
-        out_error = "Could not read file header!";
-        if(fs::Read(file, ident, sizeof(char), 4) != 4) return false;
-        if(fs::ReadInt(file, version)) return false;
-        if(fs::Read(file, name, sizeof(char), 64) != 64) return false;
-        if(fs::Read(file, animName, sizeof(char), 64) != 64) return false;
-        if(fs::ReadInt(file, animIndex)) return false;
-        if(fs::ReadInt(file, numBones)) return false;
-        if(fs::ReadInt(file, numLODs)) return false;
-        if(fs::ReadInt(file, ofsLODs)) return false;
-        if(fs::ReadInt(file, numSurfaces)) return false;
-        if(fs::ReadInt(file, ofsSurfHierarchy)) return false;
-        if(fs::ReadInt(file, ofsEnd)) return false;
+        //  clear last error
+        fs::GetLastError();
+        if( fs::Read(file, ident, sizeof(char), 4) != 4 ||
+            !fs::ReadInt(file, version) ||
+            fs::Read(file, name, sizeof(char), 64) != 64 ||
+            fs::Read(file, animName, sizeof(char), 64) != 64 ||
+            !fs::ReadInt(file, animIndex) ||
+            !fs::ReadInt(file, numBones)||
+            !fs::ReadInt(file, numLODs) ||
+            !fs::ReadInt(file, ofsLODs) ||
+            !fs::ReadInt(file, numSurfaces) ||
+            !fs::ReadInt(file, ofsSurfHierarchy) ||
+            !fs::ReadInt(file, ofsEnd) )
+        {
+            out_error = "Could not read file header. " + fs::GetLastError();
+            return false;
+        }
 
         // Check ident
         if(std::string(ident, 4) != std::string(IDENT, 4))
@@ -279,49 +284,53 @@ namespace g2
         return true;
     }
 
-    const bool ModelSurfaceHierarchyOffsets::LoadFromFile(fs::File& file, std::string& out_error, const int numSurfaces)
+    const bool ModelSurfaceHierarchyOffsets::LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces)
     {
         offsets.resize(numSurfaces);
         for(int i = 0; i < numSurfaces; ++i)
         {
             if(!fs::ReadInt(file, offsets[i]))
             {
-                out_error = "Error reading hierarchy offsets: " + fs::GetLastError();
+                out_error = "Error reading hierarchy offsets. " + fs::GetLastError();
                 return false;
             }
         }
         return true;
     }
 
-    const bool Model::SurfaceHierarchyEntry::LoadFromFile(fs::File& file, std::string& out_error)
+    const bool Model::SurfaceHierarchyEntry::LoadFromFile(fs::File file, std::string& out_error)
     {
-        out_error = "Could not read surface hierarchy.";
-        
+        //  clear last error
+        fs::GetLastError();
         char qname[64];
-        if(fs::Read(file, qname, sizeof(char), 64) != 64) return false;
-        name = QuakeStringToString(qname);
-        
-        if(!fs::ReadUnsignedInt(file, flags)) return false;
-        
         char qshader[64];
-        if(fs::Read(file, qshader, sizeof(char), 64) != 64) return false;
-        shader = QuakeStringToString(qshader);
-
         int shaderIndex;
-        if(!fs::ReadInt(file, shaderIndex)) return false;
-        if(!fs::ReadInt(file, parentIndex)) return false;
-        
         int numChildren;
-        if(!fs::ReadInt(file, numChildren)) return false;
+
+        if( fs::Read(file, qname, sizeof(char), 64) != 64 ||
+            !fs::ReadUnsignedInt(file, flags) ||
+            fs::Read(file, qshader, sizeof(char), 64) != 64 ||
+            !fs::ReadInt(file, shaderIndex) ||
+            !fs::ReadInt(file, parentIndex) ||
+            !fs::ReadInt(file, numChildren))
+        {
+            out_error = "Could not read surface hierarchy. " + fs::GetLastError() + (fs::EndOfFile(file) ? "\n(End of file)" : "");
+            return false;
+        }
+        name = QuakeStringToString(qname);
+        shader = QuakeStringToString(qshader);
         childIndices.resize(numChildren);
         for(int i = 0; i < numChildren; ++i)
         {
-            if(!fs::ReadInt(file, childIndices[i])) return false;
+            if(!fs::ReadInt(file, childIndices[i]))
+            {
+                return false;
+            }
         }
         return true;
     }
 
-    const bool Model::Triangle::LoadFromFile(fs::File& file)
+    const bool Model::Triangle::LoadFromFile(fs::File file)
     {
         if(!fs::ReadInt(file, indices[0])) return false;
         if(!fs::ReadInt(file, indices[1])) return false;
@@ -329,7 +338,7 @@ namespace g2
         return true;
     }
 
-    const bool Model::Vertex::LoadFromFile(fs::File& file)
+    const bool Model::Vertex::LoadFromFile(fs::File file)
     {
         if(!fs::ReadFloat(file, normal[0])) return false;
         if(!fs::ReadFloat(file, normal[1])) return false;
@@ -378,7 +387,7 @@ namespace g2
         return true;
     }
 
-    const bool Model::Surface::LoadFromFile(fs::File& file, std::string& out_error)
+    const bool Model::Surface::LoadFromFile(fs::File file, std::string& out_error)
     {
         const int baseOffset = fs::Tell(file);
 
@@ -472,7 +481,7 @@ namespace g2
     }
 
 
-    const bool Model::LOD::LoadFromFile(fs::File& file, std::string& out_error, const int numSurfaces)
+    const bool Model::LOD::LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces)
     {
         const int baseOffset = fs::Tell(file);
         int ofsEnd;
@@ -500,14 +509,16 @@ namespace g2
 
     const bool Model::LoadFromFile(const std::string& filename, std::string& out_error)
     {
+        //  clear last error
+        fs::GetLastError();
         //  open file
         fs::File file = fs::OpenRead(filename);
-        if(!file)
+        if(file == NULL)
         {
             out_error = "Error opening file: " + fs::GetLastError();
-           return false;
+            return false;
         }
-
+        
         //  read header
         ModelHeader header;
         if(!header.LoadFromFile(file, out_error)) return false;

@@ -36,7 +36,7 @@ namespace g2
     private:
         struct SurfaceHierarchyEntry
         {
-            const bool LoadFromFile(fs::File& file, std::string& out_error);
+            const bool LoadFromFile(fs::File file, std::string& out_error);
 
             std::string name;
             unsigned int flags;
@@ -47,13 +47,13 @@ namespace g2
 
         struct Triangle
         {
-            const bool LoadFromFile(fs::File& file);
+            const bool LoadFromFile(fs::File file);
             int indices[3];
         };
 
         struct Vertex
         {
-            const bool LoadFromFile(fs::File& file);
+            const bool LoadFromFile(fs::File file);
 
             float normal[3];                //12 byte
             float coordinate[3];            //12 byte
@@ -66,7 +66,7 @@ namespace g2
         struct Surface
         {
             Surface() : vertexVBOIndex(0), triangleVBOIndex(0) {}
-            const bool LoadFromFile(fs::File& file, std::string& out_error);
+            const bool LoadFromFile(fs::File file, std::string& out_error);
 
             int index;
 
@@ -80,7 +80,7 @@ namespace g2
 
         struct LOD
         {
-            const bool LoadFromFile(fs::File& file, std::string& out_error, const int numSurfaces);
+            const bool LoadFromFile(fs::File file, std::string& out_error, const int numSurfaces);
 
             std::vector<Surface> surfaces;
         };
