@@ -1,5 +1,5 @@
 #include "jar/graphics/Font.hpp"
-#include "jar/luabind/SFMLGraphics.hpp"
+#include "jar/graphics/luabind/SFMLGraphics.hpp" //contains TextureLoadFromFile()
 #include "jar/core/Logger.hpp"
 #include "jar/core/FileSystem.hpp"
 #include <SFML/Graphics/Texture.hpp>

@@ -1,4 +1,4 @@
-#include "jar/luabind/SFMLGraphics.hpp"
+#include "jar/graphics/luabind/SFMLGraphics.hpp"
 #include "jar/core/FileSystem.hpp"
 
 #include <SFML/Graphics/CircleShape.hpp>
@@ -251,6 +251,10 @@ void BindSFMLGraphics(lua_State* L)
             .def("LoadFromFile", &TextureLoadFromFile)
             .def("GetSize", &sf::Texture::getSize)
             .def("SetSmooth", &sf::Texture::setSmooth),
+            /* if I bind bind(), I need to wrap it so when called with Texture::Normalized parameter, it does
+                glMatrixMode(GL_TEXTURE);
+                glLoadIdentity();
+               until Laurent fixes that in SMFL. */
 
         luabind::class_<sf::Sprite, luabind::bases<sf::Drawable, sf::Transformable> >("Sprite")
             .def(luabind::constructor<>())
