@@ -5,6 +5,20 @@ require("TextureManager.lua")
 
 local textureManager = TextureManager()
 
+local glPushMatrix = jar.gl.PushMatrix
+local glPopMatrix = jar.gl.PopMatrix
+local glPerspective = jar.gl.Perspective
+local glLoadIdentity = jar.gl.LoadIdentity
+local glMatrixMode = jar.gl.MatrixMode
+local GL_MODELVIEW = jar.gl.enum.MODELVIEW
+local GL_PROJECTION = jar.gl.enum.PROJECTION
+local glColor = jar.gl.Color
+local glRotate = jar.gl.Rotate
+local glTranslate = jar.gl.Translate
+
+local Prepare3DRender = jar.Prepare3DRender
+local Prepare2DRender = jar.Prepare2DRender
+
 local model = jar.g2.Model()
 local success, err = model:LoadFromFile("models/test/blaster_pistol_w.glm") -- sorry, can't include this due to copyrights - will make a custom test model in time.
 if not success then error(err) end
@@ -165,13 +179,32 @@ while running do
 	end
 	
 	g_TestWindow:Clear(jar.Color.Black)
+	--g_TestWindow:Clear(jar.Color.Magenta)
 	
 	--g_TestWindow:Draw(testSprite)
 	g_TestWindow:Draw(aLittleCircle)
 	g_TestWindow:Draw(testText)
 	
-	model:Render()
+	--   prepare for 3D drawing
+	Prepare3DRender(90, 800/600, 1, 1024)
+	--[[
+	glRotate(-90, 1, 0, 0) --rotating 90° ccw around X should turn Z from Back into Up
+	glRotate(-90, 0, 0, 1) --rotating 90° ccw around Z should turn X from Right into Back
+	glTranslate(-64, 0, 0)
+	--]]
 	
+	--   3d drawing!
+	glTranslate(0, 0, -64)
+	--jar.RenderTriangleOfDeath()
+	
+	---[[
+	glColor(jar.Color.Red)
+	model:Render()
+	--]]
+	--jar.RenderTriangleOfDeath()
+	
+	--   reset to 2D drawing
+	Prepare2DRender(g_TestWindow)
 	
 	--console last since it's an overlay
 	g_Console:RenderTo(g_TestWindow)

@@ -52,12 +52,14 @@ namespace g2
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    curSurface->triangleVBOIndex = 0;
                     return false;
                 }
                 glGenBuffers(1, &curSurface->vertexVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    curSurface->vertexVBOIndex = 0;
 
                     isUploaded = true; // for deletion
                     if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
@@ -99,19 +101,18 @@ namespace g2
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
                     
-                    glBindBuffer(GL_ARRAY_BUFFER, 0);
                     assert(glGetError() == GL_NO_ERROR);
                     isUploaded = true; // for deletion
                     if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
                     return false;
                 }
                 //upload data
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Model::Vertex) * curSurface->vertices.size(), curSurface->vertices.data(), GL_STATIC_DRAW);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Model::Triangle) * curSurface->triangles.size(), curSurface->triangles.data(), GL_STATIC_DRAW);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
                     jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
                     
-                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                     assert(glGetError() == GL_NO_ERROR);
                     isUploaded = true; // for deletion
                     if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
@@ -194,16 +195,13 @@ namespace g2
         }
 #endif
         
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        
-        std::vector<LOD>::iterator end = mLODs.end();
-        for(std::vector<LOD>::iterator curLOD = mLODs.begin(); curLOD != end; ++curLOD)
+        std::vector<LOD>::iterator curLOD = mLODs.begin();
+        if(curLOD != mLODs.end())
         {
             std::vector<Surface>::iterator end = curLOD->surfaces.end();
             for(std::vector<Surface>::iterator curSurface = curLOD->surfaces.begin(); curSurface != end; ++curSurface)
             {
+                //   Bind Vertex VBO
                 glBindBuffer(GL_ARRAY_BUFFER, curSurface->vertexVBOIndex);
 #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
@@ -213,38 +211,40 @@ namespace g2
                 }
 #endif
 
+                //   Describe memory layout
                 // coordinate
                 glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, coordinate));
-#ifdef _DEBUG
+    #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
                     Logger::GetDefaultLogger().Error(std::string("Model::Render(): VertexPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
                     return false;
                 }
-#endif
+    #endif
 
                 // normal
                 glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-#ifdef _DEBUG
+    #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
                     Logger::GetDefaultLogger().Error(std::string("Model::Render(): NormalPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
                     return false;
                 }
-#endif
+    #endif
 
                 // uv
                 glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, uv));
-#ifdef _DEBUG
+    #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
                     Logger::GetDefaultLogger().Error(std::string("Model::Render(): TexCoordPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
                     return false;
                 }
-#endif
+    #endif
 
-                // todo: bind skinning attributes
+                // todo: setup skinning attributes
                 
+                //   Bind Triangle VBO
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->triangleVBOIndex);
 #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
@@ -254,7 +254,9 @@ namespace g2
                 }
 #endif
 
+                //   Draw!
                 glDrawElements(GL_TRIANGLES, curSurface->triangles.size() * 3, GL_UNSIGNED_INT, NULL);
+                //glDrawElements(GL_TRIANGLES, curSurface->triangles.size() * 3, GL_UNSIGNED_INT, curSurface->triangles.data()); // works when nothing is bound to GL_ELEMENT_ARRAY_BUFFER
 #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
@@ -263,9 +265,10 @@ namespace g2
                 }
 #endif
             }
+            // Unbind buffers
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
         if((err = glGetError()) != GL_NO_ERROR)
         {

@@ -18,6 +18,8 @@ namespace jar
     class TextureManager
     {
     public:
+           
+        // NOTE: I should probably return shared_ptr to some custom (opaque) structure which I'll later change when I add shaders and only have a GetTexture(), as in Lua.
 
         /** \brief Retrieves the given texture, possibly loading it, and increases its use count.
             \return The texture, or an default texture if it's unavailable.
