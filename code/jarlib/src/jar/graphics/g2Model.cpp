@@ -21,11 +21,15 @@ namespace g2
     {
         if(isUploaded)
         {
-            DeleteFromGPU();
+            std::string error;
+            if(!DeleteFromGPU(error))
+            {
+                Logger::GetDefaultLogger().Error("Could not unload g2::Model: " + error);
+            }
         }
     }
 
-    const bool Model::UploadToGPU()
+    const bool Model::UploadToGPU(std::string& out_error)
     {
         // Check if there are leftover unhandled opengl errors
         GLenum lastError = glGetError();
@@ -37,7 +41,7 @@ namespace g2
         // Abort if already uploaded
         if(isUploaded)
         {
-            jar::Logger::GetDefaultLogger().Error("g2::Model::UploadToGPU(): Trying to re-upload!");
+            out_error = ("Trying to re-upload!");
             return false;
         }
         
@@ -51,18 +55,19 @@ namespace g2
                 glGenBuffers(1, &curSurface->triangleVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
-                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    out_error = (std::string("Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
                     curSurface->triangleVBOIndex = 0;
                     return false;
                 }
                 glGenBuffers(1, &curSurface->vertexVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
-                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    out_error = (std::string("Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
                     curSurface->vertexVBOIndex = 0;
 
                     isUploaded = true; // for deletion
-                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
+                    std::string error;
+                    if(!DeleteFromGPU(error)) jar::Logger::GetDefaultLogger().Error("g2::Modell::UploadToGPU(): Could not properly clean up after failed upload: " + error);
                     return false;
                 }
 
@@ -72,22 +77,24 @@ namespace g2
                 glBindBuffer(GL_ARRAY_BUFFER, curSurface->vertexVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
-                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    out_error = (std::string("Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     isUploaded = true; // for deletion
-                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
+                    std::string error;
+                    if(!DeleteFromGPU(error)) jar::Logger::GetDefaultLogger().Error("g2::Modell::UploadToGPU(): Could not properly clean up after failed upload: " + error);
                     return false;
                 }
                 //upload data
                 glBufferData(GL_ARRAY_BUFFER, sizeof(Model::Vertex) * curSurface->vertices.size(), curSurface->vertices.data(), GL_STATIC_DRAW);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
-                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    out_error = (std::string("Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
                     
                     glBindBuffer(GL_ARRAY_BUFFER, 0);
                     isUploaded = true; // for deletion
-                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
+                    std::string error;
+                    if(!DeleteFromGPU(error)) jar::Logger::GetDefaultLogger().Error("g2::Modell::UploadToGPU(): Could not properly clean up after failed upload: " + error);
                     return false;
                 }
         
@@ -99,23 +106,25 @@ namespace g2
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->triangleVBOIndex);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
-                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    out_error = (std::string("Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
                     
                     assert(glGetError() == GL_NO_ERROR);
                     isUploaded = true; // for deletion
-                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
+                    std::string error;
+                    if(!DeleteFromGPU(error)) jar::Logger::GetDefaultLogger().Error("g2::Modell::UploadToGPU(): Could not properly clean up after failed upload: " + error);
                     return false;
                 }
                 //upload data
                 glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Model::Triangle) * curSurface->triangles.size(), curSurface->triangles.data(), GL_STATIC_DRAW);
                 if((lastError = glGetError()) != GL_NO_ERROR)
                 {
-                    jar::Logger::GetDefaultLogger().Error(std::string("g2::Model::UploadToGPU(): Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
+                    out_error = std::string("Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError));
                     
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                     assert(glGetError() == GL_NO_ERROR);
                     isUploaded = true; // for deletion
-                    if(!DeleteFromGPU()) jar::Logger::GetDefaultLogger().Error("g2::Modell:UploadToGPU(): Could not properly clean up after failed upload!");
+                    std::string error;
+                    if(!DeleteFromGPU(error)) jar::Logger::GetDefaultLogger().Error("g2::Modell::UploadToGPU(): Could not properly clean up after failed upload: " + error);
                     return false;
                 }
         
@@ -129,12 +138,11 @@ namespace g2
         return true;
     }
 
-    const bool Model::DeleteFromGPU()
+    const bool Model::DeleteFromGPU(std::string& out_error)
     {
-        // if it's not on the gpu, we silently ignore
         if(!isUploaded)
         {
-            jar::Logger::GetDefaultLogger().Error("g2::Model::DeleteFromGPU() called on non-uploaded model!");
+            out_error = ("Not uploaded!");
             return false;
         }
 
@@ -142,7 +150,7 @@ namespace g2
 #ifdef _DEBUG
         if(err != GL_NO_ERROR)
         {
-            Logger::GetDefaultLogger().Warning(std::string("Model::DeleteFromGPU(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+            Logger::GetDefaultLogger().Warning(std::string("g2::Model::DeleteFromGPU(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
         }
 #endif
 
@@ -160,14 +168,14 @@ namespace g2
                 err = glGetError();
                 if(err != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Could not delete triangle VBO buffer: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("Could not delete triangle VBO buffer: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
                     success = false;
                 }
                 glDeleteBuffers(1, &curSurface->vertexVBOIndex);
                 err = glGetError();
                 if(err != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Could not delete vertex VBO buffer: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("Could not delete vertex VBO buffer: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
                     success = false;
                 }
                 curSurface->triangleVBOIndex = 0;
@@ -179,11 +187,11 @@ namespace g2
         return success;
     }
 
-    const bool Model::Render()
+    const bool Model::Render(std::string& out_error)
     {
         if(!isUploaded)
         {
-            jar::Logger::GetDefaultLogger().Error("g2::Model::Render() called on non-uploaded model!");
+            out_error = ("Not uploaded!");
             return false;
         }
 
@@ -191,7 +199,7 @@ namespace g2
 #ifdef _DEBUG
         if(err != GL_NO_ERROR)
         {
-            Logger::GetDefaultLogger().Warning(std::string("Model::Render(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+            Logger::GetDefaultLogger().Warning(std::string("g2::Model::Render(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
         }
 #endif
         
@@ -206,7 +214,7 @@ namespace g2
 #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): BindBuffer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("BindBuffer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
                     return false;
                 }
 #endif
@@ -217,7 +225,8 @@ namespace g2
     #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): VertexPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("VertexPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
                     return false;
                 }
     #endif
@@ -227,7 +236,8 @@ namespace g2
     #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): NormalPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("NormalPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
                     return false;
                 }
     #endif
@@ -237,7 +247,8 @@ namespace g2
     #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): TexCoordPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("TexCoordPointer OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
                     return false;
                 }
     #endif
@@ -249,18 +260,20 @@ namespace g2
 #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): BindBuffer (2) OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("BindBuffer (2) OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
                     return false;
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
                 }
 #endif
 
                 //   Draw!
                 glDrawElements(GL_TRIANGLES, curSurface->triangles.size() * 3, GL_UNSIGNED_INT, NULL);
-                //glDrawElements(GL_TRIANGLES, curSurface->triangles.size() * 3, GL_UNSIGNED_INT, curSurface->triangles.data()); // works when nothing is bound to GL_ELEMENT_ARRAY_BUFFER
 #ifdef _DEBUG
                 if((err = glGetError()) != GL_NO_ERROR)
                 {
-                    Logger::GetDefaultLogger().Error(std::string("Model::Render(): DrawElements OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    out_error = (std::string("DrawElements OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+                    glBindBuffer(GL_ARRAY_BUFFER, 0);
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                     return false;
                 }
 #endif
@@ -272,7 +285,7 @@ namespace g2
 
         if((err = glGetError()) != GL_NO_ERROR)
         {
-            Logger::GetDefaultLogger().Error(std::string("Model::Render(): Unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+            out_error = (std::string("Unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
             return false;
         }
 
@@ -418,9 +431,10 @@ namespace g2
 
     const bool Model::Triangle::LoadFromFile(fs::File file)
     {
-        if(!fs::ReadInt(file, indices[0])) return false;
-        if(!fs::ReadInt(file, indices[1])) return false;
+        // order has to be flipped
         if(!fs::ReadInt(file, indices[2])) return false;
+        if(!fs::ReadInt(file, indices[1])) return false;
+        if(!fs::ReadInt(file, indices[0])) return false;
         return true;
     }
 

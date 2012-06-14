@@ -16,9 +16,9 @@ void Model::BindToLua(lua_State* L)
             luabind::class_<Model>("Model")
                 .def(luabind::constructor<>())
                 .def("LoadFromFile", &Model::LoadFromFile, luabind::pure_out_value(_3))
-                .def("UploadToGPU", &Model::UploadToGPU)
-                .def("DeleteFromGPU", &Model::DeleteFromGPU)
-                .def("Render", &Model::Render)
+                .def("UploadToGPU", &Model::UploadToGPU, luabind::pure_out_value(_2))
+                .def("DeleteFromGPU", &Model::DeleteFromGPU, luabind::pure_out_value(_2))
+                .def("Render", &Model::Render, luabind::pure_out_value(_2))
         ]
     ];
 }
