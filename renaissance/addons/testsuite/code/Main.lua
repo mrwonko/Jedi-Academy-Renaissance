@@ -22,7 +22,22 @@ local Prepare2DRender = jar.Prepare2DRender
 local model = jar.g2.Model()
 local success, err = model:LoadFromFile("models/test/blaster_pistol_w.glm") -- sorry, can't include this due to copyrights - will make a custom test model in time.
 if not success then error(err) end
-if not model:UploadToGPU() then error("Can't upload to GPU") end
+local success, err =  model:UploadToGPU()
+if not success then error("Can't upload to GPU" + err) end
+
+local level = jar.SimpleLevel()
+local success, err = level:LoadFromFile("levels/testlevelv2.hlvl")
+if not success then error(err) end
+
+print("Loaded test level.\nEntities:\n")
+for _, entity in pairs(level:GetEntities()) do
+	for key, val in pairs(entity) do
+		print(key, val)
+	end
+	print()
+end
+
+local success, err = level:UploadToGPU()
 
 print("==== Test Suite Start ====")
 print("")
@@ -119,6 +134,9 @@ end
 
 local lastFrametime = jar.GetTime()
 
+local rotX = 0
+local rotZ = 0
+
 local middle = jar.Vector2i(g_TestWindow:GetSize().X \ 2, g_TestWindow:GetSize().Y \ 2) -- \ is div
 while running do
 	HandleEvents()
@@ -156,9 +174,20 @@ while running do
 	--]]
 	
 	--   3d drawing!
-	glTranslate(-10, 0, -20)
-	--jar.RenderTriangleOfDeath()
 	
+	-- rotating level
+	glTranslate(0, 0, -20)
+	rotZ = rotZ + deltaT / 10
+	rotX = rotX + deltaT / 20
+	glRotate(rotX, 1, 0, 0)
+	glRotate(rotZ, 0, 0, 1)
+	--jar.RenderTriangleOfDeath()
+	level:Render()
+	
+	
+	glLoadIdentity()
+	
+	glTranslate(-10, 0, -20)
 	---[[
 	glColor(jar.Color.Red)
 	model:Render()
@@ -184,6 +213,7 @@ end
 
 -- ensure model gets deleted before window (and OpenGL context with it)
 model = nil
+level = nil
 -- or I could just model:DeleteFromGPU()...
 collectgarbage()
 

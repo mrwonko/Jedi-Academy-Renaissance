@@ -23,13 +23,13 @@ namespace g2
 
         /** \brief Uploads this model to the GPU's vram for fast rendering.
         **/
-        const bool UploadToGPU();
+        const bool UploadToGPU(std::string& out_error);
         /** \brief Deletes this model from the GPU's vram.
         **/
-        const bool DeleteFromGPU();
+        const bool DeleteFromGPU(std::string& out_error);
         /** \brief Renders this model. Requirement: Has been uploaded to the GPU.
         **/
-        const bool Render();
+        const bool Render(std::string& out_error);
 
         static void BindToLua(lua_State* L);
 

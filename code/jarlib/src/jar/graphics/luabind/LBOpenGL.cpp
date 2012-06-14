@@ -44,6 +44,8 @@ void Prepare3DRender(const double fovY, const double aspect, const double zNear,
     glDisableClientState(GL_COLOR_ARRAY);
     glDisable(GL_LIGHTING);
 
+    glEnable(GL_CULL_FACE);
+
     //   disable any state left over by SFML
     
     glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
@@ -81,6 +83,7 @@ void Prepare2DRender(sf::RenderTarget& target)
     glDisableClientState(GL_VERTEX_ARRAY); // this one's actually used by SFML, too
     glDisableClientState(GL_TEXTURE_COORD_ARRAY); // this one's actually used by SFML, too
     glDisableClientState(GL_NORMAL_ARRAY);
+    glDisable(GL_CULL_FACE);
 
     target.resetGLStates();
 }
