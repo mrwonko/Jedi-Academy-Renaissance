@@ -7,12 +7,17 @@
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
 #include <GL/glew.h>
+#include <SFML/Graphics/CircleShape.hpp>
 
 namespace jar {
 
 RenderWindow::RenderWindow(const unsigned int width, const unsigned int height, const std::string& title, const bool border, const bool fullscreen) :
     sf::RenderWindow(sf::VideoMode(width, height, 32), title, (fullscreen ? sf::Style::Fullscreen : (border ? sf::Style::Close : 0) ) )
 {
+    // Render something to the window to ensure it's properly initialized
+    draw(sf::CircleShape());
+    clear();
+
     //ctor
     Input::GetSingleton().OnWindowCreated();
 

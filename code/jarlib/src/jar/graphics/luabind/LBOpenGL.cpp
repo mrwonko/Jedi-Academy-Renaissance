@@ -16,7 +16,13 @@ namespace jar
 
 void Prepare3DRender(const double fovY, const double aspect, const double zNear, const double zFar)
 {
-
+#ifdef _DEBUG
+    GLenum err = glGetError();
+    if(err != GL_NO_ERROR)
+    {
+        Logger::GetDefaultLogger().Warning(std::string("Prepare3DRender(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+    }
+#endif
     // Enable Z-buffer read and write
     glEnable(GL_DEPTH_TEST); // enable depth test
     //glDepthMask(GL_TRUE); // enable writing do depth buffer - is enabled by default (?)
@@ -35,17 +41,39 @@ void Prepare3DRender(const double fovY, const double aspect, const double zNear,
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+    glDisable(GL_LIGHTING);
 
     //   disable any state left over by SFML
     
     glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+    //glDisable(GL_TEXTURE_2D);
     glUseProgram(0); // disable shader
     glColor4f(1.f, 1.f, 1.f, 1.f); // reset color
-    glBlendFunc(GL_ONE, GL_ZERO); // reset blending
+    if(false)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ZERO); // reset blending
+    }
+    {
+        glDisable(GL_BLEND);
+    }
     
     // Reset transformations
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    //enable usage of glColor*()-settings as Diffuse component
+    //glColorMaterial(GL_FRONT, GL_DIFFUSE);
+    //glEnable(GL_COLOR_MATERIAL);
+
+#ifdef _DEBUG
+    err = glGetError();
+    if(err != GL_NO_ERROR)
+    {
+        Logger::GetDefaultLogger().Warning(std::string("Prepare3DRender(): Unexcpected OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+    }
+#endif
 }
 
 void Prepare2DRender(sf::RenderTarget& target)
@@ -99,7 +127,7 @@ void LoadTransform(const btTransform& transform)
 void LoadIdentity() { glLoadIdentity(); }
 void MatrixMode(const GLenum mode) { glMatrixMode(mode); }
 void Perspective(const float fovY, const float aspect, const float zNear, const float zFar) { gluPerspective(fovY, aspect, zNear, zFar); }
-void Color(const sf::Color& col) { glColor4b(col.r, col.g, col.b, col.a); }
+void Color(const sf::Color& col) { glColor4ub(col.r, col.g, col.b, col.a); }
 void PushMatrix() { glPushMatrix(); }
 void PopMatrix() { glPopMatrix(); }
 void Rotate(const float angle_deg, const float x, const float y, const float z) { glRotatef(angle_deg, x, y, z); }
