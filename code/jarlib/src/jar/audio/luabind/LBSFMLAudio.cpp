@@ -96,7 +96,7 @@ void BindSFMLAudio(lua_State* L)
             .def("Play", &sf::Sound::play)
             .def("Pause", &sf::Sound::pause)
             .def("Stop", &sf::Sound::stop)
-            .def("SetBuffer", &sf::Sound::setBuffer, luabind::dependency(_1, _2)) //1st: who keeps alive, 2nd: who is kept alive. _1 = this.
+            .def("SetBuffer", &sf::Sound::setBuffer, luabind::dependency(_1, _2)) //1st: who keeps alive, 2nd: who is kept alive. _1 = this. FIXME: Dependency stays after change!
             .def("GetBuffer", &sf::Sound::getBuffer)
             .def("SetLoop", &sf::Sound::setLoop)
             .def("GetLoop", &sf::Sound::getLoop)

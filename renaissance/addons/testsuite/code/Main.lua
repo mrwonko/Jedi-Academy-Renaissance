@@ -82,16 +82,6 @@ local testText = TextTest()
 
 --testText:SetFontSize(8)
 
-local moar = true
-local x = 400
-local aLittleCircle = jar.CircleShape(32)
-aLittleCircle:SetFillColor(jar.Color.Transparent)
-aLittleCircle:SetOutlineColor(jar.Color.Red)
-aLittleCircle:SetOutlineThickness(1)
-aLittleCircle:SetY(300)
-aLittleCircle:SetOrigin(32, 32)
-aLittleCircle:SetX(x)
-
 local running = true
 g_CCommandManager:RegisterCommand
 {
@@ -127,14 +117,6 @@ local function HandleEvents()
 	g_EventListenerStack:PostEvent()
 end
 
--- Sound test
-local Sound = jar.Sound()
-local SoundBuffer = jar.SoundBuffer()
-if not SoundBuffer:LoadFromFile("sound/beep.wav") then
-	error("Could not laod \"sound/beep.wav\"")
-end
-Sound:SetBuffer(SoundBuffer)
-
 local lastFrametime = jar.GetTime()
 
 local middle = jar.Vector2i(g_TestWindow:GetSize().X \ 2, g_TestWindow:GetSize().Y \ 2) -- \ is div
@@ -159,34 +141,14 @@ while running do
 	jar.Core.GetSingleton():Update(deltaT)
 	--print("Core Update: " .. jar.GetTime() - startTime .. "ms")
 	
-	aLittleCircle:SetX(x)
-	
-	
-	if moar then
-		x = x + 0.1 * deltaT
-	else
-		x = x - 0.1 * deltaT
-	end
-	
-	if x <= 50 or x >= 750 then
-		if moar then
-			Sound:SetPosition(1, 0, 0)
-		else
-			Sound:SetPosition(-1, 0, 0)
-		end
-		--Sound:Play()
-		moar = not moar
-	end
-	
 	g_TestWindow:Clear(jar.Color.Black)
-	--g_TestWindow:Clear(jar.Color.Magenta)
+	g_TestWindow:Clear(jar.Color.Magenta)
 	
 	--g_TestWindow:Draw(testSprite)
-	g_TestWindow:Draw(aLittleCircle)
-	g_TestWindow:Draw(testText)
+	--g_TestWindow:Draw(testText)
 	
 	--   prepare for 3D drawing
-	Prepare3DRender(90, 800/600, 1, 1024)
+	Prepare3DRender(90, g_TestWindow:GetSize().X/g_TestWindow:GetSize().Y, 1, 1024)
 	--[[
 	glRotate(-90, 1, 0, 0) --rotating 90° ccw around X should turn Z from Back into Up
 	glRotate(-90, 0, 0, 1) --rotating 90° ccw around Z should turn X from Right into Back
@@ -194,11 +156,15 @@ while running do
 	--]]
 	
 	--   3d drawing!
-	glTranslate(0, 0, -64)
+	glTranslate(-10, 0, -20)
 	--jar.RenderTriangleOfDeath()
 	
 	---[[
 	glColor(jar.Color.Red)
+	model:Render()
+	
+	glTranslate(20, 0, 0)
+	glColor(jar.Color.Blue)
 	model:Render()
 	--]]
 	--jar.RenderTriangleOfDeath()
@@ -218,6 +184,7 @@ end
 
 -- ensure model gets deleted before window (and OpenGL context with it)
 model = nil
+-- or I could just model:DeleteFromGPU()...
 collectgarbage()
 
 g_CVarManager:SaveCVars()
