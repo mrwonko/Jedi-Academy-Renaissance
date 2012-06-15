@@ -1,4 +1,4 @@
-#include "jar/graphics/SimpleLevel.hpp"
+#include "SimpleLevel.hpp"
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
 #include "jar/core/FileSystem.hpp"
@@ -6,11 +6,14 @@
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
 #include <cassert>
+#include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h> // for btTriangleIndexVertexArray, my 
+#include <BulletDynamics/Dynamics/btDynamicsWorld.h> // for btDynamicsWorld
+#include <BulletDynamics/Dynamics/btRigidBody.h> // for btRigidBody
+#include <LinearMath/btDefaultMotionState.h> // for btDefaultMotionState
+#include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h> // for btBvhTriangleMeshShape
+#include <boost/static_assert.hpp>
+#include <cstddef> //offsetof
 
-namespace jar
-{
-
-// "HFPSLVL\0"
 const char SimpleLevel::IDENT[8] = { 'M', 'R', 'W', 'L', 'V', 'L', '1', '\0' };
 
 namespace
@@ -35,27 +38,27 @@ SimpleLevel::~SimpleLevel()
         std::string error;
         if(!DeleteFromGPU(error))
         {
-            Logger::GetDefaultLogger().Error("Could not unload SimpleLevel: " + error);
+            jar::Logger::GetDefaultLogger().Error("Could not unload SimpleLevel: " + error);
         }
     }
 }
 
 const bool SimpleLevel::LoadFromFile(const std::string& filename, std::string& out_error)
 {
-    fs::GetLastError();
+    jar::fs::GetLastError();
 
     //  Open for binary reading
-    fs::File file = fs::OpenRead(filename);
+    jar::fs::File file = jar::fs::OpenRead(filename);
     if(!file)
     {
-        out_error = ("Could not open " + filename + ": " + fs::GetLastError());
+        out_error = ("Could not open " + filename + ": " + jar::fs::GetLastError());
         return false;
     }
 
     //  Read mHeader
-    if(fs::Read(file, &mHeader, sizeof(Header), 1) != 1)
+    if(jar::fs::Read(file, &mHeader, sizeof(Header), 1) != 1)
     {
-        out_error = (filename + " is no valid level file, could not read mHeader: " + fs::GetLastError());
+        out_error = (filename + " is no valid level file, could not read mHeader: " + jar::fs::GetLastError());
         return false;
     }
     for(std::size_t i = 0; i < getArrayLength(mHeader.ident); ++i)
@@ -68,7 +71,7 @@ const bool SimpleLevel::LoadFromFile(const std::string& filename, std::string& o
     }
     if(mHeader.version != VERSION)
     {
-        out_error = ( "level file " + filename + " has the wrong version (" + Helpers::IntToString(mHeader.version) + " should be " + Helpers::IntToString(VERSION) + ")");
+        out_error = ( "level file " + filename + " has the wrong version (" + jar::Helpers::IntToString(mHeader.version) + " should be " + jar::Helpers::IntToString(VERSION) + ")");
         return false;
     }
 
@@ -76,19 +79,29 @@ const bool SimpleLevel::LoadFromFile(const std::string& filename, std::string& o
     mSurfaces = new Surface[mHeader.numSurfaces];
     for(Surface* curSurf = mSurfaces; curSurf < mSurfaces + mHeader.numSurfaces; ++curSurf)
     {
-        if(fs::Read(file, curSurf, sizeof(Surface) - sizeof(curSurf->vertices) - sizeof(curSurf->triangles) - sizeof(curSurf->VBOIndices), 1) != 1)
+        if(jar::fs::Read(file, curSurf, sizeof(Surface) - sizeof(curSurf->vertices) - sizeof(curSurf->triangles) - sizeof(curSurf->runtimeData), 1) != 1)
         {
             delete[] mSurfaces;
-            out_error = ("Error reading from level file " + filename + ": " + fs::GetLastError());
+            mSurfaces = NULL;
+            out_error = ("Error reading from level file " + filename + ": " + jar::fs::GetLastError());
             return false;
         }
-        curSurf->vertices = new Vertex[curSurf->numVertices];
-        curSurf->triangles = new Triangle[curSurf->numTriangles];
-        if( fs::Read(file, curSurf->vertices, curSurf->numVertices * sizeof(Vertex), 1) != 1 ||
-            fs::Read(file, curSurf->triangles, curSurf->numTriangles * sizeof(Triangle), 1) != 1)
+        curSurf->vertices = new Surface::Vertex[curSurf->numVertices];
+        curSurf->triangles = new Surface::Triangle[curSurf->numTriangles];
+        if( jar::fs::Read(file, curSurf->vertices, curSurf->numVertices * sizeof(Surface::Vertex), 1) != 1 ||
+            jar::fs::Read(file, curSurf->triangles, curSurf->numTriangles * sizeof(Surface::Triangle), 1) != 1)
         {
             delete[] mSurfaces;
-            out_error = ("Error reading from level file " + filename + ": " + fs::GetLastError());
+            mSurfaces = NULL;
+            out_error = ("Error reading from level file " + filename + ": " + jar::fs::GetLastError());
+            return false;
+        }
+        std::string error;
+        if(!curSurf->runtimeData.CreatePhysBody(error, *curSurf))
+        {
+            delete[] mSurfaces;
+            mSurfaces = NULL;
+            out_error = "Error setting up Physics: " + error;
             return false;
         }
     }
@@ -108,7 +121,7 @@ const bool SimpleLevel::LoadFromFile(const std::string& filename, std::string& o
     std::string curValue;
     while(true)
     {
-        if(fs::EndOfFile(file))
+        if(jar::fs::EndOfFile(file))
         {
             if(curState == sStart)
             {
@@ -123,9 +136,9 @@ const bool SimpleLevel::LoadFromFile(const std::string& filename, std::string& o
         char c;
         
         // try reading a character.
-        if(!fs::ReadChar(file, c))
+        if(!jar::fs::ReadChar(file, c))
         {
-            out_error = ("Error reading mEntities from level file " + filename + ": " + fs::GetLastError());
+            out_error = ("Error reading mEntities from level file " + filename + ": " + jar::fs::GetLastError());
             return false;
         }
         switch(curState)
@@ -220,14 +233,14 @@ const bool SimpleLevel::LoadFromFile(const std::string& filename, std::string& o
                     }
                     else
                     {
-                        Logger::GetDefaultLogger().Warning("Duplicate key \"classname\" in Entity in level file " + filename + "!");
+                        jar::Logger::GetDefaultLogger().Warning("Duplicate key \"classname\" in Entity in level file " + filename + "!");
                     }
                 }
                 else
                 {
                     if(!curEntity.properties.insert(Entity::PropertyMap::value_type(curKey, curValue)).second)
                     {
-                        Logger::GetDefaultLogger().Warning("Duplicate key \"" + curKey + "\" in Entity in level file " + filename + "!");
+                        jar::Logger::GetDefaultLogger().Warning("Duplicate key \"" + curKey + "\" in Entity in level file " + filename + "!");
                     }
                 }
                 break;
@@ -261,19 +274,23 @@ const bool SimpleLevel::UploadToGPU(std::string& out_error)
     Surface* end = mSurfaces + mHeader.numSurfaces;
     for(Surface* curSurface = mSurfaces; curSurface != end; ++curSurface)
     {
+        if(curSurface->flags & Surface::sfInvisible)
+        {
+            continue;
+        }
         // Generate VBO buffers
-        glGenBuffers(2, curSurface->VBOIndices);
+        glGenBuffers(2, curSurface->runtimeData.VBOIndices);
         if((lastError = glGetError()) != GL_NO_ERROR)
         {
             out_error = (std::string("Error generating buffers:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
-            curSurface->VBOIndices[0] = curSurface->VBOIndices[1] = 0;
+            curSurface->runtimeData.VBOIndices[0] = curSurface->runtimeData.VBOIndices[1] = 0;
             return false;
         }
 
         //     Upload Data
         //  upload vertices
         //bind buffer
-        glBindBuffer(GL_ARRAY_BUFFER, curSurface->VBOIndices[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, curSurface->runtimeData.VBOIndices[0]);
         if((lastError = glGetError()) != GL_NO_ERROR)
         {
             out_error = (std::string("Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
@@ -285,7 +302,7 @@ const bool SimpleLevel::UploadToGPU(std::string& out_error)
             return false;
         }
         //upload data
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * curSurface->numVertices, curSurface->vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Surface::Vertex) * curSurface->numVertices, curSurface->vertices, GL_STATIC_DRAW);
         if((lastError = glGetError()) != GL_NO_ERROR)
         {
             out_error = (std::string("Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
@@ -302,7 +319,7 @@ const bool SimpleLevel::UploadToGPU(std::string& out_error)
         
         //  upload triangles
         //bind buffer
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->VBOIndices[1]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->runtimeData.VBOIndices[1]);
         if((lastError = glGetError()) != GL_NO_ERROR)
         {
             out_error = (std::string("Error binding buffer:\n") + reinterpret_cast<const char*>(gluErrorString(lastError)));
@@ -314,7 +331,7 @@ const bool SimpleLevel::UploadToGPU(std::string& out_error)
             return false;
         }
         //upload data
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Triangle) * curSurface->numTriangles, curSurface->triangles, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(Surface::Triangle) * curSurface->numTriangles, curSurface->triangles, GL_STATIC_DRAW);
         if((lastError = glGetError()) != GL_NO_ERROR)
         {
             out_error = std::string("Error uploading buffer data:\n") + reinterpret_cast<const char*>(gluErrorString(lastError));
@@ -348,7 +365,7 @@ const bool SimpleLevel::DeleteFromGPU(std::string& out_error)
 #ifdef _DEBUG
     if(err != GL_NO_ERROR)
     {
-        Logger::GetDefaultLogger().Warning(std::string("SimpleLevel::DeleteFromGPU(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+        jar::Logger::GetDefaultLogger().Warning(std::string("SimpleLevel::DeleteFromGPU(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
     }
 #endif
 
@@ -359,14 +376,18 @@ const bool SimpleLevel::DeleteFromGPU(std::string& out_error)
     Surface* end = mSurfaces + mHeader.numSurfaces;
     for(Surface* curSurface = mSurfaces; curSurface != end; ++curSurface)
     {
-        glDeleteBuffers(2, curSurface->VBOIndices);
+        if(curSurface->flags & Surface::sfInvisible)
+        {
+            continue;
+        }
+        glDeleteBuffers(2, curSurface->runtimeData.VBOIndices);
         err = glGetError();
         if(err != GL_NO_ERROR)
         {
             out_error = (std::string("Could not delete triangle VBO buffer: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
             success = false;
         }
-        curSurface->VBOIndices[0] = curSurface->VBOIndices[1] = 0;
+        curSurface->runtimeData.VBOIndices[0] = curSurface->runtimeData.VBOIndices[1] = 0;
     }
 
     mUploaded = false;
@@ -385,17 +406,21 @@ const bool SimpleLevel::Render(std::string& out_error)
     #ifdef _DEBUG
     if(err != GL_NO_ERROR)
     {
-        Logger::GetDefaultLogger().Warning(std::string("SimpleModel::Render(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
+        jar::Logger::GetDefaultLogger().Warning(std::string("SimpleModel::Render(): Previously unhandled OpenGL error: ") + reinterpret_cast<const char*>(glewGetErrorString(err)));
     }
     #endif
     
     Surface* end = mSurfaces + mHeader.numSurfaces;
     for(Surface* curSurface = mSurfaces; curSurface != end; ++curSurface)
     {
+        if(curSurface->flags & Surface::sfInvisible)
+        {
+            continue;
+        }
         glColor3ubv(curSurface->color);
 
         //   Bind Vertex VBO
-        glBindBuffer(GL_ARRAY_BUFFER, curSurface->VBOIndices[0]);
+        glBindBuffer(GL_ARRAY_BUFFER, curSurface->runtimeData.VBOIndices[0]);
 #ifdef _DEBUG
         if((err = glGetError()) != GL_NO_ERROR)
         {
@@ -406,7 +431,7 @@ const bool SimpleLevel::Render(std::string& out_error)
 
         //   Describe memory layout
         // coordinate
-        glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, coordinates));
+        glVertexPointer(3, GL_FLOAT, sizeof(Surface::Vertex), (void*)offsetof(Surface::Vertex, coordinates));
 #ifdef _DEBUG
         if((err = glGetError()) != GL_NO_ERROR)
         {
@@ -417,7 +442,7 @@ const bool SimpleLevel::Render(std::string& out_error)
 #endif
 
         // uv
-        glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+        glTexCoordPointer(2, GL_FLOAT, sizeof(Surface::Vertex), (void*)offsetof(Surface::Vertex, uv));
 #ifdef _DEBUG
         if((err = glGetError()) != GL_NO_ERROR)
         {
@@ -428,7 +453,7 @@ const bool SimpleLevel::Render(std::string& out_error)
 #endif
                 
         //   Bind Triangle VBO
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->VBOIndices[1]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, curSurface->runtimeData.VBOIndices[1]);
 #ifdef _DEBUG
         if((err = glGetError()) != GL_NO_ERROR)
         {
@@ -463,4 +488,162 @@ const bool SimpleLevel::Render(std::string& out_error)
     return true;
 }
 
+SimpleLevel::Surface::RuntimeData::RuntimeData() :
+    physTriangles(NULL),
+    physMesh(NULL),
+    physCollisionShape(NULL),
+    physBody(NULL),
+    physMotionState(NULL)
+{
+    VBOIndices[0] = VBOIndices[1] = 0;
+}
+
+SimpleLevel::Surface::RuntimeData::~RuntimeData()
+{
+    if(physMesh || physBody || physMotionState || physCollisionShape || physTriangles)
+    {
+        std::string error;
+        if(!DeletePhysBody(error))
+        {
+            jar::Logger::GetDefaultLogger().Error("Could not delete Physical Body of Level Surface: " + error);
+        }
+    }
+    delete[] physTriangles;
+}
+
+const bool SimpleLevel::Surface::CreatePhysBody(std::string& out_error)
+{
+    return runtimeData.CreatePhysBody(out_error, *this);
+}
+
+const bool SimpleLevel::Surface::RuntimeData::CreatePhysBody(std::string& out_error, Surface& surface)
+{
+    if(physMesh || physMotionState || physBody || physCollisionShape || physTriangles)
+    {
+        out_error = "Physics Body already (partially) created!";
+        return false;
+    }
+    if(!surface.vertices || !surface.triangles)
+    {
+        out_error = "No valid surface!";
+        return false;
+    }
+    if(!(surface.flags & sfSolid))
+    {
+        out_error = "Nonsolid surface!";
+        return false;
+    }
+    physTriangles = new int[surface.numTriangles * 3];
+    unsigned int index = 0;
+    Triangle* endTri = surface.triangles + surface.numTriangles;
+    for(Triangle* curTri = surface.triangles; curTri != endTri; ++curTri)
+    {
+        physTriangles[index++] = curTri->indices[0];
+        physTriangles[index++] = curTri->indices[1];
+        physTriangles[index++] = curTri->indices[2];
+    }
+#ifdef BT_USE_DOUBLE_PRECISION
+#error Cannot reuse SimpleLevel's vertices when using double precision physics!
+#endif
+    BOOST_STATIC_ASSERT(sizeof(btScalar) == sizeof(float)); //same as above
+
+    physMesh = new btTriangleIndexVertexArray(surface.numTriangles, physTriangles, sizeof(int), surface.numVertices, reinterpret_cast<float*>(reinterpret_cast<char*>(surface.vertices) + offsetof(Vertex, coordinates)), sizeof(surface.vertices[0]));
+
+    physCollisionShape = new btBvhTriangleMeshShape(physMesh, true); // second parameter: useQuantizedAabbCompression (better memory compression)
+    
+    //motion states provide a callback for changing an object's position (the rendered one) - I don't need that, so I use a default one.
+    physMotionState = new btDefaultMotionState();
+
+    btRigidBody::btRigidBodyConstructionInfo bodyInfo(0.0f, physMotionState, physCollisionShape);
+    physBody = new btRigidBody(bodyInfo);
+    return true;
+}
+
+const bool SimpleLevel::Surface::DeletePhysBody(std::string& out_error)
+{
+    return runtimeData.DeletePhysBody(out_error);
+}
+
+const bool SimpleLevel::Surface::RuntimeData::DeletePhysBody(std::string& out_error)
+{
+    if(!physBody && !physMesh && !physMotionState && !physCollisionShape && !physTriangles)
+    {
+        out_error = "No Physics Body created!";
+        return false;
+    }
+    delete physBody;
+    physBody = NULL;
+    delete physMotionState;
+    physMotionState = NULL;
+    delete physCollisionShape;
+    physCollisionShape = NULL;
+    delete physMesh;
+    physMesh = NULL;
+    delete[] physTriangles;
+    physTriangles = NULL;
+    return true;
+}
+
+const bool SimpleLevel::Surface::AddToPhysWorld(btDynamicsWorld& world, std::string& out_error)
+{
+    if(!runtimeData.physBody)
+    {
+        out_error = "No Physics Body created yet!";
+        return false;
+    }
+    world.addRigidBody(runtimeData.physBody);
+    return true;
+}
+
+const bool SimpleLevel::Surface::DeleteFromPhysWorld(btDynamicsWorld& world, std::string& out_error)
+{
+    if(!runtimeData.physBody)
+    {
+        out_error = "No Physics Body created yet!";
+        return false;
+    }
+    world.removeRigidBody(runtimeData.physBody);
+    return true;
+}
+
+const bool SimpleLevel::AddToPhysWorld(btDynamicsWorld& world, std::string& out_error)
+{
+    Surface* surfacesEnd = mSurfaces + mHeader.numSurfaces;
+    for(Surface* curSurf = mSurfaces; curSurf != surfacesEnd; ++curSurf)
+    {
+        if(!(curSurf->flags & Surface::sfSolid))
+        {
+            continue;
+        }
+        if(!curSurf->AddToPhysWorld(world, out_error))
+        {
+            for(--curSurf; curSurf != mSurfaces - 1; --curSurf)
+            {
+                std::string error;
+                if(!curSurf->DeleteFromPhysWorld(world, error))
+                {
+                    jar::Logger::GetDefaultLogger().Error("SimpleLevel::AddToPhysWorld(): Error during cleanup after failure: " + error);
+                }
+            }
+            return false;
+        }
+    }
+    return true;
+}
+
+const bool SimpleLevel::DeleteFromPhysWorld(btDynamicsWorld& world, std::string& out_error)
+{
+    Surface* surfacesEnd = mSurfaces + mHeader.numSurfaces;
+    for(Surface* curSurf = mSurfaces; curSurf != surfacesEnd; ++curSurf)
+    {
+        if(!(curSurf->flags & Surface::sfSolid))
+        {
+            continue;
+        }
+        if(!curSurf->DeleteFromPhysWorld(world, out_error))
+        {
+            return false;
+        }
+    }
+    return true;
 }

@@ -2,9 +2,12 @@
 #include <jar/Input.hpp>
 #include <jar/Graphics.hpp>
 #include <jar/Audio.hpp>
+#include <jar/Physics.hpp>
 #include <jar/core/CoutAndFileLogger.hpp>
 #include <jar/core/FileSystem.hpp>
 #include <jar/core/Lua.hpp>
+
+#include "SimpleLevel.hpp"
 
 #include <iostream>
 #include <exception>
@@ -27,11 +30,14 @@ int main(int argc, char** argv)
         jar::Input input; // just create this once (after core), no need to do anything else.
         jar::Graphics graphics; // just create this once (after core), no need to do anything else.
         jar::Audio audio; // just create this once (after core), no need to do anything else.
+        jar::Physics physics; // just create this once (after core), no need to do anything else.
 
         if(!core.Init(argc, argv, "../"))
         {
             return 0;
         }
+
+        SimpleLevel::BindToLua(core.GetLua().GetState());
 
         //TODO: when RELEASE, set RELEASE in Lua, too. (For proper mounting)
 

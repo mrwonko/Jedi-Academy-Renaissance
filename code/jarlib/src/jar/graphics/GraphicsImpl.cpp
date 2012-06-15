@@ -10,8 +10,6 @@
 #include "jar/graphics/luabind/SFMLGraphics.hpp"
 #include "jar/graphics/luabind/OpenGl.hpp"
 
-#include "jar/graphics/SimpleLevel.hpp"
-
 namespace jar {
 
 GraphicsImpl::GraphicsImpl()
@@ -35,8 +33,6 @@ const bool GraphicsImpl::Init()
     g2::Model::BindToLua(L);
     TextureManagerLuabind::BindToLua(L);
     BindOpenGL(L);
-
-    SimpleLevel::BindToLua(L);
 
     Logger::GetDefaultLogger().Info("Exposed Graphics System to Lua", 2);
     Logger::GetDefaultLogger().Info("- Graphics component successfully initialized.", 1);
