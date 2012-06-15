@@ -6,9 +6,11 @@
 #include <list>
 
 struct lua_State;
-
-namespace jar
-{
+class btRigidBody;
+class btCollisionShape;
+class btTriangleIndexVertexArray;
+class btDynamicsWorld;
+class btMotionState;
 
 struct SimpleLevel
 {
@@ -17,6 +19,11 @@ struct SimpleLevel
     const bool UploadToGPU(std::string& out_error);
     const bool DeleteFromGPU(std::string& out_error);
     const bool Render(std::string& out_error);
+
+    const bool AddToPhysWorld(btDynamicsWorld& world, std::string& out_error);
+    /** \note If removal of one Surface fails, the remaining ones won't be removed, either!
+    **/
+    const bool DeleteFromPhysWorld(btDynamicsWorld& world, std::string& out_error);
 
     static void BindToLua(lua_State* L);
 
@@ -46,17 +53,6 @@ private:
         unsigned int numSurfaces;
     };
 
-    struct Vertex
-    {
-        float coordinates[3];
-        float uv[2];
-    };
-
-    struct Triangle
-    {
-        unsigned short indices[3];
-    };
-
     struct Surface
     {
         Surface() :
@@ -70,6 +66,22 @@ private:
             delete[] triangles;
         }
 
+        const bool CreatePhysBody(std::string& out_error);
+        const bool DeletePhysBody(std::string& out_error);
+        const bool AddToPhysWorld(btDynamicsWorld& world, std::string& out_error);
+        const bool DeleteFromPhysWorld(btDynamicsWorld& world, std::string& out_error);
+        
+        struct Vertex
+        {
+            float coordinates[3];
+            float uv[2];
+        };
+
+        struct Triangle
+        {
+            unsigned short indices[3];
+        };
+
         enum SurfaceFlags
         {
             sfSolid = 1 << 0, // Whether this surface is solid, as far as the Physics Engine is concerned
@@ -81,9 +93,25 @@ private:
         int flags; // Combination of Surface Flags
         unsigned short numVertices;
         unsigned short numTriangles;
-        unsigned int VBOIndices[2]; // not in the file
         Vertex* vertices; // array with numVertices elements
         Triangle* triangles; // array with numTriangles elements
+
+        // Surface-related things only needed at runtime and thus not part of the file format:
+        struct RuntimeData
+        {
+            RuntimeData();
+            ~RuntimeData();
+            unsigned int VBOIndices[2];
+            int* physTriangles; // triangle indices as integers, for bullet
+            btTriangleIndexVertexArray* physMesh;
+            btCollisionShape* physCollisionShape;
+            btRigidBody* physBody;
+            btMotionState* physMotionState;
+
+            const bool CreatePhysBody(std::string& out_error, Surface& surface);
+            const bool DeletePhysBody(std::string& out_error);
+        };
+        RuntimeData runtimeData;
     };
 
     Header mHeader;
@@ -92,6 +120,5 @@ private:
    
     bool mUploaded;
 };
-}
 
 #endif

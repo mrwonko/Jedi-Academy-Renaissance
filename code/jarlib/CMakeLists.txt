@@ -35,32 +35,6 @@ include_directories("${ZLIB_INCLUDE_DIR}")
 find_package(PhysFS REQUIRED)
 include_directories("${PHYSFS_INCLUDE_DIR}")
 
-# find Bullet Physics
-if(NOT BULLET_ROOT)
-	set(BULLET_ROOT "$ENV{BULLET_ROOT}")
-endif(NOT BULLET_ROOT)
-find_package(Bullet)
-if(NOT BULLET_FOUND)
-	message(FATAL_ERROR "Could not find Bullet Physics - install it and/or set BULLET_ROOT accordingly.")
-endif(NOT BULLET_FOUND)
-include_directories("${BULLET_INCLUDE_DIRS}")
-
-# find OpenGL
-find_package(OpenGL REQUIRED)
-if(OPENGL_INCLUDE_DIR) #may be empty
-	include_directories("${OPENGL_INCLUDE_DIR}")
-endif(OPENGL_INCLUDE_DIR)
-
-# find GLEW
-if(NOT GLEW_ROOT_DIR)
-	set(GLEW_ROOT_DIR "$ENV{GLEW_ROOT}")
-endif(NOT GLEW_ROOT_DIR)
-find_package(GLEW)
-if(NOT GLEW_FOUND)
-	message(FATAL_ERROR "Could not find GLEW - install it and/or set GLEW_ROOT accordingly")
-endif(NOT GLEW_FOUND)
-include_directories("${GLEW_INCLUDE_PATH}")
-
 # Debug/Release differences
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
 	add_definitions(-D_DEBUG)
@@ -89,6 +63,7 @@ set(JARLIB_CORE_NAME ${JARLIB_CORE_NAME} PARENT_SCOPE)
 set(JARLIB_INPUT_NAME ${JARLIB_INPUT_NAME} PARENT_SCOPE)
 set(JARLIB_GRAPHICS_NAME ${JARLIB_GRAPHICS_NAME} PARENT_SCOPE)
 set(JARLIB_AUDIO_NAME ${JARLIB_AUDIO_NAME} PARENT_SCOPE)
+set(JARLIB_PHYSICS_NAME ${JARLIB_PHYSICS_NAME} PARENT_SCOPE)
 
 # the files of the different libraries
 
@@ -166,14 +141,12 @@ set(JARLIB_GRAPHICS_FILES
 	"src/jar/graphics/g2Animation.cpp"
 	"src/jar/graphics/g2CompBone.cpp"
 	"src/jar/graphics/g2Model.cpp"
-	"src/jar/graphics/SimpleLevel.cpp"
 	"src/jar/graphics/luabind/LBg2Model.cpp"
 	"src/jar/graphics/luabind/LBFont.cpp"
 	"src/jar/graphics/luabind/LBRenderWindow.cpp"
 	"src/jar/graphics/luabind/LBText.cpp"
 	"src/jar/graphics/luabind/LBSFMLGraphics.cpp"
 	"src/jar/graphics/luabind/LBOpenGL.cpp"
-	"src/jar/graphics/luabind/LBSimpleLevel.cpp"
 	"src/jar/graphics/Font.cpp"
 	"src/jar/graphics/GraphicsImpl.cpp"
 	"src/jar/graphics/RenderWindow.cpp"
@@ -184,7 +157,6 @@ set(JARLIB_GRAPHICS_FILES
 	"include/jar/graphics/g2Animation.hpp"
 	"include/jar/graphics/g2CompBone.hpp"
 	"include/jar/graphics/g2Model.hpp"
-	"include/jar/graphics/SimpleLevel.hpp"
 	"include/jar/graphics/API.hpp"
 	"include/jar/graphics/Font.hpp"
 	"include/jar/graphics/GraphicsImpl.hpp"

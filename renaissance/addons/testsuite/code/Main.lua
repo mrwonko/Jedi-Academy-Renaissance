@@ -20,13 +20,14 @@ local Prepare3DRender = jar.Prepare3DRender
 local Prepare2DRender = jar.Prepare2DRender
 
 local model = jar.g2.Model()
-local success, err = model:LoadFromFile("models/test/blaster_pistol_w.glm") -- sorry, can't include this due to copyrights - will make a custom test model in time.
+--local success, err = model:LoadFromFile("models/test/blaster_pistol_w.glm") -- sorry, can't include this due to copyrights - will make a custom test model in time.
+local success, err = model:LoadFromFile("models/player.glm")
 if not success then error(err) end
 local success, err =  model:UploadToGPU()
 if not success then error("Can't upload to GPU" + err) end
 
-local level = jar.SimpleLevel()
-local success, err = level:LoadFromFile("levels/testlevelv2.hlvl")
+local level = _G["7dfps"].SimpleLevel()
+local success, err = level:LoadFromFile("levels/testlevel.hlvl")
 if not success then error(err) end
 
 print("Loaded test level.\nEntities:\n")
@@ -176,27 +177,16 @@ while running do
 	--   3d drawing!
 	
 	-- rotating level
-	glTranslate(0, 0, -20)
+	glTranslate(0, 0, -10)
 	rotZ = rotZ + deltaT / 10
 	rotX = rotX + deltaT / 20
 	glRotate(rotX, 1, 0, 0)
 	glRotate(rotZ, 0, 0, 1)
 	--jar.RenderTriangleOfDeath()
 	level:Render()
-	
-	
-	glLoadIdentity()
-	
-	glTranslate(-10, 0, -20)
-	---[[
+	glTranslate(0, 0, 1)
 	glColor(jar.Color.Red)
 	model:Render()
-	
-	glTranslate(20, 0, 0)
-	glColor(jar.Color.Blue)
-	model:Render()
-	--]]
-	--jar.RenderTriangleOfDeath()
 	
 	--   reset to 2D drawing
 	Prepare2DRender(g_TestWindow)

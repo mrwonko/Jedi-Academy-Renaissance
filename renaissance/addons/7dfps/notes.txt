@@ -1,0 +1,5 @@
+Bullet has an internal fixed timestep of 60HZ. Keep that in mind! (Synchronization)
+
+create btDiscreteDynamicsWorld
+create btRigidBody, add it to the world
+call stepSimulation (interpolates on small timestep calls)

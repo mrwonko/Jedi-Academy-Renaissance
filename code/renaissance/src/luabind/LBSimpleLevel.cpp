@@ -1,11 +1,9 @@
-#include "jar/graphics/SimpleLevel.hpp"
+#include "SimpleLevel.hpp"
 #include <lua.hpp>
 #include <luabind/luabind.hpp>
 #include <luabind/out_value_policy.hpp>
 #include <luabind/object.hpp>
 
-namespace jar
-{
 
 namespace
 {
@@ -31,7 +29,7 @@ namespace
 
 void SimpleLevel::BindToLua(lua_State* L)
 {
-    luabind::module(L, "jar")
+    luabind::module(L, "7dfps")
     [
         luabind::class_<SimpleLevel>("SimpleLevel")
             .def(luabind::constructor<>())
@@ -40,7 +38,8 @@ void SimpleLevel::BindToLua(lua_State* L)
             .def("UploadToGPU", &SimpleLevel::UploadToGPU, luabind::pure_out_value(_2))
             .def("DeleteFromGPU", &SimpleLevel::DeleteFromGPU, luabind::pure_out_value(_2))
             .def("Render", &SimpleLevel::Render, luabind::pure_out_value(_2))
+            .def("AddToPhysWorld", &SimpleLevel::AddToPhysWorld, luabind::pure_out_value(_3))
+            .def("DeleteFromPhysWorld", &SimpleLevel::DeleteFromPhysWorld, luabind::pure_out_value(_3))
     ];
 }
 
-}

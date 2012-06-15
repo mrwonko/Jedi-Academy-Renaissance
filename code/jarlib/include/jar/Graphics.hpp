@@ -15,7 +15,6 @@ class JARGRAPHICSAPI Graphics
         virtual ~Graphics();
 
         static Graphics& GetSingleton() { assert(mSingleton); return *mSingleton; }
-    protected:
 
     private:
         GraphicsImpl* mImpl;
