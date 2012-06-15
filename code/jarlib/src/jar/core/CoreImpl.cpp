@@ -4,7 +4,7 @@
 #include "jar/core/Lua.hpp"
 #include "jar/core/FileSystem.hpp"
 #include "jar/core/Component.hpp"
-#include <jar/luabind/Core.hpp>
+#include <jar/core/luabind/Core.hpp>
 #include <luabind/luabind.hpp>
 
 namespace jar {
