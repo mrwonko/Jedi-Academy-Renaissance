@@ -82,7 +82,7 @@ set(JARLIB_CORE_FILES
 	"src/jar/core/LuaLogger.cpp"
 	"src/jar/core/Time.cpp"
 	"src/jar/core/Updatable.cpp"
-	"src/jar/luabind/LBCore.cpp"
+	"src/jar/core/luabind/LBCore.cpp"
 	"src/jar/Core.cpp"
 	
 	"include/jar/core/API.hpp"
@@ -101,7 +101,7 @@ set(JARLIB_CORE_FILES
 	"include/jar/core/Time.hpp"
 	"include/jar/core/Updatable.hpp"
 	"include/jar/core/VoidLogger.hpp"
-	"include/jar/luabind/Core.hpp"
+	"include/jar/core/luabind/Core.hpp"
 	"include/jar/Core.hpp"
 	"include/jar/Jar.hpp"
 	"include/jar/OS.hpp"
