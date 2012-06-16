@@ -2,6 +2,7 @@
 #include "jar/core/Logger.hpp"
 #include "jar/core/Helpers.hpp"
 #include "jar/core/FileSystem.hpp"
+#include "jar/physics/PhysicsWorld.hpp"
 #include <algorithm>
 #include <GL/glew.h>
 #include <SFML/OpenGL.hpp>
@@ -602,12 +603,14 @@ const bool SimpleLevel::Surface::DeleteFromPhysWorld(btDynamicsWorld& world, std
         out_error = "No Physics Body created yet!";
         return false;
     }
+    world.removeCollisionObject(
     world.removeRigidBody(runtimeData.physBody);
     return true;
 }
 
-const bool SimpleLevel::AddToPhysWorld(btDynamicsWorld& world, std::string& out_error)
+const bool SimpleLevel::AddToPhysWorld(jar::PhysicsWorld& world, std::string& out_error)
 {
+    btDynamicsWorld& btWorld = world.GetBulletWorld();
     Surface* surfacesEnd = mSurfaces + mHeader.numSurfaces;
     for(Surface* curSurf = mSurfaces; curSurf != surfacesEnd; ++curSurf)
     {
@@ -615,12 +618,12 @@ const bool SimpleLevel::AddToPhysWorld(btDynamicsWorld& world, std::string& out_
         {
             continue;
         }
-        if(!curSurf->AddToPhysWorld(world, out_error))
+        if(!curSurf->AddToPhysWorld(btWorld, out_error))
         {
             for(--curSurf; curSurf != mSurfaces - 1; --curSurf)
             {
                 std::string error;
-                if(!curSurf->DeleteFromPhysWorld(world, error))
+                if(!curSurf->DeleteFromPhysWorld(btWorld, error))
                 {
                     jar::Logger::GetDefaultLogger().Error("SimpleLevel::AddToPhysWorld(): Error during cleanup after failure: " + error);
                 }
@@ -631,8 +634,9 @@ const bool SimpleLevel::AddToPhysWorld(btDynamicsWorld& world, std::string& out_
     return true;
 }
 
-const bool SimpleLevel::DeleteFromPhysWorld(btDynamicsWorld& world, std::string& out_error)
+const bool SimpleLevel::DeleteFromPhysWorld(jar::PhysicsWorld& world, std::string& out_error)
 {
+    btDynamicsWorld& btWorld = world.GetBulletWorld();
     Surface* surfacesEnd = mSurfaces + mHeader.numSurfaces;
     for(Surface* curSurf = mSurfaces; curSurf != surfacesEnd; ++curSurf)
     {
@@ -640,7 +644,7 @@ const bool SimpleLevel::DeleteFromPhysWorld(btDynamicsWorld& world, std::string&
         {
             continue;
         }
-        if(!curSurf->DeleteFromPhysWorld(world, out_error))
+        if(!curSurf->DeleteFromPhysWorld(btWorld, out_error))
         {
             return false;
         }

@@ -30,6 +30,10 @@ local level = _G["7dfps"].SimpleLevel()
 local success, err = level:LoadFromFile("levels/testlevel.hlvl")
 if not success then error(err) end
 
+local physWorld = jar.PhysicsWorld()
+local success, err = level:AddToPhysWorld(physWorld)
+if not success then error(err) end
+
 print("Loaded test level.\nEntities:\n")
 for _, entity in pairs(level:GetEntities()) do
 	for key, val in pairs(entity) do
@@ -201,6 +205,9 @@ while running do
 	end
 end
 
+-- level body must be removed from physical world before it's destroyed because its destruction deletes the rigid body as well
+-- (or delete the physWorld before the level)
+level:DeleteFromPhysWorld(physWorld)
 -- ensure model gets deleted before window (and OpenGL context with it)
 model = nil
 level = nil

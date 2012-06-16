@@ -181,10 +181,14 @@ set(JARLIB_AUDIO_FILES
 	)
 set(JARLIB_PHYSICS_FILES
 	"src/jar/physics/PhysicsImpl.cpp"
+	"src/jar/physics/PhysicsWorld.cpp"
+	"src/jar/physics/luabind/LBPhysics.cpp"
 	"src/jar/Physics.cpp"
 	
 	"include/jar/physics/API.hpp"
 	"include/jar/physics/PhysicsImpl.hpp"
+	"include/jar/physics/PhysicsWorld.hpp"
+	"include/jar/physics/luabind/Physics.hpp"
 	"include/jar/OS.hpp"
 	"include/jar/Physics.hpp"
 	)

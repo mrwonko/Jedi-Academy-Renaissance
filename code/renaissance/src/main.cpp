@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     try
     {
         static const bool RELEASE = false;
-
+        
         //create Logger
         jar::CoutAndFileLogger logger("../log.txt");
         logger.SetLoggingLevel(5);
