@@ -3,3 +3,42 @@ Bullet has an internal fixed timestep of 60HZ. Keep that in mind! (Synchronizati
 create btDiscreteDynamicsWorld
 create btRigidBody, add it to the world
 call stepSimulation (interpolates on small timestep calls)
+
+for Character controls, rewrite that. Constraining a Rigid Body enough won't be satisfactory.
+
+# Jedi Academy's movement #
+
+* in bg_pmove.c/bg_slidemove.c
+* PM_***()
+** PM_SingleMove() - Main movement function
+** PM_FlyMove() - spectators
+** PM_NoclipMove()
+** PM_WaterMove() - swimming
+** PM_WalkMove() - walking on ground
+** PM_AirMove() - airborne
+
+* if a frame took over 66ms, the following code is called multiple times with deltaT <= 66
+* check the current state by checking animations, e.g.:
+** no moving during certain saber moves
+** leaving disruptor scope on movement
+** walljump handling
+** being hold (force grip, rancor)
+** no attacking in certain states (e.g. force gripped)
+* adjust speed (e.g. force speed, ducked, in water, attack movement)
+* decide on animations to play
+* also handle vehicle movement code here (this is one monolithic function o.O - I'll probably want separate controllers.)
+* decide on bounding box size and view height
+* check on stand up-ability when crouched below surface
+* differentiate between different movement types (e.g. noclip, spectator, dead, intermission)
+** jetpacks get 10% gravity 0-128 units above ground, 25% above that. Won't speed up vertically if vertical speed >= 256
+* check whether we are on the ground
+** if we are on top of a non-vehicle npc, set the z velocity to max(270, velocity.z)
+* animate some more
+* "do" weapons
+* water splashes
+
+# My Movement #
+
+* I'd like to do this in Lua - it should be extendable
+** maybe I can use a C++ base class with extendable functionality though?
+** or I could just write that in Lua as well.

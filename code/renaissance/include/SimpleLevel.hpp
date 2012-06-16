@@ -12,6 +12,13 @@ class btTriangleIndexVertexArray;
 class btDynamicsWorld;
 class btMotionState;
 
+namespace jar
+{
+    class PhysicsWorld;
+}
+
+/** \todo Bullet prefers fewer, bigger triangle shapes. I should wield them together, possibly removing duplicates. I could do this by creating a huge array for all surfaces' vertices, adding the offsets to the indices when creating the bullet indices.
+**/
 struct SimpleLevel
 {
     const bool LoadFromFile(const std::string& filename, std::string& out_error);
@@ -20,10 +27,10 @@ struct SimpleLevel
     const bool DeleteFromGPU(std::string& out_error);
     const bool Render(std::string& out_error);
 
-    const bool AddToPhysWorld(btDynamicsWorld& world, std::string& out_error);
+    const bool AddToPhysWorld(jar::PhysicsWorld& world, std::string& out_error);
     /** \note If removal of one Surface fails, the remaining ones won't be removed, either!
     **/
-    const bool DeleteFromPhysWorld(btDynamicsWorld& world, std::string& out_error);
+    const bool DeleteFromPhysWorld(jar::PhysicsWorld& world, std::string& out_error);
 
     static void BindToLua(lua_State* L);
 
