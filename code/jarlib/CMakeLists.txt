@@ -188,6 +188,7 @@ set(JARLIB_PHYSICS_FILES
 	"include/jar/physics/API.hpp"
 	"include/jar/physics/PhysicsImpl.hpp"
 	"include/jar/physics/PhysicsWorld.hpp"
+	"include/jar/physics/Defines.hpp"
 	"include/jar/physics/luabind/Physics.hpp"
 	"include/jar/OS.hpp"
 	"include/jar/Physics.hpp"
