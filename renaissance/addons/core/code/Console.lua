@@ -237,7 +237,7 @@ function Console:OnEvent(event)
 end
 
 -- this is a little complicated since I want print to return to its old functionality once the console gets garbage collected.
-local weakMetatable = { __mode = "k" }
+local weakMetatable = { __mode = "v" }
 local weakConsoleStorage = {}
 oldPrint = print
 setmetatable(weakConsoleStorage, weakMetatable)

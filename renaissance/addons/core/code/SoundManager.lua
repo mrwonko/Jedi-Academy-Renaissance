@@ -4,7 +4,7 @@ SoundManager =
 
 local weakMetatable =
 {
-	__mode = "k", --weak table
+	__mode = "v", --weak values
 }
 
 function SoundManager:New()
