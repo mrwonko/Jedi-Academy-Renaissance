@@ -6,13 +6,13 @@ ImageManager =
 
 local weakMetatable =
 {
-	__mode = "k", --weak table
+	__mode = "v", --weak values
 }
 
 function ImageManager:New()
 	local obj =
 	{
-		images = {} -- this gets turned into a weak table, which means entries aren't counted for reference counting, i.e. they will be deleted when there are no more other references
+		images = {} -- this gets turned into a weak table, which means values aren't counted for reference counting, i.e. they will be deleted when there are no more other references
 	}
 	setmetatable(obj, self)
 	setmetatable(obj.images, weakMetatable)
