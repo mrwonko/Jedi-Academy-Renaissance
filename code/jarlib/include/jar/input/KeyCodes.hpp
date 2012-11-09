@@ -67,7 +67,7 @@ struct Key
         Dash,         ///< -
         Space,
         Return,
-        Back,
+        BackSpace,
         Tab,
         PageUp,
         PageDown,

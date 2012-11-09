@@ -80,7 +80,7 @@ void Event::Luabind(lua_State* L)
                 luabind::value("Dash",      jar::Key::Dash),
                 luabind::value("Space",     jar::Key::Space),
                 luabind::value("Return",    jar::Key::Return),
-                luabind::value("Back",      jar::Key::Back),
+                luabind::value("BackSpace", jar::Key::BackSpace),
                 luabind::value("Tab",       jar::Key::Tab),
                 luabind::value("PageUp",    jar::Key::PageUp),
                 luabind::value("PageDown",  jar::Key::PageDown),

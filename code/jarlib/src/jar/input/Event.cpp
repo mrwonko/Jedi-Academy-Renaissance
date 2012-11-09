@@ -42,7 +42,7 @@ const bool Event::FromSFML(const sf::Event& e)
         keyMap[sf::Keyboard::Dash] = Key::Dash;
         keyMap[sf::Keyboard::Space] = Key::Space;
         keyMap[sf::Keyboard::Return] = Key::Return;
-        keyMap[sf::Keyboard::Back] = Key::Back;
+        keyMap[sf::Keyboard::BackSpace] = Key::BackSpace;
         keyMap[sf::Keyboard::Tab] = Key::Tab;
         keyMap[sf::Keyboard::PageUp] = Key::PageUp;
         keyMap[sf::Keyboard::PageDown] = Key::PageDown;

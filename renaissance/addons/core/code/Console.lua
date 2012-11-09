@@ -196,7 +196,7 @@ function Console:OnEvent(event)
 		return true
 	end
 	--deleting
-	if event.Key.Code == jar.Key.Back then
+	if event.Key.Code == jar.Key.BackSpace then
 		if self.mInputHistoryPos ~= 0 then
 			self.mCurrentInput = self.mInputHistory[self.mInputHistoryPos] or ""
 			self.mInputHistoryPos = 0
