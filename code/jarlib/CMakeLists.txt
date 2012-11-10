@@ -171,11 +171,13 @@ set(JARLIB_GRAPHICS_FILES
 set(JARLIB_AUDIO_FILES
 	"src/jar/audio/luabind/LBSFMLAudio.cpp"
 	"src/jar/audio/AudioImpl.cpp"
+	"src/jar/audio/LuaSound.cpp"
 	"src/jar/Audio.cpp"
 	
 	"include/jar/audio/luabind/SFMLAudio.hpp"
 	"include/jar/audio/API.hpp"
 	"include/jar/audio/AudioImpl.hpp"
+	"include/jar/audio/LuaSound.hpp"
 	"include/jar/OS.hpp"
 	"include/jar/Audio.hpp"
 	)

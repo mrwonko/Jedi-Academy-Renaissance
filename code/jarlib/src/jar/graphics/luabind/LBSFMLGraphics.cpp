@@ -80,6 +80,12 @@ namespace
 			return ptr->draw2(target, states);
 		}
 	};
+
+	template <typename T> void sfVectorGetTuple( const sf::Vector2<T>& vec, lua_State* L )
+	{
+		lua_pushnumber( L, vec.x );
+		lua_pushnumber( L, vec.y );
+	}
 }
 
 /*
@@ -105,7 +111,8 @@ void BindSFMLGraphics(lua_State* L)
             .def(luabind::self - luabind::other<sf::Vector2f>())
             .def(luabind::self * float())
             .def(luabind::self / float())
-            .def(luabind::self == luabind::other<sf::Vector2f>()),
+            .def(luabind::self == luabind::other<sf::Vector2f>())
+			.def("GetTuple", &sfVectorGetTuple<float>),
 
         luabind::class_<sf::Vector2i>("Vector2i")
             .def(luabind::constructor<>())
@@ -118,7 +125,8 @@ void BindSFMLGraphics(lua_State* L)
             .def(luabind::self - luabind::other<sf::Vector2i>())
             .def(luabind::self * int())
             .def(luabind::self / int())
-            .def(luabind::self == luabind::other<sf::Vector2i>()),
+            .def(luabind::self == luabind::other<sf::Vector2i>())
+			.def("GetTuple", &sfVectorGetTuple<int>),
 
         luabind::class_<sf::Vector2u>("Vector2u")
             .def(luabind::constructor<>())
@@ -131,7 +139,8 @@ void BindSFMLGraphics(lua_State* L)
             .def(luabind::self - luabind::other<sf::Vector2u>())
             .def(luabind::self * tempUnsignedInt())
             .def(luabind::self / tempUnsignedInt())
-            .def(luabind::self == luabind::other<sf::Vector2u>()),
+            .def(luabind::self == luabind::other<sf::Vector2u>())
+			.def("GetTuple", &sfVectorGetTuple<unsigned int>),
 
         luabind::class_<sf::Color>("Color")
             .def(luabind::constructor<>())
@@ -264,6 +273,7 @@ void BindSFMLGraphics(lua_State* L)
             .def("SetTextureRect", &sf::Sprite::setTextureRect)
             .def("GetTextureRect", &sf::Sprite::getTextureRect, luabind::copy(luabind::result))
             .def("GetGlobalBounds", &sf::Sprite::getGlobalBounds, luabind::copy(luabind::result))
+            .def("GetLocalBounds", &sf::Sprite::getLocalBounds, luabind::copy(luabind::result))
             .def("SetColor", &sf::Sprite::setColor)
             .def("GetColor", &sf::Sprite::getColor)
 

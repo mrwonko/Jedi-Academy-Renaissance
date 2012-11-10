@@ -89,20 +89,8 @@ void BindSFMLAudio(lua_State* L)
 
         luabind::class_<sf::SoundBuffer>("SoundBuffer")
             .def(luabind::constructor<>())
-            .def("LoadFromFile", SoundBufferLoadFromFile),
+            .def("LoadFromFile", SoundBufferLoadFromFile)
 
-        luabind::class_<sf::Sound, sf::SoundSource>("Sound")
-            .def(luabind::constructor<>())
-            .def("Play", &sf::Sound::play)
-            .def("Pause", &sf::Sound::pause)
-            .def("Stop", &sf::Sound::stop)
-            .def("SetBuffer", &sf::Sound::setBuffer, luabind::dependency(_1, _2)) //1st: who keeps alive, 2nd: who is kept alive. _1 = this. FIXME: Dependency stays after change!
-            .def("GetBuffer", &sf::Sound::getBuffer)
-            .def("SetLoop", &sf::Sound::setLoop)
-            .def("GetLoop", &sf::Sound::getLoop)
-            .def("SetPlayingOffset", &sf::Sound::setPlayingOffset)
-            .def("GetPlayingOffset", &sf::Sound::getPlayingOffset)
-            .def("GetStatus", &sf::Sound::getStatus)
 /*
         //music requires the memory from where it is read to remain intact, I don't want to deal with that at the moment, would require a manager of sorts or inheriting for PhysFS support.
         luabind::class_<sf::SoundStream, sf::SoundSource>("SoundStream")
