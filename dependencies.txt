@@ -1,12 +1,12 @@
 Jedi Academy: Renaissance uses the following libraries:
 
-SFML 2.0-rc or later (www.sfml-dev.org) with SFML_ROOT variable set
-PhysicsFS (http://icculus.org/physfs/) with PHYSFSDIR variable set
-zlib (http://zlib.net/) with ZLIB_ROOT variable set
-boost (http://www.boost.org)
+SFML 2.0-rc or later (www.sfml-dev.org) (possibly with SFML_ROOT variable set)
+PhysicsFS (http://icculus.org/physfs/) (possibly with PHYSFSDIR variable set)
+zlib (http://zlib.net/) (possibly with ZLIB_ROOT variable set)
+boost (http://www.boost.org) (possibly with BOOST_ROOT variable set)
 OpenGL
-GLEW
+GLEW (possibly with GLEW_ROOT variable set)
 
 on Windows:
-Microsoft DirectX SDK (DirectInput) with DXSDK_DIR variable set
+Microsoft DirectX SDK (DirectInput) (possibly with DXSDK_DIR variable set)
 mingw-w64 (Additional windows headers for mingw, when compiling with that)
