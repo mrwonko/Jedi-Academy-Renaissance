@@ -37,8 +37,6 @@ true)
 
 function EnemyBoss:New(info)
 	local obj = Enemy.New(self, info)
-	--TODO: replace outdated Resize code
-	--obj.sprite:Resize(obj.size, obj.size)
 	return obj
 end
 

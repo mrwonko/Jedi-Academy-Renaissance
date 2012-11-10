@@ -18,9 +18,9 @@ true)
 function EnemyKamikaze:New(info)
 	local obj = Enemy.New(self, info)
 	obj.sprite:SetTextureRect(jar.IntRect(0, 0, 16, 16))
-	--TODO: replace outdated Resize code
-	--obj.sprite:Resize(obj.size, obj.size)
-	obj.sprite:SetOrigin(obj.image:GetSize().X/4, obj.image:GetSize().Y/2) --anim hack, image is too wide
+	-- workaround for image containing 2 images, i.e. twice as wide
+	obj.sprite:SetOrigin(obj.image:GetSize().X / 4, obj.image:GetSize().Y / 2)
+	obj.sprite:SetScale( 2 / obj.image:GetSize().X * obj.size, 1 / obj.image:GetSize().Y * obj.size)
 	return obj
 end
 

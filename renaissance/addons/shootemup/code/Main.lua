@@ -78,9 +78,10 @@ while g_running do
 	local frametime = jar.GetTime()
 	if frametime == lastFrametime then -- I clamp the frame rate to a thousand fps because my time is in milliseconds.
 		jar.Sleep(1)
-		frametime = lastFrameTime - jar.GetTime()
+		frametime = jar.GetTime()
 	end
-	local deltaT = lastFrametime - frametime()
+	local deltaT = frametime - lastFrametime
+	assert( deltaT >= 0)
 	lastFrametime = frametime
 	
 	g_InstructionInterpreter:Update(deltaT)

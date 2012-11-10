@@ -11,17 +11,17 @@ local arial = g_FontManager:GetFont("arial", true)
 
 local pauseText = jar.Text(arial) -- second parameter: throw error on failure
 pauseText:SetText("Pause - Escape to Quit, Return to continue")
-pauseText:SetPosition( (g_Window:GetSize() - pauseText:GetSize()) / 2)
+pauseText:SetPosition( ( jar.Vector2f( g_Window:GetSize():GetTuple() ) - pauseText:GetSize() ) / 2)
 
 local gameoverText = jar.Text(arial, 20) -- second parameter: throw error on failure
 gameoverText:SetText("Game Over")
-gameoverText:SetPosition( (g_Window:GetSize() - gameoverText:GetSize()) / 2)
+gameoverText:SetPosition( ( jar.Vector2f( g_Window:GetSize():GetTuple() ) - gameoverText:GetSize() ) / 2)
 
 local wonText = jar.Text(arial, 20) -- second parameter: throw error on failure
 wonText:SetText("You are a winner!")
-wonText:SetPosition( (g_Window:GetSize() - wonText:GetSize()) / 2)
+wonText:SetPosition( ( jar.Vector2f( g_Window:GetSize():GetTuple() ) - wonText:GetSize() ) / 2 )
 
-local pauseRect = jar.RectangleShape(g_Window:GetSize())
+local pauseRect = jar.RectangleShape( jar.Vector2f( g_Window:GetSize():GetTuple() ) )
 pauseRect:SetFillColor(jar.Color(0, 0, 0, 127))
 
 -- calculate the view size
@@ -119,16 +119,6 @@ function GameState:OnStart()
 	--init
 	g_Gamefield = Gamefield:New()
 	self.currentLevel = 1
-	--todo: level stuff. enemies first.
-	--music
-	--friggin wolfram tones terms of use
-	--[[local buf = g_SoundManager:GetSound("sound/mus_game.ogg")
-	if buf then
-		g_Music:SetBuffer(buf)
-		g_Music:SetVolume(g_CVarManager:GetCVarValue("snd_musicvolume") or 100)
-		g_Music:Play()
-	end
-	--]]
 end
 
 function GameState:OnEnd()

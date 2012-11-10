@@ -38,9 +38,8 @@ function Enemy:New(info, template)
 	
 	if obj.image then
 		obj.sprite = jar.Sprite(obj.image)
-		obj.sprite:SetOrigin(obj.image:GetSize()/2)
-		--TODO: replace outdated Resize code
-		--obj.sprite:Resize(obj.size, obj.size)
+		obj.sprite:SetOrigin(obj.image:GetSize().X / 2, obj.image:GetSize().Y / 2)
+		obj.sprite:SetScale( 1 / obj.image:GetSize().X * obj.size, 1 / obj.image:GetSize().Y * obj.size)
 	else
 		error("no image set!", 2)
 	end
@@ -77,7 +76,6 @@ function Enemy:Update(deltaT)
 	self:Move(deltaT)
 	if self.weapon then
 		self.cooldown = self.cooldown - deltaT
-		do return end
 		if self.cooldown <= 0 then
 			local shot = self.weapon:New{
 				position = self.sprite:GetPosition(),

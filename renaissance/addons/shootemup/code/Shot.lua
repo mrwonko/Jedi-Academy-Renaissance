@@ -38,7 +38,7 @@ function Shot:New(info, silent)
 	if obj.image then
 		obj.image:SetSmooth(false)
 		obj.sprite = jar.Sprite(obj.image)
-		obj.sprite:SetOrigin(obj.image:GetSize()/2)
+		obj.sprite:SetOrigin( obj.image:GetSize().X / 2, obj.image:GetSize().Y / 2 )
 		if obj.dir < 0 then
 			obj.sprite:Scale(-1, 1) -- flip horizontally (along origin)
 		end
@@ -64,7 +64,7 @@ end
 
 function Shot:Update(deltaT)
 	self.sprite:Move(self.speed*deltaT*self.dir, 0)
-	local pos = self.sprite:GetPosition().x
+	local pos = self.sprite:GetPosition().X
 	if pos > self.image:GetSize().X/2+200 or pos < -self.image:GetSize().X/2 then
 		self.dead = true
 	end

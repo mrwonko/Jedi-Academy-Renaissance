@@ -10,23 +10,15 @@ require("EnemyShoot2.lua")
 require("EnemyBoss.lua")
 
 local function CheckCollision(sprite1, sprite2)
-	--TODO: fix outdated code - there is no GetSize()! (Use GetGlobalBounds())
-	local ownsize = sprite1:GetSize()
-	local ownorigin = jar.Vector2f(sprite1:GetOrigin()) --copy since we want to change it!
-	local ownposition = sprite1:GetPosition()
-	ownorigin.X = ownorigin.X * sprite1:GetScale().X
-	ownorigin.Y = ownorigin.Y * sprite1:GetScale().Y
-	local othersize = sprite2:GetSize()
-	local otherorigin = jar.Vector2f(sprite2:GetOrigin())
-	otherorigin.X = otherorigin.X * sprite2:GetScale().X
-	otherorigin.Y = otherorigin.Y * sprite2:GetScale().Y
-	local otherposition = sprite2:GetPosition()
+	local bounds1 = sprite1:GetGlobalBounds()
+	local bounds2 = sprite2:GetGlobalBounds()
+	return bounds1:Intersects(bounds2)
 	
-	local ownRect = jar.FloatRect(ownposition.X-ownorigin.X, ownposition.Y-ownorigin.Y, ownsize.X, ownsize.Y)
+	--local ownRect = jar.FloatRect(ownposition.X-ownorigin.X, ownposition.Y-ownorigin.Y, ownsize.X, ownsize.Y)
 	--the -2 is so they collide a little
-	local otherRect = jar.FloatRect(otherposition.X-otherorigin.X+2, otherposition.Y-otherorigin.Y, othersize.X-2, othersize.Y)
-	
-	return ownRect:Intersects(otherRect)
+	-- later me: wtf do I mean by that?
+	--local otherRect = jar.FloatRect(otherposition.X-otherorigin.X+2, otherposition.Y-otherorigin.Y, othersize.X-2, othersize.Y)
+	--return ownRect:Intersects(otherRect)
 end
 
 Gamefield = 
@@ -69,12 +61,12 @@ end
 ---- HUD Elements ----
 
 --health
-local healthBorder = jar.RectangleShape(sf::Vector2f(50, 10))
+local healthBorder = jar.RectangleShape(jar.Vector2f(50, 10))
 healthBorder:SetFillColor(jar.Color.Transparent)
 healthBorder:SetPosition(6, 1)
 healthBorder:SetOutlineThickness(1)
 healthBorder:SetOutlineColor(jar.Color.White)
-local healthBar = jar.RectangleShape(sf::Vector2f(50, 10))
+local healthBar = jar.RectangleShape(jar.Vector2f(50, 10))
 healthBar:SetFillColor(jar.Color.Red)
 healthBar:SetPosition(6, 1)
 --weapon
@@ -146,7 +138,7 @@ function Gamefield:Update(deltaT)
 			--spawn enemies!
 			for _, info in ipairs(enemiesToSpawn) do
 				if (info.type or "enemy") == "enemy" then
-					--info.class:New(info.parameters)
+					info.class:New(info.parameters)
 				--todo: item spawning!
 				end
 			end

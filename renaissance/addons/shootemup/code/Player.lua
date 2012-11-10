@@ -25,8 +25,7 @@ function Player:New()
 			--ShotLaserBlue, --todo: delete this.
 		}
 	}
-	--TODO: replace outdated Resize code
-	--obj.sprite:Resize(10, 10)
+	obj.sprite:SetScale( 10 / playerimg:GetSize().X, 10 / playerimg:GetSize().Y)
 	obj.sprite:SetOrigin(0, playerimg:GetSize().Y/2)
 	obj.sprite:SetPosition(0, 50)
 	
