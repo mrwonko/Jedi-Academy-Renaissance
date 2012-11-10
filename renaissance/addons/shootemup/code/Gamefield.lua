@@ -166,7 +166,7 @@ function Gamefield:Update(deltaT)
 	
 	self.nextStarIn = self.nextStarIn - deltaT
 	if self.nextStarIn <= 0 then
-		--table.insert(self.stars, Star:New())
+		table.insert(self.stars, Star:New())
 		self.nextStarIn = math.random(100, 200)
 	end
 	local i = 1

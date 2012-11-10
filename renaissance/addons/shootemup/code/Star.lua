@@ -9,9 +9,10 @@ local starimages =
 function Star:New()
 	local obj =
 	{
-		sprite = jar.Sprite(starimages[math.random(1, 3)], jar.Vector2f(200, math.random()*100)),
-		speed = -math.random(1, 20)/500,
+		sprite = jar.Sprite(starimages[math.random(1, 3)]),
+		speed = -math.random(1, 20)/10,
 	}
+	obj.sprite:SetPosition( 200, math.random() * 100 )
 	setmetatable(obj, self)
 	self.__index = self
 	return obj
