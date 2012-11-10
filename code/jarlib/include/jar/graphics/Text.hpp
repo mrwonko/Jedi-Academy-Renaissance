@@ -7,6 +7,7 @@
 #include <SFML/Graphics/Vertex.hpp>
 #include <string>
 #include <vector>
+#include <luabind/object.hpp>
 
 struct lua_State;
 
@@ -19,12 +20,12 @@ class JARGRAPHICSAPI Text : public sf::Drawable, public sf::Transformable
     public:
         /** \note don't use, just here so autopointers work **/
         Text();
-        Text(const Font& font);
-        Text(const Font& font, const unsigned int fontSize);
+        Text( const luabind::object& font );
+        Text( const luabind::object& font, const unsigned int fontSize);
         virtual ~Text();
 
         /** \brief Sets the font, does not change the size **/
-        void SetFont(const Font& font);
+        void SetFont( const luabind::object& font );
 
         /** \brief Gets the font **/
         const Font& GetFont() const;
@@ -59,6 +60,7 @@ class JARGRAPHICSAPI Text : public sf::Drawable, public sf::Transformable
     private:
         std::string mText;
         const Font* mFont;
+		luabind::object mLuaFont; // for keeping alive
         float mFontSize;
 
         std::vector<sf::Vertex> mVertices;

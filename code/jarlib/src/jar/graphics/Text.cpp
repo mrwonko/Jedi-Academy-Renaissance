@@ -17,14 +17,16 @@ Text::Text() :
     //ctor
 }
 
-Text::Text(const Font& font) :
-    mFont(&font),
-    mFontSize(font.GetFontData().mPointSize)
+Text::Text(const luabind::object& font) :
+	mFont( luabind::object_cast < Font* >( font ) ),
+	mLuaFont( font ),
+    mFontSize(mFont->GetFontData().mPointSize)
 {
     //ctor
 }
-Text::Text(const Font& font, const unsigned int fontSize) :
-    mFont(&font),
+Text::Text(const luabind::object& font, const unsigned int fontSize) :
+    mFont( luabind::object_cast< Font* >( font ) ),
+	mLuaFont( font ),
     mFontSize(fontSize)
 {
     //ctor
@@ -46,9 +48,10 @@ const std::string& Text::GetText() const
     return mText;
 }
 
-void Text::SetFont(const Font& font)
+void Text::SetFont( const luabind::object& font )
 {
-    mFont = &font;
+	mLuaFont = font; // for keeping alive
+	mFont = luabind::object_cast< Font* >( font );
 }
 
 const Font& Text::GetFont() const
