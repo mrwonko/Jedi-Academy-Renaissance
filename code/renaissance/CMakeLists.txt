@@ -6,6 +6,19 @@ if(NOT JAR_BINARY_DIR)
 	message(FATAL_ERROR "Use the toplevel cmake script!")
 endif(NOT JAR_BINARY_DIR)
 
+
+
+if(NOT SFML_FOUND)
+	find_package(SFML 2 REQUIRED system window graphics audio)
+endif(NOT SFML_FOUND)
+include_directories("${SFML_INCLUDE_DIR}")
+add_definitions(-DSFML_DYNAMIC) # this may be outdated? there's SFML_STATIC, this may be assumed otherwise...
+
+if(NOT Boost_FOUND)
+	find_package(Boost REQUIRED)
+endif(NOT Boost_FOUND)
+include_directories(${Boost_INCLUDE_DIRS})
+
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
 	set(JAR_RENAISSANCE_NAME "renaissance_d")
 else(${CMAKE_BUILD_TYPE} MATCHES Debug)

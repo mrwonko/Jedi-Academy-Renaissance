@@ -77,6 +77,7 @@ endif(MSVC)
 
 include_directories("${BULLET_INCLUDE_DIRS}")
 
+
 # find OpenGL
 find_package(OpenGL REQUIRED)
 if(OPENGL_INCLUDE_DIR) #may be empty

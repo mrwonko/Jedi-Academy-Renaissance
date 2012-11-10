@@ -603,7 +603,6 @@ const bool SimpleLevel::Surface::DeleteFromPhysWorld(btDynamicsWorld& world, std
         out_error = "No Physics Body created yet!";
         return false;
     }
-    world.removeCollisionObject(
     world.removeRigidBody(runtimeData.physBody);
     return true;
 }
