@@ -2,6 +2,8 @@ inactiveMods =
 {
 	"ibitolua/",
 	"ibitolua_tests/",
-	"shootemup/",
+	"7dfps/",
 	"docugen/",
+	"testsuite/",
+	"shootemup/",
 }
