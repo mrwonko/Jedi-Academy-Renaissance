@@ -1,0 +1,4 @@
+Controls:
+- Mouse: X/Y for tilt, wheel for jumping
+- motion control: rotate for tilt, up/down for jumping
+- keyboard: wasd for tilt, up/down for jumping
