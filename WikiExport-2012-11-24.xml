@@ -1,0 +1,1104 @@
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd" version="0.3" xml:lang="en">
+  <siteinfo>
+    <sitename>jarenaissance</sitename>
+    <base>https://sourceforge.net/apps/mediawiki/jarenaissance/index.php?title=Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0" />
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">jarenaissance</namespace>
+      <namespace key="5">jarenaissance talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>Basic modding information</title>
+    <id>13</id>
+    <revision>
+      <id>83</id>
+      <timestamp>2010-11-19T14:28:30Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>/* dependencies and incompatibilities */ updated</comment>
+      <text xml:space="preserve">= General =
+
+Mod is short for modification. This includes new maps, playermodels, weapons, modified game rules and much more.
+
+Jedi Academy mods are often distributed as pk3 files. Those are .zip archives containing all the new or changed files.
+
+== Changes in Jedi Academy: Renaissance ==
+
+In Jedi Academy: Renaissance pk3 mods for Jedi Academy will most likely still work, except those which change menus. '''But there are some changes:'''
+
+* The pk3 files are put into the addons folder. (Note: This means the GTK Radiant won't load those mods. Ideally there'd be a GTK Renaissadiant with support for all the Renaissance features. And a real-time preview.)
+* You can also put folders into the addons folder and they will be treated like pk3 files. If you create your mods directly in such a folder, you can just zip it once you're done and thus have your pk3 without needing to collect all the assets and checking whether you forgot anything.
+* Mods can be deactivated ingame and their load order rearranged.
+* Mods may (and should) contain a modinfo.lua file containing info about the mod. Read about it below.
+
+= modinfo.lua =
+
+The modinfo.lua contains information about the mod. It should be directly in the pk3 (or mod folder) and called modinfo.lua. A very minimalistic modinfo.lua may look like this:
+
+ name = &quot;test-mod&quot;
+
+Additionaly, one or more of the following values may be added:
+
+{|border=1
+! Name
+! Value
+|-
+|description
+|A string containing a short description of your mod.
+|-
+|version
+|A whole number that should increase with each new version. Used to check for dependencies and incompatibilities, i.e. you can say that you need mod xy of at least version 23. Defaults to 1.
+|-
+|displayVersion
+|A string containing the version that is displayed to the user, for example &quot;beta 3&quot;
+|-
+|author
+|A string containing the author(s) of the mod, e.g. &quot;Mr. Wonko&quot;
+|-
+|email 
+|A string containing the author's email address so users can contact him
+|-
+|website
+|A string containing the author's website
+|-
+|serverside
+|A boolean containing whether or not this mod is a serverside mod. Usually  clients and the server need to have the same mods. If a mod is serverside, clients don't need it. Use responsible! I.e. don't claim a normal mod to be serverside. Defaults to false.
+|-
+|clientside
+|A boolean containing whether or not this mod is a clientside mod. Usually clients can only use mods the server uses as well. Clientside mods don't need to exist on the server, though the server can forbid them with [[CVar_Reference#g_allowClientsideMods|g_allowClientsideMods]] 0. Defaults to false.
+|-
+|dependencies
+|A table of mod informations containing information about mods required to run this mod, see below.
+|-
+|incompatibilities
+|A table of mod informations containing information about mods incompatible to this mod, see below.
+|}
+
+If not modinfo.lua exists, the filename is used as a name and no other information is added.
+
+If your modinfo.lua doesn't work properly try setting [[CVar_Reference#log_level|log_level]] to 2 or more to get debug information.
+
+== dependencies and incompatibilities ==
+
+Since a mod may depend on a specific version of another mod, or be incompatible only up to a specific version, or from a specific version onwards, or both, you don't only name incompatibilities and dependencies but also specify the version(s). This can be done in multiple ways:
+
+ dependencies =
+ {
+ 	--any version
+ 	{
+ 		name = &quot;some mod&quot;
+ 	},
+ 	--specific version
+ 	{
+ 		name = &quot;another mod&quot;,
+ 		version = 14
+ 	},
+ 	--some version onwards
+ 	{
+ 		name = &quot;megamod&quot;,
+ 		minVersion = 2
+ 	},
+ 	--up to and including some version
+ 	{
+ 		name = &quot;monstermod&quot;,
+ 		maxVersion = 5
+ 	},
+ 	--in a specific version range
+ 	{
+ 		name = &quot;ultimate mod&quot;,
+ 		minVersion = 3,
+ 		maxVersion = 8
+ 	}
+ 	--using a custom function
+ 	{
+ 		name = &quot;special mod&quot;,
+ 		-- whether a given version satisfies the requirements
+ 		-- Note: in case of incompatibilities, correct means that it *is* incompatible.
+ 		isCorrectVersion = function(version)
+ 			--either version 12
+ 			if version == 12 then
+ 				return true
+ 			end
+ 			--or between version 4 and 9
+ 			if version &gt;= 4 and version &lt;= 9 then
+ 				return true
+ 			end
+ 			--or at least version 21
+ 			if version &gt;= 21 then
+ 				return true
+ 			end
+ 			return false
+ 			--or shorter:
+ 			--return (version == 12) or (version &gt;= 4 and version &lt;= 9) or (version &gt;= 21)
+ 		end,
+ 		displayVersion = &quot;12 or 4 - 9 or &gt;= 21&quot;
+ 	}
+ }
+
+''isCorrectVersion'' is always used if it exists and ''version'' is preferred over ''min/maxVersion'' if it doesn't.
+
+== Example modinfo.lua ==
+
+ name = &quot;Wonko's BFG Mod&quot;
+ version = 3
+ displayVersion = &quot;1.2&quot; -- the displayed version is not necessarily the internal version!
+ author = &quot;Mr. Wonko&quot;
+ description = &quot;Adds a big, uh, freaking gun that goes BOOM.&quot;
+ website = &quot;http://www.mrwonko.de&quot;
+ email = &quot;spam@mrwonko.de&quot;
+ dependencies =
+ {
+ 	-- I need stuff from my effect library
+ 	{
+ 		name = &quot;Wonko's new effects&quot;,
+ 		minVersion = 5
+ 	}
+ }
+ incompatibilities =
+ {
+ 	-- John uses the same name for his BFG so they overwrite each other -&gt; incompatible
+ 	{
+ 		name = &quot;John's BFG Mod&quot;
+ 	}
+ }
+
+
+[[Category:Modder's Guide]]
+[[Category:ToDo]]</text>
+    </revision>
+  </page>
+  <page>
+    <title>Coding</title>
+    <id>10</id>
+    <revision>
+      <id>86</id>
+      <timestamp>2010-11-21T10:20:10Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>link change, changed my mind about page vs. category</comment>
+      <text xml:space="preserve">== Modder's Guide: Coding ==
+
+*[[Engine Architecture]] - How does stuff work?
+*[[:Category:Extending the game|Extending the game]] - How do I add/change stuff?
+*[[Lua API Reference]] - What C++ functions can you use in Lua?
+
+[[Category:Modder's Guide]]</text>
+    </revision>
+  </page>
+  <page>
+    <title>HD Maps</title>
+    <id>18</id>
+    <revision>
+      <id>95</id>
+      <timestamp>2010-11-27T22:49:49Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>/* Recreations */ new idea</comment>
+      <text xml:space="preserve">High Definition Maps are example maps using the new features in Jedi Academy: Renaissance.
+
+Right now, this is just a list of potential candidates.
+
+= Potential HD Maps =
+
+== Recreations ==
+* Imperial Shuttle Bay (duel_bay, jk2)
+** detail, bump mapping, physics (crates)
+* Carbon Chamber (duel_carbon, jk2)
+** HDR / Bloom, dynamic lighting
+* Ceremonial Hall (duel_temple, jk2)
+** destruction
+** detail (ornaments)
+* Abandoned City (mp/duel8, jka)
+** detail
+** destruction
+** cloth
+** outside -&gt; HDR, God Rays
+* Map-Craft Pass-Me-Around: [http://jediknight3.filefront.com/file/Nar_Shadda_Landing_Zone_17;105657|Nar Shadda Landing Zone 17]
+** Detail
+** Physics (destruction, rigid bodies)
+** HDR (inside/outside)
+
+== from scratch ==
+[[http://i152.photobucket.com/albums/s185/ScottyMcGee/Picture209.jpg greenhouse kind of thing]]
+
+
+[[Category:Notebook]]</text>
+    </revision>
+  </page>
+  <page>
+    <title>Main Page</title>
+    <id>1</id>
+    <revision>
+      <id>45</id>
+      <timestamp>2010-11-08T22:41:44Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <text xml:space="preserve">&lt;big&gt;'''Welcome to the Jedi Academy: Renaissance Wiki!'''&lt;/big&gt;
+
+Jedi Academy: Renaissance is an attempt to recode Star Wars Jedi Knight: Jedi Academy. The goals are to create an open-source engine capable of using Jedi Academy's assets, to add new features and make it very moddable. To accomplish this, large parts are written in Lua and can be changed by mods.
+
+Have questions? Check the [[Frequently Asked Questions]]!
+
+Looking for information on modding? Jedi Academy: Renaissance isn't done yet, but I'm writing a [[Modder's Guide]].</text>
+    </revision>
+  </page>
+  <page>
+    <title>CVar Reference</title>
+    <id>17</id>
+    <revision>
+      <id>96</id>
+      <timestamp>2010-12-27T23:10:41Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <minor/>
+      <comment>Updated.</comment>
+      <text xml:space="preserve">Note: Everything marked with &quot;TODO&quot; is not yet (fully) implemented.
+
+== (Server) Game (g_) ==
+
+=== g_allowClientsideMods ===
+Type: bool
+
+Default: true
+
+When this CVar is false, clientside mods are disabled for everybody joining this server.
+
+Note: This requires a Lua restart since mods could change pretty much anything. I need to think about this some more, and also about syncing mods with the server in general. This would always require a restart, but ideally the window wouldn't close inbetween. Right? Also upon leaving the mods should be reactivated, requiring another restart.
+
+TODO
+
+== Logfile (log_) ==
+
+=== log_filename ===
+Type: string
+
+Default: &quot;&quot;
+
+If this is a non-empty string, a file of this name will be created in ''Renaissance/'' and Logger output (read: (debug) information, warnings, errors) will be written there.
+
+TODO
+
+=== log_level ===
+Type: int (min. 0)
+
+Default: 0
+
+The higher this is the more (debug) information is output to logfile &amp; console. (Coder info: this must be &gt;= level supplied in [[Lua API Reference#jar.Logger:Info(string message, int level)|jar.Logger:Info()]])
+
+0 = no debug info, 1 = important debug info (whatever I deem important), 2 = debug info, 3 = lots of info. I usually won't go beyond 3, though mods may do.
+
+== FileSystem (fs_) ==
+
+=== fs_baseOnlyArchives ===
+
+type: boolean
+
+default: true
+
+Whether only archives in base (i.e. .pk3 files) should be loaded, or also the non-zipped files in base.
+
+=== fs_baseNoMods ===
+
+type: boolean
+
+default: false
+
+Whether only the assetsX.pk3 files should be loaded from ../Base/. If true then [[#fs_baseOnlyArchives|fs_baseOnlyArchives]] is ignored since non-archive files in base are mods, too.
+
+[[Category:ToDo]]</text>
+    </revision>
+  </page>
+  <page>
+    <title>Engine Architecture</title>
+    <id>20</id>
+    <revision>
+      <id>84</id>
+      <timestamp>2010-11-21T10:15:13Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <minor/>
+      <comment>moved [[Engine Design]] to [[Engine Architecture]]</comment>
+      <text xml:space="preserve">Information about the design of the code.
+
+* [[C++ initialization]]
+* [[Lua Boot Sequence]]
+
+[[Category:Modder's Guide]]</text>
+    </revision>
+  </page>
+  <page>
+    <title>Lua API Reference</title>
+    <id>22</id>
+    <revision>
+      <id>111</id>
+      <timestamp>2011-08-10T21:13:31Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>Removed STL part - I don't need that anymore, I believe.</comment>
+      <text xml:space="preserve">There are quite some classes and functions exported from C++ to Lua. Here's a reference of what they are, what they do and how to use them.
+
+== FileSystem (module jar.fs) ==
+Jedi Academy-esque file system that mounts zip files and directories in a virtual filesystem. Uses [[PhysicsFS]] internally.
+
+Not all functions from PhysicsFS are available and some work slightly different, mostly changing paths to be relative to /renaissance/, not /renaissance/bin/.
+
+=== string jar.fs.GetLastError() ===
+Returns the last error that occured during filesystem usage.
+
+=== bool jar.fs.Mount(string filename, string mountpoint, bool append) ===
+Mounts the given zip file or directory, whose path is relative to renaissance/, to ''mountpoint''. If append is true it will be looked in last, i.e. first all other mounted archives &amp; directories are searched, if append is false it is searched first.
+
+Returns whether it succeeded. The error, in case it returned false, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+=== bool jar.fs.Mount(string filename, bool append) ===
+Like [[#int jar.fs.Mount(string filename, string mountpoint, bool append)|jar.fs.Mount(string filename, string mountpoint, bool append)]] with mountpoint &quot;/&quot;.
+
+=== bool jar.fs.Unmount(string filename) ===
+Unmounts a given file which has been [[#int jar.fs.Mount(string filename, string mountpoint, bool append)|mounted]] earlier.
+
+Returns whether it succeeded. The error, in case it returned false, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+=== jar.fs.File jar.fs.OpenRead(string filename) ===
+Searches for a file of the given ''filename'' in the mounted archives and directories. If the file is found it is opened for reading and the file handle returned. Otherwise nil is returned. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]]. &quot;..&quot; and &quot;.&quot; are not allowed in the ''filename''.
+
+=== jar.fs.File jar.fs.OpenWrite(string filename) ===
+Creates or opens a file with the name ''filename'' in ''Renaissance/'' for writing. Returns the [[#jar.fs.File|file handle]] or nil on error. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]]. &quot;..&quot; and &quot;.&quot; are not allowed in the ''filename''.
+
+=== std.stringvector jar.fs.GetFilesInDirectory(string directory) ===
+Returns a string vector containing the files within a given directory in alphabetical order.
+
+=== std.stringvector jar.fs.GetDirectoriesInDirectory(string directory) ===
+Returns a string vector containing the directories within a given directory in alphabetical order.
+
+=== jar.fs.File ===
+A file handle opened with [[#jar.fs.File jar.fs.OpenRead(string filename)|OpenRead()]] or [[#jar.fs.File jar.fs.OpenWrite(string filename)|OpenWrite]].
+
+==== jar.fs.File:Close() ====
+Closes the file handle. Always call this once you no longer need the file.
+
+==== bool jar.fs.File:EOF() ====
+Returns whether the file's end (''E''nd ''O''f ''F''ile) has been reached yet.
+
+==== bool jar.fs.File:Seek(int position) ====
+Moves the read/write cursor to ''position''. Returns success. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== int jar.fs.File:Tell() ====
+Returns the current read/write cursor position, or -1 on error. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, string jar.fs.File:GetContent() ====
+Reads the file's content from cursor position to end, i.e. usually the whole file. Returns success, content. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, string jar.fs.File:ReadChar() ====
+Reads a single character from the file. Returns success, read character. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, string jar.fs.File:ReadString() ====
+Reads a null-terminated string from the file, or until eof, whichever occurs first. Returns success, read string. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, string jar.fs.File:ReadString(int length) ====
+Reads a string of the given ''length'' from the file, or until eof, whichever is first. Returns success, read string. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, int jar.fs.File:ReadInt() ====
+Reads a 32 bit integer from the file. Returns success, read integer. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, unsigned int jar.fs.File:ReadUnsignedInt() ====
+Reads an unsigned 32 bit integer from the file. Returns success, read integer. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, float jar.fs.File:ReadFloat() ====
+Reads a 32 bit float from the file. Returns success, read float. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool, string jar.fs.File:ReadChar() ====
+Reads an 8 bit char from the file. Returns success, read character. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+==== bool jar.fs.File:WriteString() ====
+Writes a string to the file. The file has to be opened with [[#jar.fs.File jar.fs.OpenWrite(string filename)|OpenWrite()]]. Returns whether it succeeded. The error, if any, can be gotten using [[#string jar.fs.GetLastError()|jar.fs.GetLastError()]].
+
+== MiniZip (module unz) ==
+Zip module. You most likely won't need this since usually PhysicsFS is used to get the content of zip files, this is only needed for unmounted files.
+
+=== constants ===
+These constants may be returned by some functions
+*unz.OK
+*unz.END_OF_LIST_OF_FILE
+*unz.ERRNO
+*unz.EOF
+*unz.PARAMERROR
+*unz.BADZIPFILE
+*unz.INTERNALERROR
+*unz.CRCERROR
+
+=== unz.File unz.Open(string filename)===
+Opens the zip file of the given ''filename'' (relative to ''renaissance/'').
+
+Returns an unz.File object on success or nil on error.
+
+
+=== unz.File ===
+A file handle opened with [[#unzFile unz.Open(string filename)|Open()]].
+
+==== int unz.File:Close() ====
+Closes the zip file. Always call this once you're done with the file. Should return ''unz.OK' or something went wrong.
+
+==== int unz.File:LocateFile(string filename, int caseSensitivity) ====
+Tries to find a file with the name ''filename'' in this zip file.
+{|
+|''caseSensitivity''
+|description
+|-
+|1
+|case sensitive
+|-
+|2
+|case insensitive
+|-
+|0
+|operating system default (1 on unix, 2 on windows)
+|}
+Returns ''unz.OK'' on success or ''unz.END_OF_LIST_OF_FILES'' if the file was not found.
+
+==== int, string unz.File:GetCurrentFileContent() ====
+Returns ''unz.OK'', ''content of file located with [[#int unz.File:LocateFile(string filename, int caseSensitivity)|unz.File:LocateFile()]]'' on success or ''error constant'', ''content that could be read'' on failure.
+
+
+== Jedi Academy: Renaissance (module jar) ==
+
+=== string-array jar.GetFilesInDirectory(string directory) ===
+Returns an iterable array of the files within a given ''directory'' (relative to ''Renaissance/''). Don't nest calls, not with GetDirectoriesInDirectory() either!
+
+=== string-array jar.GetDirectoriesInDirectory(string directory) ===
+Returns an iterable array of the directories within a given ''directory'' (relative to ''Renaissance/''). Don't nest calls, not with GetFilesInDirectory() either!
+
+=== jar.Logger ===
+Class for logging stuff. Example usage:
+ local logger = jar.Logger.GetDefaultLogger()
+ logger:Log(&quot;This is the logger.&quot;)
+ logger:Warning(&quot;Warnings are possible!&quot;)
+ logger:Error(&quot;Errors can be reported, too!&quot;)
+
+==== jar.Logger.GetDefaultLogger() ====
+Returns the default Logger. This is the usual way of receiving a Logger object for logging.
+
+==== jar.Logger:Log(string message) ====
+Logs a given ''message''.
+
+==== jar.Logger:Info(string message, int level) ====
+Logs a given ''message'' if the logger's log level (i.e. [[CVar_Reference#log_level|log_level]] for the default Logger) &gt;= ''level''.
+
+==== jar.Logger:Warning(string message) ====
+Logs a warning containing ''message''.
+
+==== jar.Logger:Error(string message) ====
+Logs an error containing ''message''. Note that this does not stop the map or anything, it just logs the message, possibly highlighted. For fatal errors use ''error()'' which aborts and uses this to log the error.
+
+==== jar.Logger:SetLoggingLevel(int level) ====
+You'll probably want to set [[CVar_Reference#log_level|log_level]] which calls this internally.
+
+==== int jar.Logger:GetLoggingLevel() ====
+You'll probably want to set [[CVar_Reference#log_level|log_level]] which calls this internally.
+
+==== jar.Logger:IncreaseLoggingLevel() ====
+You'll probably want to set [[CVar_Reference#log_level|log_level]] which calls this internally.
+
+==== jar.Logger:DecreaseLoggingLevel() ====
+You'll probably want to set [[CVar_Reference#log_level|log_level]] which calls this internally.
+
+=== jar.Vector2f ===
+A 2 dimensional vector. Basic math operators (+ - / * ==) are available.
+
+==== jar.Vector2f() ====
+Creates a new vector (0, 0)
+
+==== jar.Vector2f(float x, float y) ====
+Creates a new vector (x, y)
+
+==== float jar.Vector2f.x ====
+X coordinate
+
+==== float jar.Vector2f.y ====
+Y coordinate
+
+==== jar.Vector2f:Invert() ====
+Inverst the vector (e.g. turns (2, -4) into (-2, 4) )
+
+
+=== jar.Color ===
+A color (rgba)
+
+==== jar.Color() ====
+
+==== jar.Color(uint8_t red, uint8_t green, uint8_t blue) ====
+
+==== jar.Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) ====
+
+==== uint8_t jar.Color.r ====
+Red value
+
+==== uint8_t jar.Color.g ====
+Green value
+
+==== uint8_t jar.Color.b ====
+Blue value
+
+==== uint8_t jar.Color.a ====
+Alpha value
+
+
+=== jar.FloatRect ===
+A rectangle with float values
+
+==== jar.FloatRect() ====
+Creates a new rectangle
+
+==== jar.FloatRect(float left, float top, float width, float height) ====
+Creates a new rectangle of a given size
+
+==== float jar.FloatRect.height ====
+
+==== float jar.FloatRect.left ====
+
+==== float jar.FloatRect.width ====
+
+==== float jar.FloatRect.top ====
+
+==== bool jar.FloatRect:Contains(float x, float y) ====
+Check if a point is inside the rectangle's area.
+
+=== jar.IntRect ===
+A rectangle with int values
+
+==== jar.IntRect() ====
+Creates a new rectangle
+
+==== jar.IntRect(int left, int top, int width, int height) ====
+Creates a new rectangle of a given size
+
+==== int jar.IntRect.height ====
+
+==== int jar.IntRect.left ====
+
+==== int jar.IntRect.width ====
+
+==== int jar.IntRect.top ====
+
+==== bool jar.IntRect:Contains(int x, int y) ====
+Check if a point is inside the rectangle's area.
+
+=== jar.Blend ===
+Blend modes available for [[#jar.Drawable|jar.Drawable]]
+
+==== jar.Blend.Alpha ====
+
+==== jar.Blend.Add ====
+
+==== jar.Blend.Multiply ====
+
+==== jar.Blend.None ====
+
+
+=== jar.View ===
+This class defines a view (position, size, etc.) ; you can consider it as a 2D camera 
+
+==== jar.View() ====
+
+==== jar.View(jar.FloatRect viewRect) ====
+Construct the view from a rectangle. 
+
+==== jar.View(jar.Vector2f center, jar.Vector2f halfSize) ====
+Construct the view from its center and half-size.
+
+==== jar.View:SetCenter(float x, float y) ====
+Change the center of the view (take 2 values). 
+
+==== jar.View:SetCenter(jar.Vector2f center) ====
+Change the center of the view (take a vector). 
+
+==== jar.View:SetSize(float width, float height) ====
+Change the half-size of the view (take 2 values). 
+
+==== jar.View:SetSize(jar.Vector2f size) ====
+Change the half-size of the view (take a vector). 
+
+==== jar.View:Move(float x, float y) ====
+Move the view (take 2 values). 
+
+==== jar.View:Move(jar.Vector2f offset) ====
+Move the view (take a vector). 
+
+==== jar.Vector2f jar.View:GetCenter() ====
+Get the center of the view.
+
+==== jar.Vector2f jar.View:GetSize() ====
+Get the half-size of the view. 
+
+==== jar.View:Zoom(float factor) ====
+Resize the view rectangle to simulate a zoom / unzoom effect.
+
+==== jar.View:SetViewport(jar.FloatRect viewport) ====
+The viewport is the rectangle into which the contents of the view are displayed, expressed as a factor (between 0 and 1) of the size of the RenderTarget to which the view is applied. For example, a view which takes the left side of the target would be defined with View:SetViewport(jar.FloatRect(0, 0, 0.5, 1)). By default, a view has a viewport which covers the entire target.
+
+=== jar.Drawable ===
+
+==== jar.Drawable:SetPosition(float x, float y) ====
+
+==== jar.Drawable:SetPosition(jar.Vector2f pos) ====
+
+==== jar.Drawable:SetX(float x) ====
+
+==== jar.Drawable:SetY(float y) ====
+
+==== jar.Drawable:SetScale(float scaleX, float scaleY) ====
+
+==== jar.Drawable:SetScale(jar.Vector2f scale) ====
+
+==== jar.Drawable:SetOrigin(float x, float y) ====
+
+==== jar.Drawable:SetOrigin(jar.Vector2f center) ====
+
+==== jar.Drawable:SetScaleX(float scaleX) ====
+
+==== jar.Drawable:SetScaleY(float scaleY) ====
+
+==== jar.Drawable:SetColor(jar.Color) ====
+
+==== jar.Drawable:SetBlendMode(jar.Blend.Mode mode) ====
+
+==== jar.Vector2f jar.Drawable:GetPosition() ====
+
+==== jar.Vector2f jar.Drawable:GetScale() ====
+
+==== jar.Vector2f jar.Drawable:GetOrigin() ====
+
+==== float jar.Drawable:GetRotation() ====
+
+==== jar.Color jar.Drawable:GetColor() ====
+
+==== jar.Blend.Mode jar.Drawable:GetBlendMode() ====
+
+==== jar.Drawable:Move(float x, float y) ====
+
+==== jar.Drawable:Move(jar.Vector2f offset) ====
+
+==== jar.Drawable:Scale(float x, float y) ====
+
+==== jar.Drawable:Scale(jar.Vector2f scale) ====
+
+==== jar.Drawable:SetRotation(float angle) ====
+''angle'' in radians
+
+==== jar.Drawable:Rotate(float angle) ====
+''angle'' in radians
+
+==== jar.Vector2f jar.Drawable:TransformToLocal(jar.Vector2f point) ====
+Transform a point from global coordinates into local coordinates (ie it applies the inverse of object's center, translation, rotation and scale to the point). 
+
+==== jar.Vector2f jar.Drawable:TransformToGlobal(jar.Vector2f point) ====
+Transform a point from local coordinates into global coordinates (ie it applies the object's center, translation, rotation and scale to the point).
+
+=== jar.RenderWindow ===
+Class representing a window in which you can render stuff.
+
+==== jar.RenderWindow(unsigned int width, unsigned int height, bool border, bool fullscreen) ====
+Creates a window with size specified by ''width'' and ''height''.
+If ''border'' is true, the window will have a border with a close button.
+If ''fullscreen'' is true, you'll get a fullscreen &quot;window&quot; which imho isn't actually a window but whatever.
+
+==== jar.RenderWindow:Close() ====
+Close (destroy) the window. 
+
+==== jar.RenderWindow:Display() ====
+Display the window on screen. 
+
+==== jar.RenderWindow:EnableKeyRepeat(bool enabled) ====
+Enable or disable automatic key-repeat. 
+
+==== unsigned long jar.RenderWindow:GetFrameTime() ====
+Get time elapsed since last frame. (in milliseconds, like every [[Time]])
+
+==== unsigned int jar.RenderWindow:GetWidth() ====
+Get the width of the rendering region of the window. 
+
+==== unsigned int jar.RenderWindow:GetHeight() ====
+Get the height of the rendering region of the window. 
+
+==== jar.RenderWindow:SetActive() ====
+Activate of deactivate the window as the current target for rendering. 
+
+==== jar.RenderWindow:SetCursorPosition(unsigned int left, unsigned int top) ====
+Change the position of the mouse cursor. 
+
+==== jar.RenderWindow:SetFramerateLimit(unsigned int limit) ====
+Limit the framerate to a maximum fixed frequency. 
+
+==== jar.RenderWindow:SetIcon(jar.Image icon) ====
+Change the window's icon.
+
+==== jar.RenderWindow:SetPosition(int left, int top) ====
+Change the position of the window on screen. 
+
+==== jar.RenderWindow:SetSize(unsigned int width, unsigned int height) ====
+Change the size of the rendering region of the window. 
+
+==== jar.RenderWindow:Show(bool show) ====
+Show or hide the window. 
+
+==== jar.RenderWindow:ShowMouseCursor(bool show) ====
+Show or hide the mouse cursor. 
+
+==== jar.RenderWindow:Clear(jar.Color color) ====
+Clear the entire target with a single color. 
+
+==== jar.RenderWindow:Draw(jar.Drawable object) ====
+Draw something into the window. 
+
+==== jar.RenderWindow:SetView(jar.View view) ====
+Change the current active view. 
+
+==== jar.View jar.RenderWindow:GetView() ====
+Get the current view. 
+
+==== jar.View jar.RenderWindow:GetDefaultView() ====
+Get the default view of the window for read / write.
+
+=== jar.Image ===
+An image. Can be displayed using a sprite, multiple sprites can (and should) share the same image.
+
+==== Jar.Image() ====
+Creates a new image.
+
+==== bool jar.Image:LoadFromFile(string filename) ====
+Loads an image from a file of the given filename (PhysFS path)
+
+=== jar.Sprite ===
+Sprites are used to render images to the screen. They inherit from [[#jar.Drawable|Drawable]].
+
+==== jar.Sprite() ====
+
+==== jar.Sprite(jar.Image image) ====
+
+==== jar.Sprite(jar.Image image, jar.Vector2f position) ====
+
+==== jar.Sprite:SetImage(jar.Image image) ====
+
+==== jar.Image jar.Sprite:GetImage() ====
+
+==== jar.Sprite:FlipX(bool flip) ====
+Sets whether the sprite should be horizontally flipped.
+
+==== jar.Sprite:FlipY(bool flip) ====
+Sets whether the sprite should be vertically flipped.
+
+==== jar.Sprite:SetSubRect(jar.IntRect rect) ====
+For rendering only a part of the image
+
+==== jar.IntRect jar.Sprite:GetSubRect() ====
+
+==== jar.Sprite:Resize(float x, float y) ====
+
+==== jar.Sprite:Resize(jar.Vector2f factor) ====
+
+==== jar.Vector2f jar.Sprite:GetSize() ====
+
+=== jar.Font ===
+An image-based font, used for (rendered) strings. Uses Jedi Academy's .fontdat format. (BobaFett wrote a utility to convert TrueType Fonts to that format, it should be included in the latest SVN revision.)
+
+==== bool jar.Font:LoadFromFile(string filename) ====
+Loads the font from a given file, if ''filename''.fontdat and ''filename''.png/.tga exist and are valid.
+
+==== int jar.Font:GetHeight() ====
+Returns the height of a line in pixels at the default size.
+
+==== int jar.Font:GetDefaultSize() ====
+Returns the default size, which is the size which was used to create the font image.
+
+==== int jar.Font:GetTabWidth() ====
+Returns how wide a tab is, in multiples of the width of the space character. Default is 8.
+
+==== jar.Font:SetTabWidth(int width) ====
+Sets how wide a tab is, in multiples of the width of the space character.
+
+==== jar.Font:GetWidth(string str) ====
+Returns how wide a give string ''str'' using this font at its default size would be.
+
+=== jar.Text ===
+A text that can be rendered. Inherits [[#jar.Drawable|Drawable]]
+
+==== jar.Text([[#jar.Font|jar.Font]] font) ====
+Creates a new text using the given ''font'' at its default size
+
+
+==== jar.Text([[#jar.Font|jar.Font]] font, unsigned int size) ====
+Creates a new text using the given ''font'' and ''size''
+
+==== jar.Text:SetText(string text) ====
+Sets the text that should be rendered.
+
+==== string jar.Text:GetText() ====
+Gets the text that should be rendered.
+
+==== jar.Text:SetFont([[#jar.Font|jar.Font]] font) ====
+Sets the font.
+
+==== [[#jar.Font|jar.Font]] jar.Text:GetFont() ====
+Gets the current font.
+
+==== jar.Text:SetFontSize(int size) ====
+Changes the font size - if it is set above its default size, it will be stretched which may not look good.
+
+==== int jar.Text:GetFontSize() ====
+Retreives the font size used.
+
+==== float jar.Text:GetWidth() ====
+Gets the width of the text in pixels. Depends on the text, the font and the fontsize.
+
+=== jar.Input ===
+
+==== jar.Input jar.Input:GetSingleton() ====
+Returns the Input Component for further use.
+
+==== [[#jar.InputDeviceManager|jar.InputDeviceManager]] jar.Input:GetInputDeviceManager() ====
+Returns the InputDeviceManager
+
+=== jar.InputDeviceManager ===
+Manages the Input Devices. Mostly irrelevant to the user but for Joystick Management you might want to get the list of joysticks.
+
+==== [[#jar.InputDeviceJoystick|jar.InputDeviceJoystick]]-list jar.InputDeviceManager:GetAllJoysticks() ====
+Returns an iterable list of all joysticks. Don't nest calls!
+
+=== jar.InputDeviceJoystick ===
+
+==== int jar.InputDeviceJoystick:GetIndex() ====
+Gets the engine's internal index of this Joystick. They may change between program executions but this is what you should usually compare when handling events.
+
+==== string jar.InputDeviceJoystick:GetUniqueID() ====
+Gets a unique identifier for this Joystick that will be the same on different runs. Not necessarily suited for user display.
+
+==== string jar.InputDeviceJoystick:GetName() ====
+Gets the joystick's name that should make some sense to the user but may not be unique.
+
+[[Category:Modder's Guide]]
+[[Category:ToDo]]</text>
+    </revision>
+  </page>
+  <page>
+    <title>Menu File Format</title>
+    <id>26</id>
+    <revision>
+      <id>115</id>
+      <timestamp>2012-05-20T16:44:03Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>sourceforge logged me out while writing</comment>
+      <text xml:space="preserve">fuck you sourceforge</text>
+    </revision>
+  </page>
+  <page>
+    <title>PhysicsFS</title>
+    <id>23</id>
+    <revision>
+      <id>67</id>
+      <timestamp>2010-11-11T14:12:08Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>Created page with 'A library for a Jedi Academy-esque virtual file system of pk3 files and directory. [[http://icculus.org/physfs/|Official Website]]  Used as the main filesystem in Jedi Academy: R…'</comment>
+      <text xml:space="preserve">A library for a Jedi Academy-esque virtual file system of pk3 files and directory. [[http://icculus.org/physfs/|Official Website]]
+
+Used as the main filesystem in Jedi Academy: Renaissance.</text>
+    </revision>
+  </page>
+  <page>
+    <title>CVars for Developers</title>
+    <id>25</id>
+    <revision>
+      <id>90</id>
+      <timestamp>2010-11-21T12:06:21Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>/* Registering CVars */ added new flag</comment>
+      <text xml:space="preserve">This page contains information about Console Variables for developers. If you're a user, you're probably looking for the [[CVar_Reference]].
+
+== Registering CVars ==
+
+Before using a CVar you should register it to set its flags and give it a description. For this you use the CVarManager, whose global instance is g_CVarManager:
+ local info = { name = &quot;cvar_test&quot; }
+ g_CVarManager:RegisterCVar(info)
+where info is a table containing information on your cvar. Thanks to Lua's syntactic sugar you can just write
+ g_CVarManager:RegisterCVar{
+ 	name = &quot;cvar_test&quot;,
+ 	description = &quot;a test CVar for testing purposes&quot;
+ }
+info can contain one or more of the following:
+{|border=1
+!key
+!description
+|-
+|name
+|the CVar's name. Obviously essential. The name needs to be unique, i.e. no two CVars can have the same name.
+|-
+|description
+|describe the CVar's purpose here. Inform the user about possible values etc.
+|-
+|defaultValue
+|the CVar's default value.
+|-
+|value
+|the CVar's current value. If none is supplied, the defaultValue will be used.
+|-
+|minValue
+|''value'' needs to be at least this big. Only makes sense for numbers, imho.
+|-
+|maxValue
+|''value'' must not be bigger than this. Only makes sense for numbers, imho.
+|-
+|type
+|the type of the value. The CVar will then only take values of the correct type. Possible values are CVar.TYPES.STRING, CVar.TYPES.INT, CVar.TYPES.FLOAT and CVar.TYPES.ANY, though the latter is rarely used.
+|-
+|flags
+|a table containing boolean flags (possibilities follow)
+|-
+|flags.save
+|indicates that this CVar should be saved to the configfile (config/cvars.lua). Even CVars that aren't saved will be loaded from the config if present though.
+|-
+|flags.readonly
+|indicates that this CVar cannot be changed via console, only in the code.
+|-
+|IsValid(newValue)
+|a function called whenever the ''value'' is to be changed. Should return whether the new value is valid. By the time this is called, newValue has already been checked for type and range (between ''minValue'' and ''maxValue'', if set). Note that you cannot access the CVar from within this function, i.e. note the lack of ''self'' parameter.
+|-
+|OnChange(oldValue, newValue)
+|a function called whenever ''value'' is about to be changed, after the validity of the new Value has been checked. Allows you to react to changes.
+|}
+
+== Setting CVar values ==
+ g_CVarManager:SetCVar(&quot;''cvarname''&quot;, ''newValue'')
+If no CVar called ''cvarname'' exists, a new one will be created and flagged ''usercreated''. It will lack a description and has no flags set. You should thus always [[#Registering CVars|register]] CVars first.
+
+Returns whether the value could be set. Will return false if ''newValue'' had an invalid value, e.g. the wrong type. Will return true if the CVar didn't exist, though.
+
+== Getting CVar values ==
+ local val = g_CVarManager:GetCVar(&quot;''cvarname''&quot;)
+If no CVar called ''cvarname'' exists, ''nil'' will be returned.</text>
+    </revision>
+  </page>
+  <page>
+    <title>Frequently Asked Questions</title>
+    <id>9</id>
+    <revision>
+      <id>46</id>
+      <timestamp>2010-11-08T22:41:56Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <minor/>
+      <comment>moved [[Faq]] to [[Frequently Asked Questions]]:&amp;#32;clarity</comment>
+      <text xml:space="preserve">'''When will it be done?'''
+I'm coding this thing from ground up, using C++ and Lua. That's a lot of work and will take a lot of time. I hope to be done in 2016, hopefully sooner.
+To code the engine I'm going to create a lot of small games, writing reusable components for them that will eventually be used to create Jedi Academy: Renaissance. Those small games will be released as well and should help me stay motivated.
+
+'''Do you think you can get this done?'''
+Not yet. I haven't done much graphics programming and have barely any experience in network programming. The small games I'm going to write should help me with that, I will explore those areas with them. I can also learn from the Quake 3 code, in fact I will do a lot of things the way they are done in Quake 3.
+
+'''Why are you doing this?'''
+I've got a special connection to Jedi Academy. I started modding with Jedi Knight 2: Jedi Outcast, then switched to Jedi Knight: Jedi Academy and made all kinds of mods. The Jedi Academy SDK made me start coding.
+Jedi Academy is a nice game. But there are so many possibilities! What if it had a proper physics engine? So you could push crates and stuff around with the force? What about pixel shaders? What if ...? There's so much potential.
+
+'''Won't those changes scare away fans of the original Jedi Academy?'''
+I'm aware that may happen, so I plan to keep the changes optional. For example the physical effects will only be available in certain maps.
+
+'''Why the jar?'''
+'''J'''edi '''A'''cademy '''R'''enaissance.</text>
+    </revision>
+  </page>
+  <page>
+    <title>Lua Boot Sequence</title>
+    <id>21</id>
+    <revision>
+      <id>113</id>
+      <timestamp>2012-05-20T15:40:56Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>/* Main.lua */</comment>
+      <text xml:space="preserve">After the [[C++ initialization]] is done, bootstrap.pk3 is mounted and code/Bootstrap.lua is executed.
+
+== Bootstrap.lua ==
+# The file execution functions ''dofile'', ''loadfile'' and ''require'' are changed to use [[PhysicsFS]].
+# In the release version ''assets1.pk3'' will then be mounted, but for now ''./'' is mounted instead because writing code is more convenient if you don't have to zip it up to test it.
+# ''code/Init.lua'' is executed.
+
+== Init.lua ==
+# The config- and CVar-systems are initialized because they're needed for proper bootup.
+# ''./config/'' is mounted as ''/config/'' so config files can be read.
+# The ModManager is initialized and checks for available mods. (Also see [[Basic modding information]].)
+# The activated mods are mounted.
+# ''./config/'' is unmounted and remounted so it's first in the mount list because pk3s should never overwrite the config.
+# ''code/Main.lua'' is executed.
+
+Your best bet is to just read the code, this documentation will likely be outdated.
+
+== Main.lua ==
+Supplied by an addon at the moment. testsuite creates a simple test app whose interaction is mostly restricted to the console, for example.
+
+[[Category:ToDo]]</text>
+    </revision>
+  </page>
+  <page>
+    <title>Modder's Guide</title>
+    <id>11</id>
+    <revision>
+      <id>114</id>
+      <timestamp>2012-05-20T15:41:50Z</timestamp>
+      <contributor>
+        <username>Mrwonko</username>
+        <id>7</id>
+      </contributor>
+      <comment>added menu file format link</comment>
+      <text xml:space="preserve">The Modder's Guide is supposed to provide modders and coders an overview of how things work and what's possible as well as a reference for some parts of the code.
+
+* [[Basic modding information]]
+* [[Coding]]
+* [[Menu File Format]]
+* (More will be written once it's done.)
+
+[[Category:Modder's Guide| ]]</text>
+    </revision>
+  </page>
+</mediawiki>
