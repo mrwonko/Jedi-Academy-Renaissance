@@ -16,4 +16,4 @@ Unlike OpenJK these tools use the MIT license as given in LICENSE.txt.
 
 ## Credits
 
-Inspired by and partially based on [Bruce Dawson's blog post](https://randomascii.wordpress.com/2013/03/09/symbols-the-microsoft-way/) so major thanks him collecting this information.
+Inspired by and partially based on [Bruce Dawson's blog post](https://randomascii.wordpress.com/2013/03/09/symbols-the-microsoft-way/) so major thanks to him for collecting this information.
