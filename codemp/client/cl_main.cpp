@@ -37,8 +37,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "snd_local.h"
 #include "sys/sys_loadlib.h"
 
-cvar_t	*cl_renderer;
-
 cvar_t	*cl_nodelta;
 cvar_t	*cl_debugMove;
 
@@ -116,7 +114,6 @@ char cl_reconnectArgs[MAX_OSPATH] = {0};
 
 // Structure containing functions exported from refresh DLL
 refexport_t	*re = NULL;
-static void	*rendererLib = NULL;
 
 ping_t	cl_pinglist[MAX_PINGREQUESTS];
 
@@ -2265,11 +2262,6 @@ static void CL_ShutdownRef( qboolean restarting ) {
 	}
 
 	re = NULL;
-
-	if ( rendererLib != NULL ) {
-		Sys_UnloadDll (rendererLib);
-		rendererLib = NULL;
-	}
 }
 
 /*
@@ -2359,34 +2351,12 @@ static IHeapAllocator *GetG2VertSpaceServer( void ) {
 void CL_InitRef( void ) {
 	static refimport_t ri;
 	refexport_t	*ret;
-	GetRefAPI_t	GetRefAPI;
-	char		dllName[MAX_OSPATH];
 
 	Com_Printf( "----- Initializing Renderer ----\n" );
 
-	cl_renderer = Cvar_Get( "cl_renderer", DEFAULT_RENDER_LIBRARY, CVAR_ARCHIVE|CVAR_LATCH|CVAR_PROTECTED, "Which renderer library to use" );
-
-	Com_sprintf( dllName, sizeof( dllName ), "%s_" ARCH_STRING DLL_EXT, cl_renderer->string );
-
-	if( !(rendererLib = Sys_LoadDll( dllName, qfalse )) && strcmp( cl_renderer->string, cl_renderer->resetString ) )
-	{
-		Com_Printf( "failed: trying to load fallback renderer\n" );
-		Cvar_ForceReset( "cl_renderer" );
-
-		Com_sprintf( dllName, sizeof( dllName ), DEFAULT_RENDER_LIBRARY "_" ARCH_STRING DLL_EXT );
-		rendererLib = Sys_LoadDll( dllName, qfalse );
-	}
-
-	if ( !rendererLib ) {
-		Com_Error( ERR_FATAL, "Failed to load renderer\n" );
-	}
 
 	memset( &ri, 0, sizeof( ri ) );
-
-	GetRefAPI = (GetRefAPI_t)Sys_LoadFunction( rendererLib, "GetRefAPI" );
-	if ( !GetRefAPI )
-		Com_Error( ERR_FATAL, "Can't load symbol GetRefAPI: '%s'", Sys_LibraryError() );
-
+	
 	//set up the import table
 	ri.Printf = CL_RefPrintf;
 	ri.Error = Com_Error;

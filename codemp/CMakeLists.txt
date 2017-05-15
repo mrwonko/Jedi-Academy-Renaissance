@@ -23,28 +23,28 @@ endif(NOT InOpenJK)
 
 set(MPSharedDefines ${SharedDefines})
 
-#    Add Game Project
-if(BuildMPGame)
-	add_subdirectory("${MPDir}/game")
-endif(BuildMPGame)
-
-#    Add CGame Project
-if(BuildMPCGame)
-	add_subdirectory("${MPDir}/cgame")
-endif(BuildMPCGame)
-
-#    Add UI Project
-if(BuildMPUI)
-	add_subdirectory("${MPDir}/ui")
-endif(BuildMPUI)
-
-#	 Add Vanilla JKA Renderer Project
-if(BuildMPRdVanilla)
-	add_subdirectory("${MPDir}/rd-vanilla")
-endif(BuildMPRdVanilla)
-
 #    Common things between Engine and Dedicated Server
-if(BuildMPEngine OR BuildMPDed)
+if(BuildMPEngine)
+
+	#    Add Game Project
+	if(BuildMPGame)
+		add_subdirectory("${MPDir}/game")
+	endif(BuildMPGame)
+
+	#    Add CGame Project
+	if(BuildMPCGame)
+		add_subdirectory("${MPDir}/cgame")
+	endif(BuildMPCGame)
+
+	#    Add UI Project
+	if(BuildMPUI)
+		add_subdirectory("${MPDir}/ui")
+	endif(BuildMPUI)
+
+	#	 Add Vanilla JKA Renderer Project
+	if(BuildMPRdVanilla)
+		add_subdirectory("${MPDir}/rd-vanilla")
+	endif(BuildMPRdVanilla)
 
 	#    Botlib
 	# the files could arguably just be put into the engine and dedicated projects without having a library for it.
@@ -167,8 +167,8 @@ if(BuildMPEngine OR BuildMPDed)
 
 	#    Common files/libraries/defines of both Engine and Dedicated Server
 
-	# libraries: Botlib
-	set(MPEngineAndDedLibraries ${MPBotLib})
+	# libraries: Botlib, Renderer
+	set(MPEngineAndDedLibraries ${MPBotLib} ${MPVanillaRenderer})
 	# Platform-specific libraries
 	if(WIN32)
 		set(MPEngineAndDedLibraries ${MPEngineAndDedLibraries} "winmm" "wsock32")
@@ -340,7 +340,7 @@ if(BuildMPEngine OR BuildMPDed)
 		)
 	set(MPEngineAndDedFiles ${MPEngineAndDedFiles} ${MPEngineAndDedSysFiles})
 	source_group("sys" FILES ${MPEngineAndDedSysFiles})
-endif(BuildMPEngine OR BuildMPDed)
+endif(BuildMPEngine)
 
 #        Engine/Executable (jamp.exe)
 
@@ -603,136 +603,3 @@ if(BuildMPEngine)
 	set_target_properties(${MPEngine} PROPERTIES PROJECT_LABEL "MP Client")
 	target_link_libraries(${MPEngine} ${MPEngineLibraries})
 endif(BuildMPEngine)
-
-#        Dedicated Server (Engine) (jampded.exe)
-
-if(BuildMPDed)
-	set(MPDedLibraries ${MPEngineAndDedLibraries})
-	set(MPDedIncludeDirectories ${MPEngineAndDedIncludeDirectories})
-	set(MPDedFiles ${MPEngineAndDedFiles})
-	set(MPDedDefines ${MPSharedDefines} "_CONSOLE" "DEDICATED")
-
-	# Dedicated renderer is compiled with the server.
-	set(MPDedicatedRendererFiles
-		"${MPDir}/ghoul2/G2_gore.cpp"
-		"${MPDir}/rd-common/mdx_format.h"
-		"${MPDir}/rd-common/tr_public.h"
-		"${MPDir}/rd-dedicated/tr_local.h"
-		"${MPDir}/rd-dedicated/G2_API.cpp"
-		"${MPDir}/rd-dedicated/G2_bolts.cpp"
-		"${MPDir}/rd-dedicated/G2_bones.cpp"
-		"${MPDir}/rd-dedicated/G2_misc.cpp"
-		"${MPDir}/rd-dedicated/G2_surfaces.cpp"
-		"${MPDir}/rd-dedicated/tr_backend.cpp"
-		"${MPDir}/rd-dedicated/tr_ghoul2.cpp"
-		"${MPDir}/rd-dedicated/tr_init.cpp"
-		"${MPDir}/rd-dedicated/tr_main.cpp"
-		"${MPDir}/rd-dedicated/tr_mesh.cpp"
-		"${MPDir}/rd-dedicated/tr_model.cpp"
-		"${MPDir}/rd-dedicated/tr_shader.cpp"
-		"${MPDir}/rd-dedicated/tr_skin.cpp")
-	source_group("renderer" FILES ${MPDedicatedRendererFiles})
-	set(MPDedFiles ${MPDedFiles} ${MPDedicatedRendererFiles})
-
-	set(MPDedNullFiles
-		"${MPDir}/null/null_client.cpp"
-		"${MPDir}/null/null_input.cpp"
-		"${MPDir}/null/null_renderer.cpp"
-		"${MPDir}/null/null_snddma.cpp"
-		)
-	source_group("null" FILES ${MPDedNullFiles})
-	set(MPDedFiles ${MPDedFiles} ${MPDedNullFiles})
-	if(WIN32)
-		set(MPDedWin32Files
-			"${MPDir}/win32/openjkded.rc"
-			)
-		source_group("win32" FILES ${MPDedWin32Files})
-		set(MPDedFiles ${MPDedFiles} ${MPDedWin32Files})
-
-		set(MPDedSysFiles
-			"${SharedDir}/sys/sys_loadlib.h"
-			"${SharedDir}/sys/sys_local.h"
-			"${SharedDir}/sys/sys_main.cpp"
-			"${SharedDir}/sys/sys_event.cpp"
-			"${SharedDir}/sys/sys_public.h"
-			"${SharedDir}/sys/sys_win32.cpp"
-			"${SharedDir}/sys/con_local.h"
-			"${SharedDir}/sys/con_log.cpp"
-			"${SharedDir}/sys/con_win32.cpp"
-			)
-		set(MPDedLibraries ${MPDedLibraries} ${CMAKE_DL_LIBS})
-		source_group("sys" FILES ${MPDedSysFiles})
-		set(MPDedFiles ${MPDedFiles} ${MPDedSysFiles})
-	else(WIN32)
-		set(MPDedSysFiles
-			"${SharedDir}/sys/sys_loadlib.h"
-			"${SharedDir}/sys/sys_local.h"
-			"${SharedDir}/sys/sys_main.cpp"
-			"${SharedDir}/sys/sys_event.cpp"
-			"${SharedDir}/sys/sys_public.h"
-			"${SharedDir}/sys/sys_unix.cpp"
-			"${SharedDir}/sys/con_local.h"
-			"${SharedDir}/sys/con_log.cpp"
-			"${SharedDir}/sys/con_tty.cpp"
-			)
-		set(MPDedLibraries ${MPDedLibraries} ${CMAKE_DL_LIBS})
-		source_group("sys" FILES ${MPDedSysFiles})
-		set(MPDedFiles ${MPDedFiles} ${MPDedSysFiles})
-	endif(WIN32)
-
-	add_executable(${MPDed} ${MPDedFiles})
-	install(TARGETS ${MPDed}
-		RUNTIME
-		DESTINATION ${JKAInstallDir}
-		COMPONENT ${JKAMPServerComponent})
-
-	set_target_properties(${MPDed} PROPERTIES COMPILE_DEFINITIONS "${MPDedDefines}")
-
-	# Hide symbols not explicitly marked public.
-	set_property(TARGET ${MPDed} APPEND PROPERTY COMPILE_OPTIONS ${OPENJK_VISIBILITY_FLAGS})
-
-	set_target_properties(${MPDed} PROPERTIES INCLUDE_DIRECTORIES "${MPDedIncludeDirectories}")
-	set_target_properties(${MPDed} PROPERTIES PROJECT_LABEL "MP Dedicated Server")
-	target_link_libraries(${MPDed} ${MPDedLibraries})
-endif(BuildMPDed)
-
-	set(GameLibsBuilt)
-	if(BuildMPGame)
-		set(GameLibsBuilt ${GameLibsBuilt} ${MPGame})
-	endif()
-
-	if(BuildMPCGame)
-		set(GameLibsBuilt ${GameLibsBuilt} ${MPCGame})
-	endif()
-
-	if(BuildMPUI)
-		set(GameLibsBuilt ${GameLibsBuilt} ${MPUI})
-	endif()
-
-if(WIN32)
-set(GameLibFullPaths)
-	if(MSVC)
-		foreach(GameLib ${GameLibsBuilt})
-			set(GameLibFullPaths
-				${GameLibFullPaths}
-				${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${GameLib}${CMAKE_SHARED_LIBRARY_SUFFIX})
-		endforeach(GameLib)
-	else()
-		foreach(GameLib ${GameLibsBuilt})
-			set(GameLibFullPaths
-				${GameLibFullPaths}
-				${CMAKE_BINARY_DIR}/${GameLib}${CMAKE_SHARED_LIBRARY_SUFFIX})
-		endforeach(GameLib)
-	endif()
-
-	include(InstallZIP)
-	add_zip_command(${AssetsPk3}
-		FILES ${GameLibFullPaths}
-		DEPENDS "${GameLibsBuilt}")
-	add_custom_target(Assets
-		ALL
-		DEPENDS ${AssetsPk3})
-	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${AssetsPk3}
-		DESTINATION "${JKAInstallDir}/jarenaissance"
-		COMPONENT ${JKAMPCoreComponent})
-endif()

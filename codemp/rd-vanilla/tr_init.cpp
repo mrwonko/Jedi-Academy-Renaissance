@@ -211,7 +211,7 @@ cvar_t	*broadsword_dircap=0;
 Ghoul2 Insert End
 */
 
-cvar_t *se_language;
+extern cvar_t *se_language;
 
 cvar_t *r_aviMotionJpegQuality;
 cvar_t *r_screenshotJpegQuality;
@@ -1543,7 +1543,7 @@ R_Register
 void R_Register( void )
 {
 	//FIXME: lol badness
-	se_language = ri->Cvar_Get("se_language", "english", CVAR_ARCHIVE | CVAR_NORESTART, "");
+	// se_language = ri->Cvar_Get("se_language", "english", CVAR_ARCHIVE | CVAR_NORESTART, "");
 	//
 	// latched and archived variables
 	//
@@ -1949,8 +1949,7 @@ GetRefAPI
 
 @@@@@@@@@@@@@@@@@@@@@
 */
-extern "C" {
-Q_EXPORT refexport_t* QDECL GetRefAPI( int apiVersion, refimport_t *rimp ) {
+refexport_t* GetRefAPI( int apiVersion, refimport_t *rimp ) {
 	static refexport_t re;
 
 	assert( rimp );
@@ -2142,5 +2141,3 @@ Q_EXPORT refexport_t* QDECL GetRefAPI( int apiVersion, refimport_t *rimp ) {
 
 	return &re;
 }
-
-} //extern "C"

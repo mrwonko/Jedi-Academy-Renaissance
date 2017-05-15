@@ -351,11 +351,7 @@ typedef struct refimport_s {
 // this is the only function actually exported at the linker level
 // If the module can't init to a valid rendering state, NULL will be
 // returned.
-#ifdef DEDICATED // dedicated server will statically compile rd-dedicated
-	refexport_t *GetRefAPI( int apiVersion, refimport_t *rimp );
-#else
-	typedef	refexport_t* (QDECL *GetRefAPI_t) (int apiVersion, refimport_t *rimp);
-#endif
+refexport_t *GetRefAPI( int apiVersion, refimport_t *rimp );
 
 #endif
 
