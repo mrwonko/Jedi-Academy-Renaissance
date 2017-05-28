@@ -34,11 +34,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 # Customizable options
 option(BuildPortableVersion "Build portable version (does not read or write files from your user/home directory" OFF)
 
-set(BuildMPEngine  ON)
-set(BuildMPRdVanilla ON)
-set(BuildMPGame ON)
-set(BuildMPCGame ON)
-set(BuildMPUI ON)
 option(BuildTests "Whether to build automatic unit tests (requires Boost)" ON)
 
 Include(CMakeDependentOption)

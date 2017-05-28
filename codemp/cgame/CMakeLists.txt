@@ -146,7 +146,7 @@ if(NOT MSVC)
 	set_target_properties(${MPCGame} PROPERTIES PREFIX "")
 endif()
 
-if(MakeApplicationBundles AND BuildMPEngine)
+if(MakeApplicationBundles)
 	install(TARGETS ${MPCGame}
 		LIBRARY
 		DESTINATION "${JKAInstallDir}/${MPEngine}.app/Contents/MacOS/OpenJK"

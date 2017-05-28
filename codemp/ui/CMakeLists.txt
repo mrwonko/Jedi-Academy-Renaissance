@@ -99,7 +99,7 @@ if(NOT MSVC)
 	set_target_properties(${MPUI} PROPERTIES PREFIX "")
 endif()
 
-if(MakeApplicationBundles AND BuildMPEngine)
+if(MakeApplicationBundles)
 	install(TARGETS ${MPUI}
 		LIBRARY
 		DESTINATION "${JKAInstallDir}/${MPEngine}.app/Contents/MacOS/OpenJK"
