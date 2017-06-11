@@ -88,18 +88,6 @@ sysEvent_t	Sys_GetEvent( void );
 
 void	Sys_Init (void);
 
-// general development dll loading for virtual machine testing
-typedef void *GetGameAPIProc( void  *);
-typedef intptr_t QDECL VMMainProc( int, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t, intptr_t );
-typedef intptr_t QDECL SystemCallProc( intptr_t, ... );
-typedef void * QDECL GetModuleAPIProc( int, ... );
-
-void	*Sys_LoadSPGameDll( const char *name, GetGameAPIProc **GetGameAPI );
-void	* QDECL Sys_LoadDll(const char *name, qboolean useSystemLib);
-void	* QDECL Sys_LoadLegacyGameDll( const char *name, VMMainProc **vmMain, SystemCallProc *systemcalls );
-void	* QDECL Sys_LoadGameDll( const char *name, GetModuleAPIProc **moduleAPI );
-void	Sys_UnloadDll( void *dllHandle );
-
 char	*Sys_GetCurrentUser( void );
 
 void	NORETURN QDECL Sys_Error( const char *error, ... );
@@ -114,7 +102,7 @@ int		Sys_Milliseconds (bool baseTime = false);
 int		Sys_Milliseconds2(void);
 void	Sys_Sleep( int msec );
 
-extern "C" void	Sys_SnapVector( float *v );
+void	Sys_SnapVector( float *v );
 
 bool Sys_RandomBytes( byte *string, int len );
 

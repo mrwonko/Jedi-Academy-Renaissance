@@ -23,6 +23,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "qcommon/q_shared.h"
+#include "bg_moduletype.h"
 
 typedef struct Vehicle_s Vehicle_t;
 typedef struct bgEntity_s bgEntity_t;
@@ -635,4 +636,5 @@ typedef struct Vehicle_s
 	} Vehicle_t;
 #endif
 
-extern int BG_VehicleGetIndex( const char *vehicleName );
+template< moduleType mod >
+int BG_VehicleGetIndex( const char *vehicleName );

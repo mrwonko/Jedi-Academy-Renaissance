@@ -31,6 +31,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "bg_weapons.h"
 #include "anims.h"
 #include "bg_vehicles.h"
+#include "bg_moduletype.h"
+#include "ghoul2/ghoul2_shared.h"
 
 //these two defs are shared now because we do clientside ent parsing
 #define	MAX_SPAWN_VARS			64
@@ -396,10 +398,8 @@ extern bgLoadedAnim_t bgAllAnims[MAX_ANIM_FILES];
 //cut memory cost.
 //On the bright side this also means we're cutting a rather large size out of
 //required game-side memory.
-#ifndef _GAME
 extern bgLoadedEvents_t bgAllEvents[MAX_ANIM_FILES];
 extern int bgNumAnimEvents;
-#endif
 
 
 typedef enum {
@@ -555,6 +555,7 @@ extern	pmove_t		*pm;
 
 // if a full pmove isn't done on the client, you can just update the angles
 void PM_UpdateViewAngles( playerState_t *ps, const usercmd_t *cmd );
+template<moduleType mod>
 void Pmove (pmove_t *pmove);
 
 
@@ -1055,7 +1056,10 @@ typedef enum {
 	TEAM_BLUE,
 	TEAM_SPECTATOR,
 
-	TEAM_NUM_TEAMS
+	TEAM_NUM_TEAMS,
+
+	SIEGETEAM_TEAM1 = TEAM_RED,
+	SIEGETEAM_TEAM2 = TEAM_BLUE
 } team_t;
 
 typedef enum {
@@ -1476,7 +1480,7 @@ typedef struct saberMoveData_s {
 	int blocking;
 	saberMoveName_t chain_idle;			// What move to call if the attack button is not pressed at the end of this anim
 	saberMoveName_t chain_attack;		// What move to call if the attack button (and nothing else) is pressed
-	qboolean trailLength;
+	int trailLength;
 } saberMoveData_t;
 extern saberMoveData_t	saberMoveData[LS_MOVE_MAX];
 
@@ -1716,13 +1720,17 @@ qboolean BG_InDeathAnim( int anim );
 qboolean BG_InSaberLockOld( int anim );
 qboolean BG_InSaberLock( int anim );
 
+template<moduleType mod>
 void BG_SaberStartTransAnim( int clientNum, int saberAnimLevel, int weapon, int anim, float *animSpeed, int broken );
 
 void BG_ForcePowerDrain( playerState_t *ps, forcePowers_t forcePower, int overrideAmt );
 
+template<moduleType mod>
 void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
+template<moduleType mod>
 void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );
 
+template< moduleType mod >
 void	BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerState_t *ps );
 
 void	BG_TouchJumpPad( playerState_t *ps, entityState_t *jumppad );
@@ -1730,14 +1738,15 @@ void	BG_TouchJumpPad( playerState_t *ps, entityState_t *jumppad );
 void	BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean snap );
 void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s, int time, qboolean snap );
 
+template< moduleType mod >
 qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
 
 void	BG_InitAnimsets(void);
 void	BG_ClearAnimsets(void);
+template< moduleType mod >
 int		BG_ParseAnimationFile(const char *filename, animation_t *animSet, qboolean isHumanoid);
-#ifndef _GAME
+template< moduleType mod >
 int		BG_ParseAnimationEvtFile( const char *as_filename, int animFileIndex, int eventFileIndex );
-#endif
 
 qboolean BG_HasAnimation(int animIndex, int animation);
 int		BG_PickAnim( int animIndex, int minAnim, int maxAnim );
@@ -1749,11 +1758,17 @@ qboolean BG_IsItemSelectable(playerState_t *ps, int item);
 qboolean BG_HasYsalamiri(int gametype, playerState_t *ps);
 qboolean BG_CanUseFPNow(int gametype, playerState_t *ps, int time, forcePowers_t power);
 
+template< moduleType mod >
 void *BG_Alloc ( int size );
+template< moduleType mod >
 void *BG_AllocUnaligned ( int size );
+template< moduleType mod >
 void *BG_TempAlloc( int size );
+template< moduleType mod >
 void BG_TempFree( int size );
+template< moduleType mod >
 char *BG_StringAlloc ( const char *source );
+template< moduleType mod >
 qboolean BG_OutOfMemory ( void );
 
 void BG_BLADE_ActivateTrail ( bladeInfo_t *blade, float duration );
@@ -1769,7 +1784,7 @@ float BG_SI_Length(saberInfo_t *saber);
 float BG_SI_LengthMax(saberInfo_t *saber);
 void BG_SI_ActivateTrail ( saberInfo_t *saber, float duration );
 void BG_SI_DeactivateTrail ( saberInfo_t *saber, float duration );
-extern void BG_AttachToRancor( void *ghoul2,float rancYaw,vec3_t rancOrigin,int time,qhandle_t *modelList,vec3_t modelScale,qboolean inMouth,vec3_t out_origin,vec3_t out_angles,matrix3_t out_axis );
+extern void BG_AttachToRancor( CGhoul2Info_v& ghoul2,float rancYaw,vec3_t rancOrigin,int time,qhandle_t *modelList,vec3_t modelScale,qboolean inMouth,vec3_t out_origin,vec3_t out_angles,matrix3_t out_axis );
 void BG_ClearRocketLock( playerState_t *ps );
 
 extern int WeaponReadyAnim[WP_NUM_WEAPONS];

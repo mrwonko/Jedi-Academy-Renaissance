@@ -55,34 +55,36 @@ void UI_LoadForceConfig_List( void );
 //
 
 //FIXME ripped from cg_local.h
-typedef struct lerpFrame_s {
-	int			oldFrame;
-	int			oldFrameTime;		// time when ->oldFrame was exactly on
+namespace ui {
+	typedef struct lerpFrame_s {
+		int			oldFrame;
+		int			oldFrameTime;		// time when ->oldFrame was exactly on
 
-	int			frame;
-	int			frameTime;			// time when ->frame will be exactly on
+		int			frame;
+		int			frameTime;			// time when ->frame will be exactly on
 
-	float		backlerp;
+		float		backlerp;
 
-	float		yawAngle;
-	qboolean	yawing;
-	float		pitchAngle;
-	qboolean	pitching;
+		float		yawAngle;
+		qboolean	yawing;
+		float		pitchAngle;
+		qboolean	pitching;
 
-	int			animationNumber;
-	animation_t	*animation;
-	int			animationTime;		// time when the first frame of the animation will be exact
-} lerpFrame_t;
+		int			animationNumber;
+		animation_t	*animation;
+		int			animationTime;		// time when the first frame of the animation will be exact
+	} lerpFrame_t;
+}
 
 typedef struct playerInfo_s {
 	// model info
 	qhandle_t		legsModel;
 	qhandle_t		legsSkin;
-	lerpFrame_t		legs;
+	ui::lerpFrame_t		legs;
 
 	qhandle_t		torsoModel;
 	qhandle_t		torsoSkin;
-	lerpFrame_t		torso;
+	ui::lerpFrame_t		torso;
 
 //	qhandle_t		headModel;
 //	qhandle_t		headSkin;
@@ -413,4 +415,4 @@ qboolean UI_SaberTypeForSaber( const char *saberName, char *saberType );
 
 // new ui
 
-extern uiImport_t *trap;
+extern uiImport_t *ui_trap;

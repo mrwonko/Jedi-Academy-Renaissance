@@ -2,10 +2,6 @@
 
 #include "q_math.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 #define	MAKERGB( v, r, g, b ) v[0]=r;v[1]=g;v[2]=b
 #define	MAKERGBA( v, r, g, b, a ) v[0]=r;v[1]=g;v[2]=b;v[3]=a
 
@@ -148,6 +144,3 @@ unsigned ColorBytes3 (float r, float g, float b);
 unsigned ColorBytes4 (float r, float g, float b, float a);
 float NormalizeColor( const vec3_t in, vec3_t out );
 
-#if defined(__cplusplus)
-} // extern "C"
-#endif

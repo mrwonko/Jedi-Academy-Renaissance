@@ -22,11 +22,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #define MC_BITS_X (16)
 #define MC_BITS_Y (16)
 #define MC_BITS_Z (16)
@@ -44,7 +39,3 @@ void MC_Compress(const float mat[3][4],unsigned char * comp);
 void MC_UnCompress(float mat[3][4],const unsigned char * comp);
 void MC_UnCompressQuat(float mat[3][4],const unsigned char * comp);
 
-
-#ifdef __cplusplus
-}
-#endif

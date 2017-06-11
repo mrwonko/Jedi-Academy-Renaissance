@@ -159,8 +159,8 @@ set_target_properties(${MPBotLib} PROPERTIES PROJECT_LABEL "Bot Library")
 
 #    Common files/libraries/defines of both Engine and Dedicated Server
 
-# libraries: Botlib, Renderer
-set(MPEngineAndDedLibraries ${MPBotLib} ${MPVanillaRenderer})
+# libraries: Botlib, Renderer, Game, CGame, UI
+set(MPEngineAndDedLibraries ${MPBotLib} ${MPVanillaRenderer} ${MPGame} ${MPCGame} ${MPUI})
 # Platform-specific libraries
 if(WIN32)
 	set(MPEngineAndDedLibraries ${MPEngineAndDedLibraries} "winmm" "wsock32")
@@ -462,36 +462,36 @@ source_group("ravl" FILES ${MPEngineRavlFiles})
 set(MPEngineFiles ${MPEngineFiles} ${MPEngineRavlFiles})
 
 set(MPEngineMp3Files
-	"${MPDir}/mp3code/cdct.c"
+	"${MPDir}/mp3code/cdct.cpp"
 	"${MPDir}/mp3code/config.h"
-	"${MPDir}/mp3code/csbt.c"
-	"${MPDir}/mp3code/csbtb.c"
-	"${MPDir}/mp3code/csbtl3.c"
-	"${MPDir}/mp3code/cup.c"
-	"${MPDir}/mp3code/cupini.c"
-	"${MPDir}/mp3code/cupl1.c"
-	"${MPDir}/mp3code/cupl3.c"
-	"${MPDir}/mp3code/cwin.c"
-	"${MPDir}/mp3code/cwinb.c"
-	"${MPDir}/mp3code/cwinm.c"
+	"${MPDir}/mp3code/csbt.cpp"
+	"${MPDir}/mp3code/csbtb.inl"
+	"${MPDir}/mp3code/csbtl3.inl"
+	"${MPDir}/mp3code/cup.cpp"
+	"${MPDir}/mp3code/cupini.inl"
+	"${MPDir}/mp3code/cupl1.inl"
+	"${MPDir}/mp3code/cupl3.cpp"
+	"${MPDir}/mp3code/cwin.inl"
+	"${MPDir}/mp3code/cwinb.inl"
+	"${MPDir}/mp3code/cwinm.cpp"
 	"${MPDir}/mp3code/htable.h"
-	"${MPDir}/mp3code/hwin.c"
+	"${MPDir}/mp3code/hwin.cpp"
 	"${MPDir}/mp3code/jdw.h"
 	"${MPDir}/mp3code/l3.h"
-	"${MPDir}/mp3code/l3dq.c"
-	"${MPDir}/mp3code/l3init.c"
-	"${MPDir}/mp3code/mdct.c"
-	"${MPDir}/mp3code/mhead.c"
+	"${MPDir}/mp3code/l3dq.cpp"
+	"${MPDir}/mp3code/l3init.cpp"
+	"${MPDir}/mp3code/mdct.cpp"
+	"${MPDir}/mp3code/mhead.cpp"
 	"${MPDir}/mp3code/mhead.h"
 	"${MPDir}/mp3code/mp3struct.h"
-	"${MPDir}/mp3code/msis.c"
+	"${MPDir}/mp3code/msis.cpp"
 	"${MPDir}/mp3code/port.h"
 	"${MPDir}/mp3code/small_header.h"
 	"${MPDir}/mp3code/tableawd.h"
-	"${MPDir}/mp3code/towave.c"
-	"${MPDir}/mp3code/uph.c"
-	"${MPDir}/mp3code/upsf.c"
-	"${MPDir}/mp3code/wavep.c"
+	"${MPDir}/mp3code/towave.cpp"
+	"${MPDir}/mp3code/uph.cpp"
+	"${MPDir}/mp3code/upsf.cpp"
+	"${MPDir}/mp3code/wavep.cpp"
 	)
 source_group("mp3code" FILES ${MPEngineMp3Files})
 set(MPEngineFiles ${MPEngineFiles} ${MPEngineMp3Files})
@@ -501,7 +501,6 @@ set(MPEngineSysFiles
 	"${SharedDir}/sdl/sdl_icon.h"
 	"${SharedDir}/sdl/sdl_input.cpp"
 	"${SharedDir}/sdl/sdl_sound.cpp"
-	"${SharedDir}/sys/sys_loadlib.h"
 	"${SharedDir}/sys/sys_local.h"
 	"${SharedDir}/sys/sys_main.cpp"
 	"${SharedDir}/sys/sys_event.cpp"

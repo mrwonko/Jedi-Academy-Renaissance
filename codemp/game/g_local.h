@@ -30,6 +30,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "bg_public.h"
 #include "bg_vehicles.h"
 #include "g_public.h"
+#include "ghoul2/ghoul2_shared.h"
 
 typedef struct gentity_s gentity_t;
 typedef struct gclient_s gclient_t;
@@ -168,7 +169,7 @@ typedef enum
 } hitLocation_t;
 
 //============================================================================
-extern void *precachedKyle;
+extern CGhoul2Info_v *precachedKyle;
 extern void *g2SaberInstance;
 
 extern qboolean gEscaping;
@@ -179,7 +180,7 @@ struct gentity_s {
 	entityState_t	s;				// communicated by server to clients
 	playerState_t	*playerState;	//ptr to playerstate if applicable (for bg ents)
 	Vehicle_t		*m_pVehicle; //vehicle data
-	void			*ghoul2; //g2 instance
+	CGhoul2Info_v	*ghoul2; //g2 instance
 	int				localAnimIndex; //index locally (game/cgame) to anim data for this skel
 	vec3_t			modelScale; //needed for g2 collision
 
@@ -1526,4 +1527,4 @@ void Svcmd_ToggleAllowVote_f( void );
 void G_RegisterCvars( void );
 void G_UpdateCvars( void );
 
-extern gameImport_t *trap;
+extern gameImport_t *g_trap;

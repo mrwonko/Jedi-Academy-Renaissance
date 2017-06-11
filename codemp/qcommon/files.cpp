@@ -1582,29 +1582,6 @@ long FS_FOpenFileRead( const char *filename, fileHandle_t *file, qboolean unique
 	return -1;
 }
 
-// This is a bit of a hack but it is used for other OS'/arch to still be acceptable with pure servers.
-// Intentionally looking for x86.dll because this is all that exists in pk3s.
-qboolean FS_FindPureDLL(const char *name)
-{
-	char dllName[MAX_OSPATH];
-	fileHandle_t h;
-
-	if(!fs_searchpaths)
-		Com_Error(ERR_FATAL, "Filesystem call made without initialization");
-
-	if ( !Cvar_VariableValue( "sv_pure" ) )
-		return qtrue;
-
-	Com_sprintf(dllName, sizeof(dllName), "%sx86.dll", name);
-
-	if(FS_FOpenFileRead(dllName, &h, qtrue) > 0)
-	{
-		FS_FCloseFile( h );
-		return qtrue;
-	}
-	return qfalse;
-}
-
 /*
 =================
 FS_Read

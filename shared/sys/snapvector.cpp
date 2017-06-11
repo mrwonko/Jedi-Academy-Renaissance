@@ -36,7 +36,6 @@ static inline float roundfloat(float n)
 }
 #endif
 
-extern "C"
 void Sys_SnapVector(float *v)
 {
 #if _MSC_VER

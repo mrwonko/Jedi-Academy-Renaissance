@@ -183,6 +183,8 @@ if(MSVC)
 
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:SSE2")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+	# enable C++17 features (need if constexpr until I clean up the BG code)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest")
 
 	# We don't try to control symbol visibility under MSVC.
 	set(OPENJK_VISIBILITY_FLAGS "")
@@ -298,11 +300,11 @@ endif()
 # Files shared across all projects
 set(SharedCommonFiles
 	"${SharedDir}/qcommon/q_color.h"
-	"${SharedDir}/qcommon/q_color.c"
+	"${SharedDir}/qcommon/q_color.cpp"
 	"${SharedDir}/qcommon/q_math.h"
-	"${SharedDir}/qcommon/q_math.c"
+	"${SharedDir}/qcommon/q_math.cpp"
 	"${SharedDir}/qcommon/q_string.h"
-	"${SharedDir}/qcommon/q_string.c"
+	"${SharedDir}/qcommon/q_string.cpp"
 	"${SharedDir}/qcommon/q_platform.h"
 	)
 set(SharedCommonSafeFiles

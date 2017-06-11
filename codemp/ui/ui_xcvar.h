@@ -33,10 +33,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 	#define XCVAR_DEF( name, defVal, update, flags ) { & name , #name , defVal , update , flags },
 #endif
 
-XCVAR_DEF( capturelimit,					"0",					NULL,				CVAR_ARCHIVE|CVAR_NORESTART|CVAR_SERVERINFO ) // fixme init'd to 8 in game module
-XCVAR_DEF( cg_drawCrosshair,				"1",					NULL,				CVAR_ARCHIVE )
-XCVAR_DEF( cg_drawCrosshairNames,			"1",					NULL,				CVAR_ARCHIVE )
-XCVAR_DEF( cg_marks,						"1",					NULL,				CVAR_ARCHIVE )
 XCVAR_DEF( cg_selectedPlayer,				"0",					NULL,				CVAR_ARCHIVE|CVAR_INTERNAL )
 XCVAR_DEF( cg_selectedPlayerName,			"",						NULL,				CVAR_ARCHIVE|CVAR_INTERNAL )
 XCVAR_DEF( g_botsFile,						"",						NULL,				CVAR_INIT|CVAR_ROM )
@@ -134,5 +130,25 @@ XCVAR_DEF( ui_singlePlayerActive,			"0",					NULL,				CVAR_INTERNAL )
 XCVAR_DEF( ui_team_fraglimit,				"0",					NULL,				CVAR_ARCHIVE|CVAR_INTERNAL )
 XCVAR_DEF( ui_team_friendly,				"1",					NULL,				CVAR_ARCHIVE|CVAR_INTERNAL )
 XCVAR_DEF( ui_team_timelimit,				"20",					NULL,				CVAR_ARCHIVE|CVAR_INTERNAL )
+
+// FIXME mrwonko these cvars clash with vmCvar_t definitions in (c)game
+#undef XCVAR_DEF
+
+#ifdef XCVAR_PROTO
+#define XCVAR_DEF( name, defVal, update, flags ) namespace ui { extern vmCvar_t name; }
+#endif
+
+#ifdef XCVAR_DECL
+#define XCVAR_DEF( name, defVal, update, flags ) namespace ui { vmCvar_t name; }
+#endif
+
+#ifdef XCVAR_LIST
+#define XCVAR_DEF( name, defVal, update, flags ) { & ui::name , #name , defVal , update , flags },
+#endif
+
+XCVAR_DEF( capturelimit, "0", NULL, CVAR_ARCHIVE | CVAR_NORESTART | CVAR_SERVERINFO ) // fixme init'd to 8 in game module
+XCVAR_DEF( cg_drawCrosshair, "1", NULL, CVAR_ARCHIVE )
+XCVAR_DEF( cg_drawCrosshairNames, "1", NULL, CVAR_ARCHIVE )
+XCVAR_DEF( cg_marks, "1", NULL, CVAR_ARCHIVE )
 
 #undef XCVAR_DEF

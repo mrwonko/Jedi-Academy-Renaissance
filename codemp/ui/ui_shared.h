@@ -26,6 +26,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #include "qcommon/q_shared.h"
 #include "rd-common/tr_types.h"
+#include "ghoul2/ghoul2_shared.h"
 #include "keycodes.h"
 
 #include "ui/menudef.h"
@@ -281,7 +282,7 @@ typedef struct itemDef_s {
 	float		text2aligny;				// ( optional ) text2 alignment y coord
 	void		*parent;					// menu owner
 	qhandle_t	asset;						// handle to asset
-	void		*ghoul2;					// ghoul2 instance if available instead of a model.
+	CGhoul2Info_v *ghoul2;					// ghoul2 instance if available instead of a model.
 	int			flags;						// flags like g2valid, character, saber, saber2, etc.
 	const char	*mouseEnterText;			// mouse enter script
 	const char	*mouseExitText;				// mouse exit script
@@ -499,6 +500,7 @@ typedef struct displayContextDef_s {
 
 const char *String_Alloc(const char *p);
 void String_Init();
+template<moduleType mod>
 void String_Report();
 void Init_Display(displayContextDef_t *dc);
 void Display_ExpandMacros(char * buff);
@@ -506,6 +508,7 @@ void Menu_Init(menuDef_t *menu);
 void Item_Init(itemDef_t *item);
 void Menu_PostParse(menuDef_t *menu);
 menuDef_t *Menu_GetFocused();
+template< moduleType mod >
 void Menu_HandleKey(menuDef_t *menu, int key, qboolean down);
 void Menu_HandleMouseMove(menuDef_t *menu, float x, float y);
 void Menu_ScrollFeeder(menuDef_t *menu, int feeder, qboolean down);
@@ -522,6 +525,7 @@ qboolean PC_Rect_Parse(int handle, rectDef_t *r);
 qboolean PC_String_Parse(int handle, const char **out);
 qboolean PC_Script_Parse(int handle, const char **out);
 int Menu_Count();
+template<moduleType mod>
 void Menu_New(int handle);
 void Menu_PaintAll();
 menuDef_t *Menus_ActivateByName(const char *p);
@@ -546,13 +550,17 @@ void Menus_CloseByName(const char *p);
 void Display_HandleKey(int key, qboolean down, int x, int y);
 void LerpColor(vec4_t a, vec4_t b, vec4_t c, float t);
 void Menus_CloseAll();
+template<moduleType mod>
 void Menu_Paint(menuDef_t *menu, qboolean forcePaint);
 void Menu_SetFeederSelection(menuDef_t *menu, int feeder, int index, const char *name);
 void Display_CacheAll();
 void Menu_SetItemBackground(const menuDef_t *menu,const char *itemName, const char *background);
 
+template< moduleType mod >
 void *UI_Alloc( int size );
+template< moduleType mod >
 void UI_InitMemory( void );
+template< moduleType mod >
 qboolean UI_OutOfMemory();
 
 void Controls_GetConfig( void );

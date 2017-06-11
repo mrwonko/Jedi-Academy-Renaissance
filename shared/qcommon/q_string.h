@@ -2,10 +2,6 @@
 
 #include "q_platform.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 int Q_isprint( int c );
 int Q_isprintext( int c );
 int Q_isgraph( int c );
@@ -45,8 +41,4 @@ void Q_strstrip( char *string, const char *strip, const char *repl );
 	int Q_vsnprintf( char *str, size_t size, const char *format, va_list args );
 #else // not using MSVC
 	#define Q_vsnprintf vsnprintf
-#endif
-
-#if defined(__cplusplus)
-} // extern "C"
 #endif

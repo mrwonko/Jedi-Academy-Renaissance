@@ -2976,7 +2976,7 @@ void S_Update_(void) {
 
 					for (j = 0; j < (STREAMING_BUFFER_SIZE / 1152); j++)
 					{
-						nBytesDecoded = C_MP3Stream_Decode(&ch->MP3StreamHeader, 0);	// added ,0 ?
+						nBytesDecoded = C_MP3Stream_Decode(&ch->MP3StreamHeader);
 						memcpy(ch->buffers[i].Data + nTotalBytesDecoded, ch->MP3StreamHeader.bDecodeBuffer, nBytesDecoded);
 						if (ch->entchannel == CHAN_VOICE || ch->entchannel == CHAN_VOICE_ATTEN || ch->entchannel == CHAN_VOICE_GLOBAL )
 						{
@@ -3214,7 +3214,7 @@ void UpdateSingleShotSounds()
 
 							for (k = 0; k < (STREAMING_BUFFER_SIZE / 1152); k++)
 							{
-								nBytesDecoded = C_MP3Stream_Decode(&ch->MP3StreamHeader, 0); // added ,0
+								nBytesDecoded = C_MP3Stream_Decode(&ch->MP3StreamHeader);
 
 								if (nBytesDecoded > 0)
 								{

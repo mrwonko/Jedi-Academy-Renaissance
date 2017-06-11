@@ -29,98 +29,99 @@ set(MPGameIncludeDirectories
 if(WIN32)
 	set(MPGameLibraries "winmm")
 endif(WIN32)
-set(MPGameDefines ${MPSharedDefines} "_GAME" )
+set(MPGameDefines ${MPSharedDefines})
+
 set(MPGameGameFiles
-	"${MPDir}/game/ai_main.c"
-	"${MPDir}/game/ai_util.c"
-	"${MPDir}/game/ai_wpnav.c"
-	"${MPDir}/game/AnimalNPC.c"
-	"${MPDir}/game/bg_g2_utils.c"
-	"${MPDir}/game/bg_misc.c"
-	"${MPDir}/game/bg_panimate.c"
-	"${MPDir}/game/bg_pmove.c"
-	"${MPDir}/game/bg_saber.c"
-	"${MPDir}/game/bg_saberLoad.c"
-	"${MPDir}/game/bg_saga.c"
-	"${MPDir}/game/bg_slidemove.c"
-	"${MPDir}/game/bg_vehicleLoad.c"
-	"${MPDir}/game/bg_weapons.c"
-	"${MPDir}/game/FighterNPC.c"
-	"${MPDir}/game/g_active.c"
-	"${MPDir}/game/g_bot.c"
-	"${MPDir}/game/g_client.c"
-	"${MPDir}/game/g_cmds.c"
-	"${MPDir}/game/g_combat.c"
-	"${MPDir}/game/g_cvar.c"
-	"${MPDir}/game/g_exphysics.c"
-	"${MPDir}/game/g_ICARUScb.c"
-	"${MPDir}/game/g_items.c"
-	"${MPDir}/game/g_log.c"
-	"${MPDir}/game/g_main.c"
-	"${MPDir}/game/g_mem.c"
-	"${MPDir}/game/g_misc.c"
-	"${MPDir}/game/g_missile.c"
-	"${MPDir}/game/g_mover.c"
-	"${MPDir}/game/g_nav.c"
-	"${MPDir}/game/g_navnew.c"
-	"${MPDir}/game/g_object.c"
-	"${MPDir}/game/g_saga.c"
-	"${MPDir}/game/g_session.c"
-	"${MPDir}/game/g_spawn.c"
-	"${MPDir}/game/g_svcmds.c"
-	"${MPDir}/game/g_syscalls.c"
-	"${MPDir}/game/g_target.c"
-	"${MPDir}/game/g_team.c"
-	"${MPDir}/game/g_timer.c"
-	"${MPDir}/game/g_trigger.c"
-	"${MPDir}/game/g_turret.c"
-	"${MPDir}/game/g_turret_G2.c"
-	"${MPDir}/game/g_utils.c"
-	"${MPDir}/game/g_vehicles.c"
-	"${MPDir}/game/g_vehicleTurret.c"
-	"${MPDir}/game/g_weapon.c"
-	"${MPDir}/game/NPC.c"
-	"${MPDir}/game/NPC_AI_Atst.c"
-	"${MPDir}/game/NPC_AI_Default.c"
-	"${MPDir}/game/NPC_AI_Droid.c"
-	"${MPDir}/game/NPC_AI_GalakMech.c"
-	"${MPDir}/game/NPC_AI_Grenadier.c"
-	"${MPDir}/game/NPC_AI_Howler.c"
-	"${MPDir}/game/NPC_AI_ImperialProbe.c"
-	"${MPDir}/game/NPC_AI_Interrogator.c"
-	"${MPDir}/game/NPC_AI_Jedi.c"
-	"${MPDir}/game/NPC_AI_Mark1.c"
-	"${MPDir}/game/NPC_AI_Mark2.c"
-	"${MPDir}/game/NPC_AI_MineMonster.c"
-	"${MPDir}/game/NPC_AI_Rancor.c"
-	"${MPDir}/game/NPC_AI_Remote.c"
-	"${MPDir}/game/NPC_AI_Seeker.c"
-	"${MPDir}/game/NPC_AI_Sentry.c"
-	"${MPDir}/game/NPC_AI_Sniper.c"
-	"${MPDir}/game/NPC_AI_Stormtrooper.c"
-	"${MPDir}/game/NPC_AI_Utils.c"
-	"${MPDir}/game/NPC_AI_Wampa.c"
-	"${MPDir}/game/NPC_behavior.c"
-	"${MPDir}/game/NPC_combat.c"
-	"${MPDir}/game/NPC_goal.c"
-	"${MPDir}/game/NPC_misc.c"
-	"${MPDir}/game/NPC_move.c"
-	"${MPDir}/game/NPC_reactions.c"
-	"${MPDir}/game/NPC_senses.c"
-	"${MPDir}/game/NPC_sounds.c"
-	"${MPDir}/game/NPC_spawn.c"
-	"${MPDir}/game/NPC_stats.c"
-	"${MPDir}/game/NPC_utils.c"
-	"${MPDir}/game/SpeederNPC.c"
-	"${MPDir}/game/tri_coll_test.c"
-	"${MPDir}/game/w_force.c"
-	"${MPDir}/game/w_saber.c"
-	"${MPDir}/game/WalkerNPC.c"
+	"${MPDir}/game/ai_main.cpp"
+	"${MPDir}/game/ai_util.cpp"
+	"${MPDir}/game/ai_wpnav.cpp"
+	"${MPDir}/game/AnimalNPC.cpp"
+	"${MPDir}/game/bg_g2_utils.cpp"
+	"${MPDir}/game/bg_misc.cpp"
+	"${MPDir}/game/bg_panimate.cpp"
+	"${MPDir}/game/bg_pmove.cpp"
+	"${MPDir}/game/bg_saber.cpp"
+	"${MPDir}/game/bg_saberLoad.cpp"
+	"${MPDir}/game/bg_saga.cpp"
+	"${MPDir}/game/bg_slidemove.cpp"
+	"${MPDir}/game/bg_vehicleLoad.cpp"
+	"${MPDir}/game/bg_weapons.cpp"
+	"${MPDir}/game/FighterNPC.cpp"
+	"${MPDir}/game/g_active.cpp"
+	"${MPDir}/game/g_bot.cpp"
+	"${MPDir}/game/g_client.cpp"
+	"${MPDir}/game/g_cmds.cpp"
+	"${MPDir}/game/g_combat.cpp"
+	"${MPDir}/game/g_cvar.cpp"
+	"${MPDir}/game/g_exphysics.cpp"
+	"${MPDir}/game/g_ICARUScb.cpp"
+	"${MPDir}/game/g_items.cpp"
+	"${MPDir}/game/g_log.cpp"
+	"${MPDir}/game/g_main.cpp"
+	"${MPDir}/game/g_mem.cpp"
+	"${MPDir}/game/g_misc.cpp"
+	"${MPDir}/game/g_missile.cpp"
+	"${MPDir}/game/g_mover.cpp"
+	"${MPDir}/game/g_nav.cpp"
+	"${MPDir}/game/g_navnew.cpp"
+	"${MPDir}/game/g_object.cpp"
+	"${MPDir}/game/g_saga.cpp"
+	"${MPDir}/game/g_session.cpp"
+	"${MPDir}/game/g_spawn.cpp"
+	"${MPDir}/game/g_svcmds.cpp"
+	"${MPDir}/game/g_target.cpp"
+	"${MPDir}/game/g_team.cpp"
+	"${MPDir}/game/g_timer.cpp"
+	"${MPDir}/game/g_trigger.cpp"
+	"${MPDir}/game/g_turret.cpp"
+	"${MPDir}/game/g_turret_G2.cpp"
+	"${MPDir}/game/g_utils.cpp"
+	"${MPDir}/game/g_vehicles.cpp"
+	"${MPDir}/game/g_vehicleTurret.cpp"
+	"${MPDir}/game/g_weapon.cpp"
+	"${MPDir}/game/NPC.cpp"
+	"${MPDir}/game/NPC_AI_Atst.cpp"
+	"${MPDir}/game/NPC_AI_Default.cpp"
+	"${MPDir}/game/NPC_AI_Droid.cpp"
+	"${MPDir}/game/NPC_AI_GalakMech.cpp"
+	"${MPDir}/game/NPC_AI_Grenadier.cpp"
+	"${MPDir}/game/NPC_AI_Howler.cpp"
+	"${MPDir}/game/NPC_AI_ImperialProbe.cpp"
+	"${MPDir}/game/NPC_AI_Interrogator.cpp"
+	"${MPDir}/game/NPC_AI_Jedi.cpp"
+	"${MPDir}/game/NPC_AI_Mark1.cpp"
+	"${MPDir}/game/NPC_AI_Mark2.cpp"
+	"${MPDir}/game/NPC_AI_MineMonster.cpp"
+	"${MPDir}/game/NPC_AI_Rancor.cpp"
+	"${MPDir}/game/NPC_AI_Remote.cpp"
+	"${MPDir}/game/NPC_AI_Seeker.cpp"
+	"${MPDir}/game/NPC_AI_Sentry.cpp"
+	"${MPDir}/game/NPC_AI_Sniper.cpp"
+	"${MPDir}/game/NPC_AI_Stormtrooper.cpp"
+	"${MPDir}/game/NPC_AI_Utils.cpp"
+	"${MPDir}/game/NPC_AI_Wampa.cpp"
+	"${MPDir}/game/NPC_behavior.cpp"
+	"${MPDir}/game/NPC_combat.cpp"
+	"${MPDir}/game/NPC_goal.cpp"
+	"${MPDir}/game/NPC_misc.cpp"
+	"${MPDir}/game/NPC_move.cpp"
+	"${MPDir}/game/NPC_reactions.cpp"
+	"${MPDir}/game/NPC_senses.cpp"
+	"${MPDir}/game/NPC_sounds.cpp"
+	"${MPDir}/game/NPC_spawn.cpp"
+	"${MPDir}/game/NPC_stats.cpp"
+	"${MPDir}/game/NPC_utils.cpp"
+	"${MPDir}/game/SpeederNPC.cpp"
+	"${MPDir}/game/tri_coll_test.cpp"
+	"${MPDir}/game/w_force.cpp"
+	"${MPDir}/game/w_saber.cpp"
+	"${MPDir}/game/WalkerNPC.cpp"
 	"${MPDir}/game/ai.h"
 	"${MPDir}/game/ai_main.h"
 	"${MPDir}/game/anims.h"
 	"${MPDir}/game/b_local.h"
 	"${MPDir}/game/b_public.h"
+	"${MPDir}/game/bg_moduletype.h"
 	"${MPDir}/game/bg_local.h"
 	"${MPDir}/game/bg_public.h"
 	"${MPDir}/game/bg_saga.h"
@@ -144,113 +145,9 @@ set(MPGameGameFiles
 source_group("game" FILES ${MPGameGameFiles})
 set(MPGameFiles ${MPGameFiles} ${MPGameGameFiles})
 
-set(MPGameCommonFiles
-	"${MPDir}/qcommon/q_shared.c"
-	"${MPDir}/qcommon/disablewarnings.h"
-	"${MPDir}/qcommon/q_shared.h"
-	"${MPDir}/qcommon/tags.h"
-	
-	${SharedCommonFiles}
-	)
-source_group("common" FILES ${MPGameCommonFiles})
-set(MPGameFiles ${MPGameFiles} ${MPGameCommonFiles})
-
-set(MPGameCommonSafeFiles
-	${SharedCommonSafeFiles}
-	)
-source_group("common/safe" FILES ${MPGameCommonSafeFiles})
-set(MPGameFiles ${MPGameFiles} ${MPGameCommonSafeFiles})
-
-set(MPGameCgameFiles
-	"${MPDir}/cgame/animtable.h"
-	"${MPDir}/cgame/cg_public.h"
-	)
-source_group("cgame" FILES ${MPGameCgameFiles})
-set(MPGameFiles ${MPGameFiles} ${MPGameCgameFiles})
-
-set(MPGameRendererFiles
-	"${MPDir}/rd-common/tr_types.h"
-	)
-source_group("rd-common" FILES ${MPGameRendererFiles})
-set(MPGameFiles ${MPGameFiles} ${MPGameRendererFiles})
-
-set(MPGameBotlibFiles
-	"${MPDir}/botlib/be_aas.h"
-	"${MPDir}/botlib/be_ai_char.h"
-	"${MPDir}/botlib/be_ai_chat.h"
-	"${MPDir}/botlib/be_ai_gen.h"
-	"${MPDir}/botlib/be_ai_goal.h"
-	"${MPDir}/botlib/be_ai_move.h"
-	"${MPDir}/botlib/be_ai_weap.h"
-	"${MPDir}/botlib/be_ea.h"
-	"${MPDir}/botlib/botlib.h"
-	)
-source_group("botlib" FILES ${MPGameBotlibFiles})
-set(MPGameFiles ${MPGameFiles} ${MPGameBotlibFiles})
-
-set(MPGameG2Files
-	"${MPDir}/ghoul2/G2.h"
-	)
-source_group("ghoul2" FILES ${MPGameG2Files})
-set(MPGameFiles ${MPGameFiles} ${MPGameG2Files})
-
-set(MPGameIcarusFiles
-	"${MPDir}/icarus/interpreter.h"
-	"${MPDir}/icarus/Q3_Interface.h"
-	)
-source_group("icarus" FILES ${MPGameIcarusFiles})
-set(MPGameFiles ${MPGameFiles} ${MPGameIcarusFiles})
-
-set(MPGameUiFiles
-	"${MPDir}/ui/menudef.h"
-	)
-source_group("ui" FILES ${MPGameUiFiles})
-set(MPGameFiles ${MPGameFiles} ${MPGameUiFiles})
-
-add_library(${MPGame} SHARED ${MPGameFiles})
-
-if(NOT MSVC)
-	# remove "lib" prefix for .so/.dylib files
-	set_target_properties(${MPGame} PROPERTIES PREFIX "")
-endif()
-
-if(MakeApplicationBundles)
-	install(TARGETS ${MPGame}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/${MPEngine}.app/Contents/MacOS/OpenJK"
-		COMPONENT ${JKAMPCoreComponent})
-	install(TARGETS ${MPGame}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/${MPEngine}.app/Contents/MacOS/base"
-		COMPONENT ${JKAMPCoreComponent})
-elseif(WIN32)
-	install(TARGETS ${MPGame}
-		RUNTIME
-		DESTINATION "${JKAInstallDir}/OpenJK"
-		COMPONENT ${JKAMPCoreComponent})
-	if (WIN64)
-		# Don't do this on 32-bit Windows to avoid overwriting
-		# vanilla JKA's DLLs
-		install(TARGETS ${MPGame}
-			RUNTIME
-			DESTINATION "${JKAInstallDir}/base"
-			COMPONENT ${JKAMPCoreComponent})
-	endif()
-else()
-	install(TARGETS ${MPGame}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/OpenJK"
-		COMPONENT ${JKAMPCoreComponent})
-	install(TARGETS ${MPGame}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/base"
-		COMPONENT ${JKAMPCoreComponent})
-endif()
+add_library(${MPGame} STATIC ${MPGameFiles})
 
 set_target_properties(${MPGame} PROPERTIES COMPILE_DEFINITIONS "${MPGameDefines}")
-
-# Hide symbols not explicitly marked public.
-set_property(TARGET ${MPGame} APPEND PROPERTY COMPILE_OPTIONS ${OPENJK_VISIBILITY_FLAGS})
 
 set_target_properties(${MPGame} PROPERTIES INCLUDE_DIRECTORIES "${MPGameIncludeDirectories}")
 set_target_properties(${MPGame} PROPERTIES PROJECT_LABEL "MP Game Library")

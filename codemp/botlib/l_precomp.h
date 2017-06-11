@@ -36,6 +36,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "botlib/l_script.h"
+
 #ifndef MAX_PATH
 	#define MAX_PATH			MAX_QPATH
 #endif

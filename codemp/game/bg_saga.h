@@ -24,9 +24,6 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #define		MAX_SIEGE_INFO_SIZE					16384
 
-#define		SIEGETEAM_TEAM1						1 //e.g. TEAM_RED
-#define		SIEGETEAM_TEAM2						2 //e.g. TEAM_BLUE
-
 #define		SIEGE_POINTS_OBJECTIVECOMPLETED		20
 #define		SIEGE_POINTS_FINALOBJECTIVECOMPLETED	30
 #define		SIEGE_POINTS_TEAMWONROUND			10
@@ -114,10 +111,13 @@ int BG_SiegeGetValueGroup(char *buf, char *group, char *outbuf);
 int BG_SiegeGetPairedValue(char *buf, char *key, char *outbuf);
 void BG_SiegeStripTabs(char *buf);
 
+template<moduleType mod>
 void BG_SiegeLoadClasses(siegeClassDesc_t *descBuffer);
+template<moduleType mod>
 void BG_SiegeLoadTeams(void);
 
 siegeTeam_t *BG_SiegeFindThemeForTeam(int team);
+template<moduleType mod>
 void BG_PrecacheSabersForSiegeTeam(int team);
 siegeClass_t *BG_SiegeFindClassByName(const char *classname);
 qboolean BG_SiegeCheckClassLegality(int team, char *classname);

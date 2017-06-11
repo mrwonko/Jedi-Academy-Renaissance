@@ -273,17 +273,9 @@ typedef enum vmSlots_e {
 typedef struct vm_s {
 	vmSlots_t	slot; // VM_GAME, VM_CGAME, VM_UI
     char		name[MAX_QPATH];
-	void		*dllHandle;
-	qboolean	isLegacy; // uses the legacy syscall/vm_call api, is set by VM_CreateLegacy
 
 	// fill the import/export tables
 	void *		(*GetModuleAPI)( int apiVersion, ... );
-
-	// legacy stuff
-	struct {
-		VMMainProc* main; // module vmMain
-		intptr_t	(QDECL *syscall)( intptr_t *parms );	// engine syscall handler
-	} legacy;
 } vm_t;
 
 extern vm_t *currentVM;
@@ -298,27 +290,6 @@ public:
 };
 
 extern const char *vmStrs[MAX_VM];
-
-typedef enum {
-	TRAP_MEMSET = 100,
-	TRAP_MEMCPY,
-	TRAP_STRNCPY,
-	TRAP_SIN,
-	TRAP_COS,
-	TRAP_ATAN2,
-	TRAP_SQRT,
-	TRAP_MATRIXMULTIPLY,
-	TRAP_ANGLEVECTORS,
-	TRAP_PERPENDICULARVECTOR,
-	TRAP_FLOOR,
-	TRAP_CEIL,
-
-	TRAP_TESTPRINTINT,
-	TRAP_TESTPRINTFLOAT,
-
-	TRAP_ACOS,
-	TRAP_ASIN
-} sharedTraps_t;
 
 void			VM_Init( void );
 vm_t			*VM_CreateLegacy( vmSlots_t vmSlot, intptr_t (*systemCalls)(intptr_t *) );
@@ -621,8 +592,6 @@ long		FS_FOpenFileRead( const char *qpath, fileHandle_t *file, qboolean uniqueFI
 
 int		FS_FileIsInPAK(const char *filename, int *pChecksum );
 // returns 1 if a file is in the PAK file, otherwise -1
-
-qboolean FS_FindPureDLL(const char *name);
 
 int		FS_Write( const void *buffer, int len, fileHandle_t f );
 

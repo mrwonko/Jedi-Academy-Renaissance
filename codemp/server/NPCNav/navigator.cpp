@@ -1073,7 +1073,7 @@ void CNavigator::CheckBlockedEdges( void )
 				//FIXME: can't we just store the trace.entityNum from the HardConnect trace?  So we don't have to do another trace here...
 				SV_Trace( &trace, p1, wpMins, wpMaxs, p2, ENTITYNUM_NONE, MASK_SOLID|CONTENTS_MONSTERCLIP|CONTENTS_BOTCLIP, qfalse, 0, 10 );
 
-				if ( trace.entityNum < ENTITYNUM_WORLD && (trace.fraction < 1.0f || trace.startsolid == qtrue || trace.allsolid == qtrue) )
+				if ( trace.entityNum < ENTITYNUM_WORLD && (trace.fraction < 1.0f || trace.startsolid || trace.allsolid ) )
 				{//could be assumed, since failed before
 					if ( GVM_NAV_EntIsDoor( trace.entityNum ) )
 					{//door
@@ -1139,7 +1139,7 @@ void CNavigator::HardConnect( int first, int second )
 
 	int cost = Distance( p1, p2 );
 
-	if ( trace.fraction != 1.0f || trace.startsolid == qtrue || trace.allsolid == qtrue )
+	if ( trace.fraction != 1.0f || trace.startsolid || trace.allsolid )
 	{
 		flags |= EFLAG_BLOCKED;
 	}
@@ -2119,7 +2119,7 @@ qboolean CNavigator::CheckFailedEdge( failedEdge_t *failedEdge )
 
 			SV_Trace( &trace, start, mins, maxs, end, ignore, clipmask|CONTENTS_MONSTERCLIP|CONTENTS_BOTCLIP, qfalse, 0, 10 );//NOTE: should we really always include monsterclip (physically blocks NPCs) and botclip (do not enter)?
 
-			if( trace.startsolid == qtrue || trace.allsolid == qtrue )
+			if( trace.startsolid || trace.allsolid )
 			{
 				return qfalse;
 			}

@@ -33,9 +33,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 	#define XCVAR_DEF( name, defVal, update, flags, announce ) { & name , #name , defVal , update , flags , announce },
 #endif
 
-XCVAR_DEF( bg_fighterAltControl,		"0",			NULL,				CVAR_SYSTEMINFO,								qtrue )
 XCVAR_DEF( capturelimit,				"8",			NULL,				CVAR_SERVERINFO|CVAR_ARCHIVE|CVAR_NORESTART,	qtrue )
-XCVAR_DEF( com_optvehtrace,				"0",			NULL,				CVAR_NONE,										qtrue )
 XCVAR_DEF( d_altRoutes,					"0",			NULL,				CVAR_CHEAT,										qfalse )
 XCVAR_DEF( d_asynchronousGroupAI,		"0",			NULL,				CVAR_CHEAT,										qfalse )
 XCVAR_DEF( d_break,						"0",			NULL,				CVAR_CHEAT,										qfalse )
@@ -155,25 +153,44 @@ XCVAR_DEF( g_speed,						"250",			NULL,				CVAR_NONE,										qtrue )
 XCVAR_DEF( g_statLog,					"0",			NULL,				CVAR_ARCHIVE,									qfalse )
 XCVAR_DEF( g_statLogFile,				"statlog.log",	NULL,				CVAR_ARCHIVE,									qfalse )
 XCVAR_DEF( g_stepSlideFix,				"1",			NULL,				CVAR_SERVERINFO,								qtrue )
-XCVAR_DEF( g_synchronousClients,		"0",			NULL,				CVAR_SYSTEMINFO,								qfalse )
 XCVAR_DEF( g_teamAutoJoin,				"0",			NULL,				CVAR_ARCHIVE,									qfalse )
 XCVAR_DEF( g_teamForceBalance,			"0",			NULL,				CVAR_ARCHIVE,									qfalse )
 XCVAR_DEF( g_timeouttospec,				"70",			NULL,				CVAR_ARCHIVE,									qfalse )
 XCVAR_DEF( g_userinfoValidate,			"25165823",		NULL,				CVAR_ARCHIVE,									qfalse )
 XCVAR_DEF( g_useWhileThrowing,			"1",			NULL,				CVAR_NONE,										qtrue )
 XCVAR_DEF( g_voteDelay,					"3000",			NULL,				CVAR_NONE,										qfalse )
-XCVAR_DEF( g_warmup,					"20",			NULL,				CVAR_ARCHIVE,									qtrue )
 XCVAR_DEF( g_weaponDisable,				"0",			NULL,				CVAR_SERVERINFO|CVAR_ARCHIVE|CVAR_LATCH,		qtrue )
 XCVAR_DEF( g_weaponRespawn,				"5",			NULL,				CVAR_NONE,										qtrue )
 XCVAR_DEF( gamedate,					SOURCE_DATE,		NULL,				CVAR_ROM,										qfalse )
 XCVAR_DEF( gamename,					GAMEVERSION,	NULL,				CVAR_SERVERINFO|CVAR_ROM,						qfalse )
-XCVAR_DEF( pmove_fixed,					"0",			NULL,				CVAR_SYSTEMINFO|CVAR_ARCHIVE,					qtrue )
-XCVAR_DEF( pmove_float,					"0",			NULL,				CVAR_SYSTEMINFO|CVAR_ARCHIVE,					qtrue )
-XCVAR_DEF( pmove_msec,					"8",			NULL,				CVAR_SYSTEMINFO|CVAR_ARCHIVE,					qtrue )
 XCVAR_DEF( RMG,							"0",			NULL,				CVAR_NONE,										qtrue )
 XCVAR_DEF( sv_cheats,					"1",			NULL,				CVAR_NONE,										qfalse )
-XCVAR_DEF( sv_fps,						"40",			NULL,				CVAR_ARCHIVE|CVAR_SERVERINFO,					qtrue )
-XCVAR_DEF( sv_maxclients,				"8",			NULL,				CVAR_SERVERINFO|CVAR_LATCH|CVAR_ARCHIVE,		qfalse )
 XCVAR_DEF( timelimit,					"0",			NULL,				CVAR_SERVERINFO|CVAR_ARCHIVE|CVAR_NORESTART,	qtrue )
+
+#undef XCVAR_DEF
+
+#ifdef XCVAR_PROTO
+	#define XCVAR_DEF( name, defVal, update, flags, announce ) namespace game { extern vmCvar_t name; }
+#endif
+
+#ifdef XCVAR_DECL
+	#define XCVAR_DEF( name, defVal, update, flags, announce ) namespace game { vmCvar_t name; }
+#endif
+
+#ifdef XCVAR_LIST
+	#define XCVAR_DEF( name, defVal, update, flags, announce ) { & game::name , #name , defVal , update , flags , announce },
+#endif
+
+// FIXME mrwonko these cvars clash with cvar_t* definitions, but differ from them in that changes are announced (see G_UpdateCvars) so I'm putting them in a separate namespace for now until I completely rewrite cvars
+XCVAR_DEF( com_optvehtrace, "0", NULL, CVAR_NONE, qtrue )
+XCVAR_DEF( sv_fps, "40", NULL, CVAR_ARCHIVE | CVAR_SERVERINFO, qtrue )
+
+// FIXME mrwonko these cvars clash with vmCvar_t definitions in cgame
+XCVAR_DEF( bg_fighterAltControl, "0", NULL, CVAR_SYSTEMINFO, qtrue )
+XCVAR_DEF( g_synchronousClients, "0", NULL, CVAR_SYSTEMINFO, qfalse )
+XCVAR_DEF( pmove_fixed, "0", NULL, CVAR_SYSTEMINFO | CVAR_ARCHIVE, qtrue )
+XCVAR_DEF( pmove_float, "0", NULL, CVAR_SYSTEMINFO | CVAR_ARCHIVE, qtrue )
+XCVAR_DEF( pmove_msec, "8", NULL, CVAR_SYSTEMINFO | CVAR_ARCHIVE, qtrue )
+XCVAR_DEF( g_warmup, "20", NULL, CVAR_ARCHIVE, qtrue )
 
 #undef XCVAR_DEF

@@ -72,11 +72,6 @@ qboolean	MP3Stream_GetSamples	( channel_t *ch, int startingSampleNum, int count,
 //
 // the real worker code deep down in the MP3 C code...  (now externalised here so the music streamer can access one)
 //
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 
 char*	C_MP3_IsValid			(void *pvData, int iDataLen, int bStereoDesired);
 char*	C_MP3_GetUnpackedSize	(void *pvData, int iDataLen, int *piUnpackedSize, int bStereoDesired);
@@ -84,13 +79,9 @@ char*	C_MP3_UnpackRawPCM		(void *pvData, int iDataLen, int *piUnpackedSize, void
 char*	C_MP3_GetHeaderData		(void *pvData, int iDataLen, int *piRate, int *piWidth, int *piChannels, int bStereoDesired);
 char*	C_MP3Stream_DecodeInit	(LP_MP3STREAM pSFX_MP3Stream, void *pvSourceData, int iSourceBytesRemaining,
 								int iGameAudioSampleRate, int iGameAudioSampleBits, int bStereoDesired);
-unsigned int C_MP3Stream_Decode( LP_MP3STREAM pSFX_MP3Stream, int bFastForwarding );
+unsigned int C_MP3Stream_Decode( LP_MP3STREAM pSFX_MP3Stream );
 char*	C_MP3Stream_Rewind		(LP_MP3STREAM pSFX_MP3Stream);
 
-
-#ifdef __cplusplus
-}
-#endif
 //
 ///////////////////////////////////////
 

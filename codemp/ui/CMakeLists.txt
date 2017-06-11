@@ -29,52 +29,15 @@ set(MPUIIncludeDirectories
 if(WIN32)
 	set(MPUILibraries "odbc32" "odbccp32") # what are these even?
 endif(WIN32)
-set(MPUIDefines ${MPSharedDefines} "UI_BUILD")
-
-set(MPUIGameFiles
-	"${MPDir}/game/bg_misc.c"
-	"${MPDir}/game/bg_saberLoad.c"
-	"${MPDir}/game/bg_saga.c"
-	"${MPDir}/game/bg_vehicleLoad.c"
-	"${MPDir}/game/bg_weapons.c"
-	"${MPDir}/game/anims.h"
-	"${MPDir}/game/bg_local.h"
-	"${MPDir}/game/bg_public.h"
-	"${MPDir}/game/bg_saga.h"
-	"${MPDir}/game/bg_weapons.h"
-	"${MPDir}/game/surfaceflags.h"
-	)
-source_group("game" FILES ${MPUIGameFiles})
-set(MPUIFiles ${MPUIFiles} ${MPUIGameFiles})
-
-set(MPUICommonFiles
-	"${MPDir}/qcommon/q_shared.c"
-	"${MPDir}/qcommon/disablewarnings.h"
-	"${MPDir}/qcommon/game_version.h"
-	"${MPDir}/qcommon/q_shared.h"
-	"${MPDir}/qcommon/qfiles.h"
-	"${MPDir}/qcommon/tags.h"
-	
-	${SharedCommonFiles}
-	)
-source_group("common" FILES ${MPUICommonFiles})
-set(MPUIFiles ${MPUIFiles} ${MPUICommonFiles})
-
-set(MPUICommonSafeFiles
-	${SharedCommonSafeFiles}
-	)
-source_group("common/safe" FILES ${MPUICommonSafeFiles})
-set(MPUIFiles ${MPUIFiles} ${MPUICommonSafeFiles})
 
 set(MPUIUIFiles
-	"${MPDir}/ui/ui_atoms.c"
-	"${MPDir}/ui/ui_cvar.c"
-	"${MPDir}/ui/ui_force.c"
-	"${MPDir}/ui/ui_gameinfo.c"
-	"${MPDir}/ui/ui_main.c"
-	"${MPDir}/ui/ui_saber.c"
-	"${MPDir}/ui/ui_shared.c"
-	"${MPDir}/ui/ui_syscalls.c"
+	"${MPDir}/ui/ui_atoms.cpp"
+	"${MPDir}/ui/ui_cvar.cpp"
+	"${MPDir}/ui/ui_force.cpp"
+	"${MPDir}/ui/ui_gameinfo.cpp"
+	"${MPDir}/ui/ui_main.cpp"
+	"${MPDir}/ui/ui_saber.cpp"
+	"${MPDir}/ui/ui_shared.cpp"
 	"${MPDir}/ui/keycodes.h"
 	"${MPDir}/ui/menudef.h"
 	"${MPDir}/ui/ui_force.h"
@@ -86,56 +49,9 @@ set(MPUIUIFiles
 source_group("ui" FILES ${MPUIUIFiles})
 set(MPUIFiles ${MPUIFiles} ${MPUIUIFiles})
 
-set(MPUIRendererFiles
-	"${MPDir}/rd-common/tr_types.h"
-	)
-source_group("rd-common" FILES ${MPUIRendererFiles})
-set(MPUIFiles ${MPUIFiles} ${MPUIRendererFiles})
-
-add_library(${MPUI} SHARED ${MPUIFiles})
-
-if(NOT MSVC)
-	# remove "lib" prefix for .so/.dylib files
-	set_target_properties(${MPUI} PROPERTIES PREFIX "")
-endif()
-
-if(MakeApplicationBundles)
-	install(TARGETS ${MPUI}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/${MPEngine}.app/Contents/MacOS/OpenJK"
-		COMPONENT ${JKAMPCoreComponent})
-	install(TARGETS ${MPUI}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/${MPEngine}.app/Contents/MacOS/base"
-		COMPONENT ${JKAMPCoreComponent})
-elseif(WIN32)
-	install(TARGETS ${MPUI}
-		RUNTIME
-		DESTINATION "${JKAInstallDir}/OpenJK"
-		COMPONENT ${JKAMPCoreComponent})
-	if (WIN64)
-		# Don't do this on 32-bit Windows to avoid overwriting
-		# vanilla JKA's DLLs
-		install(TARGETS ${MPUI}
-			RUNTIME
-			DESTINATION "${JKAInstallDir}/base"
-			COMPONENT ${JKAMPCoreComponent})
-	endif()
-else()
-	install(TARGETS ${MPUI}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/OpenJK"
-		COMPONENT ${JKAMPCoreComponent})
-	install(TARGETS ${MPUI}
-		LIBRARY
-		DESTINATION "${JKAInstallDir}/base"
-		COMPONENT ${JKAMPCoreComponent})
-endif()
+add_library(${MPUI} STATIC ${MPUIFiles})
 
 set_target_properties(${MPUI} PROPERTIES COMPILE_DEFINITIONS "${MPUIDefines}")
-
-# Hide symbols not explicitly marked public.
-set_property(TARGET ${MPUI} APPEND PROPERTY COMPILE_OPTIONS ${OPENJK_VISIBILITY_FLAGS})
 
 set_target_properties(${MPUI} PROPERTIES INCLUDE_DIRECTORIES "${MPUIIncludeDirectories}")
 set_target_properties(${MPUI} PROPERTIES PROJECT_LABEL "MP UI Library")

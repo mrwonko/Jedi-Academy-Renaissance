@@ -91,29 +91,43 @@ qboolean PM_InRollComplete( playerState_t *ps, int anim );
 
 int PM_AnimLength( int index, animNumber_t anim );
 
+template<moduleType mod>
 int PM_GetSaberStance(void);
 float PM_GroundDistance(void);
 qboolean PM_SomeoneInFront(trace_t *tr);
+template<moduleType mod>
 saberMoveName_t PM_SaberFlipOverAttackMove(void);
+template<moduleType mod>
 saberMoveName_t PM_SaberJumpAttackMove( void );
 
 void PM_ClipVelocity( vec3_t in, vec3_t normal, vec3_t out, float overbounce );
 void PM_AddTouchEnt( int entityNum );
+template< moduleType mod >
 void PM_AddEvent( int newEvent );
 
+template<moduleType mod>
 qboolean	PM_SlideMove( qboolean gravity );
+template< moduleType mod >
 void		PM_StepSlideMove( qboolean gravity );
 
+template<moduleType mod>
 void PM_StartTorsoAnim( int anim );
+template<moduleType mod>
 void PM_ContinueLegsAnim( int anim );
+template<moduleType mod>
 void PM_ForceLegsAnim( int anim );
 
+template< moduleType mod >
 void PM_BeginWeaponChange( int weapon );
+template< moduleType mod >
 void PM_FinishWeaponChange( void );
 
+template<moduleType mod>
 void PM_SetAnim(int setAnimParts,int anim,int setAnimFlags);
 
+template<moduleType mod>
 void PM_WeaponLightsaber(void);
+template<moduleType mod>
 void PM_SetSaberMove(short newMove);
 
 void PM_SetForceJumpZStart(float value);

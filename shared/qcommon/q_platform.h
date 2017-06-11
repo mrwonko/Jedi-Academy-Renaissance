@@ -342,7 +342,9 @@ typedef unsigned char byte;
 typedef unsigned short word;
 typedef unsigned long ulong;
 
-typedef enum { qfalse, qtrue } qboolean;
+typedef bool qboolean;
+static constexpr qboolean qtrue = true;
+static constexpr qboolean qfalse = false;
 
 // 32 bit field aliasing
 typedef union byteAlias_u {

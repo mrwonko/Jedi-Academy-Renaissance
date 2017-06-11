@@ -414,7 +414,7 @@ int MP3Stream_Decode( LP_MP3STREAM lpMP3Stream, qboolean bDoingMusic )
 	{
 		// SOF2 music, or EF1 anything...
 		//
-		return C_MP3Stream_Decode( lpMP3Stream, qfalse );	// bFastForwarding
+		return C_MP3Stream_Decode( lpMP3Stream );	// bFastForwarding
 	}
 }
 
@@ -445,7 +445,7 @@ qboolean MP3Stream_SeekTo( channel_t *ch, float fTimeToSeekTo )
 
 		// when decoding, use fast-forward until within 3 seconds, then slow-decode (which should init stuff properly?)...
 		//
-		int iBytesDecodedThisPacket = C_MP3Stream_Decode( &ch->MP3StreamHeader, (fAbsTimeDiff > 3.0f) );	// bFastForwarding
+		int iBytesDecodedThisPacket = C_MP3Stream_Decode( &ch->MP3StreamHeader );	// FIXME mrwonko: there was a bogus (fAbsTimeDiff > 3.0f) fastforward argument here that maybe once did something? Investigate.
 		if (iBytesDecodedThisPacket == 0)
 			break;	// EOS
 	}

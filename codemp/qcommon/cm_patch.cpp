@@ -1298,7 +1298,7 @@ static inline void CM_TracePointThroughPatchCollide( traceWork_t *tw, trace_t &t
 		}
 		for ( j = 0 ; j < facet->numBorders ; j++ ) {
 			k = facet->borderPlanes[j];
-			if ( frontFacing[k] ^ facet->borderInward[j] ) {
+			if ( frontFacing[k] != static_cast< qboolean >( facet->borderInward[j] ) ) {
 				if ( intersection[k] > intersect ) {
 					break;
 				}

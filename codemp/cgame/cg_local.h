@@ -28,6 +28,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 #include "rd-common/tr_types.h"
 #include "game/bg_public.h"
 #include "cg_public.h"
+#include "ghoul2/ghoul2_shared.h"
 
 // The entire cgame module is unloaded and reloaded on each level change,
 // so there is NO persistant data between levels on the client side.
@@ -205,7 +206,7 @@ typedef struct clientInfo_s {
 	float			colorOverride[3];
 
 	saberInfo_t		saber[MAX_SABERS];
-	void			*ghoul2Weapons[MAX_SABERS];
+	CGhoul2Info_v	*ghoul2Weapons[MAX_SABERS];
 
 	char			saberName[64];
 	char			saber2Name[64];
@@ -283,7 +284,7 @@ typedef struct clientInfo_s {
 	//qhandle_t		headModel;
 	//qhandle_t		headSkin;
 
-	void			*ghoul2Model;
+	CGhoul2Info_v	*ghoul2Model;
 
 	qhandle_t		modelIcon;
 
@@ -335,7 +336,7 @@ typedef struct centity_s {
 	entityState_t	currentState;	// from cg.frame
 	playerState_t	*playerState;	//ptr to playerstate if applicable (for bg ents)
 	Vehicle_t		*m_pVehicle; //vehicle data
-	void			*ghoul2; //g2 instance
+	CGhoul2Info_v	*ghoul2; //g2 instance
 	int				localAnimIndex; //index locally (game/cgame) to anim data for this skel
 	vec3_t			modelScale; //needed for g2 collision
 
@@ -421,12 +422,12 @@ typedef struct centity_s {
 	int				frame_minus1_refreshed;
 	int				frame_minus2_refreshed;
 
-	void			*frame_hold; //pointer to a ghoul2 instance
+	CGhoul2Info_v	*frame_hold; //pointer to a ghoul2 instance
 
 	int				frame_hold_time;
 	int				frame_hold_refreshed;
 
-	void			*grip_arm; //pointer to a ghoul2 instance
+	CGhoul2Info_v	*grip_arm; //pointer to a ghoul2 instance
 
 	int				trickAlpha;
 	int				trickAlphaTime;
@@ -1062,7 +1063,9 @@ typedef struct cgscreffects_s
 
 extern cgscreffects_t cgScreenEffects;
 
-void CGCam_Shake( float intensity, int duration );
+namespace cgame {
+	void CGCam_Shake( float intensity, int duration );
+}
 void CGCam_SetMusicMult( float multiplier, int duration );
 
 enum
@@ -2071,4 +2074,4 @@ void	CG_SetLightstyle (int i);
 Ghoul2 Insert End
 */
 
-extern cgameImport_t *trap;
+extern cgameImport_t *cg_trap;

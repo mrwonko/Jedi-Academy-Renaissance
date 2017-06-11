@@ -36,6 +36,8 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+#include "qcommon/q_shared.h"
+
 //undef if binary numbers of the form 0b... or 0B... are not allowed
 #define BINARYNUMBERS
 //undef if not using the token.intvalue and token.floatvalue
